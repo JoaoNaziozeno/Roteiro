@@ -1038,8 +1038,8 @@ def generate_hub_page(out_path):
    PORTAL DE LOGIN & ACESSO RESTRITO
    ========================================================================= */
 .portal-login-wrap {
-  max-width: 920px;
-  margin: 30px auto 80px;
+  max-width: 520px;
+  margin: 50px auto 80px;
   padding: 0 16px;
 }
 .portal-card {
@@ -1140,79 +1140,6 @@ def generate_hub_page(out_path):
   font-size: .84rem;
   margin-bottom: 16px;
   text-align: center;
-}
-.portal-card-footer {
-  margin-top: 32px;
-  padding-top: 22px;
-  border-top: 1px solid var(--bd);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  text-align: left;
-}
-.portal-footer-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: .82rem;
-  color: var(--mu);
-  line-height: 1.45;
-}
-.portal-footer-item b {
-  color: var(--tx);
-}
-.portal-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-  margin-top: 26px;
-}
-.portal-preview-card {
-  background: var(--card);
-  border: 1px solid var(--bd);
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-}
-.portal-preview-icon {
-  font-size: 1.6rem;
-  display: block;
-  margin-bottom: 6px;
-}
-.portal-preview-card h4 {
-  margin: 0 0 4px;
-  font-size: .9rem;
-  color: var(--tx);
-}
-.portal-preview-card p {
-  margin: 0;
-  font-size: .76rem;
-  color: var(--mu);
-  line-height: 1.4;
-}
-
-/* Banner de Nuvem Ativa no Hub */
-.hub-aws-banner {
-  background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(255,153,0,.08));
-  border: 1px solid rgba(16,185,129,.3);
-  border-radius: 14px;
-  padding: 14px 18px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.hub-aws-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: .88rem;
-  color: var(--tx);
-}
-.hub-aws-banner-left b {
-  color: #10b981;
 }
 
 /* Hub Cards e Seções Específicas */
@@ -1854,7 +1781,7 @@ __HUB_CSS__
           </button>
         </div>
       </div>
-      <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
+      <span id="nav-db-status" class="nav-status-pill" style="display:none">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
   </div>
@@ -1867,7 +1794,7 @@ __HUB_CSS__
       <div class="portal-card">
         <div class="portal-badge">🔒 Área Restrita do Estudante</div>
         <h2 class="portal-title">Portal de Acesso · Roteiro de IA</h2>
-        <p class="portal-subtitle">Faça login para desbloquear suas trilhas de estudo, anotações de código e sincronização com a nuvem AWS.</p>
+        <p class="portal-subtitle">Faça login para desbloquear suas trilhas de estudo.</p>
         
         <form id="portal-login-form" onsubmit="handlePortalLogin(event)" class="portal-form">
           <div class="portal-input-group">
@@ -1876,17 +1803,14 @@ __HUB_CSS__
           </div>
 
           <div class="portal-input-group">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <label class="portal-label">Senha / PIN Master</label>
-              <span style="font-size:.74rem;color:var(--mu)">PIN Inicial: <b>1234</b></span>
-            </div>
-            <input type="password" id="login-input-pass" class="portal-input" required placeholder="Digite sua senha ou PIN (1234)">
+            <label class="portal-label">Senha</label>
+            <input type="password" id="login-input-pass" class="portal-input" required placeholder="Digite sua senha">
           </div>
 
           <div class="portal-remember-row">
             <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.82rem;color:var(--mu);user-select:none">
               <input type="checkbox" id="login-remember-me" checked>
-              <span>Lembrar meu acesso neste dispositivo (30 dias)</span>
+              <span>Lembrar meu acesso neste dispositivo</span>
             </label>
           </div>
 
@@ -1896,41 +1820,6 @@ __HUB_CSS__
             🚀 Entrar no Ecossistema de IA ➔
           </button>
         </form>
-
-        <div class="portal-card-footer">
-          <div class="portal-footer-item">
-            <span>☁️</span>
-            <span><b>AWS Cloud Ready:</b> Compatível com Amazon DynamoDB & Cognito Always Free Tier.</span>
-          </div>
-          <div class="portal-footer-item">
-            <span>🛡️</span>
-            <span><b>Privacidade Total:</b> Seu progresso e suas anotações ficam 100% isolados no seu perfil.</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- PREVIEW DAS 4 TRILHAS PROTEGIDAS -->
-      <div class="portal-preview-grid">
-        <div class="portal-preview-card">
-          <span class="portal-preview-icon">🤖</span>
-          <h4>IA & Código</h4>
-          <p>173 tópicos práticos em 6 fases de Python a LLMs</p>
-        </div>
-        <div class="portal-preview-card">
-          <span class="portal-preview-icon">📐</span>
-          <h4>Matemática para IA</h4>
-          <p>43 tópicos aplicados de Álgebra Linear e Cálculo</p>
-        </div>
-        <div class="portal-preview-card">
-          <span class="portal-preview-icon">🇺🇸</span>
-          <h4>Inglês EnglishBay</h4>
-          <p>73 vídeo-aulas da playlist oficial</p>
-        </div>
-        <div class="portal-preview-card">
-          <span class="portal-preview-icon">🛠️</span>
-          <h4>Laboratório de Projetos</h4>
-          <p>6 projetos para impressionar recrutadores</p>
-        </div>
       </div>
     </div>
   </div>
@@ -2290,12 +2179,14 @@ function checkHubAuth() {
   const authView = document.getElementById("hub-authenticated-view");
   const navUserWrap = document.getElementById("nav-user-wrap");
   const navLinks = document.getElementById("hub-nav-links");
+  const dbStatus = document.getElementById("nav-db-status");
 
   if (user && user.authenticated) {
     if (loginView) loginView.style.display = "none";
     if (authView) authView.style.display = "block";
     if (navUserWrap) navUserWrap.style.display = "inline-block";
     if (navLinks) navLinks.style.display = "flex";
+    if (dbStatus) dbStatus.style.display = "inline-flex";
     
     const heroH1 = document.querySelector(".hub-hero h1");
     if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA 🚀`;
@@ -2308,6 +2199,7 @@ function checkHubAuth() {
     if (authView) authView.style.display = "none";
     if (navUserWrap) navUserWrap.style.display = "none";
     if (navLinks) navLinks.style.display = "none";
+    if (dbStatus) dbStatus.style.display = "none";
   }
 }
 
@@ -2353,7 +2245,7 @@ async function handlePortalLogin(e) {
     updateNavAuthUI();
   } else {
     if (errorEl) {
-      errorEl.textContent = "Senha ou PIN incorreto. Use o PIN inicial: 1234 (ou sua senha configurada no perfil).";
+      errorEl.textContent = "Senha incorreta. Verifique suas credenciais e tente novamente.";
       errorEl.style.display = "block";
     }
   }
