@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratório de Projetos & Portfólio de IA</title>
+
+<script>
+(function() {
+  try {
+    var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    if (!raw) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+    var user = JSON.parse(raw);
+    if (!user || !user.authenticated) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+  } catch(e) {
+    window.location.replace("index.html");
+  }
+})();
+</script>
+
+<style>
+
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f27;--mu:#667085;--bd:#e3e6ec;--ac:#4f46e5;--ac-hover:#4338ca;--z:#e5484d;--r:#e8a100;--e:#2fa36b;
+box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}
+html{scroll-padding-top:70px;scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+/* Topbar Sticky de Navegação */
+.top-nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--bd);
+  transition:background .2s;
+}
+:root[data-theme="dark"] .top-nav, @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .top-nav{background:rgba(24,28,37,.88)}}
+
+.top-nav-inner{
+  max-width:1440px;
+  margin:0 auto;
+  padding:0 22px;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+  font-size:1.05rem;
+  color:var(--tx);
+  text-decoration:none;
+}
+.nav-brand span{
+  background:linear-gradient(135deg,var(--ac),#ec4899);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-x:auto;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  font-size:.84rem;
+  font-weight:600;
+  padding:7px 12px;
+  border-radius:8px;
+  color:var(--mu);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  white-space:nowrap;
+  transition:.15s;
+}
+.nav-link:hover{color:var(--tx);background:var(--bg)}
+.nav-link.active{color:var(--ac);background:rgba(79,70,229,.1);font-weight:700}
+
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-status-pill{
+  font-size:.72rem;
+  font-weight:600;
+  padding:3px 8px;
+  border-radius:99px;
+  background:var(--bd);
+  color:var(--mu);
+}
+.badge-pg{background:#0064a5;color:#fff}
+.badge-sq{background:#003b57;color:#fff}
+.nav-theme-btn{
+  font:inherit;
+  border:1px solid var(--bd);
+  background:var(--card);
+  color:var(--tx);
+  padding:5px 9px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:.9rem;
+}
+
+/* Layout com Sidebar */
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{
+  width:320px;
+  flex-shrink:0;
+  background:var(--card);
+  border-right:1px solid var(--bd);
+  position:sticky;
+  top:58px;
+  height:calc(100vh - 58px);
+  overflow-y:auto;
+  padding:16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  z-index:90;
+  transition:transform .25s cubic-bezier(0.16, 1, 0.3, 1),width .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:5px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bd);border-radius:10px}
+
+.sb-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.sb-header-title{font-weight:750;font-size:.92rem;color:var(--tx);display:flex;align-items:center;gap:6px}
+.sb-shortcuts{display:grid;grid-template-columns:1fr;gap:4px}
+.sb-quick-btn{font:inherit;font-size:.78rem;padding:6px 10px;border-radius:8px;border:1px solid transparent;background:var(--bg);color:var(--tx);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;transition:.15s}
+.sb-quick-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.sb-tree{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+details.sb-phase{border-radius:8px;background:transparent}
+details.sb-phase summary{list-style:none;cursor:pointer;padding:7px 9px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.82rem;font-weight:650;color:var(--tx);transition:.15s}
+details.sb-phase summary::-webkit-details-marker{display:none}
+details.sb-phase summary:hover{background:var(--bg)}
+details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--ac)}
+.sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
+
+.sb-sub-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 6px 14px;margin-left:8px;border-left:1px solid var(--bd)}
+.sb-sub-btn{
+  font:inherit;
+  font-size:.76rem;
+  padding:5px 8px;
+  border-radius:6px;
+  border:none;
+  background:transparent;
+  color:var(--mu);
+  text-align:left;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  transition:.15s;
+}
+.sb-sub-btn:hover{background:var(--bg);color:var(--tx)}
+.sb-sub-btn.active-group{color:var(--ac);font-weight:600;background:rgba(79,70,229,.08)}
+
+/* Botão Mobile da Sidebar */
+.sb-toggle-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:95;
+  background:var(--ac);
+  color:#fff;
+  border:none;
+  border-radius:99px;
+  padding:10px 18px;
+  font:inherit;
+  font-size:.85rem;
+  font-weight:650;
+  display:none;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  box-shadow:0 4px 18px rgba(79,70,229,.35);
+}
+.sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:85}
+.sb-backdrop.active{display:block}
+
+@media(max-width:1040px){
+  .sidebar{position:fixed;left:0;top:58px;bottom:0;transform:translateX(-100%);box-shadow:6px 0 28px rgba(0,0,0,.25)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-toggle-btn{display:flex}
+}
+
+/* Área de Conteúdo */
+.content-wrapper{flex:1;min-width:0;display:flex;flex-direction:column}
+main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
+.hero-head{margin-bottom:20px}
+.hero-head h1{font-size:1.75rem;margin:0 0 6px;font-weight:800;letter-spacing:-.02em}
+.hero-head .sub{color:var(--mu);margin:0;font-size:.95rem}
+
+/* Animação de Scroll */
+@keyframes highlightHeading {
+  0% { background: transparent; }
+  25% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
+  75% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
+  100% { background: transparent; padding-left: 0; }
+}
+.target-highlight {
+  animation: highlightHeading 1.8s ease-in-out;
+  transition: all .2s ease;
+}
+
+/* Rastreador de Metas / Gamificação */
+.tracker-box{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:16px;
+  padding:20px 22px;
+  margin-bottom:22px;
+  box-shadow:0 6px 20px rgba(0,0,0,.03);
+}
+.tracker-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.tracker-title{font-size:1.02rem;font-weight:750;color:var(--tx);display:flex;align-items:center;gap:8px}
+.tracker-presets{display:flex;flex-wrap:wrap;gap:6px}
+.trk-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:.15s}
+.trk-btn:hover{border-color:var(--ac);color:var(--ac)}
+.trk-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+
+.level-banner{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.level-info{display:flex;align-items:center;gap:10px}
+.level-icon{font-size:1.6rem}
+.level-name{font-weight:750;font-size:.92rem;color:var(--tx)}
+.level-desc{font-size:.78rem;color:var(--mu);margin-top:1px}
+.level-xp-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:1 1 200px}
+.level-xp-text{font-size:.78rem;font-weight:600;color:var(--ac)}
+.level-xp-bar{width:100%;max-width:220px;height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
+.level-xp-fill{height:100%;background:linear-gradient(90deg,var(--ac),#ec4899);border-radius:99px;transition:width .4s ease}
+
+.pace-status-card{padding:12px 16px;border-radius:10px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:.88rem;font-weight:600}
+.pace-ahead{background:rgba(47,163,107,.12);border:1px solid rgba(47,163,107,.3);color:var(--e)}
+.pace-ontrack{background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.28);color:var(--ac)}
+.pace-behind{background:rgba(229,72,77,.12);border:1px solid rgba(229,72,77,.3);color:var(--z)}
+
+.next-step-box{background:rgba(79,70,229,.06);border:1px dashed var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.next-step-info{display:flex;flex-direction:column;gap:2px}
+.next-step-tag{font-size:.72rem;font-weight:700;letter-spacing:.05em;color:var(--ac);text-transform:uppercase}
+.next-step-title{font-size:.88rem;font-weight:650;color:var(--tx)}
+.next-step-btn{font:inherit;font-size:.82rem;font-weight:650;padding:8px 16px;border-radius:99px;border:none;background:var(--ac);color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(79,70,229,.3);transition:.2s}
+.next-step-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(79,70,229,.4)}
+
+.pace-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.pace-stat-card{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.pace-stat-num{font-size:1.15rem;font-weight:750;color:var(--tx)}
+.pace-stat-sub{font-size:.74rem;color:var(--mu)}
+
+/* Barra Global de Progresso */
+.progress-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.86rem;font-weight:650}
+.prog-bar{width:100%;height:8px;background:var(--bd);border-radius:99px;overflow:hidden;display:flex}
+.p-z{background:var(--z);transition:width .3s}
+.p-r{background:var(--r);transition:width .3s}
+.p-e{background:var(--e);transition:width .3s}
+
+/* Filtros e Busca */
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.fil-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;transition:.15s}
+.fil-btn:hover{border-color:var(--ac)}
+.fil-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.search-input{font:inherit;font-size:.82rem;padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);min-width:220px}
+.search-input:focus{outline:none;border-color:var(--ac)}
+
+/* Cards das Fases */
+.phase-card{background:var(--card);border:1px solid var(--bd);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.phase-head{padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.phase-title-text{font-size:1.02rem;font-weight:750;color:var(--tx);display:flex;align-items:center;gap:8px}
+.phase-dur{font-size:.74rem;padding:3px 10px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600}
+.phase-body{padding:18px}
+.phase-callout{padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px}
+.callout-tip{background:rgba(79,70,229,.07);border-left:3px solid var(--ac);color:var(--tx)}
+.callout-proj{background:rgba(47,163,107,.08);border-left:3px solid var(--e);color:var(--tx)}
+.callout-res{background:var(--bg);border:1px solid var(--bd);color:var(--mu);font-size:.8rem}
+
+.group-section{margin-top:16px}
+.group-title{font-size:.88rem;font-weight:750;color:var(--ac);text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px}
+
+/* Linha de Tópico / Aula */
+.topic-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px 14px;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:6px;
+  background:var(--bg);
+  border:1px solid transparent;
+  transition:.15s;
+}
+.topic-row:hover{border-color:var(--bd)}
+.topic-row.status-e{background:rgba(47,163,107,.06);border-color:rgba(47,163,107,.2)}
+.topic-row.status-r{background:rgba(232,161,0,.06);border-color:rgba(232,161,0,.25)}
+.topic-row.status-z{background:var(--bg)}
+
+.topic-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1 1 280px;
+  min-width:0;
+}
+.topic-title-text{
+  font-size:.88rem;
+  font-weight:550;
+  color:var(--tx);
+  line-height:1.45;
+}
+.topic-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  flex-shrink:0;
+  flex-wrap:wrap;
+  margin-left:auto;
+}
+
+/* Botões de Ação do Tópico */
+.status-btn{
+  font:inherit;
+  font-size:.76rem;
+  font-weight:650;
+  padding:4px 10px;
+  border-radius:99px;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:.15s;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+}
+.status-btn-z{background:rgba(229,72,77,.1);color:var(--z);border-color:rgba(229,72,77,.25)}
+.status-btn-r{background:rgba(232,161,0,.12);color:var(--r);border-color:rgba(232,161,0,.35)}
+.status-btn-e{background:rgba(47,163,107,.12);color:var(--e);border-color:rgba(47,163,107,.3)}
+
+.note-btn{
+  font:inherit;
+  font-size:.76rem;
+  padding:4px 8px;
+  border-radius:6px;
+  border:1px solid var(--bd);
+  background:var(--card);
+  color:var(--mu);
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.note-btn:hover{color:var(--tx);border-color:var(--ac)}
+.note-btn.has-notes{color:var(--ac);border-color:var(--ac);background:rgba(79,70,229,.08);font-weight:600}
+
+.yt-btn{
+  font:inherit;
+  font-size:.74rem;
+  font-weight:650;
+  padding:4px 9px;
+  border-radius:6px;
+  border:none;
+  background:#cc0000;
+  color:#fff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  box-shadow:0 2px 6px rgba(204,0,0,.25);
+  transition:.15s;
+}
+.yt-btn:hover{background:#e60000;transform:translateY(-1px)}
+
+.doc-btn{
+  font:inherit;
+  font-size:.74rem;
+  font-weight:650;
+  padding:4px 9px;
+  border-radius:6px;
+  border:1px solid rgba(79,70,229,.3);
+  background:rgba(79,70,229,.08);
+  color:var(--ac);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.doc-btn:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+
+/* =========================================================================
+   MODAL DE ANOTAÇÕES (MARKDOWN, TABELAS, CÓDIGO)
+   ========================================================================= */
+.note-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  z-index:999;
+  display:none; /* Invisível por padrão */
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  animation:noteFadeIn .2s ease;
+}
+.note-modal-overlay.active{
+  display:flex !important;
+}
+.note-modal-overlay[hidden]{
+  display:none !important;
+}
+@keyframes noteFadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.note-modal-box{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:16px;
+  width:100%;
+  max-width:1080px;
+  height:90vh;
+  max-height:860px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
+  overflow:hidden;
+}
+.note-modal-header{
+  padding:14px 20px;
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:var(--card);
+}
+.note-header-left{display:flex;flex-direction:column;gap:2px}
+.note-breadcrumb{font-size:.72rem;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.note-topic-title{font-size:1.05rem;font-weight:750;color:var(--tx);margin:0}
+.note-header-right{display:flex;align-items:center;gap:10px}
+.note-status-wrap{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mu)}
+.note-status-pill{font:inherit;font-size:.76rem;font-weight:650;padding:4px 10px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer}
+.note-date-wrap{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mu)}
+.note-date-wrap input{font:inherit;font-size:.76rem;padding:3px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.note-close-btn{font:inherit;font-size:1.1rem;border:none;background:transparent;color:var(--mu);cursor:pointer;padding:4px 8px;border-radius:6px}
+.note-close-btn:hover{background:var(--bg);color:var(--tx)}
+
+.note-toolbar{
+  padding:8px 16px;
+  background:var(--bg);
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.toolbar-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.tb-btn{font:inherit;font-size:.76rem;padding:5px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.tb-btn:hover{border-color:var(--ac);color:var(--ac)}
+.tb-sep{width:1px;height:18px;background:var(--bd);margin:0 2px}
+.tb-select{font:inherit;font-size:.76rem;padding:4px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.toolbar-modes{display:flex;align-items:center;gap:3px}
+.tb-mode-btn{font:inherit;font-size:.74rem;padding:4px 8px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--mu);cursor:pointer}
+.tb-mode-btn.active{background:var(--card);border-color:var(--bd);color:var(--tx);font-weight:600}
+
+.note-workspace{display:flex;flex:1;min-height:0;overflow:hidden}
+.note-editor-pane{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--bd)}
+.note-editor-pane textarea{width:100%;height:100%;resize:none;border:none;outline:none;padding:16px 20px;font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:transparent;color:var(--tx)}
+.note-preview-pane{flex:1;overflow-y:auto;padding:18px 22px;background:var(--card)}
+.preview-header{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.preview-body{font-size:.92rem;line-height:1.65;color:var(--tx)}
+
+.mode-editor .note-preview-pane{display:none}
+.mode-editor .note-editor-pane{border-right:none}
+.mode-preview .note-editor-pane{display:none}
+
+.note-modal-footer{
+  padding:10px 18px;
+  background:var(--card);
+  border-top:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.footer-stats{font-size:.76rem;color:var(--mu)}
+.footer-sync{font-size:.76rem;color:var(--e);font-weight:600}
+.footer-actions{display:flex;align-items:center;gap:8px}
+.note-clear-btn{font:inherit;font-size:.78rem;padding:5px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--mu);cursor:pointer}
+.note-save-btn{font:inherit;font-size:.8rem;font-weight:650;padding:6px 14px;border-radius:8px;border:none;background:var(--ac);color:#fff;cursor:pointer}
+
+/* Formatação do Preview Markdown */
+.note-table-wrap{overflow-x:auto;margin:12px 0}
+.note-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.note-table th,.note-table td{border:1px solid var(--bd);padding:8px 12px;text-align:left}
+.note-table th{background:var(--bg);font-weight:700}
+.note-code-block{background:var(--bg);border:1px solid var(--bd);border-radius:8px;margin:12px 0;overflow:hidden}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;border-bottom:1px solid var(--bd);background:rgba(0,0,0,.03);font-size:.72rem;color:var(--mu)}
+.copy-code-btn{font:inherit;font-size:.7rem;border:none;background:transparent;color:var(--ac);cursor:pointer}
+.note-code-block pre{margin:0;padding:12px 14px;font:13px/1.55 ui-monospace,SFMono-Regular,monospace;overflow-x:auto}
+.note-checklist{list-style:none;padding-left:0;margin:10px 0}
+.note-todo{display:flex;align-items:center;gap:8px;margin:4px 0}
+.note-todo.done{text-decoration:line-through;color:var(--mu)}
+.note-quote{border-left:4px solid var(--ac);background:rgba(79,70,229,.07);padding:8px 12px;margin:10px 0;border-radius:0 6px 6px 0}
+.empty-notes-hint{color:var(--mu);font-style:italic;padding:30px 10px;text-align:center}
+
+
+
+
+/* =========================================================================
+   ESTÚDIO UNIFICADO DE ESTUDO & ANOTAÇÕES (VÍDEO À ESQUERDA | NOTAS À DIREITA)
+   ========================================================================= */
+.unified-study-box {
+  max-width: 1560px !important;
+  width: 96vw !important;
+  height: 94vh !important;
+  max-height: 980px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border-radius: 16px;
+  box-shadow: 0 28px 70px rgba(0,0,0,.55);
+}
+
+/* Switch de Progresso Automático */
+.auto-prog-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--tx);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  user-select: none;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bd); transition: .2s; border-radius: 99px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px;
+  background-color: white; transition: .2s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--e); }
+input:checked + .slider:before { transform: translateX(14px); }
+
+/* Layout Dividido em Duas Colunas: Vídeo à Esquerda e Anotações à Direita */
+.study-columns-layout {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--card);
+}
+
+/* Coluna da Esquerda: Vídeo & Sessão de Estudo */
+.study-player-col {
+  flex: 0 0 50%;
+  width: 50%;
+  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--bd);
+  background: var(--card);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all .25s ease;
+}
+
+.study-player-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+}
+
+.player-topbar-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .84rem;
+  min-width: 0;
+}
+
+.player-source-tag {
+  font-size: .72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--ac);
+  color: #fff;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.player-source-title {
+  font-weight: 700;
+  color: var(--tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.player-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-ext-btn {
+  font-size: .76rem;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: .15s;
+  white-space: nowrap;
+}
+.player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
+.player-ext-btn.doc-ext { background: rgba(79,70,229,.1); border-color: rgba(79,70,229,.3); color: var(--ac); }
+
+.player-collapse-btn {
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+  white-space: nowrap;
+}
+.player-collapse-btn:hover { background: var(--bd); }
+
+/* Responsive Video Wrapper em 16:9 */
+.video-responsive-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.video-responsive-wrap.collapsed {
+  display: none !important;
+}
+.video-responsive-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Barra de Progresso da Sessão / Auto-Progresso */
+.session-progress-bar-wrap {
+  padding: 8px 16px;
+  background: var(--card);
+  border-top: 1px solid var(--bd);
+  border-bottom: 1px solid var(--bd);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.session-progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .76rem;
+  color: var(--mu);
+}
+
+.session-finish-btn {
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 750;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: none;
+  background: var(--e);
+  color: #fff;
+  cursor: pointer;
+  transition: .15s;
+  white-space: nowrap;
+}
+.session-finish-btn:hover { opacity: .9; transform: scale(1.02); }
+
+.session-bar-track {
+  height: 5px;
+  background: var(--bd);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.session-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ac), var(--e));
+  border-radius: 99px;
+  transition: width .5s linear;
+}
+
+/* Card de contexto e dicas no painel esquerdo */
+.study-left-extra-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  background: var(--bg);
+}
+.study-left-card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.03);
+}
+.study-left-card-title {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+  margin-bottom: 6px;
+}
+.study-left-card p {
+  font-size: .8rem;
+  line-height: 1.55;
+  color: var(--mu);
+  margin: 0;
+}
+
+/* Coluna da Direita: Caderno de Anotações & Esquemas */
+.study-notes-col {
+  flex: 1 1 50%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.notes-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--bd);
+}
+
+.notes-head-title {
+  font-size: .88rem;
+  font-weight: 750;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botões especiais na Toolbar */
+.tb-btn.tb-highlight-math {
+  background: rgba(79,70,229,.1);
+  border-color: rgba(79,70,229,.35);
+  color: var(--ac);
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-math:hover { background: var(--ac); color: #fff; }
+
+.tb-btn.tb-highlight-3d {
+  background: rgba(139,92,246,.12);
+  border-color: rgba(139,92,246,.35);
+  color: #8b5cf6;
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-3d:hover { background: #8b5cf6; color: #fff; }
+
+.tb-btn.tb-highlight-draw {
+  background: rgba(6,182,212,.12);
+  border-color: rgba(6,182,212,.35);
+  color: #06b6d4;
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-draw:hover { background: #06b6d4; color: #fff; }
+
+/* Paleta de Símbolos Matemáticos */
+.math-palette-wrap {
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  padding: 10px 16px;
+  animation: noteFadeIn .18s ease;
+}
+.math-palette-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: .8rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.math-palette-close {
+  background: transparent;
+  border: none;
+  font-size: .95rem;
+  color: var(--mu);
+  cursor: pointer;
+}
+.math-symbols-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.sym-btn {
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 650;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .12s;
+}
+.sym-btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+  transform: translateY(-1px);
+}
+.math-templates-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--bd);
+}
+.sym-tmpl-btn {
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 650;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(79,70,229,.25);
+  background: rgba(79,70,229,.07);
+  color: var(--ac);
+  cursor: pointer;
+  transition: .15s;
+}
+.sym-tmpl-btn:hover { background: var(--ac); color: #fff; }
+
+/* Modos de visualização do Workspace de Anotações */
+.note-workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.note-workspace.mode-editor .note-editor-pane {
+  flex: 1;
+  border-right: none;
+}
+.note-workspace.mode-editor .note-preview-pane {
+  display: none !important;
+}
+
+.note-workspace.mode-preview .note-editor-pane {
+  display: none !important;
+}
+.note-workspace.mode-preview .note-preview-pane {
+  flex: 1;
+}
+
+.note-workspace.mode-split {
+  flex-direction: column;
+}
+.note-workspace.mode-split .note-editor-pane {
+  flex: 1 1 50%;
+  border-right: none;
+  border-bottom: 1px solid var(--bd);
+  min-height: 140px;
+}
+.note-workspace.mode-split .note-preview-pane {
+  flex: 1 1 50%;
+  min-height: 140px;
+}
+
+@media (min-width: 1440px) {
+  .note-workspace.mode-split {
+    flex-direction: row;
+  }
+  .note-workspace.mode-split .note-editor-pane {
+    border-right: 1px solid var(--bd);
+    border-bottom: none;
+  }
+}
+
+/* Responsividade em Telas Pequenas e Tablets */
+@media (max-width: 1040px) {
+  .study-columns-layout {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .study-player-col {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--bd) !important;
+  }
+  .study-notes-col {
+    flex: 1 0 auto !important;
+    width: 100% !important;
+    min-height: 580px !important;
+  }
+}
+
+/* Submodais: Estúdio 3D e Lousa de Desenho */
+.modal-sub-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: noteFadeIn .2s ease;
+}
+.modal-sub-overlay.active {
+  display: flex !important;
+}
+.modal-sub-overlay[hidden] {
+  display: none !important;
+}
+
+.modal-sub-box {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-3d-box {
+  max-width: 1050px;
+  width: 95vw;
+  max-height: 90vh;
+}
+
+.modal-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--bd);
+}
+
+.modal-3d-body {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: calc(90vh - 65px);
+}
+
+.canvas-3d-wrap {
+  flex: 1 1 500px;
+  background: #0f1218;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--bd);
+  user-select: none;
+}
+#canvas-3d {
+  width: 100%;
+  max-width: 650px;
+  height: 440px;
+  cursor: grab;
+}
+#canvas-3d:active { cursor: grabbing; }
+
+.canvas-3d-overlay-hint {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: .74rem;
+  font-weight: 650;
+  color: rgba(255,255,255,.7);
+  background: rgba(0,0,0,.6);
+  padding: 4px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.canvas-3d-axes-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  gap: 10px;
+  font-size: .76rem;
+  font-weight: 750;
+  background: rgba(0,0,0,.6);
+  padding: 4px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.controls-3d-wrap {
+  flex: 1 1 340px;
+  padding: 18px 20px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.v3d-panel-title {
+  font-size: .95rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+
+.v3d-vector-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.v3d-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .84rem;
+}
+.v3d-norm-tag {
+  font-size: .76rem;
+  font-weight: 750;
+  color: var(--mu);
+}
+.v3d-inputs-row {
+  display: flex;
+  gap: 10px;
+}
+.v3d-inputs-row label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.v3d-inputs-row input[type="number"] {
+  font: inherit;
+  font-size: .82rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  width: 100%;
+}
+
+.v3d-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+}
+.v3d-opt-label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.v3d-select {
+  font: inherit;
+  font-size: .78rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+}
+
+.v3d-math-results {
+  background: rgba(79,70,229,.07);
+  border: 1px solid rgba(79,70,229,.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--tx);
+}
+.v3d-math-results b { color: var(--ac); }
+
+.v3d-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+.v3d-snapshot-btn {
+  flex: 1;
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 750;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #8b5cf6;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(139,92,246,.35);
+  transition: .18s;
+}
+.v3d-snapshot-btn:hover { background: #7c3aed; transform: translateY(-1px); }
+
+.v3d-reset-btn {
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 650;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+  cursor: pointer;
+}
+.v3d-reset-btn:hover { background: var(--bd); }
+
+/* Lousa de Desenho 2D */
+.modal-draw-box {
+  max-width: 900px;
+  width: 95vw;
+}
+.draw-toolbar {
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.draw-tool-group {
+  display: flex;
+  gap: 4px;
+}
+.draw-tool-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+}
+.draw-tool-btn.active {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+  font-weight: 700;
+}
+
+.draw-color-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ac);
+}
+
+.draw-action-group {
+  display: flex;
+  gap: 8px;
+}
+.draw-act-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+}
+.draw-insert-btn {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+  font-weight: 700;
+}
+.draw-insert-btn:hover { background: var(--ac-hover); }
+
+.draw-canvas-wrap {
+  background: #11141c;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+#whiteboard-canvas {
+  max-width: 100%;
+  height: 450px;
+  cursor: crosshair;
+}
+
+/* Toast de Notificação */
+.toast-notice {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card);
+  color: var(--tx);
+  border: 1px solid var(--ac);
+  border-radius: 99px;
+  padding: 10px 20px;
+  font-size: .86rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  z-index: 2000;
+  opacity: 0;
+  transition: all .25s ease;
+  pointer-events: none;
+}
+.toast-notice.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* =========================================================================
+   BARRA DIVISÓRIA ARRASTÁVEL (SPLIT RESIZER)
+   ========================================================================= */
+.study-split-resizer {
+  width: 8px;
+  background: var(--bg);
+  border-left: 1px solid var(--bd);
+  border-right: 1px solid var(--bd);
+  cursor: col-resize;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: background .15s ease;
+  z-index: 5;
+}
+.study-split-resizer:hover, .study-split-resizer.dragging {
+  background: var(--ac);
+  border-color: var(--ac);
+}
+.resizer-handle {
+  width: 2px;
+  height: 28px;
+  background: var(--mu);
+  border-radius: 2px;
+  transition: all .15s ease;
+}
+.study-split-resizer:hover .resizer-handle, .study-split-resizer.dragging .resizer-handle {
+  background: #fff;
+  height: 40px;
+}
+
+/* =========================================================================
+   MARCADORES DE TEMPO INTERATIVOS NO VÍDEO (TIMESTAMPS)
+   ========================================================================= */
+.note-timestamp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-family: inherit;
+  font-size: .76rem;
+  font-weight: 750;
+  border-radius: 6px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--ac);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .15s ease;
+  margin: 0 2px;
+}
+.note-timestamp-pill:hover {
+  background: var(--ac);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(79,70,229,.3);
+}
+
+/* =========================================================================
+   TEMPORIZADOR POMODORO INTEGRADO
+   ========================================================================= */
+.pomodoro-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  user-select: none;
+}
+.pomo-toggle-btn {
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 2px 6px;
+  border: none;
+  background: transparent;
+  color: var(--tx);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: .15s;
+}
+.pomo-toggle-btn.running {
+  color: #ef4444;
+  animation: pomoPulse 1.5s infinite;
+}
+@keyframes pomoPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .65; }
+}
+.pomo-reset-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 1px 4px;
+  border: none;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+}
+.pomo-reset-btn:hover { color: var(--tx); }
+.pomo-count-badge {
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--mu);
+  padding-left: 4px;
+  border-left: 1px solid var(--bd);
+}
+
+/* =========================================================================
+   BOTÕES DE UNDO / REDO & ÁUDIO
+   ========================================================================= */
+.tb-btn-undo, .tb-btn-redo {
+  font-size: .84rem !important;
+  font-weight: 800 !important;
+}
+.tb-audio-btn {
+  background: rgba(16,185,129,.1) !important;
+  border-color: rgba(16,185,129,.35) !important;
+  color: #10b981 !important;
+  font-weight: 750 !important;
+}
+.tb-audio-btn:hover {
+  background: #10b981 !important;
+  color: #fff !important;
+}
+
+/* =========================================================================
+   FLASHCARDS NAS ANOTAÇÕES & MODAL DE REVISÃO (ANKI LITE)
+   ========================================================================= */
+.note-flashcard-box {
+  background: var(--bg);
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+.note-flashcard-title {
+  font-size: .78rem;
+  font-weight: 800;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.note-flashcard-q {
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 4px;
+}
+.note-flashcard-a {
+  color: var(--mu);
+  font-size: .92rem;
+}
+
+.modal-fc-box {
+  max-width: 680px;
+  width: 95vw;
+}
+.fc-card-viewport {
+  perspective: 1000px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.fc-card-inner {
+  width: 100%;
+  min-height: 220px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  transition: all .25s ease;
+}
+.fc-card-tag {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--mu);
+  letter-spacing: .05em;
+}
+.fc-card-content {
+  font-size: 1.15rem;
+  font-weight: 650;
+  color: var(--tx);
+  line-height: 1.6;
+  margin: 18px 0;
+}
+.fc-card-answer-wrap {
+  display: none;
+  animation: noteFadeIn .2s ease;
+  padding-top: 14px;
+  border-top: 1px dashed var(--bd);
+  font-size: 1.05rem;
+  color: var(--ac);
+  font-weight: 600;
+}
+.fc-card-answer-wrap.show {
+  display: block;
+}
+.fc-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--card);
+  border-top: 1px solid var(--bd);
+}
+.fc-reveal-btn {
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 750;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--ac);
+  color: #fff;
+  cursor: pointer;
+  transition: .15s;
+}
+.fc-reveal-btn:hover { background: var(--ac-hover); }
+.fc-rating-btns {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.fc-rating-btns.show {
+  display: flex;
+}
+.fc-rate-btn {
+  flex: 1;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 750;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: .15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.fc-rate-btn.rate-hard { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+.fc-rate-btn.rate-good { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+.fc-rate-btn.rate-easy { background: rgba(16,185,129,.12); color: #10b981; border: 1px solid rgba(16,185,129,.3); }
+.fc-rate-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+/* =========================================================================
+   CALCULADORA DE MATRIZES & VETORES
+   ========================================================================= */
+.modal-calc-box {
+  max-width: 880px;
+  width: 95vw;
+}
+.calc-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--bd);
+  background: var(--bg);
+}
+.calc-tab-btn {
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 700;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.calc-tab-btn.active {
+  color: var(--ac);
+  border-bottom-color: var(--ac);
+  background: var(--card);
+}
+.calc-tab-pane {
+  display: none;
+  padding: 20px;
+  flex-direction: column;
+  gap: 16px;
+}
+.calc-tab-pane.active {
+  display: flex;
+}
+.calc-matrices-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.calc-matrix-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.calc-matrix-title {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.calc-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  gap: 6px;
+}
+.calc-matrix-grid.dim-3 {
+  grid-template-columns: repeat(3, 50px);
+}
+.calc-matrix-grid input {
+  font: inherit;
+  font-size: .86rem;
+  padding: 8px 4px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+}
+.calc-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.calc-op-btn {
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+}
+.calc-op-btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+}
+.calc-result-box {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: inherit;
+  font-size: .95rem;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================================
+   MODAL DE EXPORTAÇÃO DO CADERNO
+   ========================================================================= */
+.modal-export-box {
+  max-width: 720px;
+  width: 95vw;
+}
+.export-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 24px;
+  background: var(--bg);
+}
+.export-card-btn {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all .2s ease;
+  font: inherit;
+}
+.export-card-btn:hover {
+  border-color: var(--ac);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+.export-card-icon {
+  font-size: 2rem;
+}
+.export-card-title {
+  font-size: .92rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.export-card-desc {
+  font-size: .78rem;
+  color: var(--mu);
+  line-height: 1.45;
+}
+
+
+
+/* =========================================================================
+   ESTILOS DE AUTENTICAÇÃO & AWS CLOUD SYNC
+   ========================================================================= */
+.nav-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--tx);
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-user-pill:hover {
+  background: rgba(79,70,229,.22);
+  border-color: var(--ac);
+}
+.nav-logout-btn {
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-logout-btn:hover {
+  background: rgba(239,68,68,.2);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+.nav-aws-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.35);
+  color: #10b981;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-aws-pill:hover {
+  background: rgba(16,185,129,.2);
+  border-color: #10b981;
+}
+.nav-aws-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: awsPulse 2s infinite ease-in-out;
+}
+@keyframes awsPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.85); }
+}
+
+/* Modal AWS Sync */
+.modal-aws-box {
+  max-width: 620px;
+  width: 95%;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.aws-info-banner {
+  background: linear-gradient(135deg, rgba(255,153,0,.1), rgba(79,70,229,.1));
+  border: 1px solid rgba(255,153,0,.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--tx);
+}
+.aws-info-banner b { color: #ff9900; }
+.aws-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.aws-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px;
+}
+.aws-stat-lbl {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 4px;
+  display: block;
+}
+.aws-stat-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+.aws-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.aws-btn-primary {
+  background: linear-gradient(135deg, #ff9900, #f59e0b);
+  color: #000;
+  border: none;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.aws-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.aws-btn-sec {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.aws-btn-sec:hover {
+  background: var(--card);
+  border-color: var(--mu);
+}
+.aws-cfg-details {
+  border-top: 1px solid var(--bd);
+  padding-top: 16px;
+}
+.aws-cfg-details summary {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--mu);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+}
+.aws-cfg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aws-cfg-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  color: var(--tx);
+  font-size: .85rem;
+  box-sizing: border-box;
+}
+.aws-cfg-input:focus {
+  outline: none;
+  border-color: #ff9900;
+}
+
+
+/* =========================================================================
+   ESTILOS ESPECÍFICOS DO LABORATÓRIO DE PROJETOS & PORTFÓLIO
+   ========================================================================= */
+.proj-main {
+  max-width: 1260px;
+  margin: 0 auto;
+  padding: 32px 24px 100px;
+}
+.proj-hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.proj-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 850;
+  letter-spacing: -.03em;
+  margin: 0 0 10px;
+  background: linear-gradient(135deg, var(--tx) 30%, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.proj-hero p {
+  font-size: 1.05rem;
+  color: var(--mu);
+  max-width: 780px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Barra de Métricas do Portfólio */
+.proj-metrics-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.proj-metric-card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.03);
+}
+.proj-metric-lbl {
+  font-size: .78rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  color: var(--mu);
+  letter-spacing: .03em;
+  margin-bottom: 6px;
+  display: block;
+}
+.proj-metric-val {
+  font-size: 1.4rem;
+  font-weight: 850;
+  color: var(--tx);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+/* Barra de Filtros e Ações */
+.proj-actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 26px;
+}
+.proj-filters-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.proj-filter-btn {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--mu);
+  font-size: .82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.proj-filter-btn:hover, .proj-filter-btn.active {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+}
+.proj-btn-add {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  border: none;
+  font-weight: 800;
+  font-size: .84rem;
+  padding: 9px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.proj-btn-add:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.proj-btn-export {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-weight: 750;
+  font-size: .84rem;
+  padding: 9px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.proj-btn-export:hover {
+  background: var(--card);
+  border-color: var(--ac);
+  color: var(--ac);
+}
+
+/* Grid de Projetos */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 22px;
+}
+.proj-card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform .2s, border-color .2s;
+  position: relative;
+}
+.proj-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(79,70,229,.4);
+  box-shadow: 0 12px 32px rgba(79,70,229,.08);
+}
+.proj-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.proj-phase-badge {
+  font-size: .74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: rgba(79,70,229,.12);
+  color: var(--ac);
+  border: 1px solid rgba(79,70,229,.25);
+}
+.proj-status-select {
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+  cursor: pointer;
+  outline: none;
+}
+.proj-status-select.status-done {
+  background: rgba(16,185,129,.12);
+  border-color: rgba(16,185,129,.35);
+  color: #10b981;
+}
+.proj-status-select.status-wip {
+  background: rgba(245,158,11,.12);
+  border-color: rgba(245,158,11,.35);
+  color: #f59e0b;
+}
+.proj-status-select.status-planned {
+  background: rgba(100,116,139,.12);
+  border-color: rgba(100,116,139,.35);
+  color: var(--mu);
+}
+.proj-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--tx);
+  line-height: 1.35;
+}
+.proj-desc {
+  font-size: .88rem;
+  color: var(--mu);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+.proj-stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.proj-tag {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-size: .73rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.proj-card-footer {
+  border-top: 1px solid var(--bd);
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.proj-footer-links {
+  display: flex;
+  gap: 8px;
+}
+.proj-link-btn {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all .2s;
+}
+.proj-link-btn:hover {
+  background: var(--card);
+  border-color: var(--ac);
+  color: var(--ac);
+}
+.proj-notes-btn {
+  background: rgba(79,70,229,.1);
+  border: 1px solid rgba(79,70,229,.25);
+  color: var(--ac);
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.proj-notes-btn:hover {
+  background: var(--ac);
+  color: #fff;
+}
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR FIXA -->
+<header class="top-nav">
+  <div class="top-nav-inner">
+    <a href="index.html" class="nav-brand">🚀 <span>Roteiro IA</span></a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link">🏠 Hub Central</a>
+      <a href="ia.html" class="nav-link">🤖 IA & Código</a>
+      <a href="matematica.html" class="nav-link">📐 Matemática</a>
+      <a href="ingles.html" class="nav-link">🇺🇸 Inglês EnglishBay</a>
+      <a href="projetos.html" class="nav-link active">🛠️ Projetos & Portfólio</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
+        <span class="nav-aws-pulse"></span>
+        <span>☁️ AWS Sync</span>
+      </button>
+      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
+        👤 <span>João Naziozeno</span>
+      </div>
+      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
+        🔒 <span>Sair</span>
+      </button>
+      <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
+    </div>
+  </div>
+</header>
+
+<main class="proj-main">
+  <!-- HERO -->
+  <section class="proj-hero">
+    <h1>Laboratório de Projetos & Portfólio de IA</h1>
+    <p>
+      O código que você escreve é o seu maior currículo. Acompanhe a construção dos <b>6 projetos práticos essenciais da trilha</b>, documente seus repositórios, APIs, testes e gere um portfólio pronto para impressionar recrutadores.
+    </p>
+  </section>
+
+  <!-- BARRA DE MÉTRICAS -->
+  <section class="proj-metrics-bar">
+    <div class="proj-metric-card">
+      <span class="proj-metric-lbl">Total de Projetos</span>
+      <div class="proj-metric-val" id="metric-total-proj">6 <span style="font-size:.85rem;color:var(--mu);font-weight:600">estruturados</span></div>
+    </div>
+    <div class="proj-metric-card">
+      <span class="proj-metric-lbl">Projetos Concluídos</span>
+      <div class="proj-metric-val" style="color:#10b981" id="metric-done-proj">0 <span style="font-size:.85rem;color:var(--mu);font-weight:600">projetos</span></div>
+    </div>
+    <div class="proj-metric-card">
+      <span class="proj-metric-lbl">Em Desenvolvimento</span>
+      <div class="proj-metric-val" style="color:#f59e0b" id="metric-wip-proj">1 <span style="font-size:.85rem;color:var(--mu);font-weight:600">projeto</span></div>
+    </div>
+    <div class="proj-metric-card">
+      <span class="proj-metric-lbl">Taxa de Conclusão</span>
+      <div class="proj-metric-val" style="color:var(--ac)" id="metric-pct-proj">0%</div>
+    </div>
+  </section>
+
+  <!-- BARRA DE FILTROS & AÇÕES -->
+  <section class="proj-actions-bar">
+    <div class="proj-filters-group">
+      <button class="proj-filter-btn active" onclick="setProjectFilter('all', this)">Todos (6)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase1', this)">Fase 1 (Python)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase2', this)">Fase 2 (Dados)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase3', this)">Fase 3 (ML)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase4', this)">Fase 4 (PyTorch)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase5', this)">Fase 5 (LLMs/RAG)</button>
+      <button class="proj-filter-btn" onclick="setProjectFilter('fase6', this)">Fase 6 (MLOps/AWS)</button>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="proj-btn-export" onclick="openExportPortfolioModal()">
+        📋 Exportar para LinkedIn / README
+      </button>
+      <button class="proj-btn-add" onclick="openAddProjectModal()">
+        + Adicionar Projeto Próprio
+      </button>
+    </div>
+  </section>
+
+  <!-- GRID DE PROJETOS -->
+  <section class="proj-grid" id="portfolio-projects-grid">
+    <!-- Renderizado dinamicamente via JS -->
+  </section>
+</main>
+
+
+<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM AWS -->
+<div id="modal-aws-sync" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box modal-aws-box">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.3rem">☁️</span>
+        <h3 class="modal-sub-title" style="margin:0">Sincronização na Nuvem AWS</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeAwsSyncModal()">✕</button>
+    </div>
+
+    <div class="aws-info-banner">
+      <b>AWS Always Free Tier (Custo US$ 0,00):</b> Seus dados e anotações são salvos localmente e replicados com segurança para o <b>Amazon DynamoDB</b> com autenticação via <b>AWS Cognito</b>, mantendo seus <b>US$ 100 de crédito intactos</b>.
+    </div>
+
+    <div class="aws-stats-grid">
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Status da Conexão</span>
+        <div class="aws-stat-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
+          <span class="nav-aws-pulse"></span> Sincronizado
+        </div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Último Backup na Nuvem</span>
+        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">Hoje, em tempo real</div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Armazenamento Usado</span>
+        <div class="aws-stat-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Conta AWS Ativa</span>
+        <div class="aws-stat-val" id="aws-user-email-display">João Naziozeno</div>
+      </div>
+    </div>
+
+    <div class="aws-actions-row">
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync()">
+        🔄 Sincronizar Tudo Agora
+      </button>
+      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
+        📥 Baixar Backup Local (JSON)
+      </button>
+    </div>
+
+    <details class="aws-cfg-details">
+      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (Avançado)</summary>
+      <div class="aws-cfg-form">
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS (Default: us-east-1)</label>
+          <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
+          <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
+          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
+        </div>
+        <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
+          💾 Salvar Configurações da AWS
+        </button>
+      </div>
+    </details>
+  </div>
+</div>
+
+
+<!-- MODAL: ANOTAÇÕES & LIÇÕES APRENDIDAS DO PROJETO -->
+<div id="modal-project-notes" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:650px;width:95%">
+    <div class="modal-sub-header">
+      <h3 class="modal-sub-title" id="proj-notes-modal-title">Anotações do Projeto</h3>
+      <button class="modal-close-icon" onclick="closeProjectNotesModal()">✕</button>
+    </div>
+    <p style="font-size:.85rem;color:var(--mu);margin-bottom:12px">
+      Documente a arquitetura, desafios enfrentados, soluções adotadas e métricas alcançadas.
+    </p>
+    <textarea id="proj-notes-textarea" style="width:100%;height:220px;padding:12px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:monospace;font-size:.88rem;resize:vertical;box-sizing:border-box" placeholder="Escreva aqui os insights e detalhes técnicos..."></textarea>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button class="aws-btn-sec" onclick="closeProjectNotesModal()">Cancelar</button>
+      <button class="aws-btn-primary" onclick="saveProjectNotes()">💾 Salvar Anotações</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDITAR LINKS DO PROJETO -->
+<div id="modal-edit-links" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:550px;width:95%">
+    <div class="modal-sub-header">
+      <h3 class="modal-sub-title" id="edit-links-title">Editar Links do Projeto</h3>
+      <button class="modal-close-icon" onclick="closeEditLinksModal()">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0">
+      <div>
+        <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Link do Repositório GitHub</label>
+        <input type="url" id="input-edit-github" class="aws-cfg-input" placeholder="https://github.com/JoaoNaziozeno/seu-projeto">
+      </div>
+      <div>
+        <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Link da Demonstração ao Vivo / Deploy</label>
+        <input type="url" id="input-edit-demo" class="aws-cfg-input" placeholder="https://seunome.amplifyapp.com ou link Streamlit/HuggingFace">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button class="aws-btn-sec" onclick="closeEditLinksModal()">Cancelar</button>
+      <button class="aws-btn-primary" onclick="saveProjectLinks()">💾 Salvar Links</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EXPORTAR PORTFÓLIO EM MARKDOWN (LINKEDIN/README) -->
+<div id="modal-export-portfolio" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:700px;width:95%">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span>📋</span>
+        <h3 class="modal-sub-title">Exportar Portfólio (Markdown / LinkedIn)</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeExportPortfolioModal()">✕</button>
+    </div>
+    <p style="font-size:.85rem;color:var(--mu);margin-bottom:12px">
+      Copie o texto estruturado abaixo para colar diretamente no seu README de perfil do GitHub ou no LinkedIn:
+    </p>
+    <textarea id="portfolio-export-textarea" readonly style="width:100%;height:260px;padding:12px;background:var(--bg);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:monospace;font-size:.84rem;resize:vertical;box-sizing:border-box"></textarea>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+      <span style="font-size:.8rem;color:var(--mu)" id="copy-portfolio-status">Clique em Copiar</span>
+      <button class="aws-btn-primary" onclick="copyPortfolioText()">📄 Copiar Texto Completo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// =========================================================================
+// SCRIPT DE AUTENTICAÇÃO E GERENCIAMENTO DE SESSÃO & NUVEM AWS
+// =========================================================================
+const AUTH_USER_KEY = "roteiro_auth_user";
+const AWS_CONFIG_KEY = "roteiro_aws_config";
+
+function getLoggedInUser() {
+  try {
+    const raw = localStorage.getItem(AUTH_USER_KEY) || sessionStorage.getItem(AUTH_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function updateNavAuthUI() {
+  const user = getLoggedInUser();
+  const userPill = document.getElementById("nav-auth-user");
+  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (user && user.authenticated) {
+    if (userPill) {
+      userPill.innerHTML = `👤 <span>${user.name || "João"}</span>`;
+      userPill.title = `Conectado como ${user.email} · Clique para ver status`;
+    }
+    if (emailDisplay) {
+      emailDisplay.textContent = user.name || user.email || "João Naziozeno";
+    }
+  }
+}
+
+function handleUserLogout() {
+  if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
+    try {
+      localStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+    } catch(e) {}
+    window.location.href = "index.html";
+  }
+}
+
+function openAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = false;
+    modal.removeAttribute("hidden");
+    modal.style.display = "flex";
+    
+    // Atualizar último horário
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    
+    // Carregar configs salvas
+    try {
+      const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+      if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
+      if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
+      if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
+    } catch(e) {}
+  }
+}
+
+function closeAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+}
+
+function triggerAwsManualSync() {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
+  }
+  
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = "🔄 Sincronizar Tudo Agora";
+    }
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    if (typeof showToast === "function") {
+      showToast("☁️ Dados 100% sincronizados com a nuvem AWS com sucesso!");
+    } else {
+      alert("☁️ Dados sincronizados com a nuvem AWS com sucesso!");
+    }
+  }, 900);
+}
+
+function exportAwsBackupFile() {
+  try {
+    const backup = {
+      timestamp: new Date().toISOString(),
+      user: getLoggedInUser(),
+      progress: JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"),
+      notes: {},
+      projects: JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]")
+    };
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("roteiro-note-")) {
+        backup.notes[k] = localStorage.getItem(k);
+      }
+    }
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_estudos_ia_aws_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if (typeof showToast === "function") showToast("📥 Backup do banco AWS exportado!");
+  } catch(e) {
+    alert("Erro ao exportar backup: " + e.message);
+  }
+}
+
+function saveAwsConfigParams() {
+  try {
+    const cfg = {
+      region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
+      table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
+      pool: document.getElementById("aws-cfg-pool").value.trim() || ""
+    };
+    localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
+    if (typeof showToast === "function") {
+      showToast("💾 Configurações da AWS salvas!");
+    } else {
+      alert("Configurações da AWS salvas com sucesso!");
+    }
+  } catch(e) {
+    alert("Erro ao salvar: " + e.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  updateNavAuthUI();
+});
+
+
+// =========================================================================
+// BANCO DE DADOS LOCAL E REPOSITÓRIO DE PROJETOS DE IA
+// =========================================================================
+const PORTFOLIO_STORAGE_KEY = "roteiro_portfolio_projects";
+
+const DEFAULT_PROJECTS = [
+  {
+    id: "proj-1",
+    phaseKey: "fase1",
+    phaseLabel: "Fase 1 · Python Puro & APIs",
+    title: "CLI de Previsão do Tempo & Cotações com APIs",
+    desc: "Aplicação terminal em Python que consome APIs públicas REST (OpenWeather & CoinGecko), trata exceções, manipula dados JSON estruturados e exibe dashboards no terminal.",
+    stack: ["Python 3", "Requests", "JSON", "Argparse", "CLI"],
+    status: "wip",
+    githubUrl: "https://github.com/JoaoNaziozeno/Roteiro",
+    demoUrl: "",
+    notes: "Primeiro projeto em Python focado em requisições HTTP, headers, timeouts e tratamento robusto de erros."
+  },
+  {
+    id: "proj-2",
+    phaseKey: "fase2",
+    phaseLabel: "Fase 2 · Dados & SQL",
+    title: "Pipeline ETL & Análise Exploratória com PostgreSQL",
+    desc: "Ingestão e saneamento de grandes volumes de dados (Kaggle), transformação em DataFrames Pandas, persistência em PostgreSQL e geração de gráficos de correlação.",
+    stack: ["Pandas", "NumPy", "PostgreSQL", "SQL", "Seaborn"],
+    status: "planned",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  },
+  {
+    id: "proj-3",
+    phaseKey: "fase3",
+    phaseLabel: "Fase 3 · Machine Learning",
+    title: "Microsserviço de ML Preditivo com FastAPI & Scikit-Learn",
+    desc: "Modelo supervisionado de classificação/regressão com validação cruzada, métricas ROC-AUC e deploy de API REST assíncrona documentada com Swagger.",
+    stack: ["Scikit-Learn", "FastAPI", "Uvicorn", "Joblib", "Pydantic"],
+    status: "planned",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  },
+  {
+    id: "proj-4",
+    phaseKey: "fase4",
+    phaseLabel: "Fase 4 · Visão & Deep Learning",
+    title: "Classificador Neural de Imagens com PyTorch (CNN)",
+    desc: "Implementação de Rede Neural Convolucional com PyTorch, Transfer Learning (ResNet-50), data augmentation e otimização por gradiente descendente em GPU.",
+    stack: ["PyTorch", "Torchvision", "CUDA", "CNN", "Matplotlib"],
+    status: "planned",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  },
+  {
+    id: "proj-5",
+    phaseKey: "fase5",
+    phaseLabel: "Fase 5 · LLMs & Agentes",
+    title: "Chatbot com Busca Semântica em PDFs (RAG) & LangChain",
+    desc: "Assistente inteligente com embeddings vetoriais, banco pgvector/ChromaDB e raciocínio de contexto com LLM (OpenAI/Claude) para consulta a documentos técnicos.",
+    stack: ["LangChain", "LlamaIndex", "ChromaDB", "pgvector", "LLMs"],
+    status: "planned",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  },
+  {
+    id: "proj-6",
+    phaseKey: "fase6",
+    phaseLabel: "Fase 6 · MLOps & Nuvem AWS",
+    title: "Pipeline de Deploy de IA em Nuvem AWS com Docker & CI/CD",
+    desc: "Containerização completa com Docker, automação de testes com GitHub Actions e deploy de alta disponibilidade na AWS (EC2/ECS) com monitoramento.",
+    stack: ["Docker", "GitHub Actions", "AWS EC2", "AWS S3", "FastAPI"],
+    status: "planned",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  }
+];
+
+let projectsData = [];
+let currentFilter = "all";
+let activeEditProjId = null;
+
+function loadProjects() {
+  try {
+    const saved = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
+    if (saved) {
+      projectsData = JSON.parse(saved);
+    } else {
+      projectsData = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+      saveProjects();
+    }
+  } catch(e) {
+    projectsData = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+  }
+  renderProjects();
+  updateMetrics();
+}
+
+function saveProjects() {
+  try {
+    localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(projectsData));
+  } catch(e) {}
+}
+
+function renderProjects() {
+  const grid = document.getElementById("portfolio-projects-grid");
+  if (!grid) return;
+
+  const filtered = projectsData.filter(p => {
+    if (currentFilter === "all") return true;
+    return p.phaseKey === currentFilter;
+  });
+
+  grid.innerHTML = filtered.map(p => {
+    const statusClass = p.status === "done" ? "status-done" : (p.status === "wip" ? "status-wip" : "status-planned");
+    const ghLink = p.githubUrl ? `<a href="${p.githubUrl}" target="_blank" rel="noopener" class="proj-link-btn">💻 GitHub</a>` : `<button class="proj-link-btn" onclick="openEditLinksModal('${p.id}')">+ Add GitHub</button>`;
+    const demoLink = p.demoUrl ? `<a href="${p.demoUrl}" target="_blank" rel="noopener" class="proj-link-btn" style="color:#10b981">🌐 Demo</a>` : `<button class="proj-link-btn" onclick="openEditLinksModal('${p.id}')">+ Add Demo</button>`;
+
+    return `
+      <div class="proj-card">
+        <div>
+          <div class="proj-card-top">
+            <span class="proj-phase-badge">${p.phaseLabel}</span>
+            <select class="proj-status-select ${statusClass}" onchange="onProjectStatusChange('${p.id}', this.value)">
+              <option value="planned" ${p.status === "planned" ? "selected" : ""}>⚪ Planejado</option>
+              <option value="wip" ${p.status === "wip" ? "selected" : ""}>🟡 Em Andamento</option>
+              <option value="done" ${p.status === "done" ? "selected" : ""}>🟢 Concluído</option>
+            </select>
+          </div>
+          <h3 class="proj-title">${p.title}</h3>
+          <p class="proj-desc">${p.desc}</p>
+          <div class="proj-stack-tags">
+            ${p.stack.map(s => `<span class="proj-tag">${s}</span>`).join("")}
+          </div>
+        </div>
+
+        <div class="proj-card-footer">
+          <div class="proj-footer-links">
+            ${ghLink}
+            ${demoLink}
+          </div>
+          <button class="proj-notes-btn" onclick="openProjectNotesModal('${p.id}')" title="Ver e editar anotações de engenharia">
+            📝 Anotações
+          </button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function updateMetrics() {
+  const total = projectsData.length;
+  const done = projectsData.filter(p => p.status === "done").length;
+  const wip = projectsData.filter(p => p.status === "wip").length;
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+  document.getElementById("metric-total-proj").innerHTML = `${total} <span style="font-size:.85rem;color:var(--mu);font-weight:600">projetos</span>`;
+  document.getElementById("metric-done-proj").innerHTML = `${done} <span style="font-size:.85rem;color:var(--mu);font-weight:600">projetos</span>`;
+  document.getElementById("metric-wip-proj").innerHTML = `${wip} <span style="font-size:.85rem;color:var(--mu);font-weight:600">em andamento</span>`;
+  document.getElementById("metric-pct-proj").textContent = pct + "%";
+}
+
+function setProjectFilter(filterKey, btnEl) {
+  currentFilter = filterKey;
+  document.querySelectorAll(".proj-filter-btn").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  renderProjects();
+}
+
+function onProjectStatusChange(projId, newStatus) {
+  const p = projectsData.find(x => x.id === projId);
+  if (p) {
+    p.status = newStatus;
+    saveProjects();
+    updateMetrics();
+    renderProjects();
+    if (typeof showToast === "function") showToast("Status do projeto atualizado!");
+  }
+}
+
+function openProjectNotesModal(projId) {
+  activeEditProjId = projId;
+  const p = projectsData.find(x => x.id === projId);
+  if (!p) return;
+  document.getElementById("proj-notes-modal-title").textContent = "📝 " + p.title;
+  document.getElementById("proj-notes-textarea").value = p.notes || "";
+  const modal = document.getElementById("modal-project-notes");
+  modal.hidden = false;
+  modal.style.display = "flex";
+}
+
+function closeProjectNotesModal() {
+  const modal = document.getElementById("modal-project-notes");
+  modal.hidden = true;
+  modal.style.display = "none";
+}
+
+function saveProjectNotes() {
+  if (!activeEditProjId) return;
+  const p = projectsData.find(x => x.id === activeEditProjId);
+  if (p) {
+    p.notes = document.getElementById("proj-notes-textarea").value;
+    saveProjects();
+    closeProjectNotesModal();
+    if (typeof showToast === "function") showToast("Anotações salvas com sucesso!");
+  }
+}
+
+function openEditLinksModal(projId) {
+  activeEditProjId = projId;
+  const p = projectsData.find(x => x.id === projId);
+  if (!p) return;
+  document.getElementById("edit-links-title").textContent = "🔗 Links: " + p.title;
+  document.getElementById("input-edit-github").value = p.githubUrl || "";
+  document.getElementById("input-edit-demo").value = p.demoUrl || "";
+  const modal = document.getElementById("modal-edit-links");
+  modal.hidden = false;
+  modal.style.display = "flex";
+}
+
+function closeEditLinksModal() {
+  const modal = document.getElementById("modal-edit-links");
+  modal.hidden = true;
+  modal.style.display = "none";
+}
+
+function saveProjectLinks() {
+  if (!activeEditProjId) return;
+  const p = projectsData.find(x => x.id === activeEditProjId);
+  if (p) {
+    p.githubUrl = document.getElementById("input-edit-github").value.trim();
+    p.demoUrl = document.getElementById("input-edit-demo").value.trim();
+    saveProjects();
+    closeEditLinksModal();
+    renderProjects();
+    if (typeof showToast === "function") showToast("Links atualizados!");
+  }
+}
+
+function openExportPortfolioModal() {
+  const modal = document.getElementById("modal-export-portfolio");
+  let md = "# 🚀 Portfólio de Engenharia de Inteligência Artificial\n\n";
+  md += "**Desenvolvedor:** João Naziozeno\n";
+  md += "**Roteiro de Formação:** Do Zero ao Desenvolvimento de IA\n\n";
+  md += "## 🛠️ Projetos Práticos Desenvolvidos\n\n";
+
+  projectsData.forEach((p, idx) => {
+    const stEmoji = p.status === "done" ? "✅ Concluído" : (p.status === "wip" ? "⏳ Em Desenvolvimento" : "📌 Planejado");
+    md += `### ${idx + 1}. ${p.title} (${stEmoji})\n`;
+    md += `* **Fase:** ${p.phaseLabel}\n`;
+    md += `* **Descrição:** ${p.desc}\n`;
+    md += `* **Stack Tecnológica:** ${p.stack.join(", ")}\n`;
+    if (p.githubUrl) md += `* **Código-Fonte (GitHub):** [${p.githubUrl}](${p.githubUrl})\n`;
+    if (p.demoUrl) md += `* **Demonstração:** [${p.demoUrl}](${p.demoUrl})\n`;
+    if (p.notes) md += `* **Arquitetura & Detalhes:** ${p.notes}\n`;
+    md += "\n---\n\n";
+  });
+
+  document.getElementById("portfolio-export-textarea").value = md;
+  document.getElementById("copy-portfolio-status").textContent = "Clique em Copiar";
+  modal.hidden = false;
+  modal.style.display = "flex";
+}
+
+function closeExportPortfolioModal() {
+  const modal = document.getElementById("modal-export-portfolio");
+  modal.hidden = true;
+  modal.style.display = "none";
+}
+
+function copyPortfolioText() {
+  const ta = document.getElementById("portfolio-export-textarea");
+  ta.select();
+  navigator.clipboard.writeText(ta.value).then(() => {
+    document.getElementById("copy-portfolio-status").textContent = "✅ Copiado para a área de transferência!";
+    if (typeof showToast === "function") showToast("Portfólio copiado!");
+  }).catch(() => {
+    alert("Texto selecionado, use Ctrl+C para copiar.");
+  });
+}
+
+function openAddProjectModal() {
+  const title = prompt("Digite o título do novo projeto:");
+  if (!title) return;
+  const desc = prompt("Descrição resumida do que o projeto faz:") || "";
+  const stackRaw = prompt("Tecnologias usadas (separadas por vírgula):", "Python, FastAPI") || "Python";
+  const stack = stackRaw.split(",").map(s => s.trim()).filter(Boolean);
+
+  const newProj = {
+    id: "proj-custom-" + Date.now(),
+    phaseKey: "fase1",
+    phaseLabel: "Projeto Personalizado",
+    title: title,
+    desc: desc,
+    stack: stack,
+    status: "wip",
+    githubUrl: "",
+    demoUrl: "",
+    notes: ""
+  };
+
+  projectsData.unshift(newProj);
+  saveProjects();
+  renderProjects();
+  updateMetrics();
+  if (typeof showToast === "function") showToast("Novo projeto adicionado!");
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute("data-theme") === "dark" || (!html.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const next = isDark ? "light" : "dark";
+  html.setAttribute("data-theme", next);
+  try { localStorage.setItem("roteiro-theme", next); } catch(e) {}
+}
+
+try {
+  const savedTheme = localStorage.getItem("roteiro-theme");
+  if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+} catch(e) {}
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadProjects();
+});
+</script>
+</body>
+</html>

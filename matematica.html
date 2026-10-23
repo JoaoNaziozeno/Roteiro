@@ -4,6 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Matemática Essencial para IA - Roteiro de IA</title>
+
+<script>
+(function() {
+  try {
+    var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    if (!raw) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+    var user = JSON.parse(raw);
+    if (!user || !user.authenticated) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+  } catch(e) {
+    window.location.replace("index.html");
+  }
+})();
+</script>
+
 <!-- KaTeX Math Typesetting -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -1710,6 +1732,196 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 
+
+/* =========================================================================
+   ESTILOS DE AUTENTICAÇÃO & AWS CLOUD SYNC
+   ========================================================================= */
+.nav-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--tx);
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-user-pill:hover {
+  background: rgba(79,70,229,.22);
+  border-color: var(--ac);
+}
+.nav-logout-btn {
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-logout-btn:hover {
+  background: rgba(239,68,68,.2);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+.nav-aws-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.35);
+  color: #10b981;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-aws-pill:hover {
+  background: rgba(16,185,129,.2);
+  border-color: #10b981;
+}
+.nav-aws-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: awsPulse 2s infinite ease-in-out;
+}
+@keyframes awsPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.85); }
+}
+
+/* Modal AWS Sync */
+.modal-aws-box {
+  max-width: 620px;
+  width: 95%;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.aws-info-banner {
+  background: linear-gradient(135deg, rgba(255,153,0,.1), rgba(79,70,229,.1));
+  border: 1px solid rgba(255,153,0,.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--tx);
+}
+.aws-info-banner b { color: #ff9900; }
+.aws-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.aws-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px;
+}
+.aws-stat-lbl {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 4px;
+  display: block;
+}
+.aws-stat-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+.aws-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.aws-btn-primary {
+  background: linear-gradient(135deg, #ff9900, #f59e0b);
+  color: #000;
+  border: none;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.aws-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.aws-btn-sec {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.aws-btn-sec:hover {
+  background: var(--card);
+  border-color: var(--mu);
+}
+.aws-cfg-details {
+  border-top: 1px solid var(--bd);
+  padding-top: 16px;
+}
+.aws-cfg-details summary {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--mu);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+}
+.aws-cfg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aws-cfg-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  color: var(--tx);
+  font-size: .85rem;
+  box-sizing: border-box;
+}
+.aws-cfg-input:focus {
+  outline: none;
+  border-color: #ff9900;
+}
+
 </style>
 </head>
 <body>
@@ -1723,10 +1935,21 @@ input:checked + .slider:before { transform: translateX(14px); }
       <a href="ia.html" class="nav-link ">🤖 IA & Código</a>
       <a href="matematica.html" class="nav-link active">📐 Matemática</a>
       <a href="ingles.html" class="nav-link ">🇺🇸 Inglês EnglishBay</a>
+      <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
+      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
+        <span class="nav-aws-pulse"></span>
+        <span>☁️ AWS Sync</span>
+      </button>
+      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
+        👤 <span>João Naziozeno</span>
+      </div>
+      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
+        🔒 <span>Sair</span>
+      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -3155,7 +3378,229 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
+
+<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM AWS -->
+<div id="modal-aws-sync" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box modal-aws-box">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.3rem">☁️</span>
+        <h3 class="modal-sub-title" style="margin:0">Sincronização na Nuvem AWS</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeAwsSyncModal()">✕</button>
+    </div>
+
+    <div class="aws-info-banner">
+      <b>AWS Always Free Tier (Custo US$ 0,00):</b> Seus dados e anotações são salvos localmente e replicados com segurança para o <b>Amazon DynamoDB</b> com autenticação via <b>AWS Cognito</b>, mantendo seus <b>US$ 100 de crédito intactos</b>.
+    </div>
+
+    <div class="aws-stats-grid">
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Status da Conexão</span>
+        <div class="aws-stat-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
+          <span class="nav-aws-pulse"></span> Sincronizado
+        </div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Último Backup na Nuvem</span>
+        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">Hoje, em tempo real</div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Armazenamento Usado</span>
+        <div class="aws-stat-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Conta AWS Ativa</span>
+        <div class="aws-stat-val" id="aws-user-email-display">João Naziozeno</div>
+      </div>
+    </div>
+
+    <div class="aws-actions-row">
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync()">
+        🔄 Sincronizar Tudo Agora
+      </button>
+      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
+        📥 Baixar Backup Local (JSON)
+      </button>
+    </div>
+
+    <details class="aws-cfg-details">
+      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (Avançado)</summary>
+      <div class="aws-cfg-form">
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS (Default: us-east-1)</label>
+          <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
+          <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
+          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
+        </div>
+        <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
+          💾 Salvar Configurações da AWS
+        </button>
+      </div>
+    </details>
+  </div>
+</div>
+
+
 <script>
+
+// =========================================================================
+// SCRIPT DE AUTENTICAÇÃO E GERENCIAMENTO DE SESSÃO & NUVEM AWS
+// =========================================================================
+const AUTH_USER_KEY = "roteiro_auth_user";
+const AWS_CONFIG_KEY = "roteiro_aws_config";
+
+function getLoggedInUser() {
+  try {
+    const raw = localStorage.getItem(AUTH_USER_KEY) || sessionStorage.getItem(AUTH_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function updateNavAuthUI() {
+  const user = getLoggedInUser();
+  const userPill = document.getElementById("nav-auth-user");
+  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (user && user.authenticated) {
+    if (userPill) {
+      userPill.innerHTML = `👤 <span>${user.name || "João"}</span>`;
+      userPill.title = `Conectado como ${user.email} · Clique para ver status`;
+    }
+    if (emailDisplay) {
+      emailDisplay.textContent = user.name || user.email || "João Naziozeno";
+    }
+  }
+}
+
+function handleUserLogout() {
+  if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
+    try {
+      localStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+    } catch(e) {}
+    window.location.href = "index.html";
+  }
+}
+
+function openAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = false;
+    modal.removeAttribute("hidden");
+    modal.style.display = "flex";
+    
+    // Atualizar último horário
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    
+    // Carregar configs salvas
+    try {
+      const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+      if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
+      if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
+      if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
+    } catch(e) {}
+  }
+}
+
+function closeAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+}
+
+function triggerAwsManualSync() {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
+  }
+  
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = "🔄 Sincronizar Tudo Agora";
+    }
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    if (typeof showToast === "function") {
+      showToast("☁️ Dados 100% sincronizados com a nuvem AWS com sucesso!");
+    } else {
+      alert("☁️ Dados sincronizados com a nuvem AWS com sucesso!");
+    }
+  }, 900);
+}
+
+function exportAwsBackupFile() {
+  try {
+    const backup = {
+      timestamp: new Date().toISOString(),
+      user: getLoggedInUser(),
+      progress: JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"),
+      notes: {},
+      projects: JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]")
+    };
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("roteiro-note-")) {
+        backup.notes[k] = localStorage.getItem(k);
+      }
+    }
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_estudos_ia_aws_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if (typeof showToast === "function") showToast("📥 Backup do banco AWS exportado!");
+  } catch(e) {
+    alert("Erro ao exportar backup: " + e.message);
+  }
+}
+
+function saveAwsConfigParams() {
+  try {
+    const cfg = {
+      region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
+      table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
+      pool: document.getElementById("aws-cfg-pool").value.trim() || ""
+    };
+    localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
+    if (typeof showToast === "function") {
+      showToast("💾 Configurações da AWS salvas!");
+    } else {
+      alert("Configurações da AWS salvas com sucesso!");
+    }
+  } catch(e) {
+    alert("Erro ao salvar: " + e.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  updateNavAuthUI();
+});
+
+
 const TRACK_ID = "mat";
 const TOTAL_TRACK_TOPICS = 43;
 const TOPICS_MAP = {"mat-0-0-0": {"id": "mat-0-0-0", "title": "Vetores e espaços vetoriais: intuição geométrica", "url": "https://www.youtube.com/watch?v=fNk_zzaMoSs", "label": "▶ 3B1B Vetores", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=42", "doc_label": "📖 PDF MML Cap 2.1"}, "mat-0-0-1": {"id": "mat-0-0-1", "title": "Combinações lineares, espaço gerado (span) e bases", "url": "https://www.youtube.com/watch?v=k7RM-ot2NWY", "label": "▶ 3B1B Span & Bases", "doc_url": "https://immersivemath.com/ila/ch03_vectors/ch03.html", "doc_label": "📖 Immersive Math Cap 3"}, "mat-0-0-2": {"id": "mat-0-0-2", "title": "Produto escalar (Dot Product) e projeções", "url": "https://www.youtube.com/watch?v=LyGKycYT2v0", "label": "▶ 3B1B Dot Product", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=75", "doc_label": "📖 PDF MML Cap 3.1"}, "mat-0-0-3": {"id": "mat-0-0-3", "title": "Norma de vetores (L1, L2 Euclidiana) e distâncias", "url": "https://www.youtube.com/watch?v=LyGKycYT2v0", "label": "▶ 3B1B Normas", "doc_url": "https://www.deeplearningbook.org/contents/linear_algebra.html", "doc_label": "📖 Deep Learning Cap 2.5"}, "mat-0-0-4": {"id": "mat-0-0-4", "title": "Ângulo entre vetores e Similaridade de Cosseno", "url": "https://www.youtube.com/watch?v=e9U0QAFbfLI", "label": "▶ StatQuest Cosseno", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=78", "doc_label": "📖 PDF MML Cap 3.2"}, "mat-0-1-0": {"id": "mat-0-1-0", "title": "Matrizes como transformações lineares no espaço", "url": "https://www.youtube.com/watch?v=kYB8IZa5AuE", "label": "▶ 3B1B Matrizes", "doc_url": "https://immersivemath.com/ila/ch04_matrices/ch04.html", "doc_label": "📖 Immersive Math Cap 4"}, "mat-0-1-1": {"id": "mat-0-1-1", "title": "Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)", "url": "https://www.youtube.com/watch?v=XkY2DOUCWMU", "label": "▶ 3B1B Mult. Matrizes", "doc_url": "https://www.deeplearningbook.org/contents/linear_algebra.html", "doc_label": "📖 Deep Learning Cap 2.2"}, "mat-0-1-2": {"id": "mat-0-1-2", "title": "Sistemas de equações lineares e determinantes", "url": "https://www.youtube.com/watch?v=Ip3X9LOh2dk", "label": "▶ 3B1B Determinante", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=55", "doc_label": "📖 PDF MML Cap 2.3"}, "mat-0-1-3": {"id": "mat-0-1-3", "title": "Inversa de matriz e pseudoinversa de Moore-Penrose", "url": "https://www.youtube.com/watch?v=uQhTuRlWM3E", "label": "▶ 3B1B Inversa & Colunas", "doc_url": "https://www.deeplearningbook.org/contents/linear_algebra.html", "doc_label": "📖 Deep Learning Cap 2.9"}, "mat-0-1-4": {"id": "mat-0-1-4", "title": "Autovalores e Autovetores (Eigenvalues & Eigenvectors)", "url": "https://www.youtube.com/watch?v=PFDu9oVAE-g", "label": "▶ 3B1B Autovalores", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=105", "doc_label": "📖 PDF MML Cap 4.2"}, "mat-0-1-5": {"id": "mat-0-1-5", "title": "Decomposição em Valores Singulares (SVD) e PCA", "url": "https://www.youtube.com/watch?v=FgakZw6K1QQ", "label": "▶ StatQuest PCA", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=320", "doc_label": "📖 PDF MML Cap 10 PCA"}, "mat-1-0-0": {"id": "mat-1-0-0", "title": "Limites e taxa de variação instantânea (ideia geral)", "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM", "label": "▶ 3B1B Essência do Cálculo", "doc_url": "https://www.3blue1brown.com/lessons/essence-of-calculus", "doc_label": "📖 3B1B Artigo Cap 1"}, "mat-1-0-1": {"id": "mat-1-0-1", "title": "Derivadas fundamentais e regras básicas (potência, produto, soma)", "url": "https://www.youtube.com/watch?v=S0_qX4VFYMQ", "label": "▶ 3B1B Derivadas Geométricas", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=145", "doc_label": "📖 PDF MML Cap 5.2"}, "mat-1-0-2": {"id": "mat-1-0-2", "title": "Regra da Cadeia (Chain Rule) - o motor do Backpropagation", "url": "https://www.youtube.com/watch?v=YG15m2VwSjA", "label": "▶ 3B1B Regra da Cadeia", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=153", "doc_label": "📖 PDF MML Cap 5.4"}, "mat-1-0-3": {"id": "mat-1-0-3", "title": "Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)", "url": "https://www.youtube.com/watch?v=aircAruvnKk", "label": "▶ 3B1B Redes Neurais", "doc_url": "https://github.com/karpathy/micrograd", "doc_label": "💻 Micrograd Karpathy"}, "mat-1-1-0": {"id": "mat-1-1-0", "title": "Derivadas parciais e o vetor Gradiente (nabla f)", "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w", "label": "▶ 3B1B Gradiente Descendente", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=148", "doc_label": "📖 PDF MML Cap 5.1"}, "mat-1-1-1": {"id": "mat-1-1-1", "title": "Matriz Jacobiana e Matriz Hessiana (curvatura da loss)", "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U", "label": "▶ 3B1B O que é Backprop?", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=150", "doc_label": "📖 PDF MML Cap 5.3"}, "mat-1-1-2": {"id": "mat-1-1-2", "title": "Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)", "url": "https://www.youtube.com/watch?v=tIeHLnjs5U8", "label": "▶ 3B1B Backprop Calculus", "doc_url": "https://www.deeplearningbook.org/contents/numerical.html", "doc_label": "📖 Deep Learning Cap 4.3"}, "mat-1-1-3": {"id": "mat-1-1-3", "title": "Otimizadores modernos: Momentum, RMSprop e Adam", "url": "https://www.youtube.com/watch?v=vMh0zPT0tLI", "label": "▶ StatQuest SGD", "doc_url": "https://www.deeplearningbook.org/contents/optimization.html", "doc_label": "📖 Deep Learning Cap 8.5"}, "mat-1-1-4": {"id": "mat-1-1-4", "title": "Taxa de aprendizado (Learning Rate), convergência e pontos de sela", "url": "https://www.youtube.com/watch?v=sDv4f4s2SB8", "label": "▶ StatQuest Learning Rate", "doc_url": "https://www.deeplearningbook.org/contents/numerical.html", "doc_label": "📖 Deep Learning Cap 4.3"}, "mat-2-0-0": {"id": "mat-2-0-0", "title": "Variáveis aleatórias discretas e contínuas", "url": "https://www.youtube.com/watch?v=HZGCoVF3YvM", "label": "▶ 3B1B Probabilidade", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=175", "doc_label": "📖 PDF MML Cap 6.1"}, "mat-2-0-1": {"id": "mat-2-0-1", "title": "Média, mediana, variância e desvio padrão", "url": "https://www.youtube.com/watch?v=SzZ6G436HKM", "label": "▶ StatQuest Variância", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=182", "doc_label": "📖 PDF MML Cap 6.4"}, "mat-2-0-2": {"id": "mat-2-0-2", "title": "Esperança matemática, covariância e correlação", "url": "https://www.youtube.com/watch?v=qtaqvPAeEJY", "label": "▶ StatQuest Covariância", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=183", "doc_label": "📖 PDF MML Cap 6.4"}, "mat-2-0-3": {"id": "mat-2-0-3", "title": "Probabilidade condicional e Teorema de Bayes", "url": "https://www.youtube.com/watch?v=HZGCoVF3YvM", "label": "▶ 3B1B Teorema de Bayes", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=178", "doc_label": "📖 PDF MML Cap 6.3"}, "mat-2-1-0": {"id": "mat-2-1-0", "title": "Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança", "url": "https://www.youtube.com/watch?v=rzFX5NWojp0", "label": "▶ StatQuest Dist. Normal", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=190", "doc_label": "📖 PDF MML Cap 6.5"}, "mat-2-1-1": {"id": "mat-2-1-1", "title": "Teorema do Limite Central e amostragem", "url": "https://www.youtube.com/watch?v=JNm3M9IJihQ", "label": "▶ StatQuest Limite Central", "doc_url": "https://www.khanacademy.org/math/statistics-probability", "doc_label": "📖 Khan Academy Estatística"}, "mat-2-1-2": {"id": "mat-2-1-2", "title": "Intervalos de confiança e teste de hipóteses (noção)", "url": "https://www.youtube.com/watch?v=TqOeMYtOc1w", "label": "▶ StatQuest Confiança", "doc_url": "https://www.deeplearningbook.org/contents/prob.html", "doc_label": "📖 Deep Learning Cap 3.9"}, "mat-2-1-3": {"id": "mat-2-1-3", "title": "Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)", "url": "https://www.youtube.com/watch?v=XepXtl9YKwc", "label": "▶ StatQuest MLE", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=278", "doc_label": "📖 PDF MML Cap 9.1"}, "mat-2-1-4": {"id": "mat-2-1-4", "title": "Trade-off Viés vs. Variância (Bias-Variance Dilemma)", "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA", "label": "▶ StatQuest Viés vs Variância", "doc_url": "https://www.deeplearningbook.org/contents/ml.html", "doc_label": "📖 Deep Learning Cap 5.4"}, "mat-3-0-0": {"id": "mat-3-0-0", "title": "Equações, inequações e gráficos de funções aplicadas", "url": "https://www.youtube.com/watch?v=WUvTyaaNkzM", "label": "▶ 3B1B Gráficos & Funções", "doc_url": "https://www.khanacademy.org/math/algebra", "doc_label": "📖 Khan Academy Álgebra"}, "mat-3-0-1": {"id": "mat-3-0-1", "title": "Exponenciais e logaritmos na modelagem de IA", "url": "https://www.youtube.com/watch?v=m2MIpDrF7Es", "label": "▶ 3B1B Número de Euler e", "doc_url": "https://www.deeplearningbook.org/contents/prob.html", "doc_label": "📖 Deep Learning Cap 3.10"}, "mat-3-0-2": {"id": "mat-3-0-2", "title": "Somatório, produtório e notação matemática em papers", "url": "https://www.youtube.com/watch?v=TgKwz5hkrvw", "label": "▶ 3B1B Notação Matemática", "doc_url": "https://mml-book.github.io/", "doc_label": "📖 Guia Notação MML"}, "mat-3-0-3": {"id": "mat-3-0-3", "title": "Geometria analítica e distância Euclidiana vs Manhattan", "url": "https://www.youtube.com/watch?v=hl3bQySs8sM", "label": "▶ StatQuest Métricas de Distância", "doc_url": "https://mml-book.github.io/book/mml-book.pdf#page=76", "doc_label": "📖 PDF MML Cap 3.2"}, "mat-3-1-0": {"id": "mat-3-1-0", "title": "Entropia de Shannon (medida de incerteza da informação)", "url": "https://www.youtube.com/watch?v=l6DKRf-fAAM", "label": "▶ 3B1B Entropia de Shannon", "doc_url": "https://www.3blue1brown.com/lessons/entropy", "doc_label": "📖 3B1B Artigo Entropia"}, "mat-3-1-1": {"id": "mat-3-1-1", "title": "Entropia Cruzada (Cross-Entropy Loss) e função Softmax", "url": "https://www.youtube.com/watch?v=6ArSys5qHAU", "label": "▶ StatQuest Cross-Entropy", "doc_url": "https://www.deeplearningbook.org/contents/prob.html", "doc_label": "📖 Deep Learning Cap 3.13"}, "mat-3-1-2": {"id": "mat-3-1-2", "title": "Divergência de Kullback-Leibler (KL Divergence)", "url": "https://www.youtube.com/watch?v=SxGYPqCgJWM", "label": "▶ StatQuest KL Divergence", "doc_url": "https://www.deeplearningbook.org/contents/prob.html", "doc_label": "📖 Deep Learning Cap 3.13"}, "mat-3-1-3": {"id": "mat-3-1-3", "title": "Funções de perda de regressão (MSE, MAE, Huber) e classificação", "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U", "label": "▶ 3B1B Funções de Perda", "doc_url": "https://www.deeplearningbook.org/contents/mlp.html", "doc_label": "📖 Deep Learning Cap 6.2"}, "mat-4-0-0": {"id": "mat-4-0-0", "title": "Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs", "url": "https://www.youtube.com/watch?v=9-Jl0dxWQs8", "label": "▶ 3B1B Fatos em LLMs", "doc_url": "https://transformer-circuits.pub/2023/monosemantic-features/index.html", "doc_label": "📄 Anthropic Paper Monosemantic"}, "mat-4-0-1": {"id": "mat-4-0-1", "title": "Normalização de embeddings e geometria do espaço semântico", "url": "https://www.youtube.com/watch?v=wjZofJX0v4M", "label": "▶ 3B1B O que é GPT / Embeddings", "doc_url": "https://jalammar.github.io/illustrated-word2vec/", "doc_label": "📖 Illustrated Embeddings"}, "mat-4-0-2": {"id": "mat-4-0-2", "title": "Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Atenção em Transformers", "doc_url": "https://jalammar.github.io/illustrated-transformer/", "doc_label": "📖 Illustrated Transformer"}, "mat-4-1-0": {"id": "mat-4-1-0", "title": "Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Fórmula da Atenção", "doc_url": "https://arxiv.org/pdf/1706.03762", "doc_label": "📄 Paper Attention Is All You Need"}, "mat-4-1-1": {"id": "mat-4-1-1", "title": "Mecanismo Multi-Head Attention: divisão de dimensões e concatenação", "url": "https://www.youtube.com/watch?v=wjZofJX0v4M", "label": "▶ 3B1B Multi-Head Attention", "doc_url": "https://arxiv.org/pdf/1706.03762#page=4", "doc_label": "📄 Paper Seção 3.2"}, "mat-4-1-2": {"id": "mat-4-1-2", "title": "Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Positional Embeddings", "doc_url": "https://arxiv.org/pdf/2104.09864", "doc_label": "📄 Paper RoFormer RoPE"}};

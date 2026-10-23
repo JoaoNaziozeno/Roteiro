@@ -6,6 +6,7 @@ Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 
 import json
 from studio_js import STUDIO_JS
+from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
     total_topics = 0
@@ -169,12 +170,14 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>__PAGE_TITLE__ - Roteiro de IA</title>
+__AUTH_GUARD__
 <!-- KaTeX Math Typesetting -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 <style>
 __SHARED_CSS__
+__AUTH_AWS_CSS__
 </style>
 </head>
 <body>
@@ -188,10 +191,21 @@ __SHARED_CSS__
       <a href="ia.html" class="nav-link __ACTIVE_IA__">🤖 IA & Código</a>
       <a href="matematica.html" class="nav-link __ACTIVE_MAT__">📐 Matemática</a>
       <a href="ingles.html" class="nav-link __ACTIVE_ING__">🇺🇸 Inglês EnglishBay</a>
+      <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
+      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
+        <span class="nav-aws-pulse"></span>
+        <span>☁️ AWS Sync</span>
+      </button>
+      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
+        👤 <span>João Naziozeno</span>
+      </div>
+      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
+        🔒 <span>Sair</span>
+      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -861,7 +875,11 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
+__AWS_SYNC_MODAL__
+
 <script>
+__AUTH_AWS_SYNC_JS__
+
 const TRACK_ID = "__TRACK_ID__";
 const TOTAL_TRACK_TOPICS = __TOTAL_TOPICS__;
 const TOPICS_MAP = __TOPICS_MAP_JSON__;
@@ -1502,6 +1520,10 @@ window.addEventListener("DOMContentLoaded", () => {
 """
 
     rendered = (template
+        .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
+        .replace("__AUTH_AWS_CSS__", AUTH_AWS_SYNC_CSS)
+        .replace("__AWS_SYNC_MODAL__", AWS_SYNC_MODAL_HTML)
+        .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
         .replace("__PAGE_TITLE__", page_title)
         .replace("__PAGE_SUB__", page_sub)
         .replace("__TRACK_ICON__", track_icon)

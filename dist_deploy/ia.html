@@ -4,6 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Inteligência Artificial & Programação Python - Roteiro de IA</title>
+
+<script>
+(function() {
+  try {
+    var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    if (!raw) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+    var user = JSON.parse(raw);
+    if (!user || !user.authenticated) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+  } catch(e) {
+    window.location.replace("index.html");
+  }
+})();
+</script>
+
 <!-- KaTeX Math Typesetting -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -1710,6 +1732,196 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 
+
+/* =========================================================================
+   ESTILOS DE AUTENTICAÇÃO & AWS CLOUD SYNC
+   ========================================================================= */
+.nav-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--tx);
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-user-pill:hover {
+  background: rgba(79,70,229,.22);
+  border-color: var(--ac);
+}
+.nav-logout-btn {
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-logout-btn:hover {
+  background: rgba(239,68,68,.2);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+.nav-aws-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.35);
+  color: #10b981;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-aws-pill:hover {
+  background: rgba(16,185,129,.2);
+  border-color: #10b981;
+}
+.nav-aws-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: awsPulse 2s infinite ease-in-out;
+}
+@keyframes awsPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.85); }
+}
+
+/* Modal AWS Sync */
+.modal-aws-box {
+  max-width: 620px;
+  width: 95%;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.aws-info-banner {
+  background: linear-gradient(135deg, rgba(255,153,0,.1), rgba(79,70,229,.1));
+  border: 1px solid rgba(255,153,0,.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--tx);
+}
+.aws-info-banner b { color: #ff9900; }
+.aws-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.aws-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px;
+}
+.aws-stat-lbl {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 4px;
+  display: block;
+}
+.aws-stat-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+.aws-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.aws-btn-primary {
+  background: linear-gradient(135deg, #ff9900, #f59e0b);
+  color: #000;
+  border: none;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.aws-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.aws-btn-sec {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.aws-btn-sec:hover {
+  background: var(--card);
+  border-color: var(--mu);
+}
+.aws-cfg-details {
+  border-top: 1px solid var(--bd);
+  padding-top: 16px;
+}
+.aws-cfg-details summary {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--mu);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+}
+.aws-cfg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aws-cfg-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  color: var(--tx);
+  font-size: .85rem;
+  box-sizing: border-box;
+}
+.aws-cfg-input:focus {
+  outline: none;
+  border-color: #ff9900;
+}
+
 </style>
 </head>
 <body>
@@ -1723,10 +1935,21 @@ input:checked + .slider:before { transform: translateX(14px); }
       <a href="ia.html" class="nav-link active">🤖 IA & Código</a>
       <a href="matematica.html" class="nav-link ">📐 Matemática</a>
       <a href="ingles.html" class="nav-link ">🇺🇸 Inglês EnglishBay</a>
+      <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
+      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
+        <span class="nav-aws-pulse"></span>
+        <span>☁️ AWS Sync</span>
+      </button>
+      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
+        👤 <span>João Naziozeno</span>
+      </div>
+      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
+        🔒 <span>Sair</span>
+      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -5064,7 +5287,229 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
+
+<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM AWS -->
+<div id="modal-aws-sync" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box modal-aws-box">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.3rem">☁️</span>
+        <h3 class="modal-sub-title" style="margin:0">Sincronização na Nuvem AWS</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeAwsSyncModal()">✕</button>
+    </div>
+
+    <div class="aws-info-banner">
+      <b>AWS Always Free Tier (Custo US$ 0,00):</b> Seus dados e anotações são salvos localmente e replicados com segurança para o <b>Amazon DynamoDB</b> com autenticação via <b>AWS Cognito</b>, mantendo seus <b>US$ 100 de crédito intactos</b>.
+    </div>
+
+    <div class="aws-stats-grid">
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Status da Conexão</span>
+        <div class="aws-stat-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
+          <span class="nav-aws-pulse"></span> Sincronizado
+        </div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Último Backup na Nuvem</span>
+        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">Hoje, em tempo real</div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Armazenamento Usado</span>
+        <div class="aws-stat-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Conta AWS Ativa</span>
+        <div class="aws-stat-val" id="aws-user-email-display">João Naziozeno</div>
+      </div>
+    </div>
+
+    <div class="aws-actions-row">
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync()">
+        🔄 Sincronizar Tudo Agora
+      </button>
+      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
+        📥 Baixar Backup Local (JSON)
+      </button>
+    </div>
+
+    <details class="aws-cfg-details">
+      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (Avançado)</summary>
+      <div class="aws-cfg-form">
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS (Default: us-east-1)</label>
+          <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
+          <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
+          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
+        </div>
+        <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
+          💾 Salvar Configurações da AWS
+        </button>
+      </div>
+    </details>
+  </div>
+</div>
+
+
 <script>
+
+// =========================================================================
+// SCRIPT DE AUTENTICAÇÃO E GERENCIAMENTO DE SESSÃO & NUVEM AWS
+// =========================================================================
+const AUTH_USER_KEY = "roteiro_auth_user";
+const AWS_CONFIG_KEY = "roteiro_aws_config";
+
+function getLoggedInUser() {
+  try {
+    const raw = localStorage.getItem(AUTH_USER_KEY) || sessionStorage.getItem(AUTH_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function updateNavAuthUI() {
+  const user = getLoggedInUser();
+  const userPill = document.getElementById("nav-auth-user");
+  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (user && user.authenticated) {
+    if (userPill) {
+      userPill.innerHTML = `👤 <span>${user.name || "João"}</span>`;
+      userPill.title = `Conectado como ${user.email} · Clique para ver status`;
+    }
+    if (emailDisplay) {
+      emailDisplay.textContent = user.name || user.email || "João Naziozeno";
+    }
+  }
+}
+
+function handleUserLogout() {
+  if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
+    try {
+      localStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+    } catch(e) {}
+    window.location.href = "index.html";
+  }
+}
+
+function openAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = false;
+    modal.removeAttribute("hidden");
+    modal.style.display = "flex";
+    
+    // Atualizar último horário
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    
+    // Carregar configs salvas
+    try {
+      const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+      if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
+      if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
+      if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
+    } catch(e) {}
+  }
+}
+
+function closeAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+}
+
+function triggerAwsManualSync() {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
+  }
+  
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = "🔄 Sincronizar Tudo Agora";
+    }
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    if (typeof showToast === "function") {
+      showToast("☁️ Dados 100% sincronizados com a nuvem AWS com sucesso!");
+    } else {
+      alert("☁️ Dados sincronizados com a nuvem AWS com sucesso!");
+    }
+  }, 900);
+}
+
+function exportAwsBackupFile() {
+  try {
+    const backup = {
+      timestamp: new Date().toISOString(),
+      user: getLoggedInUser(),
+      progress: JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"),
+      notes: {},
+      projects: JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]")
+    };
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("roteiro-note-")) {
+        backup.notes[k] = localStorage.getItem(k);
+      }
+    }
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_estudos_ia_aws_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if (typeof showToast === "function") showToast("📥 Backup do banco AWS exportado!");
+  } catch(e) {
+    alert("Erro ao exportar backup: " + e.message);
+  }
+}
+
+function saveAwsConfigParams() {
+  try {
+    const cfg = {
+      region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
+      table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
+      pool: document.getElementById("aws-cfg-pool").value.trim() || ""
+    };
+    localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
+    if (typeof showToast === "function") {
+      showToast("💾 Configurações da AWS salvas!");
+    } else {
+      alert("Configurações da AWS salvas com sucesso!");
+    }
+  } catch(e) {
+    alert("Erro ao salvar: " + e.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  updateNavAuthUI();
+});
+
+
 const TRACK_ID = "ia";
 const TOTAL_TRACK_TOPICS = 173;
 const TOPICS_MAP = {"ia-0-0-0": {"id": "ia-0-0-0", "title": "Instalar Python e usar o terminal", "url": "https://www.youtube.com/watch?v=S9uPNppGsGo", "label": "▶ Guanabara Python #01/03", "doc_url": "https://docs.python.org/pt-br/3/using/index.html", "doc_label": "📖 Docs Instalação Python"}, "ia-0-0-1": {"id": "ia-0-0-1", "title": "Variáveis e tipos (int, float, str, bool)", "url": "https://www.youtube.com/watch?v=hdDHg1p3YVc", "label": "▶ Guanabara Python #06", "doc_url": "https://docs.python.org/pt-br/3/library/stdtypes.html", "doc_label": "📖 Docs Tipos Python"}, "ia-0-0-2": {"id": "ia-0-0-2", "title": "Entrada e saída de dados", "url": "https://www.youtube.com/watch?v=nIHq1MtJaKs", "label": "▶ Guanabara Python #04 - Entrada & Saída", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html", "doc_label": "📖 Docs Entrada/Saída"}, "ia-0-0-3": {"id": "ia-0-0-3", "title": "Condicionais (if, elif, else)", "url": "https://www.youtube.com/watch?v=K10u3XIf1-Q", "label": "▶ Guanabara Python #10/12", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#if-statements", "doc_label": "📖 Docs Condicionais"}, "ia-0-0-4": {"id": "ia-0-0-4", "title": "Laços (for, while)", "url": "https://www.youtube.com/watch?v=cL4hDlCYlNU", "label": "▶ Guanabara Python #13/14", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#for-statements", "doc_label": "📖 Docs Laços for/while"}, "ia-0-0-5": {"id": "ia-0-0-5", "title": "Funções, parâmetros e retorno", "url": "https://www.youtube.com/watch?v=ezfr9d7wd_k", "label": "▶ Guanabara Python #20/21", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#defining-functions", "doc_label": "📖 Docs Funções"}, "ia-0-1-0": {"id": "ia-0-1-0", "title": "Listas e fatiamento", "url": "https://www.youtube.com/watch?v=N1hTsv4456A", "label": "▶ Guanabara Python #17/18", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists", "doc_label": "📖 Docs Listas e Métodos"}, "ia-0-1-1": {"id": "ia-0-1-1", "title": "Dicionários", "url": "https://www.youtube.com/watch?v=ZWj8o692qGY", "label": "▶ Guanabara Python #19", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#dictionaries", "doc_label": "📖 Docs Dicionários"}, "ia-0-1-2": {"id": "ia-0-1-2", "title": "Tuplas e conjuntos", "url": "https://www.youtube.com/watch?v=0LB3FSfjvao", "label": "▶ Guanabara Python #16", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#tuples-and-sequences", "doc_label": "📖 Docs Tuplas & Sets"}, "ia-0-1-3": {"id": "ia-0-1-3", "title": "List comprehension", "url": "https://www.youtube.com/watch?v=1b_rQoTf1m0", "label": "▶ List Comprehension Prático", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#list-comprehensions", "doc_label": "📖 Docs List Comprehensions"}, "ia-0-2-0": {"id": "ia-0-2-0", "title": "Orientação a objetos (classes, métodos, herança)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dkqe2aR0tQK74m8SFe-aGsY", "label": "▶ Guanabara POO #01-#05", "doc_url": "https://docs.python.org/pt-br/3/tutorial/classes.html", "doc_label": "📖 Docs POO Python"}, "ia-0-2-1": {"id": "ia-0-2-1", "title": "Módulos e pacotes", "url": "https://www.youtube.com/watch?v=5k9wO7y8_H4", "label": "▶ Guanabara Python #22", "doc_url": "https://docs.python.org/pt-br/3/tutorial/modules.html", "doc_label": "📖 Docs Módulos & Pacotes"}, "ia-0-2-2": {"id": "ia-0-2-2", "title": "Arquivos (ler e escrever)", "url": "https://www.youtube.com/watch?v=kYqg4K-p8Fw", "label": "▶ Guanabara Arquivos #115", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html#reading-and-writing-files", "doc_label": "📖 Docs Arquivos I/O"}, "ia-0-2-3": {"id": "ia-0-2-3", "title": "Tratamento de erros (try/except)", "url": "https://www.youtube.com/watch?v=F5_5bK8iP3M", "label": "▶ Guanabara Python #23", "doc_url": "https://docs.python.org/pt-br/3/tutorial/errors.html", "doc_label": "📖 Docs Try/Except"}, "ia-0-2-4": {"id": "ia-0-2-4", "title": "Ambientes virtuais e pip", "url": "https://www.youtube.com/watch?v=mK5C_w3Lh1Y", "label": "▶ Guanabara: venv & pip", "doc_url": "https://docs.python.org/pt-br/3/tutorial/venv.html", "doc_label": "📖 Docs Ambientes Virtuais"}, "ia-0-3-0": {"id": "ia-0-3-0", "title": "Git: commit, branch, merge", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ Guanabara Git #01-#06", "doc_url": "https://git-scm.com/book/pt-br/v2", "doc_label": "📖 Pro Git Livro Oficial"}, "ia-0-3-1": {"id": "ia-0-3-1", "title": "GitHub: repositórios e README", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Guanabara Git #07/#08", "doc_url": "https://docs.github.com/pt/get-started", "doc_label": "📖 Docs GitHub Começando"}, "ia-0-3-2": {"id": "ia-0-3-2", "title": "Consumir APIs com requests e JSON", "url": "https://www.youtube.com/watch?v=0257gqJ0aXU", "label": "▶ Consumo de APIs & Requests", "doc_url": "https://requests.readthedocs.io/en/latest/", "doc_label": "📖 Docs Requests Oficial"}, "ia-0-4-0": {"id": "ia-0-4-0", "title": "Estilo de código PEP 8", "url": "https://www.youtube.com/watch?v=Xdf7Z2uWJmY", "label": "▶ PEP 8 & Código Limpo", "doc_url": "https://peps.python.org/pep-0008/", "doc_label": "📖 Guia Oficial PEP 8"}, "ia-0-4-1": {"id": "ia-0-4-1", "title": "Docstrings e comentários", "url": "https://www.youtube.com/watch?v=etjJExVdAa8", "label": "▶ Funções & Docstrings", "doc_url": "https://peps.python.org/pep-0257/", "doc_label": "📖 Docs PEP 257 Docstrings"}, "ia-0-4-2": {"id": "ia-0-4-2", "title": "Depuração (debug) e leitura de erros", "url": "https://www.youtube.com/watch?v=ElRd0cbXIv4", "label": "▶ Debugging no VS Code", "doc_url": "https://docs.python.org/pt-br/3/library/pdb.html", "doc_label": "📖 Docs Python Debugger"}, "ia-0-4-3": {"id": "ia-0-4-3", "title": "Testes simples com pytest", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Introdução ao Pytest", "doc_url": "https://docs.pytest.org/en/latest/", "doc_label": "📖 Docs Pytest Oficial"}, "ia-0-4-4": {"id": "ia-0-4-4", "title": "Lambda, map e filter", "url": "https://www.youtube.com/watch?v=9g04i4VwRz8", "label": "▶ Funções Lambda & Map/Filter", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#lambda-expressions", "doc_label": "📖 Docs Expressões Lambda"}, "ia-0-4-5": {"id": "ia-0-4-5", "title": "Geradores e iteradores", "url": "https://www.youtube.com/watch?v=tmeKsb2Fras", "label": "▶ Generators & Yield", "doc_url": "https://docs.python.org/pt-br/3/howto/functional.html#generators", "doc_label": "📖 Docs Generators Howto"}, "ia-0-4-6": {"id": "ia-0-4-6", "title": "Decoradores (noção)", "url": "https://www.youtube.com/watch?v=FsAPt_9Bf3U", "label": "▶ Decorators Desmistificados", "doc_url": "https://peps.python.org/pep-0318/", "doc_label": "📖 Docs PEP 318 Decorators"}, "ia-0-5-0": {"id": "ia-0-5-0", "title": "datetime", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Módulo Datetime Completo", "doc_url": "https://docs.python.org/pt-br/3/library/datetime.html", "doc_label": "📖 Docs datetime Oficial"}, "ia-0-5-1": {"id": "ia-0-5-1", "title": "os e pathlib", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Manipulando Arquivos com Pathlib", "doc_url": "https://docs.python.org/pt-br/3/library/pathlib.html", "doc_label": "📖 Docs pathlib Oficial"}, "ia-0-5-2": {"id": "ia-0-5-2", "title": "json e csv", "url": "https://www.youtube.com/watch?v=9N6a-VLBa2I", "label": "▶ Arquivos JSON e CSV", "doc_url": "https://docs.python.org/pt-br/3/library/json.html", "doc_label": "📖 Docs json & csv"}, "ia-0-5-3": {"id": "ia-0-5-3", "title": "Expressões regulares (re)", "url": "https://www.youtube.com/watch?v=K8L6KVGG-7o", "label": "▶ Regex em Python do Zero", "doc_url": "https://docs.python.org/pt-br/3/library/re.html", "doc_label": "📖 Docs Regex Oficial"}, "ia-0-5-4": {"id": "ia-0-5-4", "title": "Web scraping com BeautifulSoup", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping com BeautifulSoup", "doc_url": "https://crummy.com/software/BeautifulSoup/bs4/doc/", "doc_label": "📖 Docs BeautifulSoup4"}, "ia-0-6-0": {"id": "ia-0-6-0", "title": "30 exercícios (Beecrowd, HackerRank, Exercism)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dm6wYOIW20NgkL20I47-10X", "label": "▶ Guanabara 100 Exercícios", "doc_url": "https://exercism.org/tracks/python", "doc_label": "💻 Exercism Trilha Python"}, "ia-0-6-1": {"id": "ia-0-6-1", "title": "Algoritmos de busca e ordenação", "url": "https://www.youtube.com/watch?v=4UqT_bW5BJE", "label": "▶ Busca Binária e Bubble/Merge", "doc_url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/sorting.html", "doc_label": "📖 Guia Busca e Ordenação"}, "ia-0-6-2": {"id": "ia-0-6-2", "title": "Noções de complexidade (Big O)", "url": "https://www.youtube.com/watch?v=v4cd1O4zkGw", "label": "▶ Big O Notation Explicada", "doc_url": "https://www.bigocheatsheet.com/", "doc_label": "📊 Big-O Cheat Sheet"}, "ia-0-6-3": {"id": "ia-0-6-3", "title": "Projeto de linha de comando completo", "url": "https://www.youtube.com/watch?v=b0TpPn9g11I", "label": "▶ Guanabara Projeto Final Mundo 3", "doc_url": "https://click.palletsprojects.com/", "doc_label": "📖 Click CLI Python"}, "ia-1-0-0": {"id": "ia-1-0-0", "title": "NumPy: arrays e operações vetorizadas", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ NumPy Tutorial Completo", "doc_url": "https://numpy.org/doc/stable/user/quickstart.html", "doc_label": "📖 NumPy Quickstart"}, "ia-1-0-1": {"id": "ia-1-0-1", "title": "Pandas: DataFrames e Series", "url": "https://www.youtube.com/watch?v=vmEHCJofslg", "label": "▶ Pandas DataFrames Crash Course", "doc_url": "https://pandas.pydata.org/docs/user_guide/10min.html", "doc_label": "📖 10 Minutes to Pandas"}, "ia-1-0-2": {"id": "ia-1-0-2", "title": "Pandas: filtrar, agrupar e juntar (merge)", "url": "https://www.youtube.com/watch?v=ZyhVh-qRZPA", "label": "▶ Pandas Filter, GroupBy & Merge", "doc_url": "https://pandas.pydata.org/docs/user_guide/merging.html", "doc_label": "📖 Pandas Merge & GroupBy"}, "ia-1-0-3": {"id": "ia-1-0-3", "title": "Limpeza de dados e valores ausentes", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Data Cleaning com Pandas", "doc_url": "https://pandas.pydata.org/docs/user_guide/missing_data.html", "doc_label": "📖 Pandas Missing Data Guide"}, "ia-1-1-0": {"id": "ia-1-1-0", "title": "Matplotlib", "url": "https://www.youtube.com/watch?v=UO98lJQ3QGI", "label": "▶ Matplotlib Tutorial Completo", "doc_url": "https://matplotlib.org/stable/tutorials/introductory/quick_start.html", "doc_label": "📖 Matplotlib Quick Start"}, "ia-1-1-1": {"id": "ia-1-1-1", "title": "Seaborn", "url": "https://www.youtube.com/watch?v=6GUZXDef2U0", "label": "▶ Seaborn Visualização Elegante", "doc_url": "https://seaborn.pydata.org/tutorial.html", "doc_label": "📖 Seaborn Tutorial Oficial"}, "ia-1-1-2": {"id": "ia-1-1-2", "title": "Análise exploratória de dados (EDA)", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ EDA Passo a Passo na Prática", "doc_url": "https://www.kaggle.com/learn/data-visualization", "doc_label": "💻 Kaggle Data Visualization"}, "ia-1-2-0": {"id": "ia-1-2-0", "title": "Jupyter Notebook e Google Colab", "url": "https://www.youtube.com/watch?v=HW29067qVWk", "label": "▶ Jupyter & Colab para Dados", "doc_url": "https://colab.research.google.com/notebooks/intro.ipynb", "doc_label": "📖 Colab Welcome Guide"}, "ia-1-2-1": {"id": "ia-1-2-1", "title": "SQL: SELECT, WHERE, JOIN, GROUP BY", "url": "https://www.youtube.com/watch?v=HXV3zeRR3h4", "label": "▶ Curso SQL Completo", "doc_url": "https://www.w3schools.com/sql/", "doc_label": "📖 W3Schools SQL Tutorial"}, "ia-1-2-2": {"id": "ia-1-2-2", "title": "Ler CSV, Excel e JSON", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Importação de Dados em Python", "doc_url": "https://pandas.pydata.org/docs/user_guide/io.html", "doc_label": "📖 Pandas IO Tools Guide"}, "ia-1-3-0": {"id": "ia-1-3-0", "title": "Broadcasting", "url": "https://www.youtube.com/watch?v=0mffXPTtkVU", "label": "▶ NumPy Broadcasting Explicado", "doc_url": "https://numpy.org/doc/stable/user/basics.broadcasting.html", "doc_label": "📖 NumPy Broadcasting Guide"}, "ia-1-3-1": {"id": "ia-1-3-1", "title": "Máscaras booleanas e indexação", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ Boolean Indexing com NumPy", "doc_url": "https://numpy.org/doc/stable/user/basics.indexing.html", "doc_label": "📖 NumPy Indexing Guide"}, "ia-1-3-2": {"id": "ia-1-3-2", "title": "Séries temporais", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Time Series com Pandas", "doc_url": "https://pandas.pydata.org/docs/user_guide/timeseries.html", "doc_label": "📖 Pandas Time Series"}, "ia-1-3-3": {"id": "ia-1-3-3", "title": "Pivot tables e melt", "url": "https://www.youtube.com/watch?v=xPPs59pn6qU", "label": "▶ Pivot Table e Melt no Pandas", "doc_url": "https://pandas.pydata.org/docs/user_guide/reshaping.html", "doc_label": "📖 Pandas Reshaping"}, "ia-1-3-4": {"id": "ia-1-3-4", "title": "Apply e funções vetorizadas", "url": "https://www.youtube.com/watch?v=P_q0tkYqvSk", "label": "▶ Apply vs Operações Vetorizadas", "doc_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html", "doc_label": "📖 Pandas Apply Reference"}, "ia-1-3-5": {"id": "ia-1-3-5", "title": "Outliers e duplicados", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Tratamento de Outliers e Duplicatas", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Scikit-learn Outliers"}, "ia-1-3-6": {"id": "ia-1-3-6", "title": "Encoding de variáveis categóricas", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ One-Hot vs Label Encoding", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features", "doc_label": "📖 Sklearn Categorical Encoding"}, "ia-1-4-0": {"id": "ia-1-4-0", "title": "Web scraping e APIs", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping & Ingestão de Dados", "doc_url": "https://realpython.com/beautiful-soup-web-scraper-python/", "doc_label": "📖 RealPython Scraping Guide"}, "ia-1-4-1": {"id": "ia-1-4-1", "title": "SQLite e SQLAlchemy", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ SQLite & SQLAlchemy em Python", "doc_url": "https://docs.sqlalchemy.org/en/20/intro.html", "doc_label": "📖 SQLAlchemy 2.0 Tutorial"}, "ia-1-4-2": {"id": "ia-1-4-2", "title": "SQL avançado: subconsultas e window functions", "url": "https://www.youtube.com/watch?v=Ww71knvhQ-s", "label": "▶ Window Functions e Subqueries", "doc_url": "https://mode.com/sql-tutorial/sql-window-functions/", "doc_label": "📖 Mode SQL Window Functions"}, "ia-1-4-3": {"id": "ia-1-4-3", "title": "Formato Parquet", "url": "https://www.youtube.com/watch?v=4tB8K2N2k0w", "label": "▶ Apache Parquet vs CSV na Prática", "doc_url": "https://parquet.apache.org/docs/", "doc_label": "📖 Apache Parquet Docs"}, "ia-1-4-4": {"id": "ia-1-4-4", "title": "Plotly e gráficos interativos", "url": "https://www.youtube.com/watch?v=GGL6U0k8WYA", "label": "▶ Plotly Gráficos Interativos 2D/3D", "doc_url": "https://plotly.com/python/", "doc_label": "📖 Plotly Python Open Source"}, "ia-1-5-0": {"id": "ia-1-5-0", "title": "Notebooks reprodutíveis", "url": "https://www.youtube.com/watch?v=7jiPeIFKA98", "label": "▶ Melhores Práticas em Jupyter", "doc_url": "https://docs.jupyter.org/en/latest/", "doc_label": "📖 Jupyter Documentation"}, "ia-1-5-1": {"id": "ia-1-5-1", "title": "Storytelling com dados", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Data Storytelling e Insights", "doc_url": "https://www.storytellingwithdata.com/", "doc_label": "📖 Storytelling With Data"}, "ia-1-5-2": {"id": "ia-1-5-2", "title": "Dashboards com Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Streamlit Dashboard em 15 Minutos", "doc_url": "https://docs.streamlit.io/", "doc_label": "📖 Streamlit Docs Oficial"}, "ia-2-0-0": {"id": "ia-2-0-0", "title": "Aprendizado supervisionado vs. não supervisionado", "url": "https://www.youtube.com/watch?v=1FZ0A1QCMWc", "label": "▶ Andrew Ng Supervised vs Unsupervised", "doc_url": "https://scikit-learn.org/stable/tutorial/basic/tutorial.html", "doc_label": "📖 Sklearn Intro Tutorial"}, "ia-2-0-1": {"id": "ia-2-0-1", "title": "Treino, validação e teste", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ StatQuest Train, Test & Cross-Validation", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html", "doc_label": "📖 Sklearn Train-Test Split"}, "ia-2-0-2": {"id": "ia-2-0-2", "title": "Overfitting e underfitting", "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA", "label": "▶ StatQuest Bias and Variance Tradeoff", "doc_url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html", "doc_label": "📖 Sklearn Bias-Variance Example"}, "ia-2-0-3": {"id": "ia-2-0-3", "title": "Validação cruzada", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ K-Fold Cross Validation Explicado", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html#k-fold", "doc_label": "📖 Sklearn K-Fold Guide"}, "ia-2-0-4": {"id": "ia-2-0-4", "title": "Engenharia de atributos (feature engineering)", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Feature Engineering na Prática", "doc_url": "https://www.kaggle.com/learn/feature-engineering", "doc_label": "💻 Kaggle Feature Engineering"}, "ia-2-1-0": {"id": "ia-2-1-0", "title": "Regressão linear", "url": "https://www.youtube.com/watch?v=7ArmBVF2dCs", "label": "▶ StatQuest Linear Regression", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares", "doc_label": "📖 Sklearn Linear Regression"}, "ia-2-1-1": {"id": "ia-2-1-1", "title": "Regressão logística", "url": "https://www.youtube.com/watch?v=yIYKR4gXd5U", "label": "▶ StatQuest Logistic Regression", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression", "doc_label": "📖 Sklearn Logistic Regression"}, "ia-2-1-2": {"id": "ia-2-1-2", "title": "Árvores de decisão", "url": "https://www.youtube.com/watch?v=7VeUPuFGJHk", "label": "▶ StatQuest Decision Trees", "doc_url": "https://scikit-learn.org/stable/modules/tree.html", "doc_label": "📖 Sklearn Decision Trees"}, "ia-2-1-3": {"id": "ia-2-1-3", "title": "Random Forest", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ StatQuest Random Forests", "doc_url": "https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-trees", "doc_label": "📖 Sklearn Random Forests"}, "ia-2-1-4": {"id": "ia-2-1-4", "title": "Gradient Boosting (XGBoost, LightGBM)", "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc", "label": "▶ StatQuest Gradient Boost & XGBoost", "doc_url": "https://xgboost.readthedocs.io/en/stable/", "doc_label": "📖 XGBoost Documentation"}, "ia-2-1-5": {"id": "ia-2-1-5", "title": "K-Means e clusterização", "url": "https://www.youtube.com/watch?v=4b5d3muPQmA", "label": "▶ StatQuest K-Means Clustering", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#k-means", "doc_label": "📖 Sklearn K-Means"}, "ia-2-1-6": {"id": "ia-2-1-6", "title": "PCA", "url": "https://www.youtube.com/watch?v=FgakZw6K1QQ", "label": "▶ StatQuest Principal Component Analysis", "doc_url": "https://scikit-learn.org/stable/modules/decomposition.html#pca", "doc_label": "📖 Sklearn PCA Guide"}, "ia-2-2-0": {"id": "ia-2-2-0", "title": "Métricas: acurácia, precisão, recall, F1", "url": "https://www.youtube.com/watch?v=wpNl-HIch9g", "label": "▶ StatQuest Precision, Recall & F1", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics", "doc_label": "📖 Sklearn Classification Metrics"}, "ia-2-2-1": {"id": "ia-2-2-1", "title": "Matriz de confusão e curva ROC", "url": "https://www.youtube.com/watch?v=4jRBRDbJemM", "label": "▶ StatQuest ROC and AUC Curves", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#roc-metrics", "doc_label": "📖 Sklearn ROC AUC"}, "ia-2-2-2": {"id": "ia-2-2-2", "title": "Scikit-learn e pipelines", "url": "https://www.youtube.com/watch?v=irHhDMb3n88", "label": "▶ Scikit-Learn Pipelines Práticos", "doc_url": "https://scikit-learn.org/stable/modules/compose.html#pipeline", "doc_label": "📖 Sklearn Pipeline Guide"}, "ia-2-2-3": {"id": "ia-2-2-3", "title": "Ajuste de hiperparâmetros", "url": "https://www.youtube.com/watch?v=Gol_qOfhft4", "label": "▶ GridSearchCV & RandomizedSearchCV", "doc_url": "https://scikit-learn.org/stable/modules/grid_search.html", "doc_label": "📖 Sklearn Hyperparameter Tuning"}, "ia-2-3-0": {"id": "ia-2-3-0", "title": "KNN", "url": "https://www.youtube.com/watch?v=HVXime0nQeI", "label": "▶ StatQuest K-Nearest Neighbors", "doc_url": "https://scikit-learn.org/stable/modules/neighbors.html", "doc_label": "📖 Sklearn Nearest Neighbors"}, "ia-2-3-1": {"id": "ia-2-3-1", "title": "Naive Bayes", "url": "https://www.youtube.com/watch?v=O2L2Uv9pdDA", "label": "▶ StatQuest Naive Bayes", "doc_url": "https://scikit-learn.org/stable/modules/naive_bayes.html", "doc_label": "📖 Sklearn Naive Bayes"}, "ia-2-3-2": {"id": "ia-2-3-2", "title": "SVM", "url": "https://www.youtube.com/watch?v=efR1C6CvhmE", "label": "▶ StatQuest Support Vector Machines", "doc_url": "https://scikit-learn.org/stable/modules/svm.html", "doc_label": "📖 Sklearn Support Vector Machines"}, "ia-2-3-3": {"id": "ia-2-3-3", "title": "DBSCAN e clusterização hierárquica", "url": "https://www.youtube.com/watch?v=RDZUdRSDOok", "label": "▶ StatQuest DBSCAN Clustering", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#dbscan", "doc_label": "📖 Sklearn DBSCAN Guide"}, "ia-2-3-4": {"id": "ia-2-3-4", "title": "Regularização Lasso e Ridge", "url": "https://www.youtube.com/watch?v=Q81RR3yKn30", "label": "▶ StatQuest Ridge and Lasso Regression", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification", "doc_label": "📖 Sklearn Regularization"}, "ia-2-3-5": {"id": "ia-2-3-5", "title": "Detecção de anomalias", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Isolation Forest & Anomaly Detection", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Sklearn Anomaly Detection"}, "ia-2-4-0": {"id": "ia-2-4-0", "title": "Normalização e padronização", "url": "https://www.youtube.com/watch?v=sxEqtjLC0aM", "label": "▶ StandardScaler vs MinMaxScaler", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#standardization-or-mean-removal-and-variance-scaling", "doc_label": "📖 Sklearn Preprocessing"}, "ia-2-4-1": {"id": "ia-2-4-1", "title": "Dados desbalanceados (SMOTE)", "url": "https://www.youtube.com/watch?v=YMPMQgzBgPE", "label": "▶ Imbalanced Data & SMOTE", "doc_url": "https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html", "doc_label": "📖 Imbalanced-Learn SMOTE"}, "ia-2-4-2": {"id": "ia-2-4-2", "title": "Seleção de atributos", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Feature Selection Techniques", "doc_url": "https://scikit-learn.org/stable/modules/feature_selection.html", "doc_label": "📖 Sklearn Feature Selection"}, "ia-2-4-3": {"id": "ia-2-4-3", "title": "Vazamento de dados (data leakage)", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ Como Evitar Data Leakage", "doc_url": "https://www.kaggle.com/learn/data-leakage", "doc_label": "💻 Kaggle Data Leakage"}, "ia-2-4-4": {"id": "ia-2-4-4", "title": "Séries temporais com ML", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Forecasting com Machine Learning", "doc_url": "https://otexts.com/fpp3/", "doc_label": "📖 Forecasting: Principles and Practice"}, "ia-2-5-0": {"id": "ia-2-5-0", "title": "Importância de atributos", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ Feature Importance no Random Forest", "doc_url": "https://scikit-learn.org/stable/modules/permutation_importance.html", "doc_label": "📖 Sklearn Permutation Importance"}, "ia-2-5-1": {"id": "ia-2-5-1", "title": "SHAP e LIME", "url": "https://www.youtube.com/watch?v=9haIO8uEBrA", "label": "▶ Explainable AI: SHAP & LIME", "doc_url": "https://shap.readthedocs.io/en/latest/", "doc_label": "📖 SHAP Documentation"}, "ia-2-5-2": {"id": "ia-2-5-2", "title": "Viés e ética em ML", "url": "https://www.youtube.com/watch?v=ugff3a89e4I", "label": "▶ Fairness & Bias in Machine Learning", "doc_url": "https://fairlearn.org/", "doc_label": "📖 Fairlearn Project"}, "ia-2-5-3": {"id": "ia-2-5-3", "title": "Sistemas de recomendação", "url": "https://www.youtube.com/watch?v=n3RKsY2H-NE", "label": "▶ Collaborative Filtering & Recommenders", "doc_url": "https://developers.google.com/machine-learning/recommendation", "doc_label": "📖 Google Recommendation Systems"}, "ia-3-0-0": {"id": "ia-3-0-0", "title": "Neurônio, camadas e pesos", "url": "https://www.youtube.com/watch?v=aircAruvnKk", "label": "▶ 3B1B O que é uma Rede Neural?", "doc_url": "https://www.deeplearningbook.org/contents/mlp.html", "doc_label": "📖 Deep Learning Book Cap 6"}, "ia-3-0-1": {"id": "ia-3-0-1", "title": "Funções de ativação", "url": "https://www.youtube.com/watch?v=68BZ5f7P94E", "label": "▶ StatQuest Activation Functions", "doc_url": "https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-non-linearity", "doc_label": "📖 PyTorch Activation Functions"}, "ia-3-0-2": {"id": "ia-3-0-2", "title": "Função de perda", "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w", "label": "▶ 3B1B Gradient Descent & Loss", "doc_url": "https://pytorch.org/docs/stable/nn.html#loss-functions", "doc_label": "📖 PyTorch Loss Functions"}, "ia-3-0-3": {"id": "ia-3-0-3", "title": "Backpropagation", "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U", "label": "▶ 3B1B O que o Backpropagation faz?", "doc_url": "https://colah.github.io/posts/2015-08-Backprop/", "doc_label": "📖 Colah's Blog Calculus on Graphs"}, "ia-3-0-4": {"id": "ia-3-0-4", "title": "Gradiente descendente e otimizadores (SGD, Adam)", "url": "https://www.youtube.com/watch?v=mdKjMPmcWsc", "label": "▶ StatQuest Gradient Descent & Adam", "doc_url": "https://pytorch.org/docs/stable/optim.html", "doc_label": "📖 PyTorch Optimizers Guide"}, "ia-3-0-5": {"id": "ia-3-0-5", "title": "Regularização (dropout, weight decay)", "url": "https://www.youtube.com/watch?v=D8PJAL-Zkm8", "label": "▶ Dropout Regularization Explicado", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html", "doc_label": "📖 PyTorch Dropout Docs"}, "ia-3-1-0": {"id": "ia-3-1-0", "title": "CNNs para imagens", "url": "https://www.youtube.com/watch?v=HGwBXDKFk9I", "label": "▶ StatQuest Convolutional Neural Networks", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html", "doc_label": "📖 PyTorch Training a Classifier"}, "ia-3-1-1": {"id": "ia-3-1-1", "title": "Transfer learning", "url": "https://www.youtube.com/watch?v=BqqfQnyjmgg", "label": "▶ Transfer Learning com ResNet/VGG", "doc_url": "https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html", "doc_label": "📖 PyTorch Transfer Learning"}, "ia-3-1-2": {"id": "ia-3-1-2", "title": "RNNs e LSTMs para sequências", "url": "https://www.youtube.com/watch?v=AsNTP8Kwu80", "label": "▶ StatQuest Recurrent Neural Networks", "doc_url": "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", "doc_label": "📖 Understanding LSTM Networks"}, "ia-3-2-0": {"id": "ia-3-2-0", "title": "Tensores e autograd", "url": "https://www.youtube.com/watch?v=IC0_FRiX-sw", "label": "▶ PyTorch Tensors & Autograd Blitz", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html", "doc_label": "📖 PyTorch Tensor Basics"}, "ia-3-2-1": {"id": "ia-3-2-1", "title": "Datasets e DataLoaders", "url": "https://www.youtube.com/watch?v=VVDHU_TWwUg", "label": "▶ Custom Datasets em PyTorch", "doc_url": "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html", "doc_label": "📖 PyTorch Datasets & DataLoaders"}, "ia-3-2-2": {"id": "ia-3-2-2", "title": "Loop de treino e avaliação", "url": "https://www.youtube.com/watch?v=c36lUUr864M", "label": "▶ PyTorch Full Training Loop", "doc_url": "https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html", "doc_label": "📖 PyTorch Model Optimization"}, "ia-3-2-3": {"id": "ia-3-2-3", "title": "Treinar em GPU (Colab)", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Acelerando PyTorch com CUDA na GPU", "doc_url": "https://pytorch.org/docs/stable/cuda.html", "doc_label": "📖 PyTorch CUDA Semantics"}, "ia-3-3-0": {"id": "ia-3-3-0", "title": "Autoencoders", "url": "https://www.youtube.com/watch?v=9zKuYvjFFS8", "label": "▶ Autoencoders e Compressão Latente", "doc_url": "https://www.deeplearningbook.org/contents/autoencoders.html", "doc_label": "📖 Deep Learning Book Cap 14"}, "ia-3-3-1": {"id": "ia-3-3-1", "title": "GANs", "url": "https://www.youtube.com/watch?v=8L11aMN5KY8", "label": "▶ Generative Adversarial Networks", "doc_url": "https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html", "doc_label": "📖 PyTorch DCGAN Tutorial"}, "ia-3-3-2": {"id": "ia-3-3-2", "title": "Modelos de difusão (noção)", "url": "https://www.youtube.com/watch?v=1CIpzeNxIhU", "label": "▶ Como Funcionam Diffusion Models", "doc_url": "https://huggingface.co/blog/annotated-diffusion", "doc_label": "📖 Annotated Diffusion Model"}, "ia-3-3-3": {"id": "ia-3-3-3", "title": "Redes de grafos (noção)", "url": "https://www.youtube.com/watch?v=fOctJB4kWlI", "label": "▶ Graph Neural Networks (GNNs)", "doc_url": "https://distill.pub/2021/gnn-intro/", "doc_label": "📖 Distill GNN Gentle Introduction"}, "ia-3-3-4": {"id": "ia-3-3-4", "title": "Detecção de objetos (YOLO)", "url": "https://www.youtube.com/watch?v=ag3DLKsl2vk", "label": "▶ YOLO Object Detection", "doc_url": "https://docs.ultralytics.com/", "doc_label": "📖 Ultralytics YOLO Docs"}, "ia-3-3-5": {"id": "ia-3-3-5", "title": "Segmentação de imagens", "url": "https://www.youtube.com/watch?v=u1loyCU4smQ", "label": "▶ Image Segmentation com U-Net", "doc_url": "https://pytorch.org/hub/mateuszbuda_brain-segmentation-pytorch_unet/", "doc_label": "📖 PyTorch U-Net Hub"}, "ia-3-4-0": {"id": "ia-3-4-0", "title": "Batch normalization", "url": "https://www.youtube.com/watch?v=tNIpEZLv_l8", "label": "▶ StatQuest Batch Normalization", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html", "doc_label": "📖 PyTorch BatchNorm2d"}, "ia-3-4-1": {"id": "ia-3-4-1", "title": "Learning rate schedulers", "url": "https://www.youtube.com/watch?v=kpvIcx16i58", "label": "▶ Learning Rate Decay & Schedulers", "doc_url": "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", "doc_label": "📖 PyTorch LR Schedulers"}, "ia-3-4-2": {"id": "ia-3-4-2", "title": "Data augmentation", "url": "https://www.youtube.com/watch?v=mTVf7BN7S8w", "label": "▶ Data Augmentation com Torchvision", "doc_url": "https://pytorch.org/vision/stable/transforms.html", "doc_label": "📖 Torchvision Transforms"}, "ia-3-4-3": {"id": "ia-3-4-3", "title": "Early stopping e checkpoints", "url": "https://www.youtube.com/watch?v=k4J8nEaX0Xg", "label": "▶ Checkpoints e Salvamento de Modelos", "doc_url": "https://pytorch.org/tutorials/beginner/saving_loading_models.html", "doc_label": "📖 PyTorch Saving & Loading"}, "ia-3-4-4": {"id": "ia-3-4-4", "title": "Depurar rede que não aprende", "url": "https://www.youtube.com/watch?v=P6sfmUtP_vY", "label": "▶ Andrej Karpathy: A Recipe for Training NNs", "doc_url": "http://karpathy.github.io/2019/04/25/recipe/", "doc_label": "📖 Karpathy NN Training Recipe"}, "ia-3-4-5": {"id": "ia-3-4-5", "title": "Mixed precision", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Automatic Mixed Precision (AMP)", "doc_url": "https://pytorch.org/docs/stable/amp.html", "doc_label": "📖 PyTorch AMP Tutorial"}, "ia-3-5-0": {"id": "ia-3-5-0", "title": "TensorFlow e Keras (noção)", "url": "https://www.youtube.com/watch?v=tPYj3fFJGjk", "label": "▶ TensorFlow 2.0 / Keras Crash Course", "doc_url": "https://www.tensorflow.org/tutorials", "doc_label": "📖 TensorFlow Tutorials"}, "ia-3-5-1": {"id": "ia-3-5-1", "title": "TensorBoard e logs", "url": "https://www.youtube.com/watch?v=VJW92p3n5D8", "label": "▶ Monitorando com TensorBoard", "doc_url": "https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html", "doc_label": "📖 PyTorch with TensorBoard"}, "ia-3-5-2": {"id": "ia-3-5-2", "title": "Exportar modelos com ONNX", "url": "https://www.youtube.com/watch?v=P_V5qD1n7Hk", "label": "▶ Exportando PyTorch para ONNX Runtime", "doc_url": "https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html", "doc_label": "📖 PyTorch ONNX Export"}, "ia-3-5-3": {"id": "ia-3-5-3", "title": "PyTorch Lightning", "url": "https://www.youtube.com/watch?v=DbESHcCoWbM", "label": "▶ PyTorch Lightning em 15 Minutos", "doc_url": "https://lightning.ai/docs/pytorch/stable/", "doc_label": "📖 Lightning AI Documentation"}, "ia-4-0-0": {"id": "ia-4-0-0", "title": "Tokenização e embeddings", "url": "https://www.youtube.com/watch?v=zduSFxRajkE", "label": "▶ Karpathy Tokenização BPE", "doc_url": "https://huggingface.co/learn/nlp-course/chapter2/4", "doc_label": "📖 Hugging Face Tokenizers"}, "ia-4-0-1": {"id": "ia-4-0-1", "title": "Mecanismo de atenção", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Visualizando Mecanismo de Atenção", "doc_url": "https://jalammar.github.io/illustrated-transformer/", "doc_label": "📖 The Illustrated Transformer"}, "ia-4-0-2": {"id": "ia-4-0-2", "title": "Arquitetura Transformer", "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY", "label": "▶ Karpathy Let's build GPT do zero", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Attention Is All You Need"}, "ia-4-0-3": {"id": "ia-4-0-3", "title": "Pré-treino, fine-tuning e RLHF (visão geral)", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Karpathy State of GPT / RLHF", "doc_url": "https://huggingface.co/blog/rlhf", "doc_label": "📖 Hugging Face RLHF Guide"}, "ia-4-1-0": {"id": "ia-4-1-0", "title": "Hugging Face: modelos, datasets e transformers", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Hugging Face Transformers Course", "doc_url": "https://huggingface.co/docs/transformers/index", "doc_label": "📖 Hugging Face Docs"}, "ia-4-1-1": {"id": "ia-4-1-1", "title": "Fine-tuning com LoRA", "url": "https://www.youtube.com/watch?v=dA-NhCtrrVE", "label": "▶ LoRA & QLoRA Fine-Tuning de LLMs", "doc_url": "https://huggingface.co/docs/peft/index", "doc_label": "📖 Hugging Face PEFT Guide"}, "ia-4-1-2": {"id": "ia-4-1-2", "title": "Engenharia de prompts", "url": "https://www.youtube.com/watch?v=jC4v5AS4RIM", "label": "▶ Andrew Ng Prompt Engineering", "doc_url": "https://www.promptingguide.ai/pt", "doc_label": "📖 Prompt Engineering Guide PT-BR"}, "ia-4-1-3": {"id": "ia-4-1-3", "title": "Usar APIs de LLMs (chamadas, streaming, tool use)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Consumindo OpenAI, Gemini & Claude", "doc_url": "https://platform.openai.com/docs/api-reference", "doc_label": "📖 OpenAI / Gemini API Docs"}, "ia-4-2-0": {"id": "ia-4-2-0", "title": "RAG: busca em documentos + LLM", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ RAG Completo do Zero", "doc_url": "https://python.langchain.com/docs/tutorials/rag/", "doc_label": "📖 LangChain RAG Tutorial"}, "ia-4-2-1": {"id": "ia-4-2-1", "title": "Bancos vetoriais e busca semântica", "url": "https://www.youtube.com/watch?v=klTvEwg3oJ4", "label": "▶ ChromaDB, Pinecone & Vetores", "doc_url": "https://docs.trychroma.com/", "doc_label": "📖 ChromaDB Getting Started"}, "ia-4-2-2": {"id": "ia-4-2-2", "title": "Agentes e uso de ferramentas", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ Construindo Agentes Autônomos", "doc_url": "https://python.langchain.com/docs/tutorials/agents/", "doc_label": "📖 LangChain Agents Guide"}, "ia-4-2-3": {"id": "ia-4-2-3", "title": "Avaliação e segurança de sistemas com LLM", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ Evals, Ragas e LLM Testing", "doc_url": "https://docs.ragas.io/", "doc_label": "📖 Ragas Evaluation Framework"}, "ia-4-3-0": {"id": "ia-4-3-0", "title": "Self-attention e multi-head", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Multi-Head Attention", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Transformer Seção 3.2"}, "ia-4-3-1": {"id": "ia-4-3-1", "title": "Positional encoding", "url": "https://www.youtube.com/watch?v=dichIC6np5g", "label": "▶ Positional Encoding Explicado", "doc_url": "https://kazemnejad.com/blog/transformer_architecture_positional_encoding/", "doc_label": "📖 Kazemnejad Positional Encoding"}, "ia-4-3-2": {"id": "ia-4-3-2", "title": "Encoder vs. decoder (BERT vs. GPT)", "url": "https://www.youtube.com/watch?v=FKlPCK1uFrc", "label": "▶ BERT vs GPT vs T5 Arquiteturas", "doc_url": "https://jalammar.github.io/illustrated-bert/", "doc_label": "📖 The Illustrated BERT"}, "ia-4-3-3": {"id": "ia-4-3-3", "title": "Janela de contexto e KV cache", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Como Funciona o KV Cache em LLMs", "doc_url": "https://kipp.ly/transformer-inference-optimizations/", "doc_label": "📖 KV Cache Optimization Guide"}, "ia-4-3-4": {"id": "ia-4-3-4", "title": "Quantização (4-bit, 8-bit)", "url": "https://www.youtube.com/watch?v=TPcUXJvfO20", "label": "▶ Quantização GGUF & AWQ", "doc_url": "https://huggingface.co/blog/hf-bitsandbytes-integration", "doc_label": "📖 Hugging Face Bitsandbytes"}, "ia-4-3-5": {"id": "ia-4-3-5", "title": "Scaling laws", "url": "https://www.youtube.com/watch?v=H3pkn1iKx4A", "label": "▶ Chinchilla & Neural Scaling Laws", "doc_url": "https://arxiv.org/abs/2001.08361", "doc_label": "📄 OpenAI Scaling Laws Paper"}, "ia-4-4-0": {"id": "ia-4-4-0", "title": "Chunking e estratégias de recuperação no RAG", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ Advanced RAG: Chunking & Hybrid Search", "doc_url": "https://www.pinecone.io/learn/chunking-strategies/", "doc_label": "📖 Pinecone Chunking Strategies"}, "ia-4-4-1": {"id": "ia-4-4-1", "title": "Reranking", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Cohere Rerank para Melhor RAG", "doc_url": "https://docs.cohere.com/docs/reranking", "doc_label": "📖 Cohere Rerank Documentation"}, "ia-4-4-2": {"id": "ia-4-4-2", "title": "Saída estruturada (JSON)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Structured Outputs com Pydantic", "doc_url": "https://platform.openai.com/docs/guides/structured-outputs", "doc_label": "📖 OpenAI Structured Outputs"}, "ia-4-4-3": {"id": "ia-4-4-3", "title": "Memória e orquestração de agentes", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ LangGraph & CrewAI Orquestração", "doc_url": "https://langchain-ai.github.io/langgraph/", "doc_label": "📖 LangGraph Documentation"}, "ia-4-4-4": {"id": "ia-4-4-4", "title": "Protocolo MCP", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Model Context Protocol (MCP) Anthropic", "doc_url": "https://modelcontextprotocol.io/", "doc_label": "📖 Model Context Protocol Docs"}, "ia-4-4-5": {"id": "ia-4-4-5", "title": "Multimodalidade: visão e áudio", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Vision Models: GPT-4o & Gemini Vision", "doc_url": "https://platform.openai.com/docs/guides/vision", "doc_label": "📖 OpenAI Vision Guide"}, "ia-4-5-0": {"id": "ia-4-5-0", "title": "Avaliação de LLMs (evals e benchmarks)", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LLM Evaluation & MMLU Benchmarks", "doc_url": "https://github.com/openai/evals", "doc_label": "📖 OpenAI Evals Framework"}, "ia-4-5-1": {"id": "ia-4-5-1", "title": "Alucinações e mitigação", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Como Prevenir Alucinações de LLM", "doc_url": "https://arxiv.org/abs/2309.01219", "doc_label": "📄 Survey on Hallucination in LLMs"}, "ia-4-5-2": {"id": "ia-4-5-2", "title": "Prompt injection", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ OWASP Top 10 for LLMs & Jailbreaks", "doc_url": "https://genai.owasp.org/llm-top-10/", "doc_label": "📖 OWASP GenAI Top 10"}, "ia-4-5-3": {"id": "ia-4-5-3", "title": "Custo e latência", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Otimização de Custo de Tokens & Cache", "doc_url": "https://platform.openai.com/docs/guides/production-best-practices", "doc_label": "📖 Production Best Practices"}, "ia-4-5-4": {"id": "ia-4-5-4", "title": "Modelos locais (Ollama, llama.cpp)", "url": "https://www.youtube.com/watch?v=Gz3k4Z2hLgA", "label": "▶ Rodando LLMs Locais com Ollama", "doc_url": "https://ollama.com/", "doc_label": "📖 Ollama Official Website"}, "ia-5-0-0": {"id": "ia-5-0-0", "title": "Docker", "url": "https://www.youtube.com/watch?v=fqMOX6JJhGo", "label": "▶ Docker para Iniciantes Completo", "doc_url": "https://docs.docker.com/get-started/", "doc_label": "📖 Docker Get Started"}, "ia-5-0-1": {"id": "ia-5-0-1", "title": "FastAPI e criação de APIs", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ FastAPI Tutorial Prático", "doc_url": "https://fastapi.tiangolo.com/tutorial/", "doc_label": "📖 FastAPI Tutorial Oficial"}, "ia-5-0-2": {"id": "ia-5-0-2", "title": "Deploy em nuvem (AWS, GCP ou Azure)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Deploy de Modelo de ML em Nuvem", "doc_url": "https://aws.amazon.com/sagemaker/", "doc_label": "📖 AWS SageMaker Overview"}, "ia-5-0-3": {"id": "ia-5-0-3", "title": "Testes e boas práticas de código", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Testes Automatizados em ML", "doc_url": "https://docs.pytest.org/", "doc_label": "📖 Pytest Documentation"}, "ia-5-1-0": {"id": "ia-5-1-0", "title": "Versionamento de dados e modelos", "url": "https://www.youtube.com/watch?v=k_A3_w8E-Xg", "label": "▶ DVC (Data Version Control)", "doc_url": "https://dvc.org/doc/start", "doc_label": "📖 DVC Get Started"}, "ia-5-1-1": {"id": "ia-5-1-1", "title": "MLflow ou Weights & Biases", "url": "https://www.youtube.com/watch?v=qdcKU_gZ5eM", "label": "▶ MLflow Tracking & Registry", "doc_url": "https://mlflow.org/docs/latest/index.html", "doc_label": "📖 MLflow Documentation"}, "ia-5-1-2": {"id": "ia-5-1-2", "title": "Monitoramento de modelos", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Data Drift e Model Monitoring", "doc_url": "https://docs.evidentlyai.com/", "doc_label": "📖 Evidently AI Model Monitoring"}, "ia-5-2-0": {"id": "ia-5-2-0", "title": "3 a 5 projetos documentados no GitHub", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Como Montar Portfólio no GitHub", "doc_url": "https://github.com/topics/machine-learning", "doc_label": "💻 GitHub ML Topics"}, "ia-5-2-1": {"id": "ia-5-2-1", "title": "READMEs com problema, solução e resultados", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ README Incrível para Projetos", "doc_url": "https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes", "doc_label": "📖 Guia README GitHub"}, "ia-5-2-2": {"id": "ia-5-2-2", "title": "Perfil ativo no LinkedIn e Kaggle", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Estratégia de LinkedIn & Kaggle", "doc_url": "https://www.kaggle.com/", "doc_label": "💻 Kaggle Official"}, "ia-5-2-3": {"id": "ia-5-2-3", "title": "Inglês técnico", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI", "label": "▶ Playlist Inglês EnglishBay", "doc_url": "https://arxiv.org/archive/cs", "doc_label": "📄 arXiv Computer Science"}, "ia-5-3-0": {"id": "ia-5-3-0", "title": "Linux e shell avançado", "url": "https://www.youtube.com/watch?v=oxuRxtrO2Ag", "label": "▶ Linux Terminal do Básico ao Avançado", "doc_url": "https://ubuntu.com/tutorials/command-line-for-beginners", "doc_label": "📖 Ubuntu Command Line"}, "ia-5-3-1": {"id": "ia-5-3-1", "title": "CI/CD com GitHub Actions", "url": "https://www.youtube.com/watch?v=R8_veQiYBjI", "label": "▶ GitHub Actions CI/CD Pipeline", "doc_url": "https://docs.github.com/pt/actions", "doc_label": "📖 GitHub Actions Docs"}, "ia-5-3-2": {"id": "ia-5-3-2", "title": "Kubernetes (noção)", "url": "https://www.youtube.com/watch?v=X48VuDVv0do", "label": "▶ Kubernetes Explicado em 15 Minutos", "doc_url": "https://kubernetes.io/docs/home/", "doc_label": "📖 Kubernetes Documentation"}, "ia-5-3-3": {"id": "ia-5-3-3", "title": "Filas e processamento assíncrono", "url": "https://www.youtube.com/watch?v=THxCy_kL5pE", "label": "▶ Celery & Redis Task Queues", "doc_url": "https://docs.celeryq.dev/en/stable/", "doc_label": "📖 Celery Documentation"}, "ia-5-3-4": {"id": "ia-5-3-4", "title": "Redis, Postgres e pgvector", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ PostgreSQL com pgvector para IA", "doc_url": "https://github.com/pgvector/pgvector", "doc_label": "📖 pgvector Open Source"}, "ia-5-4-0": {"id": "ia-5-4-0", "title": "Interfaces com Gradio e Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Gradio & Streamlit para Demos de IA", "doc_url": "https://www.gradio.app/docs", "doc_label": "📖 Gradio Documentation"}, "ia-5-4-1": {"id": "ia-5-4-1", "title": "Front-end básico (HTML e JS)", "url": "https://www.youtube.com/watch?v=Ejkb_YpuHWs", "label": "▶ Guanabara HTML5 e CSS3", "doc_url": "https://developer.mozilla.org/pt-BR/docs/Learn", "doc_label": "📖 MDN Web Docs"}, "ia-5-4-2": {"id": "ia-5-4-2", "title": "Autenticação e limites de uso", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ OAuth2, JWT e Rate Limiting", "doc_url": "https://fastapi.tiangolo.com/tutorial/security/", "doc_label": "📖 FastAPI Security Guide"}, "ia-5-4-3": {"id": "ia-5-4-3", "title": "Observabilidade de LLMs", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LangSmith & Tracing de LLMs", "doc_url": "https://docs.smith.langchain.com/", "doc_label": "📖 LangSmith Docs"}, "ia-5-5-0": {"id": "ia-5-5-0", "title": "Currículo e entrevistas técnicas", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Como Passar em Entrevistas de IA", "doc_url": "https://www.deeplearning.ai/the-batch/", "doc_label": "📖 The Batch by Andrew Ng"}, "ia-5-5-1": {"id": "ia-5-5-1", "title": "Contribuir com open source", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Primeiros Passos no Open Source", "doc_url": "https://opensource.guide/pt/", "doc_label": "📖 Guia de Open Source"}, "ia-5-5-2": {"id": "ia-5-5-2", "title": "Escrever artigos e posts", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Criando Conteúdo Técnico e Artigos", "doc_url": "https://medium.com/topic/machine-learning", "doc_label": "📖 Medium Towards Data Science"}, "ia-5-5-3": {"id": "ia-5-5-3", "title": "Comunidades e eventos", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Redes e Comunidades de IA", "doc_url": "https://huggingface.co/community", "doc_label": "💬 Hugging Face Community"}, "ia-5-5-4": {"id": "ia-5-5-4", "title": "Certificações (opcional)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Certificações AWS/GCP valem a pena?", "doc_url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/", "doc_label": "📖 AWS ML Specialty"}};

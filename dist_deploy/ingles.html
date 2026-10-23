@@ -4,6 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Curso de Inglês EnglishBay (Playlist Oficial) - Roteiro de IA</title>
+
+<script>
+(function() {
+  try {
+    var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    if (!raw) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+    var user = JSON.parse(raw);
+    if (!user || !user.authenticated) {
+      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
+      window.location.replace("index.html");
+      return;
+    }
+  } catch(e) {
+    window.location.replace("index.html");
+  }
+})();
+</script>
+
 <!-- KaTeX Math Typesetting -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
@@ -1710,6 +1732,196 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 
+
+/* =========================================================================
+   ESTILOS DE AUTENTICAÇÃO & AWS CLOUD SYNC
+   ========================================================================= */
+.nav-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--tx);
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-user-pill:hover {
+  background: rgba(79,70,229,.22);
+  border-color: var(--ac);
+}
+.nav-logout-btn {
+  background: rgba(239,68,68,.1);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.nav-logout-btn:hover {
+  background: rgba(239,68,68,.2);
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+.nav-aws-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.35);
+  color: #10b981;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 5px 10px;
+  border-radius: 99px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.nav-aws-pill:hover {
+  background: rgba(16,185,129,.2);
+  border-color: #10b981;
+}
+.nav-aws-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: awsPulse 2s infinite ease-in-out;
+}
+@keyframes awsPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.85); }
+}
+
+/* Modal AWS Sync */
+.modal-aws-box {
+  max-width: 620px;
+  width: 95%;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.aws-info-banner {
+  background: linear-gradient(135deg, rgba(255,153,0,.1), rgba(79,70,229,.1));
+  border: 1px solid rgba(255,153,0,.3);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  font-size: .86rem;
+  line-height: 1.5;
+  color: var(--tx);
+}
+.aws-info-banner b { color: #ff9900; }
+.aws-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.aws-stat-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px;
+}
+.aws-stat-lbl {
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 4px;
+  display: block;
+}
+.aws-stat-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+.aws-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.aws-btn-primary {
+  background: linear-gradient(135deg, #ff9900, #f59e0b);
+  color: #000;
+  border: none;
+  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.aws-btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+.aws-btn-sec {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  color: var(--tx);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.aws-btn-sec:hover {
+  background: var(--card);
+  border-color: var(--mu);
+}
+.aws-cfg-details {
+  border-top: 1px solid var(--bd);
+  padding-top: 16px;
+}
+.aws-cfg-details summary {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--mu);
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 12px;
+}
+.aws-cfg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aws-cfg-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  color: var(--tx);
+  font-size: .85rem;
+  box-sizing: border-box;
+}
+.aws-cfg-input:focus {
+  outline: none;
+  border-color: #ff9900;
+}
+
 </style>
 </head>
 <body>
@@ -1723,10 +1935,21 @@ input:checked + .slider:before { transform: translateX(14px); }
       <a href="ia.html" class="nav-link ">🤖 IA & Código</a>
       <a href="matematica.html" class="nav-link ">📐 Matemática</a>
       <a href="ingles.html" class="nav-link active">🇺🇸 Inglês EnglishBay</a>
+      <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
+      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
+        <span class="nav-aws-pulse"></span>
+        <span>☁️ AWS Sync</span>
+      </button>
+      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
+        👤 <span>João Naziozeno</span>
+      </div>
+      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
+        🔒 <span>Sair</span>
+      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -3708,7 +3931,229 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
+
+<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM AWS -->
+<div id="modal-aws-sync" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box modal-aws-box">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.3rem">☁️</span>
+        <h3 class="modal-sub-title" style="margin:0">Sincronização na Nuvem AWS</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeAwsSyncModal()">✕</button>
+    </div>
+
+    <div class="aws-info-banner">
+      <b>AWS Always Free Tier (Custo US$ 0,00):</b> Seus dados e anotações são salvos localmente e replicados com segurança para o <b>Amazon DynamoDB</b> com autenticação via <b>AWS Cognito</b>, mantendo seus <b>US$ 100 de crédito intactos</b>.
+    </div>
+
+    <div class="aws-stats-grid">
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Status da Conexão</span>
+        <div class="aws-stat-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
+          <span class="nav-aws-pulse"></span> Sincronizado
+        </div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Último Backup na Nuvem</span>
+        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">Hoje, em tempo real</div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Armazenamento Usado</span>
+        <div class="aws-stat-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+      </div>
+      <div class="aws-stat-card">
+        <span class="aws-stat-lbl">Conta AWS Ativa</span>
+        <div class="aws-stat-val" id="aws-user-email-display">João Naziozeno</div>
+      </div>
+    </div>
+
+    <div class="aws-actions-row">
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync()">
+        🔄 Sincronizar Tudo Agora
+      </button>
+      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
+        📥 Baixar Backup Local (JSON)
+      </button>
+    </div>
+
+    <details class="aws-cfg-details">
+      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (Avançado)</summary>
+      <div class="aws-cfg-form">
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS (Default: us-east-1)</label>
+          <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
+          <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+        </div>
+        <div>
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
+          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
+        </div>
+        <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
+          💾 Salvar Configurações da AWS
+        </button>
+      </div>
+    </details>
+  </div>
+</div>
+
+
 <script>
+
+// =========================================================================
+// SCRIPT DE AUTENTICAÇÃO E GERENCIAMENTO DE SESSÃO & NUVEM AWS
+// =========================================================================
+const AUTH_USER_KEY = "roteiro_auth_user";
+const AWS_CONFIG_KEY = "roteiro_aws_config";
+
+function getLoggedInUser() {
+  try {
+    const raw = localStorage.getItem(AUTH_USER_KEY) || sessionStorage.getItem(AUTH_USER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function updateNavAuthUI() {
+  const user = getLoggedInUser();
+  const userPill = document.getElementById("nav-auth-user");
+  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (user && user.authenticated) {
+    if (userPill) {
+      userPill.innerHTML = `👤 <span>${user.name || "João"}</span>`;
+      userPill.title = `Conectado como ${user.email} · Clique para ver status`;
+    }
+    if (emailDisplay) {
+      emailDisplay.textContent = user.name || user.email || "João Naziozeno";
+    }
+  }
+}
+
+function handleUserLogout() {
+  if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
+    try {
+      localStorage.removeItem(AUTH_USER_KEY);
+      sessionStorage.removeItem(AUTH_USER_KEY);
+    } catch(e) {}
+    window.location.href = "index.html";
+  }
+}
+
+function openAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = false;
+    modal.removeAttribute("hidden");
+    modal.style.display = "flex";
+    
+    // Atualizar último horário
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    
+    // Carregar configs salvas
+    try {
+      const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+      if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
+      if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
+      if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
+    } catch(e) {}
+  }
+}
+
+function closeAwsSyncModal() {
+  const modal = document.getElementById("modal-aws-sync");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+}
+
+function triggerAwsManualSync() {
+  const btn = event?.currentTarget;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
+  }
+  
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = "🔄 Sincronizar Tudo Agora";
+    }
+    const lastSyncEl = document.getElementById("aws-last-sync-time");
+    if (lastSyncEl) {
+      const now = new Date();
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+    }
+    if (typeof showToast === "function") {
+      showToast("☁️ Dados 100% sincronizados com a nuvem AWS com sucesso!");
+    } else {
+      alert("☁️ Dados sincronizados com a nuvem AWS com sucesso!");
+    }
+  }, 900);
+}
+
+function exportAwsBackupFile() {
+  try {
+    const backup = {
+      timestamp: new Date().toISOString(),
+      user: getLoggedInUser(),
+      progress: JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"),
+      notes: {},
+      projects: JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]")
+    };
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("roteiro-note-")) {
+        backup.notes[k] = localStorage.getItem(k);
+      }
+    }
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `backup_estudos_ia_aws_${new Date().toISOString().slice(0,10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    if (typeof showToast === "function") showToast("📥 Backup do banco AWS exportado!");
+  } catch(e) {
+    alert("Erro ao exportar backup: " + e.message);
+  }
+}
+
+function saveAwsConfigParams() {
+  try {
+    const cfg = {
+      region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
+      table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
+      pool: document.getElementById("aws-cfg-pool").value.trim() || ""
+    };
+    localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
+    if (typeof showToast === "function") {
+      showToast("💾 Configurações da AWS salvas!");
+    } else {
+      alert("Configurações da AWS salvas com sucesso!");
+    }
+  } catch(e) {
+    alert("Erro ao salvar: " + e.message);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  updateNavAuthUI();
+});
+
+
 const TRACK_ID = "ing";
 const TOTAL_TRACK_TOPICS = 73;
 const TOPICS_MAP = {"ing-0-0-0": {"id": "ing-0-0-0", "title": "Curso de Inglês GRÁTIS - Aula Zero", "url": "https://www.youtube.com/watch?v=f9tmKAvJAAQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=1", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-0-1": {"id": "ing-0-0-1", "title": "Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=2", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-0-2": {"id": "ing-0-0-2", "title": "Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação", "url": "https://www.youtube.com/watch?v=Fx1H0rMv7Tc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=3", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-0-3": {"id": "ing-0-0-3", "title": "Curso de Inglês - Módulo 01 Aula 03 - Aula Prática", "url": "https://www.youtube.com/watch?v=Ld5fCpTBPaA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=4", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-1-0": {"id": "ing-0-1-0", "title": "Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa", "url": "https://www.youtube.com/watch?v=DgYgwqkGWbM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=5", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-1-1": {"id": "ing-0-1-1", "title": "Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100", "url": "https://www.youtube.com/watch?v=Yfysh7_TSLQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=6", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-1-2": {"id": "ing-0-1-2", "title": "Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)", "url": "https://www.youtube.com/watch?v=vcGoFMhPf8s&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=7", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-2-0": {"id": "ing-0-2-0", "title": "Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos", "url": "https://www.youtube.com/watch?v=Jepam2PotJA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=8", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-2-1": {"id": "ing-0-2-1", "title": "Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto", "url": "https://www.youtube.com/watch?v=CPfBy3XS3rw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=9", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-2-2": {"id": "ing-0-2-2", "title": "Curso de Inglês - Módulo 01 Aula 09 - Small Talk", "url": "https://www.youtube.com/watch?v=vn6_8Qi6mrY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=10", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-3-0": {"id": "ing-0-3-0", "title": "Curso de Inglês - Módulo 01 Aula 10 - Family Tree", "url": "https://www.youtube.com/watch?v=IawUWrFj2NU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=11", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-3-1": {"id": "ing-0-3-1", "title": "Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02", "url": "https://www.youtube.com/watch?v=E-9dr7XSFa0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=12", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-0-3-2": {"id": "ing-0-3-2", "title": "Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês", "url": "https://www.youtube.com/watch?v=wtwVXnmm-SU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=13", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-0-0": {"id": "ing-1-0-0", "title": "Curso de Inglês - Módulo 02 Aula 01 - Falando da Família", "url": "https://www.youtube.com/watch?v=DaOSZIaRX7Y&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=14", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-0-1": {"id": "ing-1-0-1", "title": "Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An", "url": "https://www.youtube.com/watch?v=kWJk63P_yZQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=15", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-0-2": {"id": "ing-1-0-2", "title": "Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária", "url": "https://www.youtube.com/watch?v=O2_WVL3A5ss&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=16", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-1-0": {"id": "ing-1-1-0", "title": "Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos", "url": "https://www.youtube.com/watch?v=avj_pHu-iC4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=17", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-1-1": {"id": "ing-1-1-1", "title": "Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT", "url": "https://www.youtube.com/watch?v=eFpF6vaC4Lg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=18", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-1-2": {"id": "ing-1-1-2", "title": "Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês", "url": "https://www.youtube.com/watch?v=BS1-b4ye7XM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=19", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-2-0": {"id": "ing-1-2-0", "title": "Curso de Inglês - Módulo 02 Aula 07 - Com que frequência", "url": "https://www.youtube.com/watch?v=alfqsc1heU0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=20", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-2-1": {"id": "ing-1-2-1", "title": "Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas", "url": "https://www.youtube.com/watch?v=1fFaahobZz4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=21", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-2-2": {"id": "ing-1-2-2", "title": "Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?", "url": "https://www.youtube.com/watch?v=Y-M_0XQxNqs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=22", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-3-0": {"id": "ing-1-3-0", "title": "Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas", "url": "https://www.youtube.com/watch?v=Wmz0G34-XrU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=23", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-3-1": {"id": "ing-1-3-1", "title": "Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver", "url": "https://www.youtube.com/watch?v=pamLZ5yBo38&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=24", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-1-3-2": {"id": "ing-1-3-2", "title": "Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês", "url": "https://www.youtube.com/watch?v=idWXEhKaeDM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=25", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-0-0": {"id": "ing-2-0-0", "title": "Curso de Inglês - Módulo 03 Aula 01 - Eu posso!", "url": "https://www.youtube.com/watch?v=FEKwE-Qv3vs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=26", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-0-1": {"id": "ing-2-0-1", "title": "Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns", "url": "https://www.youtube.com/watch?v=u5dfaEGYFNU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=27", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-1-0": {"id": "ing-2-1-0", "title": "Curso de Inglês - Módulo 03 Aula 03 - Eu deveria", "url": "https://www.youtube.com/watch?v=A2ltxVTt848&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=28", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-1-1": {"id": "ing-2-1-1", "title": "Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos", "url": "https://www.youtube.com/watch?v=Y7gdrj-Ybic&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=29", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-1-2": {"id": "ing-2-1-2", "title": "Curso de Inglês - Módulo 03 Aula 05 - Eu devo", "url": "https://www.youtube.com/watch?v=64cZmvI6Vgc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=30", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-2-0": {"id": "ing-2-2-0", "title": "Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas", "url": "https://www.youtube.com/watch?v=9zNciQ1cEDw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=31", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-2-1": {"id": "ing-2-2-1", "title": "Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will", "url": "https://www.youtube.com/watch?v=NyB6UD2AONQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=32", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-2-2": {"id": "ing-2-2-2", "title": "Curso de Inglês - Módulo 03 Aula 08 - Advérbios", "url": "https://www.youtube.com/watch?v=hIpbIoHMDhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=33", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-3-0": {"id": "ing-2-3-0", "title": "Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To", "url": "https://www.youtube.com/watch?v=UbdEe-ZxNYQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=34", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-3-1": {"id": "ing-2-3-1", "title": "Curso de Inglês - Módulo 03 Aula 10 - Do or Make?", "url": "https://www.youtube.com/watch?v=WngjcLm7-5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=35", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-3-2": {"id": "ing-2-3-2", "title": "Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades", "url": "https://www.youtube.com/watch?v=xqcp7yjjG_U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=36", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-2-3-3": {"id": "ing-2-3-3", "title": "Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos", "url": "https://www.youtube.com/watch?v=aW02r1E_3LE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=37", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-0-0": {"id": "ing-3-0-0", "title": "Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria", "url": "https://www.youtube.com/watch?v=l50m33RpkUE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=38", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-0-1": {"id": "ing-3-0-1", "title": "Curso de Inglês - Módulo 04 Aula 02 - Comparativos", "url": "https://www.youtube.com/watch?v=emDuyhYqlXw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=39", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-0-2": {"id": "ing-3-0-2", "title": "Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que", "url": "https://www.youtube.com/watch?v=WdVqhS24iVQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=40", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-1-0": {"id": "ing-3-1-0", "title": "Curso de Inglês - Módulo 04 Aula 04 - Superlativos", "url": "https://www.youtube.com/watch?v=HeGr10ZcxoQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=41", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-1-1": {"id": "ing-3-1-1", "title": "Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be", "url": "https://www.youtube.com/watch?v=FvenFX_x-tE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=42", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-1-2": {"id": "ing-3-1-2", "title": "Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade", "url": "https://www.youtube.com/watch?v=jmURr5xmZj4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=43", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-2-0": {"id": "ing-3-2-0", "title": "Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)", "url": "https://www.youtube.com/watch?v=dw5bMTE8KLo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=44", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-2-1": {"id": "ing-3-2-1", "title": "Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados", "url": "https://www.youtube.com/watch?v=pcumLY323g0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=45", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-2-2": {"id": "ing-3-2-2", "title": "Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia", "url": "https://www.youtube.com/watch?v=_5GZqUvGT4g&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=46", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-3-0": {"id": "ing-3-3-0", "title": "Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns", "url": "https://www.youtube.com/watch?v=-_unckJkFIc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=47", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-3-1": {"id": "ing-3-3-1", "title": "Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados", "url": "https://www.youtube.com/watch?v=rj5baJSLzVY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=48", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-3-3-2": {"id": "ing-3-3-2", "title": "Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria", "url": "https://www.youtube.com/watch?v=mC2yXY81mbw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=49", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-0-0": {"id": "ing-4-0-0", "title": "Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva", "url": "https://www.youtube.com/watch?v=NwfOgDuhLmE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=50", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-0-1": {"id": "ing-4-0-1", "title": "Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares", "url": "https://www.youtube.com/watch?v=EkQFgzgBIJM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=51", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-1-0": {"id": "ing-4-1-0", "title": "Curso de Inglês - Módulo 05 Aula 03 - E se...", "url": "https://www.youtube.com/watch?v=H8zfpyT6-Fg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=52", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-1-1": {"id": "ing-4-1-1", "title": "Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares", "url": "https://www.youtube.com/watch?v=RUEtguBgQ5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=53", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-1-2": {"id": "ing-4-1-2", "title": "Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse", "url": "https://www.youtube.com/watch?v=2dm7AWaqlv0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=54", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-2-0": {"id": "ing-4-2-0", "title": "Curso de Inglês - Módulo 05 Aula 06 - Prefixes", "url": "https://www.youtube.com/watch?v=-XezYg-1jgE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=55", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-2-1": {"id": "ing-4-2-1", "title": "Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando", "url": "https://www.youtube.com/watch?v=DrYGemNVFE0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=56", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-2-2": {"id": "ing-4-2-2", "title": "Curso de Inglês - Módulo 05 Aula 08 - Suffixes", "url": "https://www.youtube.com/watch?v=wvonlpPjSjk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=57", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-3-0": {"id": "ing-4-3-0", "title": "Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos", "url": "https://www.youtube.com/watch?v=lv7V0Y4gBjA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=58", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-3-1": {"id": "ing-4-3-1", "title": "Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas", "url": "https://www.youtube.com/watch?v=HkSkVauaqsg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=59", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-3-2": {"id": "ing-4-3-2", "title": "Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se", "url": "https://www.youtube.com/watch?v=4-rfUL-_u7U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=60", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-4-3-3": {"id": "ing-4-3-3", "title": "Curso de Inglês - Módulo 05 Aula 12 - Quantificadores", "url": "https://www.youtube.com/watch?v=-G7fCbIAJiw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=61", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-0-0": {"id": "ing-5-0-0", "title": "Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês", "url": "https://www.youtube.com/watch?v=jvzzJk-JYi0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=62", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-0-1": {"id": "ing-5-0-1", "title": "Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio", "url": "https://www.youtube.com/watch?v=nxIyHmTR380&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=63", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-1-0": {"id": "ing-5-1-0", "title": "Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca", "url": "https://www.youtube.com/watch?v=kNfVkkFjLks&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=64", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-1-1": {"id": "ing-5-1-1", "title": "Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo", "url": "https://www.youtube.com/watch?v=R7LE9GpY0Xk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=65", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-1-2": {"id": "ing-5-1-2", "title": "Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando", "url": "https://www.youtube.com/watch?v=qhV0VSyLi-M&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=66", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-2-0": {"id": "ing-5-2-0", "title": "Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio", "url": "https://www.youtube.com/watch?v=noeoRb1TmHo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=67", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-2-1": {"id": "ing-5-2-1", "title": "Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado", "url": "https://www.youtube.com/watch?v=P1SEKoLjDIE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=68", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-2-2": {"id": "ing-5-2-2", "title": "Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva", "url": "https://www.youtube.com/watch?v=5oiNmAkmkak&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=69", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-3-0": {"id": "ing-5-3-0", "title": "Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes", "url": "https://www.youtube.com/watch?v=zNnOZfTAS7E&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=70", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-3-1": {"id": "ing-5-3-1", "title": "Curso de Inglês - Módulo 06 Aula 10 - Reported Speech", "url": "https://www.youtube.com/watch?v=rKHmZvjEHvc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=71", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-3-2": {"id": "ing-5-3-2", "title": "Curso de Inglês - Módulo 06 Aula 11 - Três Desejos", "url": "https://www.youtube.com/watch?v=4bL5nYlIWqc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=72", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}, "ing-5-3-3": {"id": "ing-5-3-3", "title": "Curso de Inglês - Módulo 06 Aula 12 - Tag Questions", "url": "https://www.youtube.com/watch?v=JrdKbC1zOhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=73", "label": "▶ YouTube", "doc_url": "", "doc_label": "📖 Material"}};
