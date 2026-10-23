@@ -22,12 +22,47 @@ function getYoutubeEmbedUrl(url) {
   if (!url) return "";
   if (url.includes("youtube.com/embed/")) return url;
   const matchV = url.match(/[?&]v=([^&#]+)/);
-  if (matchV) return "https://www.youtube.com/embed/" + matchV[1] + "?enablejsapi=1&rel=0";
+  if (matchV) return "https://www.youtube.com/embed/" + matchV[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
   const matchShort = url.match(/youtu\.be\/([^?&#]+)/);
-  if (matchShort) return "https://www.youtube.com/embed/" + matchShort[1] + "?enablejsapi=1&rel=0";
+  if (matchShort) return "https://www.youtube.com/embed/" + matchShort[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
   const matchL = url.match(/[?&]list=([^&#]+)/);
-  if (matchL) return "https://www.youtube.com/embed/videoseries?list=" + matchL[1] + "&enablejsapi=1&rel=0";
+  if (matchL) return "https://www.youtube.com/embed/videoseries?list=" + matchL[1] + "&enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
   return url;
+}
+
+function copyPtGuideToNotebook(topicId) {
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const g = topicInfo.pt_guide;
+  if (!g) return;
+  const editor = document.getElementById("modal-note-editor");
+  if (!editor) return;
+
+  const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
+  const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
+  const mdBlock = [
+    `## 📘 Resumo em Português: ${topicInfo.title || ""}`,
+    "",
+    `### 🎯 1. Intuição & Conceito`,
+    cleanIntuicao,
+    "",
+    `### 📐 2. Fórmula Matemática`,
+    g.formula || "",
+    "",
+    `### 🔢 3. Exemplo Prático Passo a Passo`,
+    cleanExemplo,
+    "",
+    `### 🐍 4. Aplicação em Python (IA)`,
+    "```python",
+    g.codigo || "",
+    "```",
+    ""
+  ].join("\n");
+
+  const cur = editor.value.trim();
+  editor.value = cur ? (cur + "\n\n" + mdBlock) : mdBlock;
+  onNoteEditorInput();
+  setNoteViewMode("split");
+  showToast("📘 Apostila em Português + Código copiados para o seu Caderno!");
 }
 
 function showToast(msg) {
@@ -47,7 +82,7 @@ function showToast(msg) {
 // =========================================================================
 // ABRIR E FECHAR O ESTÚDIO UNIFICADO DE ESTUDO & ANOTAÇÕES
 // =========================================================================
-function openStudyModal(topicId) {
+function openStudyModal(topicId, focusGuide = false) {
   CURRENT_MODAL_TOPIC_ID = topicId;
   const modal = document.getElementById("note-modal");
   if (!modal) return;
@@ -81,6 +116,8 @@ function openStudyModal(topicId) {
   const docUrl = topicInfo.doc_url || "";
   const videoLabel = topicInfo.label || "▶ Vídeo Aula";
   const docLabel = topicInfo.doc_label || "📖 Material Oficial";
+  const ytPtUrl = topicInfo.yt_pt_url || "";
+  const ptGuide = topicInfo.pt_guide || null;
 
   if (videoUrl) {
     if (playerSect) playerSect.style.display = "flex";
@@ -99,10 +136,73 @@ function openStudyModal(topicId) {
 
   if (docUrl && docLink) {
     docLink.href = docUrl;
-    docLink.textContent = docLabel;
+    docLink.textContent = ptGuide ? "🌐 Artigo Externo PT-BR ↗" : docLabel;
     docLink.style.display = "inline-flex";
   } else if (docLink) {
     docLink.style.display = "none";
+  }
+
+  // Renderizar Apostila Interativa em Português (quando disponível no tópico)
+  const guideContainer = document.getElementById("modal-pt-guide-container");
+  const defaultTipCard = document.getElementById("modal-default-tip-card");
+  if (guideContainer) {
+    if (ptGuide) {
+      if (defaultTipCard) defaultTipCard.style.display = "none";
+      const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
+      const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
+      guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(99,102,241,.45);background:linear-gradient(160deg,rgba(79,70,229,.09),rgba(16,185,129,.05));padding:16px 18px;border-radius:14px;margin-bottom:10px">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
+            <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Apostila Descomplicada em Português (PT-BR)</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
+                📥 Copiar para Meu Caderno
+              </button>
+              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.12);color:#ef4444;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🇧🇷 Aulas Brasileiras no YouTube ↗</a>` : ""}
+              ${docUrl ? `<a href="${docUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 Fonte Complementar PT-BR ↗</a>` : ""}
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
+            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
+              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac);margin-bottom:4px">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+              <div>${ptGuide.intuicao || ""}</div>
+            </div>
+
+            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
+              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b;margin-bottom:4px">📐 2. Fórmula Matemática & Significado</div>
+              <div id="pt-guide-formula-render">${fmtFormula}</div>
+            </div>
+
+            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
+              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981;margin-bottom:4px">🔢 3. Exemplo Prático Passo a Passo</div>
+              <div id="pt-guide-example-render">${fmtExemplo}</div>
+            </div>
+
+            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
+              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4;margin-bottom:4px">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+              <pre style="margin:6px 0 0;padding:10px 12px;background:#0d1017;color:#e5e7eb;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:.8rem;line-height:1.45"><code>${(ptGuide.codigo || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
+            </div>
+          </div>
+        </div>
+      `;
+      if (typeof renderMathInElement === "function") {
+        try {
+          renderMathInElement(guideContainer, {
+            delimiters: [
+              {left: "$$", right: "$$", display: true},
+              {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+          });
+        } catch(e) {}
+      }
+    } else {
+      guideContainer.innerHTML = "";
+      if (defaultTipCard) defaultTipCard.style.display = "block";
+    }
   }
 
   // Iniciar Cronômetro da Sessão
@@ -124,6 +224,15 @@ function openStudyModal(topicId) {
   modal.classList.add("active");
   modal.style.display = "flex";
   document.body.style.overflow = "hidden";
+
+  if (focusGuide) {
+    setTimeout(() => {
+      const gBox = document.getElementById("pt-guide-box");
+      if (gBox) {
+        gBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 120);
+  }
 }
 
 function openNoteModal(topicId) {

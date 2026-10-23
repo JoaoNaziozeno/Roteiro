@@ -35,12 +35,17 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                 doc_url = ""
                 doc_label = "📖 Material"
 
+                pt_guide = None
+                yt_pt_url = ""
+
                 if isinstance(raw_t, dict):
                     topic_title = raw_t.get("title", "")
                     yt_url = raw_t.get("video_url") or raw_t.get("url") or ""
                     yt_label = raw_t.get("video_label") or ("▶ YouTube" if is_english else "▶ Vídeo")
                     doc_url = raw_t.get("doc_url") or ""
                     doc_label = raw_t.get("doc_label") or "📖 Material"
+                    pt_guide = raw_t.get("pt_guide")
+                    yt_pt_url = raw_t.get("yt_pt_url") or ""
                 elif isinstance(raw_t, str) and "||" in raw_t:
                     parts = raw_t.split("||", 1)
                     topic_title = parts[0]
@@ -54,7 +59,9 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     "url": yt_url,
                     "label": yt_label,
                     "doc_url": doc_url,
-                    "doc_label": doc_label
+                    "doc_label": doc_label,
+                    "pt_guide": pt_guide,
+                    "yt_pt_url": yt_pt_url
                 }
                 topics_list.append(t_dict)
                 topics_map[topic_id] = t_dict
@@ -115,7 +122,9 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\')" title="Assistir no Estúdio Integrado">{t_lbl}</button>'
 
                 doc_btn_html = ""
-                if t.get("doc_url"):
+                if t.get("pt_guide"):
+                    doc_btn_html = f'<button class="doc-btn" onclick="openStudyModal(\'{t_id}\', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">{t.get("doc_label", "📘 Apostila PT-BR")}</button>'
+                elif t.get("doc_url"):
                     doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de estudo / documentação">{t.get("doc_label", "📖 Material")}</a>'
 
                 topics_rows.append(f"""
@@ -430,9 +439,10 @@ __AUTH_AWS_CSS__
           </div>
         </div>
 
-        <!-- PAINEL EXTRA DE CONTEXTO E DICAS DO TÓPICO -->
-        <div class="study-left-extra-info">
-          <div class="study-left-card">
+        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA EM PORTUGUÊS -->
+        <div class="study-left-extra-info" id="study-left-extra-info">
+          <div id="modal-pt-guide-container"></div>
+          <div class="study-left-card" id="modal-default-tip-card">
             <div class="study-left-card-title">💡 Aprendizado Ativo & Imersivo:</div>
             <p>Assista aos conceitos no vídeo à esquerda, pause nos momentos-chave e registre seus códigos e insights no caderno à direita. Use a <b>Paleta Matemática</b> para fórmulas e o <b>Estúdio 3D</b> para visualizar tensores e vetores geometricamente.</p>
           </div>
