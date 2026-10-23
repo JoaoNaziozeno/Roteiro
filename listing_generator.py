@@ -423,12 +423,20 @@ __AUTH_AWS_CSS__
           <iframe id="modal-video-iframe" src="" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
-        <!-- BARRA DE PROGRESSO DA SESSÃO / AUTO PROGRESSO -->
+        <!-- BARRA DE PROGRESSO DA SESSÃO / VALIDAÇÃO REAL DE ESTUDO -->
         <div class="session-progress-bar-wrap" id="session-progress-wrap">
-          <div class="session-progress-info">
-            <span id="session-progress-text">⏱️ Sessão Ativa: 00:00 · Status: Estudando</span>
+          <div class="session-progress-info" style="flex-wrap:wrap;gap:8px">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+              <span id="session-progress-text" style="font-weight:650">⏱️ Sessão: 00:00</span>
+              <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
+                🎬 Vídeo: 0%
+              </button>
+              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual PT-BR (Role pelos 4 cards + ~45s de leitura na tela, ou clique em 'Marcar Aula Visual como Lida' ao final)">
+                📘 Aula Visual: 0%
+              </button>
+            </div>
             <div style="display:flex;align-items:center;gap:10px">
-              <span id="session-progress-pct" style="font-weight:750;color:var(--ac)">0%</span>
+              <span id="session-progress-pct" style="font-weight:800;color:var(--ac)">0%</span>
               <button class="session-finish-btn" onclick="markTopicCompleteNow()" title="Marcar este tópico como Concluído imediatamente">✅ Concluir Tópico</button>
             </div>
           </div>
@@ -1080,6 +1088,13 @@ function cycleStatus(topicId) {
   else next = "z";
 
   PR[topicId].s = next;
+  if (next === "z") {
+    PR[topicId].vp = 0;
+    PR[topicId].gp = 0;
+  } else if (next === "e") {
+    PR[topicId].vp = 100;
+    PR[topicId].gp = 100;
+  }
   saveLocal();
   paint();
   syncTopicToServer(topicId);
@@ -1110,6 +1125,15 @@ function toggleModalTopicStatus() {
 
   if (!PR[CURRENT_MODAL_TOPIC_ID]) PR[CURRENT_MODAL_TOPIC_ID] = { s: "z", n: "", d: "" };
   PR[CURRENT_MODAL_TOPIC_ID].s = next;
+  if (next === "z") {
+    PR[CURRENT_MODAL_TOPIC_ID].vp = 0;
+    PR[CURRENT_MODAL_TOPIC_ID].gp = 0;
+    if (typeof resetSessionStudyProgress === "function") resetSessionStudyProgress();
+  } else if (next === "e") {
+    PR[CURRENT_MODAL_TOPIC_ID].vp = 100;
+    PR[CURRENT_MODAL_TOPIC_ID].gp = 100;
+    if (typeof syncSessionStudyProgressUI === "function") syncSessionStudyProgressUI();
+  }
   updateModalStatusBtn(next);
   saveLocal();
   paint();

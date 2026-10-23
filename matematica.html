@@ -3009,12 +3009,20 @@ input:checked + .slider:before { transform: translateX(14px); }
           <iframe id="modal-video-iframe" src="" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
-        <!-- BARRA DE PROGRESSO DA SESSÃO / AUTO PROGRESSO -->
+        <!-- BARRA DE PROGRESSO DA SESSÃO / VALIDAÇÃO REAL DE ESTUDO -->
         <div class="session-progress-bar-wrap" id="session-progress-wrap">
-          <div class="session-progress-info">
-            <span id="session-progress-text">⏱️ Sessão Ativa: 00:00 · Status: Estudando</span>
+          <div class="session-progress-info" style="flex-wrap:wrap;gap:8px">
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+              <span id="session-progress-text" style="font-weight:650">⏱️ Sessão: 00:00</span>
+              <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
+                🎬 Vídeo: 0%
+              </button>
+              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual PT-BR (Role pelos 4 cards + ~45s de leitura na tela, ou clique em 'Marcar Aula Visual como Lida' ao final)">
+                📘 Aula Visual: 0%
+              </button>
+            </div>
             <div style="display:flex;align-items:center;gap:10px">
-              <span id="session-progress-pct" style="font-weight:750;color:var(--ac)">0%</span>
+              <span id="session-progress-pct" style="font-weight:800;color:var(--ac)">0%</span>
               <button class="session-finish-btn" onclick="markTopicCompleteNow()" title="Marcar este tópico como Concluído imediatamente">✅ Concluir Tópico</button>
             </div>
           </div>
@@ -4089,6 +4097,13 @@ function cycleStatus(topicId) {
   else next = "z";
 
   PR[topicId].s = next;
+  if (next === "z") {
+    PR[topicId].vp = 0;
+    PR[topicId].gp = 0;
+  } else if (next === "e") {
+    PR[topicId].vp = 100;
+    PR[topicId].gp = 100;
+  }
   saveLocal();
   paint();
   syncTopicToServer(topicId);
@@ -4119,6 +4134,15 @@ function toggleModalTopicStatus() {
 
   if (!PR[CURRENT_MODAL_TOPIC_ID]) PR[CURRENT_MODAL_TOPIC_ID] = { s: "z", n: "", d: "" };
   PR[CURRENT_MODAL_TOPIC_ID].s = next;
+  if (next === "z") {
+    PR[CURRENT_MODAL_TOPIC_ID].vp = 0;
+    PR[CURRENT_MODAL_TOPIC_ID].gp = 0;
+    if (typeof resetSessionStudyProgress === "function") resetSessionStudyProgress();
+  } else if (next === "e") {
+    PR[CURRENT_MODAL_TOPIC_ID].vp = 100;
+    PR[CURRENT_MODAL_TOPIC_ID].gp = 100;
+    if (typeof syncSessionStudyProgressUI === "function") syncSessionStudyProgressUI();
+  }
   updateModalStatusBtn(next);
   saveLocal();
   paint();
@@ -4479,8 +4503,20 @@ function parseMarkdown(md) {
 // =========================================================================
 let studySessionTimer = null;
 let sessionSeconds = 0;
-const SESSION_TARGET_SECONDS = 60; // 60 segundos de estudo ativo para autoconclusão
+const GUIDE_READ_TARGET_SECONDS = 45; // 45s de leitura ativa na Aula Visual + rolagem pelos 4 cards
 let autoProgressEnabled = true;
+
+// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual PT-BR
+let ytCurrentTime = 0;
+let ytMaxTime = 0;
+let ytDuration = 0;
+let ytPlayerState = -1; // 1 = playing, 2 = paused, 0 = ended
+let ytVideoCompleted = false;
+let guideReadSeconds = 0;
+let guideCardsSeen = { 1: false, 2: false, 3: false, 4: false };
+let guideCompleted = false;
+let notifiedVideoHalf = false;
+let notifiedGuideHalf = false;
 
 try {
   const savedAuto = localStorage.getItem("roteiro-auto-progress");
@@ -4489,14 +4525,66 @@ try {
 
 function getYoutubeEmbedUrl(url) {
   if (!url) return "";
+  const originParam = (typeof window !== "undefined" && window.location && window.location.origin && window.location.origin.startsWith("http"))
+    ? "&origin=" + encodeURIComponent(window.location.origin)
+    : "";
   if (url.includes("youtube.com/embed/")) return url;
   const matchV = url.match(/[?&]v=([^&#]+)/);
-  if (matchV) return "https://www.youtube.com/embed/" + matchV[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
+  if (matchV) return "https://www.youtube.com/embed/" + matchV[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt" + originParam;
   const matchShort = url.match(/youtu\.be\/([^?&#]+)/);
-  if (matchShort) return "https://www.youtube.com/embed/" + matchShort[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
+  if (matchShort) return "https://www.youtube.com/embed/" + matchShort[1] + "?enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt" + originParam;
   const matchL = url.match(/[?&]list=([^&#]+)/);
-  if (matchL) return "https://www.youtube.com/embed/videoseries?list=" + matchL[1] + "&enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt";
+  if (matchL) return "https://www.youtube.com/embed/videoseries?list=" + matchL[1] + "&enablejsapi=1&rel=0&cc_load_policy=1&cc_lang_pref=pt&hl=pt" + originParam;
   return url;
+}
+
+function sendYoutubeListeningHandshake() {
+  const iframe = document.getElementById("modal-video-iframe");
+  if (!iframe || !iframe.contentWindow || !iframe.src) return;
+  try {
+    iframe.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "*");
+    iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func: "addEventListener", args: ["onStateChange"] }), "*");
+  } catch(e) {}
+}
+
+if (typeof window !== "undefined" && !window._roteiroYtListenerBound) {
+  window._roteiroYtListenerBound = true;
+  window.addEventListener("message", (event) => {
+    if (!event.origin || (!event.origin.includes("youtube.com") && !event.origin.includes("youtu.be"))) return;
+    let data = event.data;
+    if (typeof data === "string") {
+      try { data = JSON.parse(data); } catch(e) { return; }
+    }
+    if (!data || typeof data !== "object") return;
+
+    if (data.event === "infoDelivery" && data.info) {
+      if (typeof data.info.duration === "number" && data.info.duration > 0) {
+        ytDuration = data.info.duration;
+      }
+      if (typeof data.info.currentTime === "number" && data.info.currentTime >= 0) {
+        ytCurrentTime = data.info.currentTime;
+        if (ytCurrentTime > ytMaxTime) ytMaxTime = ytCurrentTime;
+      }
+      if (typeof data.info.playerState === "number") {
+        ytPlayerState = data.info.playerState;
+        if (ytPlayerState === 0) {
+          ytVideoCompleted = true;
+        }
+      }
+      if (ytDuration > 0 && Math.max(ytCurrentTime, ytMaxTime) >= ytDuration * 0.90) {
+        ytVideoCompleted = true;
+      }
+      syncSessionStudyProgressUI();
+    } else if (data.event === "onStateChange") {
+      if (typeof data.info === "number") {
+        ytPlayerState = data.info;
+        if (ytPlayerState === 0) {
+          ytVideoCompleted = true;
+          syncSessionStudyProgressUI();
+        }
+      }
+    }
+  });
 }
 
 function copyPtGuideToNotebook(topicId) {
@@ -4531,7 +4619,8 @@ function copyPtGuideToNotebook(topicId) {
   editor.value = cur ? (cur + "\n\n" + mdBlock) : mdBlock;
   onNoteEditorInput();
   setNoteViewMode("split");
-  showToast("📘 Apostila em Português + Código copiados para o seu Caderno!");
+  markPtGuideReadNow(true);
+  showToast("📘 Apostila em Português copiada para o Caderno e Aula Visual validada (100%)!");
 }
 
 function showToast(msg) {
@@ -4590,7 +4679,14 @@ function openStudyModal(topicId, focusGuide = false) {
 
   if (videoUrl) {
     if (playerSect) playerSect.style.display = "flex";
-    if (iframe) iframe.src = getYoutubeEmbedUrl(videoUrl);
+    if (iframe) {
+      iframe.onload = () => {
+        sendYoutubeListeningHandshake();
+        setTimeout(sendYoutubeListeningHandshake, 700);
+        setTimeout(sendYoutubeListeningHandshake, 1800);
+      };
+      iframe.src = getYoutubeEmbedUrl(videoUrl);
+    }
     if (extLink) {
       extLink.href = videoUrl;
       extLink.style.display = "inline-flex";
@@ -4638,25 +4734,47 @@ function openStudyModal(topicId, focusGuide = false) {
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
-            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
-              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac);margin-bottom:4px">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+            <div id="pt-step-card-1" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+                <span id="pt-step-badge-1" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">1/4</span>
+              </div>
               <div>${ptGuide.intuicao || ""}</div>
             </div>
 
-            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
-              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b;margin-bottom:4px">📐 2. Fórmula Matemática & Significado</div>
+            <div id="pt-step-card-2" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b">📐 2. Fórmula Matemática & Significado</div>
+                <span id="pt-step-badge-2" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">2/4</span>
+              </div>
               <div id="pt-guide-formula-render">${fmtFormula}</div>
             </div>
 
-            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
-              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981;margin-bottom:4px">🔢 3. Exemplo Prático Passo a Passo</div>
+            <div id="pt-step-card-3" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981">🔢 3. Exemplo Prático Passo a Passo</div>
+                <span id="pt-step-badge-3" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">3/4</span>
+              </div>
               <div id="pt-guide-example-render">${fmtExemplo}</div>
             </div>
 
-            <div style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px">
-              <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4;margin-bottom:4px">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+            <div id="pt-step-card-4" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+                <span id="pt-step-badge-4" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">4/4</span>
+              </div>
               <pre style="margin:6px 0 0;padding:10px 12px;background:#0d1017;color:#e5e7eb;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:.8rem;line-height:1.45"><code>${(ptGuide.codigo || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
             </div>
+          </div>
+
+          <div id="pt-guide-validation-bar" style="margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed rgba(16,185,129,.45);background:rgba(16,185,129,.07);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span id="pt-guide-val-title" style="font-size:.82rem;font-weight:800;color:#10b981">📖 Validação de Leitura da Aula Visual (Vale 50% da Conclusão)</span>
+              <span id="pt-guide-val-sub" style="font-size:.75rem;color:var(--mu)">Role pelos 4 cards + ~45s de leitura na tela, ou clique ao lado para confirmar leitura imediata.</span>
+            </div>
+            <button type="button" id="pt-guide-complete-btn" onclick="markPtGuideReadNow()" style="font:inherit;font-size:.78rem;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid #10b981;background:#10b981;color:#fff;cursor:pointer;transition:.15s;white-space:nowrap">
+              ☑️ Marcar Aula Visual como Lida
+            </button>
           </div>
         </div>
       `;
@@ -4677,7 +4795,15 @@ function openStudyModal(topicId, focusGuide = false) {
     }
   }
 
-  // Iniciar Cronômetro da Sessão
+  // Vincular evento de rolagem da coluna esquerda para rastrear leitura dos 4 cards
+  if (playerSect) {
+    playerSect.onscroll = () => {
+      checkPtGuideScrollAndVisibility(false);
+      syncSessionStudyProgressUI();
+    };
+  }
+
+  // Iniciar Cronômetro da Sessão e Validador Duplo
   initStudySessionTimer(topicId);
 
   // Caderno de Anotações (abaixo do vídeo)
@@ -4770,67 +4896,348 @@ function toggleAutoProgress(enabled) {
   showToast(enabled ? "⚡ Progresso Automático ATIVADO: avança conforme seu estudo!" : "⚡ Progresso Automático DESATIVADO: controle 100% manual!");
 }
 
-// Timer de Sessão & Auto-Progresso
-function initStudySessionTimer(topicId) {
-  clearInterval(studySessionTimer);
-  sessionSeconds = 0;
+// =========================================================================
+// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL PT-BR)
+// =========================================================================
+function resetSessionStudyProgress() {
+  ytCurrentTime = 0;
+  ytMaxTime = 0;
+  ytVideoCompleted = false;
+  guideReadSeconds = 0;
+  guideCardsSeen = { 1: false, 2: false, 3: false, 4: false };
+  guideCompleted = false;
+  notifiedVideoHalf = false;
+  notifiedGuideHalf = false;
+  for (let i = 1; i <= 4; i++) {
+    const b = document.getElementById(`pt-step-badge-${i}`);
+    const c = document.getElementById(`pt-step-card-${i}`);
+    if (b) {
+      b.textContent = `${i}/4`;
+      b.style.background = "var(--bg)";
+      b.style.color = "var(--mu)";
+      b.style.borderColor = "var(--bd)";
+    }
+    if (c) c.style.borderColor = "var(--bd)";
+  }
+  syncSessionStudyProgressUI();
+}
+
+function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId) return;
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  if (!topicInfo.pt_guide) return;
+
+  const container = document.getElementById("study-player-sect");
+  const gBox = document.getElementById("pt-guide-box");
+  if (!container || !gBox) return;
+
+  const cRect = container.getBoundingClientRect();
+  const gRect = gBox.getBoundingClientRect();
+
+  // Verifica se a Aula Visual está visível na tela da coluna esquerda
+  const isGuideVisible = (gRect.top < cRect.bottom - 35) && (gRect.bottom > cRect.top + 35);
+  if (incrementReadSeconds && isGuideVisible && document.visibilityState !== "hidden") {
+    guideReadSeconds++;
+  }
+
+  // Verifica quais dos 4 cards já entraram no campo de visão
+  for (let i = 1; i <= 4; i++) {
+    const card = document.getElementById(`pt-step-card-${i}`);
+    if (!card) continue;
+    const r = card.getBoundingClientRect();
+    if (r.top < cRect.bottom - 25 && r.bottom > cRect.top + 15) {
+      if (!guideCardsSeen[i]) {
+        guideCardsSeen[i] = true;
+        const badge = document.getElementById(`pt-step-badge-${i}`);
+        if (badge) {
+          badge.textContent = `✓ ${i}/4 Lido`;
+          badge.style.background = "rgba(16,185,129,.15)";
+          badge.style.color = "#10b981";
+          badge.style.borderColor = "rgba(16,185,129,.4)";
+        }
+        card.style.borderColor = "rgba(16,185,129,.45)";
+      }
+    }
+  }
+}
+
+function getComputedVideoAndGuideProgress(topicId) {
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const hasVideo = Boolean(topicInfo.url);
+  const hasGuide = Boolean(topicInfo.pt_guide);
+  const saved = PR[topicId] || { s: "z", n: "", d: "" };
+
+  // 1. Cálculo do Progresso do Vídeo (0 a 100%)
+  let videoPct = saved.vp || 0;
+  if (saved.s === "e") videoPct = 100;
+  if (ytVideoCompleted) {
+    videoPct = 100;
+  } else if (ytDuration > 0) {
+    const effectiveTarget = ytDuration * 0.90; // 90% da duração real do vídeo (desconta créditos finais)
+    const curPct = Math.min(100, Math.round((Math.max(ytCurrentTime, ytMaxTime) / effectiveTarget) * 100));
+    if (curPct > videoPct) videoPct = curPct;
+    if (videoPct >= 100) ytVideoCompleted = true;
+  }
+
+  // 2. Cálculo do Progresso da Aula Visual PT-BR (0 a 100%)
+  let guidePct = saved.gp || 0;
+  if (saved.s === "e") guidePct = 100;
+  let seenCount = 0;
+  for (let i = 1; i <= 4; i++) {
+    if (guideCardsSeen[i]) seenCount++;
+  }
+  if (guideCompleted) {
+    guidePct = 100;
+  } else if (hasGuide) {
+    // 50% pela visualização dos 4 cards na rolagem + 50% pelos 45s de leitura ativa na tela
+    const cardsScore = (seenCount / 4) * 50;
+    const timeScore = Math.min(50, (guideReadSeconds / GUIDE_READ_TARGET_SECONDS) * 50);
+    const calcGuide = Math.min(100, Math.round(cardsScore + timeScore));
+    if (calcGuide > guidePct) guidePct = calcGuide;
+    if (seenCount === 4 && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
+      guidePct = 100;
+      guideCompleted = true;
+    }
+  }
+
+  // Salvar subprogresso no objeto PR
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  if (videoPct > (PR[topicId].vp || 0)) PR[topicId].vp = videoPct;
+  if (guidePct > (PR[topicId].gp || 0)) PR[topicId].gp = guidePct;
+
+  // 3. Regra A — Estudo Completo (50% Vídeo + 50% Aula Visual quando ambos existem)
+  let totalPct = 0;
+  if (hasVideo && hasGuide) {
+    totalPct = Math.round((videoPct * 0.5) + (guidePct * 0.5));
+  } else if (hasVideo) {
+    totalPct = videoPct;
+  } else if (hasGuide) {
+    totalPct = guidePct;
+  }
+
+  return { hasVideo, hasGuide, videoPct, guidePct, seenCount, totalPct };
+}
+
+function syncSessionStudyProgressUI() {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId) return;
+
+  const { hasVideo, hasGuide, videoPct, guidePct, seenCount, totalPct } = getComputedVideoAndGuideProgress(topicId);
 
   const timerTxt = document.getElementById("session-progress-text");
+  const videoPill = document.getElementById("session-video-pill");
+  const guidePill = document.getElementById("session-guide-pill");
   const barFill = document.getElementById("session-bar-fill");
   const pctTxt = document.getElementById("session-progress-pct");
 
-  if (barFill) barFill.style.width = "0%";
-  if (pctTxt) pctTxt.textContent = "0%";
+  const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, "0");
+  const secs = String(sessionSeconds % 60).padStart(2, "0");
+  if (timerTxt) {
+    timerTxt.textContent = `⏱️ Sessão: ${mins}:${secs}`;
+  }
+
+  if (videoPill) {
+    videoPill.style.display = hasVideo ? "inline-flex" : "none";
+    if (videoPct >= 100) {
+      videoPill.textContent = hasGuide ? `🎬 Vídeo: 100% ✓ (50/50%)` : `🎬 Vídeo: 100% ✓`;
+      videoPill.style.background = "rgba(16,185,129,.15)";
+      videoPill.style.borderColor = "rgba(16,185,129,.45)";
+      videoPill.style.color = "#10b981";
+    } else if (ytDuration > 0) {
+      videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
+      videoPill.style.background = "rgba(79,70,229,.1)";
+      videoPill.style.borderColor = "rgba(79,70,229,.35)";
+      videoPill.style.color = "var(--ac)";
+    } else {
+      videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
+      videoPill.style.background = "rgba(79,70,229,.1)";
+      videoPill.style.borderColor = "rgba(79,70,229,.35)";
+      videoPill.style.color = "var(--ac)";
+    }
+  }
+
+  if (guidePill) {
+    guidePill.style.display = hasGuide ? "inline-flex" : "none";
+    if (guidePct >= 100) {
+      guidePill.textContent = `📘 Aula Visual: 100% ✓ (50/50%)`;
+      guidePill.style.background = "rgba(16,185,129,.18)";
+      guidePill.style.borderColor = "rgba(16,185,129,.5)";
+      guidePill.style.color = "#10b981";
+    } else {
+      const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
+      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/4 cards · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      guidePill.style.background = "rgba(16,185,129,.08)";
+      guidePill.style.borderColor = "rgba(16,185,129,.32)";
+      guidePill.style.color = "#10b981";
+    }
+  }
+
+  // Atualizar barra de validação no rodapé da Aula Visual PT-BR
+  const valBtn = document.getElementById("pt-guide-complete-btn");
+  const valTitle = document.getElementById("pt-guide-val-title");
+  const valSub = document.getElementById("pt-guide-val-sub");
+  if (valBtn && hasGuide) {
+    if (guidePct >= 100) {
+      valBtn.textContent = "✅ Aula Visual Lida (100%)";
+      valBtn.style.background = "rgba(16,185,129,.2)";
+      valBtn.style.color = "#10b981";
+      if (valTitle) valTitle.textContent = "✅ Leitura da Aula Visual Concluída! (+50% garantidos)";
+      if (valSub) valSub.textContent = videoPct >= 100
+        ? "🎉 Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
+        : "Agora conclua o vídeo acima para atingir 100% do estudo completo.";
+    } else {
+      const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
+      valBtn.textContent = `☑️ Marcar Aula Visual como Lida (${guidePct}%)`;
+      valBtn.style.background = "#10b981";
+      valBtn.style.color = "#fff";
+      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/4 cards vistos · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+    }
+  }
+
+  if (barFill) barFill.style.width = `${totalPct}%`;
+  if (pctTxt) pctTxt.textContent = `${totalPct}%`;
+
+  // Regras de Auto-Progresso (Regra A: 50% Vídeo + 50% Aula Visual)
+  if (autoProgressEnabled) {
+    const curStatus = (PR[topicId] && PR[topicId].s) ? PR[topicId].s : "z";
+
+    // Mudar de "Do zero" para "Falta terminar" ao iniciar estudo real
+    if (curStatus === "z" && (totalPct >= 5 || ytPlayerState === 1 || guideReadSeconds >= 8)) {
+      PR[topicId].s = "r";
+      updateModalStatusBtn("r");
+      saveLocal();
+      paint();
+      syncTopicToServer(topicId);
+      showToast("🟡 Estudo iniciado! Status atualizado para: Falta terminar");
+    }
+
+    // Avisos intermediários quando completa uma das metades (50%)
+    if (hasVideo && hasGuide) {
+      if (videoPct >= 100 && guidePct < 100 && !notifiedVideoHalf) {
+        notifiedVideoHalf = true;
+        saveLocal();
+        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual PT-BR abaixo para completar 100%!");
+      }
+      if (guidePct >= 100 && videoPct < 100 && !notifiedGuideHalf) {
+        notifiedGuideHalf = true;
+        saveLocal();
+        showToast("📘 Aula Visual concluída (50%)! Assista ao 🎬 Vídeo para completar os 100% do tópico!");
+      }
+    }
+
+    // Só conclui o tópico automaticamente quando totalPct chega a 100%
+    if (totalPct >= 100 && curStatus !== "e") {
+      PR[topicId].s = "e";
+      updateModalStatusBtn("e");
+      saveLocal();
+      paint();
+      syncTopicToServer(topicId);
+      showToast(hasGuide
+        ? "🟢 Estudo Completo (Vídeo 50% + Aula Visual 50% = 100%)! Tópico Concluído!"
+        : "🟢 Vídeo finalizado (100%)! Tópico concluído automaticamente!");
+    }
+  }
+}
+
+function markPtGuideReadNow(silent = false) {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId) return;
+  guideCompleted = true;
+  guideReadSeconds = GUIDE_READ_TARGET_SECONDS;
+  for (let i = 1; i <= 4; i++) {
+    guideCardsSeen[i] = true;
+    const badge = document.getElementById(`pt-step-badge-${i}`);
+    if (badge) {
+      badge.textContent = `✓ ${i}/4 Lido`;
+      badge.style.background = "rgba(16,185,129,.15)";
+      badge.style.color = "#10b981";
+      badge.style.borderColor = "rgba(16,185,129,.4)";
+    }
+  }
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  PR[topicId].gp = 100;
+  saveLocal();
+  syncSessionStudyProgressUI();
+  if (!silent) {
+    showToast("📘 Aula Visual PT-BR marcada como 100% Lida!");
+  }
+}
+
+function scrollOrValidatePtGuide() {
+  const gBox = document.getElementById("pt-guide-box");
+  if (gBox) {
+    gBox.scrollIntoView({ behavior: "smooth", block: "start" });
+    showToast("📘 Role pelos 4 cards da Aula Visual ou clique no botão verde ao final para validar!");
+  }
+}
+
+function toggleManualVideoValidated() {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId) return;
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  if (ytVideoCompleted || (PR[topicId].vp || 0) >= 100) {
+    ytVideoCompleted = false;
+    PR[topicId].vp = 0;
+    showToast("🔄 Progresso do vídeo resetado para acompanhar o player.");
+  } else {
+    ytVideoCompleted = true;
+    PR[topicId].vp = 100;
+    showToast("🎬 Vídeo validado como 100% assistido!");
+  }
+  saveLocal();
+  syncSessionStudyProgressUI();
+}
+
+function initStudySessionTimer(topicId) {
+  clearInterval(studySessionTimer);
+  sessionSeconds = 0;
+  ytCurrentTime = 0;
+  ytMaxTime = 0;
+  ytDuration = 0;
+  ytPlayerState = -1;
+
+  const saved = PR[topicId] || { s: "z", n: "", d: "" };
+  ytVideoCompleted = (saved.s === "e" || (saved.vp || 0) >= 100);
+  guideCompleted = (saved.s === "e" || (saved.gp || 0) >= 100);
+  guideReadSeconds = guideCompleted ? GUIDE_READ_TARGET_SECONDS : 0;
+  guideCardsSeen = {
+    1: guideCompleted,
+    2: guideCompleted,
+    3: guideCompleted,
+    4: guideCompleted
+  };
+  notifiedVideoHalf = ytVideoCompleted;
+  notifiedGuideHalf = guideCompleted;
+
+  checkPtGuideScrollAndVisibility(false);
+  syncSessionStudyProgressUI();
 
   studySessionTimer = setInterval(() => {
     sessionSeconds++;
-    const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, "0");
-    const secs = String(sessionSeconds % 60).padStart(2, "0");
-
-    const pct = Math.min(100, Math.round((sessionSeconds / SESSION_TARGET_SECONDS) * 100));
-    if (timerTxt) timerTxt.textContent = `⏱️ Sessão Ativa: ${mins}:${secs} · Status: Estudando`;
-    if (barFill) barFill.style.width = `${pct}%`;
-    if (pctTxt) pctTxt.textContent = `${pct}%`;
-
-    // Se o progresso automático estiver ativado:
-    if (autoProgressEnabled && CURRENT_MODAL_TOPIC_ID === topicId) {
-      const curStatus = (PR[topicId] && PR[topicId].s) ? PR[topicId].s : "z";
-
-      // Aos 10 segundos de estudo ativo: marca como "Falta terminar"
-      if (sessionSeconds === 10 && curStatus === "z") {
-        if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
-        PR[topicId].s = "r";
-        updateModalStatusBtn("r");
-        saveLocal();
-        paint();
-        syncTopicToServer(topicId);
-        showToast("🟡 Estudo iniciado! Status atualizado para: Falta terminar");
-      }
-
-      // Ao atingir a meta da sessão (60s): marca como "Concluído"
-      if (sessionSeconds === SESSION_TARGET_SECONDS && curStatus !== "e") {
-        if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
-        PR[topicId].s = "e";
-        updateModalStatusBtn("e");
-        saveLocal();
-        paint();
-        syncTopicToServer(topicId);
-        showToast("🟢 Tópico concluído automaticamente! Parabéns pelo foco!");
-      }
+    if (ytDuration === 0) {
+      sendYoutubeListeningHandshake();
     }
+    checkPtGuideScrollAndVisibility(true);
+    syncSessionStudyProgressUI();
   }, 1000);
 }
 
-// Botão rápido de concluir tópico agora
+// Botão rápido de concluir tópico agora (100% manual)
 function markTopicCompleteNow() {
   if (!CURRENT_MODAL_TOPIC_ID) return;
   if (!PR[CURRENT_MODAL_TOPIC_ID]) PR[CURRENT_MODAL_TOPIC_ID] = { s: "z", n: "", d: "" };
   PR[CURRENT_MODAL_TOPIC_ID].s = "e";
+  PR[CURRENT_MODAL_TOPIC_ID].vp = 100;
+  PR[CURRENT_MODAL_TOPIC_ID].gp = 100;
+  ytVideoCompleted = true;
+  guideCompleted = true;
   updateModalStatusBtn("e");
+  syncSessionStudyProgressUI();
   saveLocal();
   paint();
   syncTopicToServer(CURRENT_MODAL_TOPIC_ID);
-  showToast("🟢 Tópico registrado como Concluído!");
+  showToast("🟢 Tópico registrado manualmente como Concluído!");
 }
 
 // =========================================================================
@@ -5629,7 +6036,7 @@ function insertTimestampToNotes() {
   if (!editor) return;
   editor.focus();
 
-  const cur = sessionSeconds || 0;
+  const cur = (typeof ytCurrentTime === "number" && ytCurrentTime > 0) ? ytCurrentTime : (sessionSeconds || 0);
   const stamp = `⏱️ [${formatSeconds(cur)}] `;
 
   const start = editor.selectionStart;
