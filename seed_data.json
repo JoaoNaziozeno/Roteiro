@@ -1,0 +1,1387 @@
+[
+  {
+    "position": 0,
+    "title": "Fase 1 · Programação com Python",
+    "duration": "2 a 3 meses",
+    "project": "Programa que consome uma API pública (clima, filmes, etc.) e exibe os dados organizados.",
+    "resources": "Curso em Vídeo (Python, Gustavo Guanabara, em português) · CS50P (Harvard, gratuito, com legendas) · Livro Automate the Boring Stuff with Python (gratuito online)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Base da linguagem",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Instalar Python e usar o terminal",
+            "code": "0-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Variáveis e tipos (int, float, str, bool)",
+            "code": "0-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Entrada e saída de dados",
+            "code": "0-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Condicionais (if, elif, else)",
+            "code": "0-0-3"
+          },
+          {
+            "position": 4,
+            "title": "Laços (for, while)",
+            "code": "0-0-4"
+          },
+          {
+            "position": 5,
+            "title": "Funções, parâmetros e retorno",
+            "code": "0-0-5"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Estruturas de dados",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Listas e fatiamento",
+            "code": "0-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Dicionários",
+            "code": "0-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Tuplas e conjuntos",
+            "code": "0-1-2"
+          },
+          {
+            "position": 3,
+            "title": "List comprehension",
+            "code": "0-1-3"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Programação intermediária",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Orientação a objetos (classes, métodos, herança)",
+            "code": "0-2-0"
+          },
+          {
+            "position": 1,
+            "title": "Módulos e pacotes",
+            "code": "0-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Arquivos (ler e escrever)",
+            "code": "0-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Tratamento de erros (try/except)",
+            "code": "0-2-3"
+          },
+          {
+            "position": 4,
+            "title": "Ambientes virtuais e pip",
+            "code": "0-2-4"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Ferramentas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Git: commit, branch, merge",
+            "code": "0-3-0"
+          },
+          {
+            "position": 1,
+            "title": "GitHub: repositórios e README",
+            "code": "0-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Consumir APIs com requests e JSON",
+            "code": "0-3-2"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Boas práticas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Estilo de código PEP 8",
+            "code": "0-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Docstrings e comentários",
+            "code": "0-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Depuração (debug) e leitura de erros",
+            "code": "0-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Testes simples com pytest",
+            "code": "0-4-3"
+          },
+          {
+            "position": 4,
+            "title": "Lambda, map e filter",
+            "code": "0-4-4"
+          },
+          {
+            "position": 5,
+            "title": "Geradores e iteradores",
+            "code": "0-4-5"
+          },
+          {
+            "position": 6,
+            "title": "Decoradores (noção)",
+            "code": "0-4-6"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Bibliotecas úteis",
+        "topics": [
+          {
+            "position": 0,
+            "title": "datetime",
+            "code": "0-5-0"
+          },
+          {
+            "position": 1,
+            "title": "os e pathlib",
+            "code": "0-5-1"
+          },
+          {
+            "position": 2,
+            "title": "json e csv",
+            "code": "0-5-2"
+          },
+          {
+            "position": 3,
+            "title": "Expressões regulares (re)",
+            "code": "0-5-3"
+          },
+          {
+            "position": 4,
+            "title": "Web scraping com BeautifulSoup",
+            "code": "0-5-4"
+          }
+        ]
+      },
+      {
+        "position": 6,
+        "name": "Prática",
+        "topics": [
+          {
+            "position": 0,
+            "title": "30 exercícios (Beecrowd, HackerRank, Exercism)",
+            "code": "0-6-0"
+          },
+          {
+            "position": 1,
+            "title": "Algoritmos de busca e ordenação",
+            "code": "0-6-1"
+          },
+          {
+            "position": 2,
+            "title": "Noções de complexidade (Big O)",
+            "code": "0-6-2"
+          },
+          {
+            "position": 3,
+            "title": "Projeto de linha de comando completo",
+            "code": "0-6-3"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: Não pule a Fase 1. Quem tenta ir direto para IA sem base sólida em Python costuma travar mais tarde."
+  },
+  {
+    "position": 1,
+    "title": "Fase 2 · Matemática essencial",
+    "duration": "2 a 3 meses (em paralelo)",
+    "project": "Implementar multiplicação de matrizes e uma descida de gradiente simples em Python.",
+    "resources": "Khan Academy (em português) · Canal 3Blue1Brown (Essence of Linear Algebra e Essence of Calculus) · StatQuest (Josh Starmer) para estatística intuitiva",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Álgebra e funções",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Equações e inequações",
+            "code": "1-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Funções e gráficos",
+            "code": "1-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Exponenciais e logaritmos",
+            "code": "1-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Somatório e notação matemática",
+            "code": "1-0-3"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Álgebra linear",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Vetores e operações",
+            "code": "1-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Produto escalar",
+            "code": "1-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Matrizes e multiplicação",
+            "code": "1-1-2"
+          },
+          {
+            "position": 3,
+            "title": "Transposta e inversa",
+            "code": "1-1-3"
+          },
+          {
+            "position": 4,
+            "title": "Autovalores e autovetores (intuição)",
+            "code": "1-1-4"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Cálculo",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Limites (ideia geral)",
+            "code": "1-2-0"
+          },
+          {
+            "position": 1,
+            "title": "Derivadas e regras básicas",
+            "code": "1-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Regra da cadeia",
+            "code": "1-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Derivadas parciais e gradiente",
+            "code": "1-2-3"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Probabilidade e estatística",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Média, mediana, variância e desvio padrão",
+            "code": "1-3-0"
+          },
+          {
+            "position": 1,
+            "title": "Probabilidade condicional e Teorema de Bayes",
+            "code": "1-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Distribuição normal e outras distribuições",
+            "code": "1-3-2"
+          },
+          {
+            "position": 3,
+            "title": "Correlação",
+            "code": "1-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Amostragem e teste de hipóteses (noção)",
+            "code": "1-3-4"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Fundamentos adicionais",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Conjuntos e lógica",
+            "code": "1-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Geometria analítica e distância entre pontos",
+            "code": "1-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Sigmoide e tanh",
+            "code": "1-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Combinatória básica",
+            "code": "1-4-3"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Álgebra linear avançada",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Norma de vetores",
+            "code": "1-5-0"
+          },
+          {
+            "position": 1,
+            "title": "Espaço vetorial e dimensão",
+            "code": "1-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Projeções",
+            "code": "1-5-2"
+          },
+          {
+            "position": 3,
+            "title": "Decomposição SVD (noção)",
+            "code": "1-5-3"
+          },
+          {
+            "position": 4,
+            "title": "Tensores",
+            "code": "1-5-4"
+          }
+        ]
+      },
+      {
+        "position": 6,
+        "name": "Cálculo avançado",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Integrais (ideia de área)",
+            "code": "1-6-0"
+          },
+          {
+            "position": 1,
+            "title": "Derivadas de exp, log e sigmoide",
+            "code": "1-6-1"
+          },
+          {
+            "position": 2,
+            "title": "Máximos e mínimos (otimização)",
+            "code": "1-6-2"
+          },
+          {
+            "position": 3,
+            "title": "Taxa de aprendizado e convergência",
+            "code": "1-6-3"
+          }
+        ]
+      },
+      {
+        "position": 7,
+        "name": "Estatística avançada",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Esperança e covariância",
+            "code": "1-7-0"
+          },
+          {
+            "position": 1,
+            "title": "Máxima verossimilhança",
+            "code": "1-7-1"
+          },
+          {
+            "position": 2,
+            "title": "Intervalo de confiança",
+            "code": "1-7-2"
+          },
+          {
+            "position": 3,
+            "title": "Viés e variância",
+            "code": "1-7-3"
+          },
+          {
+            "position": 4,
+            "title": "Entropia e cross-entropy",
+            "code": "1-7-4"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: Você não precisa de matemática avançada para começar, só do que realmente usa. Estude a matemática sempre ligada a código (ex: implemente multiplicação de matrizes em Python). A intuição importa mais que decorar regras!"
+  },
+  {
+    "position": 2,
+    "title": "Fase 3 · Python para dados",
+    "duration": "1,5 a 2 meses",
+    "project": "Pegue um dataset do Kaggle, limpe os dados, faça análises exploratórias, gráficos e publique o notebook no GitHub.",
+    "resources": "Kaggle Learn (Python, Pandas, Data Visualization) · Documentação oficial do Pandas (10 minutes to pandas)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Bibliotecas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "NumPy: arrays e operações vetorizadas",
+            "code": "2-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Pandas: DataFrames e Series",
+            "code": "2-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Pandas: filtrar, agrupar e juntar (merge)",
+            "code": "2-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Limpeza de dados e valores ausentes",
+            "code": "2-0-3"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Visualização",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Matplotlib",
+            "code": "2-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Seaborn",
+            "code": "2-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Análise exploratória de dados (EDA)",
+            "code": "2-1-2"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Ambiente e dados",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Jupyter Notebook e Google Colab",
+            "code": "2-2-0"
+          },
+          {
+            "position": 1,
+            "title": "SQL: SELECT, WHERE, JOIN, GROUP BY",
+            "code": "2-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Ler CSV, Excel e JSON",
+            "code": "2-2-2"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "NumPy e Pandas avançado",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Broadcasting",
+            "code": "2-3-0"
+          },
+          {
+            "position": 1,
+            "title": "Máscaras booleanas e indexação",
+            "code": "2-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Séries temporais",
+            "code": "2-3-2"
+          },
+          {
+            "position": 3,
+            "title": "Pivot tables e melt",
+            "code": "2-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Apply e funções vetorizadas",
+            "code": "2-3-4"
+          },
+          {
+            "position": 5,
+            "title": "Outliers e duplicados",
+            "code": "2-3-5"
+          },
+          {
+            "position": 6,
+            "title": "Encoding de variáveis categóricas",
+            "code": "2-3-6"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Dados na prática",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Web scraping e APIs",
+            "code": "2-4-0"
+          },
+          {
+            "position": 1,
+            "title": "SQLite e SQLAlchemy",
+            "code": "2-4-1"
+          },
+          {
+            "position": 2,
+            "title": "SQL avançado: subconsultas e window functions",
+            "code": "2-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Formato Parquet",
+            "code": "2-4-3"
+          },
+          {
+            "position": 4,
+            "title": "Plotly e gráficos interativos",
+            "code": "2-4-4"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Boas práticas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Notebooks reprodutíveis",
+            "code": "2-5-0"
+          },
+          {
+            "position": 1,
+            "title": "Storytelling com dados",
+            "code": "2-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Dashboards com Streamlit",
+            "code": "2-5-2"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: NumPy e Pandas são o alicerce diário da manipulação de dados. Pratique direto com datasets reais do Kaggle."
+  },
+  {
+    "position": 3,
+    "title": "Fase 4 · Machine Learning clássico",
+    "duration": "2 a 3 meses",
+    "project": "Prever preço de imóveis, classificar churn de clientes (cancelamento) ou participar de uma competição Getting Started do Kaggle.",
+    "resources": "Machine Learning Specialization (Andrew Ng, Coursera) · Livro Hands-On Machine Learning (Aurélien Géron) · Kaggle Learn (Intro to Machine Learning)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Conceitos",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Aprendizado supervisionado vs. não supervisionado",
+            "code": "3-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Treino, validação e teste",
+            "code": "3-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Overfitting e underfitting",
+            "code": "3-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Validação cruzada",
+            "code": "3-0-3"
+          },
+          {
+            "position": 4,
+            "title": "Engenharia de atributos (feature engineering)",
+            "code": "3-0-4"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Algoritmos",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Regressão linear",
+            "code": "3-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Regressão logística",
+            "code": "3-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Árvores de decisão",
+            "code": "3-1-2"
+          },
+          {
+            "position": 3,
+            "title": "Random Forest",
+            "code": "3-1-3"
+          },
+          {
+            "position": 4,
+            "title": "Gradient Boosting (XGBoost, LightGBM)",
+            "code": "3-1-4"
+          },
+          {
+            "position": 5,
+            "title": "K-Means e clusterização",
+            "code": "3-1-5"
+          },
+          {
+            "position": 6,
+            "title": "PCA",
+            "code": "3-1-6"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Avaliação e prática",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Métricas: acurácia, precisão, recall, F1",
+            "code": "3-2-0"
+          },
+          {
+            "position": 1,
+            "title": "Matriz de confusão e curva ROC",
+            "code": "3-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Scikit-learn e pipelines",
+            "code": "3-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Ajuste de hiperparâmetros",
+            "code": "3-2-3"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Mais algoritmos",
+        "topics": [
+          {
+            "position": 0,
+            "title": "KNN",
+            "code": "3-3-0"
+          },
+          {
+            "position": 1,
+            "title": "Naive Bayes",
+            "code": "3-3-1"
+          },
+          {
+            "position": 2,
+            "title": "SVM",
+            "code": "3-3-2"
+          },
+          {
+            "position": 3,
+            "title": "DBSCAN e clusterização hierárquica",
+            "code": "3-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Regularização Lasso e Ridge",
+            "code": "3-3-4"
+          },
+          {
+            "position": 5,
+            "title": "Detecção de anomalias",
+            "code": "3-3-5"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Pré-processamento",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Normalização e padronização",
+            "code": "3-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Dados desbalanceados (SMOTE)",
+            "code": "3-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Seleção de atributos",
+            "code": "3-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Vazamento de dados (data leakage)",
+            "code": "3-4-3"
+          },
+          {
+            "position": 4,
+            "title": "Séries temporais com ML",
+            "code": "3-4-4"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Interpretação e ética",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Importância de atributos",
+            "code": "3-5-0"
+          },
+          {
+            "position": 1,
+            "title": "SHAP e LIME",
+            "code": "3-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Viés e ética em ML",
+            "code": "3-5-2"
+          },
+          {
+            "position": 3,
+            "title": "Sistemas de recomendação",
+            "code": "3-5-3"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: Já na Fase 4 você consegue construir soluções reais e úteis. Domine validação cruzada e métricas (F1, precisão, recall) para evitar overfitting."
+  },
+  {
+    "position": 4,
+    "title": "Fase 5 · Deep Learning",
+    "duration": "2 a 3 meses",
+    "project": "Classificador de imagens treinado por você em PyTorch (GPU Colab) e publicado como app simples.",
+    "resources": "Deep Learning Specialization (Andrew Ng) · fast.ai (Practical Deep Learning) · 3Blue1Brown (Neural Networks) · Andrej Karpathy (Neural Networks: Zero to Hero)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Fundamentos de redes neurais",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Neurônio, camadas e pesos",
+            "code": "4-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Funções de ativação",
+            "code": "4-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Função de perda",
+            "code": "4-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Backpropagation",
+            "code": "4-0-3"
+          },
+          {
+            "position": 4,
+            "title": "Gradiente descendente e otimizadores (SGD, Adam)",
+            "code": "4-0-4"
+          },
+          {
+            "position": 5,
+            "title": "Regularização (dropout, weight decay)",
+            "code": "4-0-5"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Arquiteturas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "CNNs para imagens",
+            "code": "4-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Transfer learning",
+            "code": "4-1-1"
+          },
+          {
+            "position": 2,
+            "title": "RNNs e LSTMs para sequências",
+            "code": "4-1-2"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Prática com PyTorch",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Tensores e autograd",
+            "code": "4-2-0"
+          },
+          {
+            "position": 1,
+            "title": "Datasets e DataLoaders",
+            "code": "4-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Loop de treino e avaliação",
+            "code": "4-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Treinar em GPU (Colab)",
+            "code": "4-2-3"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Mais arquiteturas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Autoencoders",
+            "code": "4-3-0"
+          },
+          {
+            "position": 1,
+            "title": "GANs",
+            "code": "4-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Modelos de difusão (noção)",
+            "code": "4-3-2"
+          },
+          {
+            "position": 3,
+            "title": "Redes de grafos (noção)",
+            "code": "4-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Detecção de objetos (YOLO)",
+            "code": "4-3-4"
+          },
+          {
+            "position": 5,
+            "title": "Segmentação de imagens",
+            "code": "4-3-5"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Treino na prática",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Batch normalization",
+            "code": "4-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Learning rate schedulers",
+            "code": "4-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Data augmentation",
+            "code": "4-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Early stopping e checkpoints",
+            "code": "4-4-3"
+          },
+          {
+            "position": 4,
+            "title": "Depurar rede que não aprende",
+            "code": "4-4-4"
+          },
+          {
+            "position": 5,
+            "title": "Mixed precision",
+            "code": "4-4-5"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Outras ferramentas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "TensorFlow e Keras (noção)",
+            "code": "4-5-0"
+          },
+          {
+            "position": 1,
+            "title": "TensorBoard e logs",
+            "code": "4-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Exportar modelos com ONNX",
+            "code": "4-5-2"
+          },
+          {
+            "position": 3,
+            "title": "PyTorch Lightning",
+            "code": "4-5-3"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: PyTorch é hoje o padrão de mercado e pesquisa. Use o Google Colab com GPU gratuita para treinar suas redes."
+  },
+  {
+    "position": 5,
+    "title": "Fase 6 · LLMs e Transformers",
+    "duration": "2 a 3 meses",
+    "project": "Chatbot que responde perguntas sobre seus próprios documentos (RAG com banco vetorial) e uso de ferramentas (Agentes).",
+    "resources": "Hugging Face NLP / LLM Course (gratuito) · Andrej Karpathy (Let’s build GPT) · Documentação das APIs de LLMs (OpenAI, Anthropic, Google Gemini)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Teoria",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Tokenização e embeddings",
+            "code": "5-0-0"
+          },
+          {
+            "position": 1,
+            "title": "Mecanismo de atenção",
+            "code": "5-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Arquitetura Transformer",
+            "code": "5-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Pré-treino, fine-tuning e RLHF (visão geral)",
+            "code": "5-0-3"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "Ferramentas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Hugging Face: modelos, datasets e transformers",
+            "code": "5-1-0"
+          },
+          {
+            "position": 1,
+            "title": "Fine-tuning com LoRA",
+            "code": "5-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Engenharia de prompts",
+            "code": "5-1-2"
+          },
+          {
+            "position": 3,
+            "title": "Usar APIs de LLMs (chamadas, streaming, tool use)",
+            "code": "5-1-3"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Aplicações",
+        "topics": [
+          {
+            "position": 0,
+            "title": "RAG: busca em documentos + LLM",
+            "code": "5-2-0"
+          },
+          {
+            "position": 1,
+            "title": "Bancos vetoriais e busca semântica",
+            "code": "5-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Agentes e uso de ferramentas",
+            "code": "5-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Avaliação e segurança de sistemas com LLM",
+            "code": "5-2-3"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Teoria avançada",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Self-attention e multi-head",
+            "code": "5-3-0"
+          },
+          {
+            "position": 1,
+            "title": "Positional encoding",
+            "code": "5-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Encoder vs. decoder (BERT vs. GPT)",
+            "code": "5-3-2"
+          },
+          {
+            "position": 3,
+            "title": "Janela de contexto e KV cache",
+            "code": "5-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Quantização (4-bit, 8-bit)",
+            "code": "5-3-4"
+          },
+          {
+            "position": 5,
+            "title": "Scaling laws",
+            "code": "5-3-5"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Aplicações avançadas",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Chunking e estratégias de recuperação no RAG",
+            "code": "5-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Reranking",
+            "code": "5-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Saída estruturada (JSON)",
+            "code": "5-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Memória e orquestração de agentes",
+            "code": "5-4-3"
+          },
+          {
+            "position": 4,
+            "title": "Protocolo MCP",
+            "code": "5-4-4"
+          },
+          {
+            "position": 5,
+            "title": "Multimodalidade: visão e áudio",
+            "code": "5-4-5"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Qualidade e segurança",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Avaliação de LLMs (evals e benchmarks)",
+            "code": "5-5-0"
+          },
+          {
+            "position": 1,
+            "title": "Alucinações e mitigação",
+            "code": "5-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Prompt injection",
+            "code": "5-5-2"
+          },
+          {
+            "position": 3,
+            "title": "Custo e latência",
+            "code": "5-5-3"
+          },
+          {
+            "position": 4,
+            "title": "Modelos locais (Ollama, llama.cpp)",
+            "code": "5-5-4"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: Criar um sistema RAG sobre documentos próprios é hoje um dos projetos de maior impacto para o seu portfólio de IA."
+  },
+  {
+    "position": 6,
+    "title": "Fase 7 · Produção e portfólio",
+    "duration": "contínuo",
+    "project": "3 a 5 projetos bem documentados no GitHub (com problema, solução e resultados), demo online no ar e perfil ativo no LinkedIn/Kaggle.",
+    "resources": "Documentação oficial (Docker, FastAPI, MLflow) · Kaggle e LinkedIn ativos · Projetos open source e Cloud (AWS/GCP/Azure)",
+    "groups": [
+      {
+        "position": 0,
+        "name": "Engenharia",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Docker",
+            "code": "6-0-0"
+          },
+          {
+            "position": 1,
+            "title": "FastAPI e criação de APIs",
+            "code": "6-0-1"
+          },
+          {
+            "position": 2,
+            "title": "Deploy em nuvem (AWS, GCP ou Azure)",
+            "code": "6-0-2"
+          },
+          {
+            "position": 3,
+            "title": "Testes e boas práticas de código",
+            "code": "6-0-3"
+          }
+        ]
+      },
+      {
+        "position": 1,
+        "name": "MLOps",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Versionamento de dados e modelos",
+            "code": "6-1-0"
+          },
+          {
+            "position": 1,
+            "title": "MLflow ou Weights & Biases",
+            "code": "6-1-1"
+          },
+          {
+            "position": 2,
+            "title": "Monitoramento de modelos",
+            "code": "6-1-2"
+          }
+        ]
+      },
+      {
+        "position": 2,
+        "name": "Carreira",
+        "topics": [
+          {
+            "position": 0,
+            "title": "3 a 5 projetos documentados no GitHub",
+            "code": "6-2-0"
+          },
+          {
+            "position": 1,
+            "title": "READMEs com problema, solução e resultados",
+            "code": "6-2-1"
+          },
+          {
+            "position": 2,
+            "title": "Perfil ativo no LinkedIn e Kaggle",
+            "code": "6-2-2"
+          },
+          {
+            "position": 3,
+            "title": "Inglês técnico",
+            "code": "6-2-3"
+          }
+        ]
+      },
+      {
+        "position": 3,
+        "name": "Infraestrutura",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Linux e shell avançado",
+            "code": "6-3-0"
+          },
+          {
+            "position": 1,
+            "title": "CI/CD com GitHub Actions",
+            "code": "6-3-1"
+          },
+          {
+            "position": 2,
+            "title": "Kubernetes (noção)",
+            "code": "6-3-2"
+          },
+          {
+            "position": 3,
+            "title": "Filas e processamento assíncrono",
+            "code": "6-3-3"
+          },
+          {
+            "position": 4,
+            "title": "Redis, Postgres e pgvector",
+            "code": "6-3-4"
+          }
+        ]
+      },
+      {
+        "position": 4,
+        "name": "Produto",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Interfaces com Gradio e Streamlit",
+            "code": "6-4-0"
+          },
+          {
+            "position": 1,
+            "title": "Front-end básico (HTML e JS)",
+            "code": "6-4-1"
+          },
+          {
+            "position": 2,
+            "title": "Autenticação e limites de uso",
+            "code": "6-4-2"
+          },
+          {
+            "position": 3,
+            "title": "Observabilidade de LLMs",
+            "code": "6-4-3"
+          }
+        ]
+      },
+      {
+        "position": 5,
+        "name": "Crescimento profissional",
+        "topics": [
+          {
+            "position": 0,
+            "title": "Currículo e entrevistas técnicas",
+            "code": "6-5-0"
+          },
+          {
+            "position": 1,
+            "title": "Contribuir com open source",
+            "code": "6-5-1"
+          },
+          {
+            "position": 2,
+            "title": "Escrever artigos e posts",
+            "code": "6-5-2"
+          },
+          {
+            "position": 3,
+            "title": "Comunidades e eventos",
+            "code": "6-5-3"
+          },
+          {
+            "position": 4,
+            "title": "Certificações (opcional)",
+            "code": "6-5-4"
+          }
+        ]
+      }
+    ],
+    "tip": "💡 Dica de Ouro: 3 a 5 projetos no GitHub com README impecável, demo online e código limpo valem mais do que dezenas de certificados."
+  }
+]
