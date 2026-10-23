@@ -616,6 +616,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   padding: 10px 16px;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
+  flex-shrink: 0;
 }
 
 .player-topbar-info {
@@ -690,14 +691,20 @@ input:checked + .slider:before { transform: translateX(14px); }
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+  min-height: 320px;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
   background: #000;
   overflow: hidden;
   transition: all .3s cubic-bezier(.4,0,.2,1);
 }
 .video-responsive-wrap.collapsed {
   display: none !important;
+  min-height: 0 !important;
 }
 .video-responsive-wrap iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   border: none;
@@ -713,6 +720,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: flex;
   flex-direction: column;
   gap: 5px;
+  flex-shrink: 0;
 }
 
 .session-progress-info {
@@ -757,7 +765,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1;
+  flex: 1 0 auto;
+  flex-shrink: 0;
   background: var(--bg);
 }
 .study-left-card {
@@ -2330,50 +2339,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-0-0-0" id="top-ing-0-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês GRÁTIS - Aula Zero</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-0-1" id="top-ing-0-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-0-2" id="top-ing-0-0-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-0-3" id="top-ing-0-0-3">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-0-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-0-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 03 - Aula Prática</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-3')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-0-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-0-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-0-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-0-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2385,38 +2398,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-0-1-0" id="top-ing-0-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-1-1" id="top-ing-0-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-1-2" id="top-ing-0-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2428,38 +2444,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-0-2-0" id="top-ing-0-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-2-1" id="top-ing-0-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-2-2" id="top-ing-0-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 09 - Small Talk</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2471,38 +2490,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-0-3-0" id="top-ing-0-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 10 - Family Tree</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-3-1" id="top-ing-0-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-0-3-2" id="top-ing-0-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-0-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-0-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-0-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-0-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-0-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2528,38 +2550,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-1-0-0" id="top-ing-1-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 01 - Falando da Família</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-0-1" id="top-ing-1-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-0-2" id="top-ing-1-0-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2571,38 +2596,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-1-1-0" id="top-ing-1-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-1-1" id="top-ing-1-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-1-2" id="top-ing-1-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2614,38 +2642,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-1-2-0" id="top-ing-1-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 07 - Com que frequência</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-2-1" id="top-ing-1-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-2-2" id="top-ing-1-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2657,38 +2688,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-1-3-0" id="top-ing-1-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-3-1" id="top-ing-1-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-1-3-2" id="top-ing-1-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-1-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-1-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-1-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-1-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-1-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2714,26 +2748,28 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-2-0-0" id="top-ing-2-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 01 - Eu posso!</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-0-1" id="top-ing-2-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2745,38 +2781,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-2-1-0" id="top-ing-2-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 03 - Eu deveria</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-1-1" id="top-ing-2-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-1-2" id="top-ing-2-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 05 - Eu devo</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2788,38 +2827,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-2-2-0" id="top-ing-2-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-2-1" id="top-ing-2-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-2-2" id="top-ing-2-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 08 - Advérbios</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2831,50 +2873,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-2-3-0" id="top-ing-2-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-3-1" id="top-ing-2-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 10 - Do or Make?</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-3-2" id="top-ing-2-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-2-3-3" id="top-ing-2-3-3">
-                  <div class="topic-left" onclick="openStudyModal('ing-2-3-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-2-3-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-3')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-2-3-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-2-3-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-2-3-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-2-3-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2900,38 +2946,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-3-0-0" id="top-ing-3-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-0-1" id="top-ing-3-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 02 - Comparativos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-0-2" id="top-ing-3-0-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2943,38 +2992,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-3-1-0" id="top-ing-3-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 04 - Superlativos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-1-1" id="top-ing-3-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-1-2" id="top-ing-3-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2986,38 +3038,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-3-2-0" id="top-ing-3-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-2-1" id="top-ing-3-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-2-2" id="top-ing-3-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3029,38 +3084,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-3-3-0" id="top-ing-3-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-3-1" id="top-ing-3-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-3-3-2" id="top-ing-3-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-3-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-3-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-3-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-3-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-3-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3086,26 +3144,28 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-4-0-0" id="top-ing-4-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-0-1" id="top-ing-4-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3117,38 +3177,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-4-1-0" id="top-ing-4-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 03 - E se...</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-1-1" id="top-ing-4-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-1-2" id="top-ing-4-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3160,38 +3223,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-4-2-0" id="top-ing-4-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 06 - Prefixes</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-2-1" id="top-ing-4-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-2-2" id="top-ing-4-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 08 - Suffixes</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3203,50 +3269,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-4-3-0" id="top-ing-4-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 09 - Ofertas \u0026 Pedidos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-3-1" id="top-ing-4-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-3-2" id="top-ing-4-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-4-3-3" id="top-ing-4-3-3">
-                  <div class="topic-left" onclick="openStudyModal('ing-4-3-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-4-3-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 05 Aula 12 - Quantificadores</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-3')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-4-3-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-4-3-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-4-3-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-4-3-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3272,26 +3342,28 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-5-0-0" id="top-ing-5-0-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-0-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-0-1" id="top-ing-5-0-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-0-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3303,38 +3375,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-5-1-0" id="top-ing-5-1-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-1-1" id="top-ing-5-1-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-1-2" id="top-ing-5-1-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3346,38 +3421,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-5-2-0" id="top-ing-5-2-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-2-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-2-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-2-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-2-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-2-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-2-1" id="top-ing-5-2-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-2-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-2-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-2-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-2-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-2-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-2-2" id="top-ing-5-2-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-2-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-2-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-2-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-2-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-2-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3389,50 +3467,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ing-5-3-0" id="top-ing-5-3-0">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-3-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-3-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-0')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-3-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-3-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-3-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-3-1" id="top-ing-5-3-1">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-3-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-3-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 10 - Reported Speech</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-1')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-3-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-3-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-3-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-3-2" id="top-ing-5-3-2">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-3-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-3-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 11 - Três Desejos</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-2')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-3-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-3-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-3-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="ing-5-3-3" id="top-ing-5-3-3">
-                  <div class="topic-left" onclick="openStudyModal('ing-5-3-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('ing-5-3-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Curso de Inglês - Módulo 06 Aula 12 - Tag Questions</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-3')" title="Assistir no Estúdio Integrado">▶ YouTube</button>
+                    <button class="yt-btn" onclick="openStudyModal('ing-5-3-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ YouTube</button>
+                    
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-5-3-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('ing-5-3-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('ing-5-3-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -3505,7 +3587,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
         <!-- CONTAINER DO IFRAME DO VÍDEO -->
         <div class="video-responsive-wrap" id="video-wrapper">
-          <iframe id="modal-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe id="modal-video-iframe" src="" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <!-- BARRA DE PROGRESSO DA SESSÃO / AUTO PROGRESSO -->

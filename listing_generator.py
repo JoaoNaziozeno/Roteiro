@@ -119,24 +119,28 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                 yt_btn_html = ""
                 if t.get("url"):
                     t_lbl = t.get("label", "▶ Vídeo")
-                    yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\')" title="Assistir no Estúdio Integrado">{t_lbl}</button>'
+                    yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\', false)" title="Assistir vídeo no Estúdio Integrado">{t_lbl}</button>'
+
+                visual_btn_html = ""
+                if t.get("pt_guide"):
+                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>'
 
                 doc_btn_html = ""
-                if t.get("pt_guide"):
-                    doc_btn_html = f'<button class="doc-btn" onclick="openStudyModal(\'{t_id}\', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">{t.get("doc_label", "📘 Apostila PT-BR")}</button>'
-                elif t.get("doc_url"):
-                    doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de estudo / documentação">{t.get("doc_label", "📖 Material")}</a>'
+                if t.get("doc_url"):
+                    doc_lbl_clean = t.get("doc_label", "📖 Material").replace("📘 Aula Visual PT-BR:", "📖 Artigo PT-BR:")
+                    doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">{doc_lbl_clean} ↗</a>'
 
                 topics_rows.append(f"""
                 <div class="topic-row" data-id="{t['id']}" id="top-{t['id']}">
-                  <div class="topic-left" onclick="openStudyModal('{t['id']}')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('{t['id']}', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">{t['title']}</span>
                   </div>
                   <div class="topic-actions">
                     {yt_btn_html}
+                    {visual_btn_html}
                     {doc_btn_html}
                     <button class="status-btn status-btn-z" onclick="cycleStatus('{t['id']}')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('{t['id']}')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('{t['id']}', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 """)
@@ -414,7 +418,7 @@ __AUTH_AWS_CSS__
 
         <!-- CONTAINER DO IFRAME DO VÍDEO -->
         <div class="video-responsive-wrap" id="video-wrapper">
-          <iframe id="modal-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe id="modal-video-iframe" src="" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <!-- BARRA DE PROGRESSO DA SESSÃO / AUTO PROGRESSO -->

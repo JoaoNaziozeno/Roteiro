@@ -616,6 +616,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   padding: 10px 16px;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
+  flex-shrink: 0;
 }
 
 .player-topbar-info {
@@ -690,14 +691,20 @@ input:checked + .slider:before { transform: translateX(14px); }
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
+  min-height: 320px;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
   background: #000;
   overflow: hidden;
   transition: all .3s cubic-bezier(.4,0,.2,1);
 }
 .video-responsive-wrap.collapsed {
   display: none !important;
+  min-height: 0 !important;
 }
 .video-responsive-wrap iframe {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   border: none;
@@ -713,6 +720,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: flex;
   flex-direction: column;
   gap: 5px;
+  flex-shrink: 0;
 }
 
 .session-progress-info {
@@ -757,7 +765,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  flex: 1;
+  flex: 1 0 auto;
+  flex-shrink: 0;
   background: var(--bg);
 }
 .study-left-card {
@@ -2249,62 +2258,67 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-0-0-0" id="top-mat-0-0-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Vetores e espaços vetoriais: intuição geométrica</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Vetores</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-0-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Vetores</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Vetores</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-0-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/vectors/v/vector-introduction-linear-algebra" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Vetores ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-0-1" id="top-mat-0-0-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Combinações lineares, espaço gerado (span) e bases</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-1')" title="Assistir no Estúdio Integrado">▶ 3B1B Span & Bases</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-0-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Span & Bases</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Span & Bases</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-0-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.ufrgs.br/reamat/AlgebraLinear/livro/s5-combinacao_linear.html" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Span & Bases ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-0-2" id="top-mat-0-0-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Produto escalar (Dot Product) e projeções</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Dot Product</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-0-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Produto Escalar</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Dot Product</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-0-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/vector-dot-product-and-vector-length" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Produto Escalar ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-0-3" id="top-mat-0-0-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-0-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-0-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Norma de vetores (L1, L2 Euclidiana) e distâncias</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-3')" title="Assistir no Estúdio Integrado">▶ 3B1B Normas</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-0-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Normas L1 e L2</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Normas</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-0-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Norma_(matem%C3%A1tica)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Normas L1 e L2 ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-0-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-0-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-0-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-0-4" id="top-mat-0-0-4">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-0-4')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-0-4', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Ângulo entre vetores e Similaridade de Cosseno</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-4')" title="Assistir no Estúdio Integrado">▶ StatQuest Cosseno</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-0-4', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Cosseno</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-0-4', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Cosseno</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-0-4', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Similaridade_por_cosseno" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Cosseno ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-0-4')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-0-4')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-0-4', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2316,74 +2330,80 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-0-1-0" id="top-mat-0-1-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Matrizes como transformações lineares no espaço</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Matrizes</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Transformações</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Matrizes</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.ufrgs.br/reamat/AlgebraLinear/livro/s9-transformacoes_lineares.html" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Transformações ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-1-1" id="top-mat-0-1-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-1')" title="Assistir no Estúdio Integrado">▶ 3B1B Mult. Matrizes</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Mult. Matrizes</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Mult. Matrizes</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/a/multiplying-matrices" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Mult. Matrizes ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-1-2" id="top-mat-0-1-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Sistemas de equações lineares e determinantes</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Determinante</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Determinantes</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Determinante</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.ufrgs.br/reamat/AlgebraLinear/livro/s1-sistemas_lineares.html" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Determinantes ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-1-3" id="top-mat-0-1-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Inversa de matriz e pseudoinversa de Moore-Penrose</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-3')" title="Assistir no Estúdio Integrado">▶ 3B1B Inversa & Colunas</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Matriz Inversa</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Inversa & Colunas</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Matriz_inversa" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Matriz Inversa ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-1-4" id="top-mat-0-1-4">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-4')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-4', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Autovalores e Autovetores (Eigenvalues & Eigenvectors)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-4')" title="Assistir no Estúdio Integrado">▶ 3B1B Autovalores</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-4', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Autovetores</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-4', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Autovalores</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-4', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.ufrgs.br/reamat/AlgebraLinear/livro/s11-autovalores_e_autovetores.html" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Autovetores ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-4')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-4')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-4', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-0-1-5" id="top-mat-0-1-5">
-                  <div class="topic-left" onclick="openStudyModal('mat-0-1-5')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-0-1-5', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Decomposição em Valores Singulares (SVD) e PCA</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-5')" title="Assistir no Estúdio Integrado">▶ StatQuest PCA</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-0-1-5', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: SVD & PCA</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-0-1-5', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest PCA</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-0-1-5', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/An%C3%A1lise_de_componentes_principais" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: SVD & PCA ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-0-1-5')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-0-1-5')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-0-1-5', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2409,50 +2429,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-1-0-0" id="top-mat-1-0-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Limites e taxa de variação instantânea (ideia geral)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Essência do Cálculo</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-0-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Limites & Taxa</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Essência do Cálculo</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-0-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/differential-calculus/dc-diff-intro" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Limites & Taxa ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-0-1" id="top-mat-1-0-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Derivadas fundamentais e regras básicas (potência, produto, soma)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-1')" title="Assistir no Estúdio Integrado">▶ 3B1B Derivadas Geométricas</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-0-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Regras Derivação</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Derivadas Geométricas</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-0-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.ufrgs.br/reamat/Calculo/livro-cfuv/derivada-regras_de_derivacao.html" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Regras Derivação ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-0-2" id="top-mat-1-0-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Regra da Cadeia (Chain Rule) - o motor do Backpropagation</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Regra da Cadeia</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-0-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Regra da Cadeia</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Regra da Cadeia</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-0-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new/ab-3-1a/a/chain-rule-review" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Regra da Cadeia ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-0-3" id="top-mat-1-0-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-0-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-0-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-3')" title="Assistir no Estúdio Integrado">▶ 3B1B Redes Neurais</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-0-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Ativações</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-0-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Redes Neurais</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-0-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.deeplearningbook.com.br/funcao-de-ativacao/" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Ativações ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-0-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-0-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-0-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2464,62 +2488,67 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-1-1-0" id="top-mat-1-1-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Derivadas parciais e o vetor Gradiente (nabla f)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Gradiente Descendente</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-1-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Vetor Gradiente</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Gradiente Descendente</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-1-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivative-and-gradient-articles/a/the-gradient" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Vetor Gradiente ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-1-1" id="top-mat-1-1-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Matriz Jacobiana e Matriz Hessiana (curvatura da loss)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-1')" title="Assistir no Estúdio Integrado">▶ 3B1B O que é Backprop?</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-1-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Jacobiana & Hessiana</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B O que é Backprop?</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-1-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Matriz_hessiana" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Jacobiana & Hessiana ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-1-2" id="top-mat-1-1-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Backprop Calculus</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-1-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Gradiente Descendente</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Backprop Calculus</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-1-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.deeplearningbook.com.br/algoritmo-gradient-descent/" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Gradiente Descendente ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-1-3" id="top-mat-1-1-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-1-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-1-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Otimizadores modernos: Momentum, RMSprop e Adam</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-3')" title="Assistir no Estúdio Integrado">▶ StatQuest SGD</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-1-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Otimizador Adam</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest SGD</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-1-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Descida_de_gradiente_estoc%C3%A1stico#Adam" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Otimizador Adam ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-1-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-1-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-1-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-1-1-4" id="top-mat-1-1-4">
-                  <div class="topic-left" onclick="openStudyModal('mat-1-1-4')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-1-1-4', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Taxa de aprendizado (Learning Rate), convergência e pontos de sela</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-4')" title="Assistir no Estúdio Integrado">▶ StatQuest Learning Rate</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-1-1-4', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Learning Rate</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-1-1-4', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Learning Rate</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-1-1-4', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.deeplearningbook.com.br/algoritmo-gradient-descent/" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Learning Rate ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-1-1-4')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-1-1-4')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-1-1-4', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2545,50 +2574,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-2-0-0" id="top-mat-2-0-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Variáveis aleatórias discretas e contínuas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Probabilidade</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-0-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Var. Aleatórias</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Probabilidade</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-0-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Var. Aleatórias ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-0-1" id="top-mat-2-0-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Média, mediana, variância e desvio padrão</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-1')" title="Assistir no Estúdio Integrado">▶ StatQuest Variância</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-0-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Variância & Desvio</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Variância</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-0-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/statistics-probability/summarizing-quantitative-data" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Variância & Desvio ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-0-2" id="top-mat-2-0-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Esperança matemática, covariância e correlação</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-2')" title="Assistir no Estúdio Integrado">▶ StatQuest Covariância</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-0-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Correlação</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Covariância</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-0-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Coeficiente_de_correla%C3%A7%C3%A3o_de_Pearson" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Correlação ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-0-3" id="top-mat-2-0-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-0-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-0-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Probabilidade condicional e Teorema de Bayes</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-3')" title="Assistir no Estúdio Integrado">▶ 3B1B Teorema de Bayes</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-0-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Teorema de Bayes</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-0-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Teorema de Bayes</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-0-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/ap-statistics/probability-ap/stats-conditional-probability/a/check-independence-conditional-probability" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Teorema de Bayes ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-0-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-0-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-0-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2600,62 +2633,67 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-2-1-0" id="top-mat-2-1-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-0')" title="Assistir no Estúdio Integrado">▶ StatQuest Dist. Normal</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-1-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Curva Normal</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Dist. Normal</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-1-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library/a/normal-distributions-review" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Curva Normal ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-1-1" id="top-mat-2-1-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Teorema do Limite Central e amostragem</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-1')" title="Assistir no Estúdio Integrado">▶ StatQuest Limite Central</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-1-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Limite Central</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Limite Central</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-1-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/statistics-probability/sampling-distributions-library/sample-means/v/central-limit-theorem" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Limite Central ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-1-2" id="top-mat-2-1-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Intervalos de confiança e teste de hipóteses (noção)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-2')" title="Assistir no Estúdio Integrado">▶ StatQuest Confiança</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-1-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Confiança & p-valor</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Confiança</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-1-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/statistics-probability/confidence-intervals-one-sample" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Confiança & p-valor ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-1-3" id="top-mat-2-1-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-1-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-1-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-3')" title="Assistir no Estúdio Integrado">▶ StatQuest MLE</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-1-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: MLE</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest MLE</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-1-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/M%C3%A1xima_verossimilhan%C3%A7a" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: MLE ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-1-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-1-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-1-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-2-1-4" id="top-mat-2-1-4">
-                  <div class="topic-left" onclick="openStudyModal('mat-2-1-4')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-2-1-4', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Trade-off Viés vs. Variância (Bias-Variance Dilemma)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-4')" title="Assistir no Estúdio Integrado">▶ StatQuest Viés vs Variância</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-2-1-4', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Viés vs Variância</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-2-1-4', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Viés vs Variância</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-2-1-4', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.deeplearningbook.com.br/underfitting-e-overfitting/" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Viés vs Variância ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-2-1-4')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-2-1-4')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-2-1-4', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2681,50 +2719,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-3-0-0" id="top-mat-3-0-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Equações, inequações e gráficos de funções aplicadas</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Gráficos & Funções</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-0-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Funções & Reta</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Gráficos & Funções</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-0-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/algebra/x2f8bb11595b61c86:functions" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Funções & Reta ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-0-1" id="top-mat-3-0-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Exponenciais e logaritmos na modelagem de IA</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-1')" title="Assistir no Estúdio Integrado">▶ 3B1B Número de Euler e</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-0-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Exp & Log</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Número de Euler e</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-0-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:logs" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Exp & Log ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-0-2" id="top-mat-3-0-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Somatório, produtório e notação matemática em papers</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Notação Matemática</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-0-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Notação Sigma</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Notação Matemática</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-0-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Somat%C3%B3rio" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Notação Sigma ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-0-3" id="top-mat-3-0-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-0-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-0-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Geometria analítica e distância Euclidiana vs Manhattan</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-3')" title="Assistir no Estúdio Integrado">▶ StatQuest Métricas de Distância</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-0-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Distâncias</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-0-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Métricas de Distância</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-0-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Dist%C3%A2ncia_euclidiana" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Distâncias ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-0-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-0-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-0-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2736,50 +2778,54 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-3-1-0" id="top-mat-3-1-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Entropia de Shannon (medida de incerteza da informação)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Entropia de Shannon</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-1-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Entropia Shannon</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Entropia de Shannon</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-1-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Entropia_(teoria_da_informa%C3%A7%C3%A3o)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Entropia Shannon ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-1-1" id="top-mat-3-1-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Entropia Cruzada (Cross-Entropy Loss) e função Softmax</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-1')" title="Assistir no Estúdio Integrado">▶ StatQuest Cross-Entropy</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-1-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Softmax & Cross-Entropy</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest Cross-Entropy</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-1-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://www.deeplearningbook.com.br/funcao-softmax/" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Softmax & Cross-Entropy ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-1-2" id="top-mat-3-1-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Divergência de Kullback-Leibler (KL Divergence)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-2')" title="Assistir no Estúdio Integrado">▶ StatQuest KL Divergence</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-1-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Divergência KL</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ StatQuest KL Divergence</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-1-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Diverg%C3%AAncia_de_Kullback-Leibler" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Divergência KL ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-3-1-3" id="top-mat-3-1-3">
-                  <div class="topic-left" onclick="openStudyModal('mat-3-1-3')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-3-1-3', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Funções de perda de regressão (MSE, MAE, Huber) e classificação</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-3')" title="Assistir no Estúdio Integrado">▶ 3B1B Funções de Perda</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-3-1-3', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: MSE, MAE & Huber</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-3-1-3', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Funções de Perda</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-3-1-3', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Erro_quadr%C3%A1tico_m%C3%A9dio" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: MSE, MAE & Huber ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-3-1-3')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-3-1-3')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-3-1-3', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2805,38 +2851,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-4-0-0" id="top-mat-4-0-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-0-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-0-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Fatos em LLMs</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-0-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Alta Dimensão</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Fatos em LLMs</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-0-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Word_embedding" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Alta Dimensão ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-0-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-0-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-0-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-4-0-1" id="top-mat-4-0-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-0-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-0-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Normalização de embeddings e geometria do espaço semântico</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-1')" title="Assistir no Estúdio Integrado">▶ 3B1B O que é GPT / Embeddings</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-0-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Norm. Embeddings</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B O que é GPT / Embeddings</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-0-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Vetor_unit%C3%A1rio" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Norm. Embeddings ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-0-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-0-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-4-0-2" id="top-mat-4-0-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-0-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-0-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Atenção em Transformers</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-0-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Matrizes Q, K, V</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-0-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Atenção em Transformers</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-0-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Transformador_(modelo_de_aprendizado_de_m%C3%A1quina)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Matrizes Q, K, V ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-0-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-0-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-0-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2848,38 +2897,41 @@ input:checked + .slider:before { transform: translateX(14px); }
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="mat-4-1-0" id="top-mat-4-1-0">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-1-0')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-1-0', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-0')" title="Assistir no Estúdio Integrado">▶ 3B1B Fórmula da Atenção</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-1-0', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Fórmula da Atenção</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-0', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Fórmula da Atenção</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-1-0', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Aten%C3%A7%C3%A3o_(aprendizado_de_m%C3%A1quina)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Fórmula da Atenção ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-1-0')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-1-0', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-4-1-1" id="top-mat-4-1-1">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-1-1')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-1-1', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Mecanismo Multi-Head Attention: divisão de dimensões e concatenação</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-1')" title="Assistir no Estúdio Integrado">▶ 3B1B Multi-Head Attention</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-1-1', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Multi-Head Attention</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-1', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Multi-Head Attention</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-1-1', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Transformador_(modelo_de_aprendizado_de_m%C3%A1quina)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Multi-Head Attention ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-1-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-1-1')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-1-1', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
                 <div class="topic-row" data-id="mat-4-1-2" id="top-mat-4-1-2">
-                  <div class="topic-left" onclick="openStudyModal('mat-4-1-2')" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('mat-4-1-2', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)</span>
                   </div>
                   <div class="topic-actions">
-                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-2')" title="Assistir no Estúdio Integrado">▶ 3B1B Positional Embeddings</button>
-                    <button class="doc-btn" onclick="openStudyModal('mat-4-1-2', true)" title="Abrir Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR: Positional & RoPE</button>
+                    <button class="yt-btn" onclick="openStudyModal('mat-4-1-2', false)" title="Assistir vídeo no Estúdio Integrado">▶ 3B1B Positional Embeddings</button>
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('mat-4-1-2', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>
+                    <a href="https://pt.wikipedia.org/wiki/Transformador_(modelo_de_aprendizado_de_m%C3%A1quina)" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">📖 Artigo PT-BR: Positional & RoPE ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('mat-4-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('mat-4-1-2')" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('mat-4-1-2', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 
@@ -2952,7 +3004,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
         <!-- CONTAINER DO IFRAME DO VÍDEO -->
         <div class="video-responsive-wrap" id="video-wrapper">
-          <iframe id="modal-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe id="modal-video-iframe" src="" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <!-- BARRA DE PROGRESSO DA SESSÃO / AUTO PROGRESSO -->
