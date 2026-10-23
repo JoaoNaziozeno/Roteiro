@@ -1745,10 +1745,13 @@ input:checked + .slider:before { transform: translateX(14px); }
   box-shadow: 0 16px 40px rgba(0,0,0,.35);
   padding: 8px;
   z-index: 1000;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 4px;
   animation: dropdownFade .18s ease-out;
+}
+.nav-user-dropdown[hidden] {
+  display: none !important;
 }
 @keyframes dropdownFade {
   from { opacity: 0; transform: translateY(-6px); }
@@ -3050,7 +3053,7 @@ input:checked + .slider:before { transform: translateX(14px); }
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
-        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
             <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
@@ -3889,6 +3892,7 @@ function getLoggedInUser() {
 }
 
 function updateNavAuthUI() {
+  closeUserDropdown();
   const user = getLoggedInUser();
   const userPill = document.getElementById("nav-auth-user");
   const emailDisplay = document.getElementById("aws-user-email-display");

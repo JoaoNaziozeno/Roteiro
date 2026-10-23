@@ -1771,10 +1771,13 @@ input:checked + .slider:before { transform: translateX(14px); }
   box-shadow: 0 16px 40px rgba(0,0,0,.35);
   padding: 8px;
   z-index: 1000;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 4px;
   animation: dropdownFade .18s ease-out;
+}
+.nav-user-dropdown[hidden] {
+  display: none !important;
 }
 @keyframes dropdownFade {
   from { opacity: 0; transform: translateY(-6px); }
@@ -1979,13 +1982,12 @@ input:checked + .slider:before { transform: translateX(14px); }
       <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
-      <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
-        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
             <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
@@ -4836,13 +4838,6 @@ input:checked + .slider:before { transform: translateX(14px); }
           <input type="date" id="modal-date-input" onchange="onModalDateChange()">
         </div>
 
-        <!-- POMODORO TIMER INTEGRADO -->
-        <div class="pomodoro-wrap" id="pomodoro-wrap">
-          <button class="pomo-toggle-btn" id="pomo-btn" onclick="togglePomodoro()" title="Iniciar ciclo Pomodoro de 25 min">🍅 25:00</button>
-          <button class="pomo-reset-btn" onclick="resetPomodoro()" title="Resetar Pomodoro">↺</button>
-          <span class="pomo-count-badge" id="pomo-count-badge" title="Pomodoros concluídos hoje">0 🍅</span>
-        </div>
-
         <button class="note-close-btn" onclick="closeNoteModal()" title="Fechar estúdio">✕</button>
       </div>
     </div>
@@ -4934,12 +4929,11 @@ input:checked + .slider:before { transform: translateX(14px); }
             <button class="tb-btn tb-audio-btn" onclick="speakSelectedText()" title="Ouvir pronúncia em inglês nativo do texto selecionado">🔊 Pronúncia</button>
             <span class="tb-sep"></span>
 
-            <!-- FERRAMENTAS CIENTÍFICAS: MATEMÁTICA, 3D, DESENHO, MATRIZES, FLASHCARDS E EXPORTAÇÃO -->
+            <!-- FERRAMENTAS CIENTÍFICAS: MATEMÁTICA, 3D, DESENHO, MATRIZES E EXPORTAÇÃO -->
             <button class="tb-btn tb-highlight-math" onclick="toggleMathPalette()" title="Inserir Fórmulas e Símbolos Matemáticos">∑ Matemática</button>
             <button class="tb-btn tb-highlight-3d" onclick="open3DVectorStudio()" title="Abrir Estúdio de Vetores e Gráfico 3D (Eixos X, Y, Z)">🌐 Vetores & 3D</button>
             <button class="tb-btn tb-highlight-draw" onclick="openWhiteboardDrawer()" title="Abrir Lousa para Desenhar Formas Geométricas 2D">✏️ Desenhar</button>
             <button class="tb-btn" onclick="openMatrixCalculator()" title="Abrir Calculadora de Matrizes e Vetores">🧮 Matrizes</button>
-            <button class="tb-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards das suas anotações">🗂️ Flashcards</button>
             <button class="tb-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown, PDF ou JSON">📥 Exportar</button>
           </div>
 
@@ -4951,7 +4945,6 @@ input:checked + .slider:before { transform: translateX(14px); }
               <option value="code">💻 Exemplo Prático Python</option>
               <option value="math_vectors">📐 Vetores & Álgebra Linear</option>
               <option value="schema">📐 Esquema de Fluxo</option>
-              <option value="flashcard">🗂️ Novo Flashcard (Pergunta / Resposta)</option>
               <option value="vocab_en">🇺🇸 Tabela Vocabulário & Pronúncia</option>
             </select>
           </div>
@@ -5161,59 +5154,8 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
-
 <!-- ======================================================================= -->
-<!-- SUBMODAL 1: REVISÃO DE FLASHCARDS & REPETIÇÃO ESPAÇADA (ANKI LITE)      -->
-<!-- ======================================================================= -->
-<div id="modal-flashcards" class="modal-sub-overlay" hidden>
-  <div class="modal-sub-box modal-fc-box">
-    <div class="modal-sub-header">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:1.3rem">🗂️</span>
-        <h3 style="margin:0;font-size:1.15rem;color:var(--tx)">Revisão de Flashcards & Repetição Espaçada</h3>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span id="fc-counter" style="font-size:.84rem;font-weight:750;color:var(--mu)">1/1</span>
-        <button class="note-close-btn" onclick="closeFlashcardsModal()">✕</button>
-      </div>
-    </div>
-
-    <div class="fc-card-viewport">
-      <div class="fc-card-inner">
-        <div>
-          <span class="fc-card-tag" id="fc-card-tag">CARD 1 · Tópico</span>
-          <div class="fc-card-content" id="fc-card-content">Pergunta do flashcard</div>
-        </div>
-
-        <div class="fc-card-answer-wrap" id="fc-card-answer-wrap">
-          <div style="font-size:.76rem;text-transform:uppercase;color:var(--mu);margin-bottom:6px">Resposta Correta:</div>
-          <div id="fc-card-answer-text">Texto da resposta</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fc-actions-bar">
-      <button class="fc-reveal-btn" id="fc-reveal-btn" onclick="flipFlashcard()">👁️ Revelar Resposta</button>
-      <div class="fc-rating-btns" id="fc-rating-btns">
-        <button class="fc-rate-btn rate-hard" onclick="rateFlashcard('hard')">
-          <span>🔴 Difícil</span>
-          <span style="font-size:.7rem;opacity:.85">1 dia</span>
-        </button>
-        <button class="fc-rate-btn rate-good" onclick="rateFlashcard('good')">
-          <span>🟡 Bom</span>
-          <span style="font-size:.7rem;opacity:.85">3 dias</span>
-        </button>
-        <button class="fc-rate-btn rate-easy" onclick="rateFlashcard('easy')">
-          <span>🟢 Fácil</span>
-          <span style="font-size:.7rem;opacity:.85">7 dias</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ======================================================================= -->
-<!-- SUBMODAL 2: CALCULADORA DE MATRIZES E ÁLGEBRA LINEAR                    -->
+<!-- SUBMODAL: CALCULADORA DE MATRIZES E ÁLGEBRA LINEAR                      -->
 <!-- ======================================================================= -->
 <div id="modal-matrix-calc" class="modal-sub-overlay" hidden>
   <div class="modal-sub-box modal-calc-box">
@@ -5516,6 +5458,7 @@ function getLoggedInUser() {
 }
 
 function updateNavAuthUI() {
+  closeUserDropdown();
   const user = getLoggedInUser();
   const userPill = document.getElementById("nav-auth-user");
   const emailDisplay = document.getElementById("aws-user-email-display");
@@ -6594,7 +6537,6 @@ function openStudyModal(topicId, focusGuide = false) {
   if (editor) {
     editor.value = v.n || "";
     initNoteHistory(editor.value);
-    updatePomodoroUI();
     renderModalPreview(editor.value);
     updateNoteStats(editor.value);
   }
@@ -7579,202 +7521,6 @@ function speakSelectedText(lang = "en-US") {
 }
 
 // =========================================================================
-// 5. TEMPORIZADOR POMODORO INTEGRADO (COM ALERTA SONORO WEB AUDIO)
-// =========================================================================
-let pomodoroTimer = null;
-let pomodoroRemaining = 25 * 60;
-let pomodoroRunning = false;
-let pomodoroTodayCount = 0;
-
-try {
-  const todayKey = "roteiro-pomo-" + new Date().toISOString().slice(0, 10);
-  const savedPomo = localStorage.getItem(todayKey);
-  if (savedPomo) pomodoroTodayCount = parseInt(savedPomo, 10) || 0;
-} catch(e) {}
-
-function updatePomodoroUI() {
-  const btn = document.getElementById("pomo-btn");
-  const badge = document.getElementById("pomo-count-badge");
-  if (btn) {
-    const mins = String(Math.floor(pomodoroRemaining / 60)).padStart(2, "0");
-    const secs = String(pomodoroRemaining % 60).padStart(2, "0");
-    btn.textContent = `🍅 ${mins}:${secs}`;
-    btn.classList.toggle("running", pomodoroRunning);
-    btn.title = pomodoroRunning ? "Pausar Pomodoro" : "Iniciar Pomodoro (25 min de foco)";
-  }
-  if (badge) {
-    badge.textContent = `${pomodoroTodayCount} 🍅`;
-  }
-}
-
-function togglePomodoro() {
-  if (pomodoroRunning) {
-    clearInterval(pomodoroTimer);
-    pomodoroRunning = false;
-    updatePomodoroUI();
-    showToast("⏸️ Pomodoro pausado");
-  } else {
-    pomodoroRunning = true;
-    updatePomodoroUI();
-    showToast("▶️ Pomodoro iniciado! 25 min de foco total");
-    pomodoroTimer = setInterval(() => {
-      pomodoroRemaining--;
-      if (pomodoroRemaining <= 0) {
-        clearInterval(pomodoroTimer);
-        pomodoroRunning = false;
-        pomodoroRemaining = 25 * 60;
-        pomodoroTodayCount++;
-        try {
-          const todayKey = "roteiro-pomo-" + new Date().toISOString().slice(0, 10);
-          localStorage.setItem(todayKey, String(pomodoroTodayCount));
-        } catch(e) {}
-        playZenBell();
-        updatePomodoroUI();
-        alert("🎉 Ciclo Pomodoro Concluído!\nVocê completou 25 minutos de estudo de alta intensidade. Faça uma pausa de 5 minutos!");
-      } else {
-        updatePomodoroUI();
-      }
-    }, 1000);
-  }
-}
-
-function resetPomodoro() {
-  clearInterval(pomodoroTimer);
-  pomodoroRunning = false;
-  pomodoroRemaining = 25 * 60;
-  updatePomodoroUI();
-  showToast("↺ Pomodoro resetado para 25:00");
-}
-
-function playZenBell() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.35);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 2.6);
-  } catch(e) {}
-}
-
-// =========================================================================
-// 6. SISTEMA DE FLASHCARDS & REVISÃO ESPAÇADA (ANKI LITE)
-// =========================================================================
-let currentFlashcards = [];
-let fcCurrentIndex = 0;
-
-function collectTrackFlashcards() {
-  const cards = [];
-  for (const tid in PR) {
-    const note = (PR[tid] && PR[tid].n) ? PR[tid].n : "";
-    if (!note) continue;
-
-    const lines = note.split("\n");
-    let pendingQ = "";
-
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].replace(/^[>\s*-]+/, "").trim();
-
-      const qMatch = line.match(/^\*?\*?(?:P|Q|Pergunta|Question)\s*:\*?\*?\s*(.+)$/i);
-      if (qMatch) {
-        pendingQ = qMatch[1].trim();
-        continue;
-      }
-
-      const aMatch = line.match(/^\*?\*?(?:R|A|Resposta|Answer)\s*:\*?\*?\s*(.+)$/i);
-      if (aMatch && pendingQ) {
-        const topicTitle = (TOPICS_MAP[tid] && TOPICS_MAP[tid].title) || tid;
-        cards.push({
-          id: `${tid}-${i}`,
-          topicId: tid,
-          topicTitle: topicTitle,
-          q: pendingQ,
-          a: aMatch[1].trim()
-        });
-        pendingQ = "";
-      }
-    }
-  }
-  return cards;
-}
-
-function openFlashcardsReviewModal() {
-  currentFlashcards = collectTrackFlashcards();
-  const modal = document.getElementById("modal-flashcards");
-  if (!modal) return;
-
-  if (currentFlashcards.length === 0) {
-    alert("Nenhum flashcard encontrado nas suas anotações ainda!\n\nPara criar um flashcard, basta usar o botão '🗂️ Flashcard' na barra de ferramentas das anotações de qualquer tópico!");
-    return;
-  }
-
-  fcCurrentIndex = 0;
-  renderCurrentFlashcard();
-  modal.hidden = false;
-  modal.removeAttribute("hidden");
-  modal.style.display = "flex";
-}
-
-function closeFlashcardsModal() {
-  const modal = document.getElementById("modal-flashcards");
-  if (modal) modal.style.display = "none";
-}
-
-function renderCurrentFlashcard() {
-  const tagEl = document.getElementById("fc-card-tag");
-  const contentEl = document.getElementById("fc-card-content");
-  const ansTextEl = document.getElementById("fc-card-answer-text");
-  const ansEl = document.getElementById("fc-card-answer-wrap");
-  const revBtn = document.getElementById("fc-reveal-btn");
-  const rateBtns = document.getElementById("fc-rating-btns");
-  const counterEl = document.getElementById("fc-counter");
-
-  if (fcCurrentIndex >= currentFlashcards.length) {
-    if (tagEl) tagEl.textContent = "🎉 SESSÃO CONCLUÍDA";
-    if (contentEl) contentEl.innerHTML = `Excelente! Você revisou todos os <b>${currentFlashcards.length} flashcards</b> desta trilha!`;
-    if (ansEl) ansEl.className = "fc-card-answer-wrap";
-    if (revBtn) revBtn.style.display = "none";
-    if (rateBtns) rateBtns.className = "fc-rating-btns";
-    if (counterEl) counterEl.textContent = `${currentFlashcards.length}/${currentFlashcards.length}`;
-    return;
-  }
-
-  const card = currentFlashcards[fcCurrentIndex];
-
-  if (tagEl) tagEl.textContent = `CARD ${fcCurrentIndex + 1} DE ${currentFlashcards.length} · ${card.topicTitle}`;
-  if (contentEl) contentEl.textContent = card.q;
-  if (ansTextEl) ansTextEl.textContent = card.a;
-  if (ansEl) ansEl.className = "fc-card-answer-wrap";
-  if (revBtn) {
-    revBtn.style.display = "inline-flex";
-    revBtn.textContent = "👁️ Revelar Resposta";
-  }
-  if (rateBtns) rateBtns.className = "fc-rating-btns";
-  if (counterEl) counterEl.textContent = `${fcCurrentIndex + 1}/${currentFlashcards.length}`;
-}
-
-function flipFlashcard() {
-  const ansEl = document.getElementById("fc-card-answer-wrap");
-  const revBtn = document.getElementById("fc-reveal-btn");
-  const rateBtns = document.getElementById("fc-rating-btns");
-
-  if (ansEl) ansEl.className = "fc-card-answer-wrap show";
-  if (revBtn) revBtn.style.display = "none";
-  if (rateBtns) rateBtns.className = "fc-rating-btns show";
-}
-
-function rateFlashcard(level) {
-  fcCurrentIndex++;
-  renderCurrentFlashcard();
-}
-
-// =========================================================================
 // 7. CALCULADORA DE MATRIZES E VETORES (ÁLGEBRA LINEAR)
 // =========================================================================
 let lastCalculatedLatex = "";
@@ -8045,7 +7791,6 @@ try {
 window.addEventListener("DOMContentLoaded", () => {
   initSync();
   if (typeof initSplitResizer === "function") initSplitResizer();
-  if (typeof updatePomodoroUI === "function") updatePomodoroUI();
 });
 </script>
 </body>

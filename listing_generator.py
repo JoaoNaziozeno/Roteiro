@@ -203,13 +203,12 @@ __AUTH_AWS_CSS__
       <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
-      <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
-        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
             <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
@@ -392,13 +391,6 @@ __AUTH_AWS_CSS__
           <input type="date" id="modal-date-input" onchange="onModalDateChange()">
         </div>
 
-        <!-- POMODORO TIMER INTEGRADO -->
-        <div class="pomodoro-wrap" id="pomodoro-wrap">
-          <button class="pomo-toggle-btn" id="pomo-btn" onclick="togglePomodoro()" title="Iniciar ciclo Pomodoro de 25 min">🍅 25:00</button>
-          <button class="pomo-reset-btn" onclick="resetPomodoro()" title="Resetar Pomodoro">↺</button>
-          <span class="pomo-count-badge" id="pomo-count-badge" title="Pomodoros concluídos hoje">0 🍅</span>
-        </div>
-
         <button class="note-close-btn" onclick="closeNoteModal()" title="Fechar estúdio">✕</button>
       </div>
     </div>
@@ -490,12 +482,11 @@ __AUTH_AWS_CSS__
             <button class="tb-btn tb-audio-btn" onclick="speakSelectedText()" title="Ouvir pronúncia em inglês nativo do texto selecionado">🔊 Pronúncia</button>
             <span class="tb-sep"></span>
 
-            <!-- FERRAMENTAS CIENTÍFICAS: MATEMÁTICA, 3D, DESENHO, MATRIZES, FLASHCARDS E EXPORTAÇÃO -->
+            <!-- FERRAMENTAS CIENTÍFICAS: MATEMÁTICA, 3D, DESENHO, MATRIZES E EXPORTAÇÃO -->
             <button class="tb-btn tb-highlight-math" onclick="toggleMathPalette()" title="Inserir Fórmulas e Símbolos Matemáticos">∑ Matemática</button>
             <button class="tb-btn tb-highlight-3d" onclick="open3DVectorStudio()" title="Abrir Estúdio de Vetores e Gráfico 3D (Eixos X, Y, Z)">🌐 Vetores & 3D</button>
             <button class="tb-btn tb-highlight-draw" onclick="openWhiteboardDrawer()" title="Abrir Lousa para Desenhar Formas Geométricas 2D">✏️ Desenhar</button>
             <button class="tb-btn" onclick="openMatrixCalculator()" title="Abrir Calculadora de Matrizes e Vetores">🧮 Matrizes</button>
-            <button class="tb-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards das suas anotações">🗂️ Flashcards</button>
             <button class="tb-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown, PDF ou JSON">📥 Exportar</button>
           </div>
 
@@ -507,7 +498,6 @@ __AUTH_AWS_CSS__
               <option value="code">💻 Exemplo Prático Python</option>
               <option value="math_vectors">📐 Vetores & Álgebra Linear</option>
               <option value="schema">📐 Esquema de Fluxo</option>
-              <option value="flashcard">🗂️ Novo Flashcard (Pergunta / Resposta)</option>
               <option value="vocab_en">🇺🇸 Tabela Vocabulário & Pronúncia</option>
             </select>
           </div>
@@ -717,59 +707,8 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
   </div>
 </div>
 
-
 <!-- ======================================================================= -->
-<!-- SUBMODAL 1: REVISÃO DE FLASHCARDS & REPETIÇÃO ESPAÇADA (ANKI LITE)      -->
-<!-- ======================================================================= -->
-<div id="modal-flashcards" class="modal-sub-overlay" hidden>
-  <div class="modal-sub-box modal-fc-box">
-    <div class="modal-sub-header">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:1.3rem">🗂️</span>
-        <h3 style="margin:0;font-size:1.15rem;color:var(--tx)">Revisão de Flashcards & Repetição Espaçada</h3>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <span id="fc-counter" style="font-size:.84rem;font-weight:750;color:var(--mu)">1/1</span>
-        <button class="note-close-btn" onclick="closeFlashcardsModal()">✕</button>
-      </div>
-    </div>
-
-    <div class="fc-card-viewport">
-      <div class="fc-card-inner">
-        <div>
-          <span class="fc-card-tag" id="fc-card-tag">CARD 1 · Tópico</span>
-          <div class="fc-card-content" id="fc-card-content">Pergunta do flashcard</div>
-        </div>
-
-        <div class="fc-card-answer-wrap" id="fc-card-answer-wrap">
-          <div style="font-size:.76rem;text-transform:uppercase;color:var(--mu);margin-bottom:6px">Resposta Correta:</div>
-          <div id="fc-card-answer-text">Texto da resposta</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="fc-actions-bar">
-      <button class="fc-reveal-btn" id="fc-reveal-btn" onclick="flipFlashcard()">👁️ Revelar Resposta</button>
-      <div class="fc-rating-btns" id="fc-rating-btns">
-        <button class="fc-rate-btn rate-hard" onclick="rateFlashcard('hard')">
-          <span>🔴 Difícil</span>
-          <span style="font-size:.7rem;opacity:.85">1 dia</span>
-        </button>
-        <button class="fc-rate-btn rate-good" onclick="rateFlashcard('good')">
-          <span>🟡 Bom</span>
-          <span style="font-size:.7rem;opacity:.85">3 dias</span>
-        </button>
-        <button class="fc-rate-btn rate-easy" onclick="rateFlashcard('easy')">
-          <span>🟢 Fácil</span>
-          <span style="font-size:.7rem;opacity:.85">7 dias</span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ======================================================================= -->
-<!-- SUBMODAL 2: CALCULADORA DE MATRIZES E ÁLGEBRA LINEAR                    -->
+<!-- SUBMODAL: CALCULADORA DE MATRIZES E ÁLGEBRA LINEAR                      -->
 <!-- ======================================================================= -->
 <div id="modal-matrix-calc" class="modal-sub-overlay" hidden>
   <div class="modal-sub-box modal-calc-box">
@@ -1537,7 +1476,6 @@ try {
 window.addEventListener("DOMContentLoaded", () => {
   initSync();
   if (typeof initSplitResizer === "function") initSplitResizer();
-  if (typeof updatePomodoroUI === "function") updatePomodoroUI();
 });
 </script>
 </body>

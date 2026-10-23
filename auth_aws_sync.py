@@ -66,10 +66,13 @@ AUTH_AWS_SYNC_CSS = """
   box-shadow: 0 16px 40px rgba(0,0,0,.35);
   padding: 8px;
   z-index: 1000;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 4px;
   animation: dropdownFade .18s ease-out;
+}
+.nav-user-dropdown[hidden] {
+  display: none !important;
 }
 @keyframes dropdownFade {
   from { opacity: 0; transform: translateY(-6px); }
@@ -432,6 +435,7 @@ function getLoggedInUser() {
 }
 
 function updateNavAuthUI() {
+  closeUserDropdown();
   const user = getLoggedInUser();
   const userPill = document.getElementById("nav-auth-user");
   const emailDisplay = document.getElementById("aws-user-email-display");

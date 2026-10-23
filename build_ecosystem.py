@@ -1760,7 +1760,7 @@ __HUB_CSS__
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
-        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
             <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
