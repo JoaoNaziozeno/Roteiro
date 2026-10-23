@@ -1734,8 +1734,12 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 
 /* =========================================================================
-   ESTILOS DE AUTENTICAÇÃO & AWS CLOUD SYNC
+   ESTILOS DE AUTENTICAÇÃO, DROPDOWN DO USUÁRIO & AWS CLOUD SYNC
    ========================================================================= */
+.nav-user-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
 .nav-user-pill {
   display: inline-flex;
   align-items: center;
@@ -1743,54 +1747,90 @@ input:checked + .slider:before { transform: translateX(14px); }
   background: rgba(79,70,229,.12);
   border: 1px solid rgba(79,70,229,.35);
   color: var(--tx);
-  font-size: .8rem;
-  font-weight: 700;
-  padding: 5px 11px;
+  font-size: .82rem;
+  font-weight: 750;
+  padding: 6px 13px;
   border-radius: 99px;
   cursor: pointer;
   transition: all .2s ease;
+  user-select: none;
 }
-.nav-user-pill:hover {
-  background: rgba(79,70,229,.22);
+.nav-user-pill:hover, .nav-user-pill.active {
+  background: rgba(79,70,229,.24);
   border-color: var(--ac);
-}
-.nav-logout-btn {
-  background: rgba(239,68,68,.1);
-  border: 1px solid rgba(239,68,68,.3);
-  color: #ef4444;
-  font-size: .78rem;
-  font-weight: 700;
-  padding: 5px 10px;
-  border-radius: 99px;
-  cursor: pointer;
-  transition: all .2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.nav-logout-btn:hover {
-  background: rgba(239,68,68,.2);
-  border-color: #ef4444;
   transform: translateY(-1px);
 }
-.nav-aws-pill {
-  display: inline-flex;
+.nav-user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0,0,0,.35);
+  padding: 8px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: dropdownFade .18s ease-out;
+}
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.dropdown-user-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--bd);
+  margin-bottom: 4px;
+  text-align: left;
+}
+.dropdown-user-name {
+  font-size: .88rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+.dropdown-user-email {
+  font-size: .74rem;
+  color: var(--mu);
+  word-break: break-all;
+  margin-top: 2px;
+}
+.dropdown-item {
+  display: flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(16,185,129,.1);
-  border: 1px solid rgba(16,185,129,.35);
-  color: #10b981;
-  font-size: .78rem;
-  font-weight: 750;
-  padding: 5px 10px;
-  border-radius: 99px;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: var(--tx);
+  font-size: .82rem;
+  font-weight: 700;
+  text-align: left;
   cursor: pointer;
-  transition: all .2s ease;
+  transition: all .15s;
+  box-sizing: border-box;
 }
-.nav-aws-pill:hover {
-  background: rgba(16,185,129,.2);
-  border-color: #10b981;
+.dropdown-item:hover {
+  background: var(--bg);
+  color: var(--ac);
 }
+.dropdown-item.danger {
+  color: #ef4444;
+}
+.dropdown-item.danger:hover {
+  background: rgba(239,68,68,.12);
+  color: #ef4444;
+}
+.dropdown-divider {
+  height: 1px;
+  background: var(--bd);
+  margin: 4px 0;
+}
+
 .nav-aws-pulse {
   width: 7px;
   height: 7px;
@@ -1798,6 +1838,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   background: #10b981;
   box-shadow: 0 0 8px #10b981;
   animation: awsPulse 2s infinite ease-in-out;
+  display: inline-block;
 }
 @keyframes awsPulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -1940,16 +1981,30 @@ input:checked + .slider:before { transform: translateX(14px); }
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
-      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
-        <span class="nav-aws-pulse"></span>
-        <span>☁️ AWS Sync</span>
-      </button>
-      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
-        👤 <span>João Naziozeno</span>
+      <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
+        <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
+          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+        </button>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+          <div class="dropdown-user-header">
+            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+          </div>
+          <button class="dropdown-item" onclick="openAwsSyncModal()">
+            <span>☁️</span>
+            <span>Sincronização AWS</span>
+          </button>
+          <button class="dropdown-item" onclick="openChangeCredentialsModal()">
+            <span>🔑</span>
+            <span>Alterar Usuário & Senha</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="handleUserLogout()">
+            <span>🔒</span>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
       </div>
-      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
-        🔒 <span>Sair</span>
-      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -3448,13 +3503,98 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
 </div>
 
 
+<!-- MODAL: ALTERAR USUÁRIO E SENHA (COM HASH CRIPTOGRÁFICO SHA-256) -->
+<div id="modal-change-credentials" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:480px;width:95%">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.3rem">🔑</span>
+        <h3 class="modal-sub-title">Alterar Usuário & Senha</h3>
+      </div>
+      <button class="modal-close-icon" onclick="closeChangeCredentialsModal()">✕</button>
+    </div>
+
+    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:10px 14px;font-size:.8rem;color:var(--tx);margin-bottom:16px;line-height:1.4">
+      🛡️ <b>Segurança Criptográfica:</b> Sua senha é convertida em um <b>Hash SHA-256 irreversível com Salt</b> antes de ser gravada. O texto puro da sua senha nunca é salvo em nenhum lugar.
+    </div>
+
+    <form id="form-change-credentials" onsubmit="handleSaveNewCredentials(event)">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nome de Exibição</label>
+          <input type="text" id="change-user-name" class="aws-cfg-input" required placeholder="Seu Nome Completo">
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">E-mail Cadastrado</label>
+          <input type="email" id="change-user-email" class="aws-cfg-input" required placeholder="seu-email@dominio.com">
+        </div>
+        <div class="dropdown-divider"></div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Senha / PIN Atual</label>
+          <input type="password" id="change-current-pass" class="aws-cfg-input" required placeholder="Digite sua senha ou PIN atual">
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nova Senha / PIN (mínimo 4 caracteres)</label>
+          <input type="password" id="change-new-pass" class="aws-cfg-input" required placeholder="Digite a nova senha">
+        </div>
+        <div>
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Confirmar Nova Senha</label>
+          <input type="password" id="change-confirm-pass" class="aws-cfg-input" required placeholder="Confirme a nova senha">
+        </div>
+      </div>
+
+      <div id="change-cred-error" style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:8px 12px;border-radius:8px;font-size:.82rem;margin-top:14px;text-align:center"></div>
+
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
+        <button type="button" class="aws-btn-sec" onclick="closeChangeCredentialsModal()">Cancelar</button>
+        <button type="submit" class="aws-btn-primary">💾 Salvar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 <script>
 
 // =========================================================================
-// SCRIPT DE AUTENTICAÇÃO E GERENCIAMENTO DE SESSÃO & NUVEM AWS
+// SCRIPT DE AUTENTICAÇÃO, HASH SHA-256, DROPDOWN & NUVEM AWS
 // =========================================================================
 const AUTH_USER_KEY = "roteiro_auth_user";
 const AWS_CONFIG_KEY = "roteiro_aws_config";
+const PASSWORD_HASH_KEY = "roteiro_password_hash";
+const CRYPTO_SALT = "roteiro_ia_salt_2026_#9821_";
+
+// Função para gerar HASH criptográfico SHA-256 com Salt
+async function computeSha256(plainText) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(CRYPTO_SALT + String(plainText));
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// Validar se uma senha/PIN confere com o Hash salvo
+async function validateLoginPassword(inputPass) {
+  const inputHash = await computeSha256(inputPass);
+  let savedHash = localStorage.getItem(PASSWORD_HASH_KEY);
+
+  // Se ainda não houver hash gravado, inicializar com "1234"
+  if (!savedHash) {
+    const defaultHash = await computeSha256("1234");
+    if (inputPass === "1234" || inputPass === "admin") {
+      localStorage.setItem(PASSWORD_HASH_KEY, defaultHash);
+      return true;
+    }
+    // Se o usuário digitou uma senha customizada no primeiro login com >= 4 chars, gravar como seu hash
+    if (inputPass && inputPass.length >= 4) {
+      localStorage.setItem(PASSWORD_HASH_KEY, inputHash);
+      return true;
+    }
+    return false;
+  }
+
+  return inputHash === savedHash;
+}
 
 function getLoggedInUser() {
   try {
@@ -3469,18 +3609,57 @@ function updateNavAuthUI() {
   const user = getLoggedInUser();
   const userPill = document.getElementById("nav-auth-user");
   const emailDisplay = document.getElementById("aws-user-email-display");
+  const dropName = document.getElementById("dropdown-user-name");
+  const dropEmail = document.getElementById("dropdown-user-email");
+
   if (user && user.authenticated) {
+    const name = user.name || "João Naziozeno";
+    const email = user.email || "joao@roteiro.ia";
+
     if (userPill) {
-      userPill.innerHTML = `👤 <span>${user.name || "João"}</span>`;
-      userPill.title = `Conectado como ${user.email} · Clique para ver status`;
+      userPill.innerHTML = `👤 <span>${name}</span> <span style="font-size:.7rem;margin-left:2px">▾</span>`;
+      userPill.title = `Conectado como ${email} · Clique para opções`;
     }
-    if (emailDisplay) {
-      emailDisplay.textContent = user.name || user.email || "João Naziozeno";
-    }
+    if (emailDisplay) emailDisplay.textContent = name;
+    if (dropName) dropName.textContent = name;
+    if (dropEmail) dropEmail.textContent = email;
   }
 }
 
+function toggleUserDropdown(e) {
+  if (e) e.stopPropagation();
+  const dd = document.getElementById("nav-user-dropdown");
+  const pill = document.getElementById("nav-auth-user");
+  if (!dd) return;
+  const isHidden = dd.hasAttribute("hidden") || dd.style.display === "none";
+  if (isHidden) {
+    dd.removeAttribute("hidden");
+    dd.style.display = "flex";
+    if (pill) pill.classList.add("active");
+  } else {
+    closeUserDropdown();
+  }
+}
+
+function closeUserDropdown() {
+  const dd = document.getElementById("nav-user-dropdown");
+  const pill = document.getElementById("nav-auth-user");
+  if (dd) {
+    dd.setAttribute("hidden", "true");
+    dd.style.display = "none";
+  }
+  if (pill) pill.classList.remove("active");
+}
+
+window.addEventListener("click", (e) => {
+  const wrap = document.getElementById("nav-user-wrap");
+  if (wrap && !wrap.contains(e.target)) {
+    closeUserDropdown();
+  }
+});
+
 function handleUserLogout() {
+  closeUserDropdown();
   if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
     try {
       localStorage.removeItem(AUTH_USER_KEY);
@@ -3490,21 +3669,102 @@ function handleUserLogout() {
   }
 }
 
+function openChangeCredentialsModal() {
+  closeUserDropdown();
+  const modal = document.getElementById("modal-change-credentials");
+  const user = getLoggedInUser();
+  if (modal) {
+    document.getElementById("change-user-name").value = user?.name || "João Naziozeno";
+    document.getElementById("change-user-email").value = user?.email || "joao@roteiro.ia";
+    document.getElementById("change-current-pass").value = "";
+    document.getElementById("change-new-pass").value = "";
+    document.getElementById("change-confirm-pass").value = "";
+    const errEl = document.getElementById("change-cred-error");
+    if (errEl) errEl.style.display = "none";
+
+    modal.hidden = false;
+    modal.removeAttribute("hidden");
+    modal.style.display = "flex";
+  }
+}
+
+function closeChangeCredentialsModal() {
+  const modal = document.getElementById("modal-change-credentials");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+}
+
+async function handleSaveNewCredentials(e) {
+  e.preventDefault();
+  const name = document.getElementById("change-user-name").value.trim();
+  const email = document.getElementById("change-user-email").value.trim();
+  const curPass = document.getElementById("change-current-pass").value.trim();
+  const newPass = document.getElementById("change-new-pass").value.trim();
+  const confirmPass = document.getElementById("change-confirm-pass").value.trim();
+  const errEl = document.getElementById("change-cred-error");
+
+  const isCurValid = await validateLoginPassword(curPass);
+  if (!isCurValid) {
+    errEl.textContent = "A senha / PIN atual está incorreta.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  if (newPass.length < 4) {
+    errEl.textContent = "A nova senha deve ter no mínimo 4 caracteres.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    errEl.textContent = "A confirmação de senha não confere.";
+    errEl.style.display = "block";
+    return;
+  }
+
+  // Gerar HASH criptográfico seguro SHA-256
+  const newHash = await computeSha256(newPass);
+  localStorage.setItem(PASSWORD_HASH_KEY, newHash);
+
+  // Atualizar dados de usuário autenticado
+  const user = getLoggedInUser() || { authenticated: true };
+  user.name = name;
+  user.email = email;
+  user.updatedAt = Date.now();
+
+  if (localStorage.getItem(AUTH_USER_KEY)) {
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  } else {
+    sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  }
+
+  closeChangeCredentialsModal();
+  updateNavAuthUI();
+
+  if (typeof showToast === "function") {
+    showToast("🔑 Senha criptografada (SHA-256) e dados atualizados!");
+  } else {
+    alert("Dados e senha criptografada (SHA-256) atualizados com sucesso!");
+  }
+}
+
 function openAwsSyncModal() {
+  closeUserDropdown();
   const modal = document.getElementById("modal-aws-sync");
   if (modal) {
     modal.hidden = false;
     modal.removeAttribute("hidden");
     modal.style.display = "flex";
     
-    // Atualizar último horário
     const lastSyncEl = document.getElementById("aws-last-sync-time");
     if (lastSyncEl) {
       const now = new Date();
       lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
     }
     
-    // Carregar configs salvas
     try {
       const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
       if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;

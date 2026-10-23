@@ -6,7 +6,7 @@ gestão interativa de status, links de repositórios/demos, anotações de engen
 e exportador para LinkedIn / README.
 """
 
-from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 PROJECTS_CSS = """
 /* =========================================================================
@@ -314,16 +314,30 @@ def generate_projects_page(out_path, shared_css):
       <a href="projetos.html" class="nav-link active">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
-      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
-        <span class="nav-aws-pulse"></span>
-        <span>☁️ AWS Sync</span>
-      </button>
-      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
-        👤 <span>João Naziozeno</span>
+      <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
+        <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
+          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+        </button>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+          <div class="dropdown-user-header">
+            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+          </div>
+          <button class="dropdown-item" onclick="openAwsSyncModal()">
+            <span>☁️</span>
+            <span>Sincronização AWS</span>
+          </button>
+          <button class="dropdown-item" onclick="openChangeCredentialsModal()">
+            <span>🔑</span>
+            <span>Alterar Usuário & Senha</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="handleUserLogout()">
+            <span>🔒</span>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
       </div>
-      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
-        🔒 <span>Sair</span>
-      </button>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
   </div>
@@ -387,6 +401,7 @@ def generate_projects_page(out_path, shared_css):
 </main>
 
 {AWS_SYNC_MODAL_HTML}
+{CHANGE_CREDENTIALS_MODAL_HTML}
 
 <!-- MODAL: ANOTAÇÕES & LIÇÕES APRENDIDAS DO PROJETO -->
 <div id="modal-project-notes" class="modal-sub-overlay" hidden>

@@ -1009,7 +1009,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 from studio_css import STUDIO_CSS
 SHARED_CSS = BASE_SHARED_CSS + "\n" + STUDIO_CSS
 
-from auth_aws_sync import AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 from projects_generator import generate_projects_page
 
 print("SHARED_CSS pronto.")
@@ -1830,16 +1830,30 @@ __HUB_CSS__
       <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
-      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
-        <span class="nav-aws-pulse"></span>
-        <span>☁️ AWS Sync</span>
-      </button>
-      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
-        👤 <span>João Naziozeno</span>
+      <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
+        <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
+          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+        </button>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+          <div class="dropdown-user-header">
+            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+          </div>
+          <button class="dropdown-item" onclick="openAwsSyncModal()">
+            <span>☁️</span>
+            <span>Sincronização AWS</span>
+          </button>
+          <button class="dropdown-item" onclick="openChangeCredentialsModal()">
+            <span>🔑</span>
+            <span>Alterar Usuário & Senha</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="handleUserLogout()">
+            <span>🔒</span>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
       </div>
-      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
-        🔒 <span>Sair</span>
-      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -1923,49 +1937,11 @@ __HUB_CSS__
 
   <!-- ESTADO 2: CONTEÚDO AUTENTICADO DO HUB (QUANDO CONECTADO) -->
   <div id="hub-authenticated-view" style="display:none">
-    <!-- BANNER DE NUVEM AWS -->
-    <div class="hub-aws-banner">
-      <div class="hub-aws-banner-left">
-        <span class="nav-aws-pulse"></span>
-        <span><b>AWS Cloud Sync Ativo:</b> Autenticação Cognito e persistência no Amazon DynamoDB (Always Free Tier · US$ 0,00). Seus US$ 100 de crédito estão 100% preservados.</span>
-      </div>
-      <button class="aws-btn-sec" style="padding:6px 12px;font-size:.78rem" onclick="openAwsSyncModal()">Gerenciar Nuvem ➔</button>
-    </div>
-
     <!-- HERO HEAD -->
     <section class="hub-hero">
       <h1>Hub Central de Aprendizado</h1>
       <p>Do zero absoluto até o desenvolvimento e engenharia de Inteligência Artificial moderna. Escolha uma das 4 páginas estruturadas abaixo para gerenciar seus estudos, anotações e progresso.</p>
     </section>
-
-  <!-- ESCLARECIMENTO DE METAS & PRAZOS -->
-  <section class="clarification-card">
-    <div class="clarification-head">
-      <span class="clarification-badge">🎯 Alinhamento de Cronograma</span>
-      <h2 class="clarification-title">Como o Inglês se encaixa no prazo de 12 a 18 meses?</h2>
-    </div>
-    <p style="margin:0;font-size:.93rem;line-height:1.6;color:var(--tx)">
-      O prazo estimado de <b>12 a 18 meses (8 a 10h/semana)</b> ou <b>4 a 6 meses acelerado (20 a 25h/semana)</b> foi calculado <b>especificamente para o conteúdo técnico de IA e programação</b>. 
-      O inglês não é uma barreira nem atrasa esse tempo: ele roda em <b>paralelo como um micro-hábito diário de 25 a 30 minutos</b>.
-    </p>
-
-    <div class="clarification-grid">
-      <div class="clarification-col">
-        <h4>🤖 Trilha de IA & Programação</h4>
-        <p><b>173 tópicos práticos</b> divididos em 6 fases: Python, Dados, Machine Learning, Deep Learning, Transformers/LLMs e MLOps. É o núcleo das suas 8 a 10 horas semanais de estudo focado.</p>
-      </div>
-
-      <div class="clarification-col">
-        <h4>📐 Trilha de Matemática para IA</h4>
-        <p><b>43 tópicos aplicados</b> (Álgebra Linear, Cálculo de Gradientes, Probabilidade Bayesiana e Embeddings). Estudada junto com as Fases 1 a 3 para criar a intuição geométrica real.</p>
-      </div>
-
-      <div class="clarification-col">
-        <h4>🇺🇸 Trilha de Inglês EnglishBay</h4>
-        <p><b>73 vídeo-aulas da Playlist Oficial</b>. Assistindo apenas <b>1 aula por dia</b> (25 a 30 min), você conclui o curso inteiro em <b>apenas ~10 a 11 semanas (2 meses e meio)</b>! Ou seja, você se torna fluente em leitura técnica bem antes de chegar nas fases de Deep Learning.</p>
-      </div>
-    </div>
-  </section>
 
   <!-- =======================================================================
        PROGRESSO GLOBAL, VELOCÍMETRO & MEDIDOR DE RITMO EM TEMPO REAL
@@ -2303,6 +2279,7 @@ __HUB_CSS__
 </main>
 
 __AWS_SYNC_MODAL__
+__CHANGE_CREDENTIALS_MODAL__
 
 <script>
 __AUTH_AWS_SYNC_JS__
@@ -2311,14 +2288,13 @@ function checkHubAuth() {
   const user = getLoggedInUser();
   const loginView = document.getElementById("hub-login-view");
   const authView = document.getElementById("hub-authenticated-view");
-  const navUser = document.getElementById("nav-auth-user");
-  const logoutBtn = document.querySelector(".nav-logout-btn");
+  const navUserWrap = document.getElementById("nav-user-wrap");
   const navLinks = document.getElementById("hub-nav-links");
 
   if (user && user.authenticated) {
     if (loginView) loginView.style.display = "none";
     if (authView) authView.style.display = "block";
-    if (logoutBtn) logoutBtn.style.display = "inline-flex";
+    if (navUserWrap) navUserWrap.style.display = "inline-block";
     if (navLinks) navLinks.style.display = "flex";
     
     const heroH1 = document.querySelector(".hub-hero h1");
@@ -2330,24 +2306,29 @@ function checkHubAuth() {
   } else {
     if (loginView) loginView.style.display = "block";
     if (authView) authView.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "none";
+    if (navUserWrap) navUserWrap.style.display = "none";
     if (navLinks) navLinks.style.display = "none";
   }
 }
 
-function handlePortalLogin(e) {
+async function handlePortalLogin(e) {
   e.preventDefault();
   const email = document.getElementById("login-input-email").value.trim();
   const pass = document.getElementById("login-input-pass").value.trim();
   const remember = document.getElementById("login-remember-me").checked;
   const errorEl = document.getElementById("login-error-msg");
 
-  const customPass = localStorage.getItem("roteiro_master_pass") || "1234";
+  // Validação criptográfica com HASH SHA-256 e Salt
+  const isValid = await validateLoginPassword(pass);
 
-  if (pass === customPass || pass === "1234" || pass === "admin" || pass.length >= 4) {
+  if (isValid) {
+    let userName = "João Naziozeno";
+    const existing = getLoggedInUser();
+    if (existing && existing.name) userName = existing.name;
+
     const userObj = {
       authenticated: true,
-      name: "João Naziozeno",
+      name: userName,
       email: email || "joao@roteiro.ia",
       loginTime: Date.now(),
       provider: "aws-cognito-ready"
@@ -2372,7 +2353,7 @@ function handlePortalLogin(e) {
     updateNavAuthUI();
   } else {
     if (errorEl) {
-      errorEl.textContent = "Senha ou PIN incorreto. Use o PIN inicial: 1234";
+      errorEl.textContent = "Senha ou PIN incorreto. Use o PIN inicial: 1234 (ou sua senha configurada no perfil).";
       errorEl.style.display = "block";
     }
   }
@@ -2814,6 +2795,7 @@ window.addEventListener("DOMContentLoaded", () => {
     html = (html_template
         .replace("__HUB_CSS__", hub_css)
         .replace("__AWS_SYNC_MODAL__", AWS_SYNC_MODAL_HTML)
+        .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
     )
     with open(out_path, "w", encoding="utf-8") as f:

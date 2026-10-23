@@ -6,7 +6,7 @@ Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 
 import json
 from studio_js import STUDIO_JS
-from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
     total_topics = 0
@@ -196,16 +196,30 @@ __AUTH_AWS_CSS__
     <div class="nav-right">
       <button class="player-ext-btn" onclick="openFlashcardsReviewModal()" title="Revisar Flashcards de Estudo">🗂️ Flashcards</button>
       <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
-      <button class="nav-aws-pill" onclick="openAwsSyncModal()" title="Status da Nuvem AWS DynamoDB & Cognito">
-        <span class="nav-aws-pulse"></span>
-        <span>☁️ AWS Sync</span>
-      </button>
-      <div id="nav-auth-user" class="nav-user-pill" onclick="openAwsSyncModal()" title="Perfil do Usuário">
-        👤 <span>João Naziozeno</span>
+      <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
+        <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
+          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+        </button>
+        <div class="nav-user-dropdown" id="nav-user-dropdown" hidden>
+          <div class="dropdown-user-header">
+            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+          </div>
+          <button class="dropdown-item" onclick="openAwsSyncModal()">
+            <span>☁️</span>
+            <span>Sincronização AWS</span>
+          </button>
+          <button class="dropdown-item" onclick="openChangeCredentialsModal()">
+            <span>🔑</span>
+            <span>Alterar Usuário & Senha</span>
+          </button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item danger" onclick="handleUserLogout()">
+            <span>🔒</span>
+            <span>Sair da Conta</span>
+          </button>
+        </div>
       </div>
-      <button class="nav-logout-btn" onclick="handleUserLogout()" title="Sair da conta">
-        🔒 <span>Sair</span>
-      </button>
       <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
@@ -876,6 +890,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
 </div>
 
 __AWS_SYNC_MODAL__
+__CHANGE_CREDENTIALS_MODAL__
 
 <script>
 __AUTH_AWS_SYNC_JS__
@@ -1523,6 +1538,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
         .replace("__AUTH_AWS_CSS__", AUTH_AWS_SYNC_CSS)
         .replace("__AWS_SYNC_MODAL__", AWS_SYNC_MODAL_HTML)
+        .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
         .replace("__PAGE_TITLE__", page_title)
         .replace("__PAGE_SUB__", page_sub)
