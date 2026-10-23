@@ -154,9 +154,12 @@ function openStudyModal(topicId, focusGuide = false) {
         <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(99,102,241,.45);background:linear-gradient(160deg,rgba(79,70,229,.09),rgba(16,185,129,.05));padding:16px 18px;border-radius:14px;margin-bottom:10px">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
             <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Apostila Descomplicada em Português (PT-BR)</span>
+              <span>📘 Aula Visual & Apostila Descomplicada (PT-BR)</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <button type="button" onclick="const p=document.getElementById('study-player-sect');if(p)p.scrollTo({top:0,behavior:'smooth'})" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
+                ${videoLabel} ↑
+              </button>
               <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
                 📥 Copiar para Meu Caderno
               </button>
@@ -224,6 +227,13 @@ function openStudyModal(topicId, focusGuide = false) {
   modal.style.display = "flex";
   document.body.style.overflow = "hidden";
 
+  const vWrap = document.getElementById("video-wrapper");
+  const cBtn = document.getElementById("modal-collapse-btn");
+  if (vWrap && vWrap.classList.contains("collapsed")) {
+    vWrap.classList.remove("collapsed");
+    if (cBtn) cBtn.textContent = "▲ Ocultar Vídeo";
+  }
+
   if (focusGuide) {
     setTimeout(() => {
       const gBox = document.getElementById("pt-guide-box");
@@ -231,6 +241,8 @@ function openStudyModal(topicId, focusGuide = false) {
         gBox.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }, 120);
+  } else {
+    if (playerSect) playerSect.scrollTop = 0;
   }
 }
 
