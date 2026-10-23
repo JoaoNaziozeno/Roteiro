@@ -207,7 +207,6 @@ __AUTH_AWS_CSS__
       <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
-      <button class="player-ext-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
@@ -349,7 +348,10 @@ __AUTH_AWS_CSS__
           <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído</button>
           <button class="fil-btn" data-f="n" onclick="setFilter('n')">📝 Anotações</button>
         </div>
-        <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <button class="player-ext-btn" style="padding:6px 14px;border-radius:99px;font-size:.8rem;cursor:pointer" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
+          <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
+        </div>
       </section>
 
       <!-- LISTAGEM DE FASES -->
