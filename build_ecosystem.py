@@ -35,8 +35,8 @@ mat_phases = [
                         "title": "Combinações lineares, espaço gerado (span) e bases",
                         "video_url": "https://www.youtube.com/watch?v=k7RM-ot2NWY",
                         "video_label": "▶ 3B1B Span & Bases",
-                        "doc_url": "https://immersivemath.com/ila/ch03_vectors/ch03.html",
-                        "doc_label": "📖 Immersive Math Cap 3"
+                        "doc_url": "https://immersivemath.com/ila/ch02_vectors/ch02.html",
+                        "doc_label": "📖 Immersive Math Cap 2"
                     },
                     {
                         "title": "Produto escalar (Dot Product) e projeções",
@@ -68,8 +68,8 @@ mat_phases = [
                         "title": "Matrizes como transformações lineares no espaço",
                         "video_url": "https://www.youtube.com/watch?v=kYB8IZa5AuE",
                         "video_label": "▶ 3B1B Matrizes",
-                        "doc_url": "https://immersivemath.com/ila/ch04_matrices/ch04.html",
-                        "doc_label": "📖 Immersive Math Cap 4"
+                        "doc_url": "https://immersivemath.com/ila/ch06_matrices/ch06.html",
+                        "doc_label": "📖 Immersive Math Cap 6"
                     },
                     {
                         "title": "Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)",
