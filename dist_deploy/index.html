@@ -1,0 +1,3059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hub Central - Roteiro de Estudo do zero à IA</title>
+<style>
+
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f27;--mu:#667085;--bd:#e3e6ec;--ac:#4f46e5;--ac-hover:#4338ca;--z:#e5484d;--r:#e8a100;--e:#2fa36b;
+box-sizing:border-box}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}
+html{scroll-padding-top:70px;scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+
+/* Topbar Sticky de Navegação */
+.top-nav{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--bd);
+  transition:background .2s;
+}
+:root[data-theme="dark"] .top-nav, @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .top-nav{background:rgba(24,28,37,.88)}}
+
+.top-nav-inner{
+  max-width:1440px;
+  margin:0 auto;
+  padding:0 22px;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.nav-brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+  font-size:1.05rem;
+  color:var(--tx);
+  text-decoration:none;
+}
+.nav-brand span{
+  background:linear-gradient(135deg,var(--ac),#ec4899);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  overflow-x:auto;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{
+  font-size:.84rem;
+  font-weight:600;
+  padding:7px 12px;
+  border-radius:8px;
+  color:var(--mu);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  white-space:nowrap;
+  transition:.15s;
+}
+.nav-link:hover{color:var(--tx);background:var(--bg)}
+.nav-link.active{color:var(--ac);background:rgba(79,70,229,.1);font-weight:700}
+
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-status-pill{
+  font-size:.72rem;
+  font-weight:600;
+  padding:3px 8px;
+  border-radius:99px;
+  background:var(--bd);
+  color:var(--mu);
+}
+.badge-pg{background:#0064a5;color:#fff}
+.badge-sq{background:#003b57;color:#fff}
+.nav-theme-btn{
+  font:inherit;
+  border:1px solid var(--bd);
+  background:var(--card);
+  color:var(--tx);
+  padding:5px 9px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:.9rem;
+}
+
+/* Layout com Sidebar */
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.sidebar{
+  width:320px;
+  flex-shrink:0;
+  background:var(--card);
+  border-right:1px solid var(--bd);
+  position:sticky;
+  top:58px;
+  height:calc(100vh - 58px);
+  overflow-y:auto;
+  padding:16px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  z-index:90;
+  transition:transform .25s cubic-bezier(0.16, 1, 0.3, 1),width .25s ease;
+}
+.sidebar::-webkit-scrollbar{width:5px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bd);border-radius:10px}
+
+.sb-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;border-bottom:1px solid var(--bd)}
+.sb-header-title{font-weight:750;font-size:.92rem;color:var(--tx);display:flex;align-items:center;gap:6px}
+.sb-shortcuts{display:grid;grid-template-columns:1fr;gap:4px}
+.sb-quick-btn{font:inherit;font-size:.78rem;padding:6px 10px;border-radius:8px;border:1px solid transparent;background:var(--bg);color:var(--tx);cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;transition:.15s}
+.sb-quick-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+.sb-tree{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+details.sb-phase{border-radius:8px;background:transparent}
+details.sb-phase summary{list-style:none;cursor:pointer;padding:7px 9px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.82rem;font-weight:650;color:var(--tx);transition:.15s}
+details.sb-phase summary::-webkit-details-marker{display:none}
+details.sb-phase summary:hover{background:var(--bg)}
+details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--ac)}
+.sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
+
+.sb-sub-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 6px 14px;margin-left:8px;border-left:1px solid var(--bd)}
+.sb-sub-btn{
+  font:inherit;
+  font-size:.76rem;
+  padding:5px 8px;
+  border-radius:6px;
+  border:none;
+  background:transparent;
+  color:var(--mu);
+  text-align:left;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  transition:.15s;
+}
+.sb-sub-btn:hover{background:var(--bg);color:var(--tx)}
+.sb-sub-btn.active-group{color:var(--ac);font-weight:600;background:rgba(79,70,229,.08)}
+
+/* Botão Mobile da Sidebar */
+.sb-toggle-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:95;
+  background:var(--ac);
+  color:#fff;
+  border:none;
+  border-radius:99px;
+  padding:10px 18px;
+  font:inherit;
+  font-size:.85rem;
+  font-weight:650;
+  display:none;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  box-shadow:0 4px 18px rgba(79,70,229,.35);
+}
+.sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:85}
+.sb-backdrop.active{display:block}
+
+@media(max-width:1040px){
+  .sidebar{position:fixed;left:0;top:58px;bottom:0;transform:translateX(-100%);box-shadow:6px 0 28px rgba(0,0,0,.25)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-toggle-btn{display:flex}
+}
+
+/* Área de Conteúdo */
+.content-wrapper{flex:1;min-width:0;display:flex;flex-direction:column}
+main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
+.hero-head{margin-bottom:20px}
+.hero-head h1{font-size:1.75rem;margin:0 0 6px;font-weight:800;letter-spacing:-.02em}
+.hero-head .sub{color:var(--mu);margin:0;font-size:.95rem}
+
+/* Animação de Scroll */
+@keyframes highlightHeading {
+  0% { background: transparent; }
+  25% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
+  75% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
+  100% { background: transparent; padding-left: 0; }
+}
+.target-highlight {
+  animation: highlightHeading 1.8s ease-in-out;
+  transition: all .2s ease;
+}
+
+/* Rastreador de Metas / Gamificação */
+.tracker-box{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:16px;
+  padding:20px 22px;
+  margin-bottom:22px;
+  box-shadow:0 6px 20px rgba(0,0,0,.03);
+}
+.tracker-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.tracker-title{font-size:1.02rem;font-weight:750;color:var(--tx);display:flex;align-items:center;gap:8px}
+.tracker-presets{display:flex;flex-wrap:wrap;gap:6px}
+.trk-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:.15s}
+.trk-btn:hover{border-color:var(--ac);color:var(--ac)}
+.trk-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+
+.level-banner{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.level-info{display:flex;align-items:center;gap:10px}
+.level-icon{font-size:1.6rem}
+.level-name{font-weight:750;font-size:.92rem;color:var(--tx)}
+.level-desc{font-size:.78rem;color:var(--mu);margin-top:1px}
+.level-xp-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:1 1 200px}
+.level-xp-text{font-size:.78rem;font-weight:600;color:var(--ac)}
+.level-xp-bar{width:100%;max-width:220px;height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
+.level-xp-fill{height:100%;background:linear-gradient(90deg,var(--ac),#ec4899);border-radius:99px;transition:width .4s ease}
+
+.pace-status-card{padding:12px 16px;border-radius:10px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:.88rem;font-weight:600}
+.pace-ahead{background:rgba(47,163,107,.12);border:1px solid rgba(47,163,107,.3);color:var(--e)}
+.pace-ontrack{background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.28);color:var(--ac)}
+.pace-behind{background:rgba(229,72,77,.12);border:1px solid rgba(229,72,77,.3);color:var(--z)}
+
+.next-step-box{background:rgba(79,70,229,.06);border:1px dashed var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.next-step-info{display:flex;flex-direction:column;gap:2px}
+.next-step-tag{font-size:.72rem;font-weight:700;letter-spacing:.05em;color:var(--ac);text-transform:uppercase}
+.next-step-title{font-size:.88rem;font-weight:650;color:var(--tx)}
+.next-step-btn{font:inherit;font-size:.82rem;font-weight:650;padding:8px 16px;border-radius:99px;border:none;background:var(--ac);color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(79,70,229,.3);transition:.2s}
+.next-step-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(79,70,229,.4)}
+
+.pace-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.pace-stat-card{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.pace-stat-num{font-size:1.15rem;font-weight:750;color:var(--tx)}
+.pace-stat-sub{font-size:.74rem;color:var(--mu)}
+
+/* Barra Global de Progresso */
+.progress-card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px 18px;margin-bottom:18px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.86rem;font-weight:650}
+.prog-bar{width:100%;height:8px;background:var(--bd);border-radius:99px;overflow:hidden;display:flex}
+.p-z{background:var(--z);transition:width .3s}
+.p-r{background:var(--r);transition:width .3s}
+.p-e{background:var(--e);transition:width .3s}
+
+/* Filtros e Busca */
+.filter-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.filters{display:flex;flex-wrap:wrap;gap:6px}
+.fil-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;transition:.15s}
+.fil-btn:hover{border-color:var(--ac)}
+.fil-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.search-input{font:inherit;font-size:.82rem;padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);min-width:220px}
+.search-input:focus{outline:none;border-color:var(--ac)}
+
+/* Cards das Fases */
+.phase-card{background:var(--card);border:1px solid var(--bd);border-radius:14px;margin-bottom:16px;overflow:hidden}
+.phase-head{padding:14px 18px;background:var(--bg);border-bottom:1px solid var(--bd);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+.phase-title-text{font-size:1.02rem;font-weight:750;color:var(--tx);display:flex;align-items:center;gap:8px}
+.phase-dur{font-size:.74rem;padding:3px 10px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600}
+.phase-body{padding:18px}
+.phase-callout{padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px}
+.callout-tip{background:rgba(79,70,229,.07);border-left:3px solid var(--ac);color:var(--tx)}
+.callout-proj{background:rgba(47,163,107,.08);border-left:3px solid var(--e);color:var(--tx)}
+.callout-res{background:var(--bg);border:1px solid var(--bd);color:var(--mu);font-size:.8rem}
+
+.group-section{margin-top:16px}
+.group-title{font-size:.88rem;font-weight:750;color:var(--ac);text-transform:uppercase;letter-spacing:.04em;margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:6px}
+
+/* Linha de Tópico / Aula */
+.topic-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px 14px;
+  padding:10px 14px;
+  border-radius:10px;
+  margin-bottom:6px;
+  background:var(--bg);
+  border:1px solid transparent;
+  transition:.15s;
+}
+.topic-row:hover{border-color:var(--bd)}
+.topic-row.status-e{background:rgba(47,163,107,.06);border-color:rgba(47,163,107,.2)}
+.topic-row.status-r{background:rgba(232,161,0,.06);border-color:rgba(232,161,0,.25)}
+.topic-row.status-z{background:var(--bg)}
+
+.topic-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1 1 280px;
+  min-width:0;
+}
+.topic-title-text{
+  font-size:.88rem;
+  font-weight:550;
+  color:var(--tx);
+  line-height:1.45;
+}
+.topic-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  flex-shrink:0;
+  flex-wrap:wrap;
+  margin-left:auto;
+}
+
+/* Botões de Ação do Tópico */
+.status-btn{
+  font:inherit;
+  font-size:.76rem;
+  font-weight:650;
+  padding:4px 10px;
+  border-radius:99px;
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:.15s;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  white-space:nowrap;
+}
+.status-btn-z{background:rgba(229,72,77,.1);color:var(--z);border-color:rgba(229,72,77,.25)}
+.status-btn-r{background:rgba(232,161,0,.12);color:var(--r);border-color:rgba(232,161,0,.35)}
+.status-btn-e{background:rgba(47,163,107,.12);color:var(--e);border-color:rgba(47,163,107,.3)}
+
+.note-btn{
+  font:inherit;
+  font-size:.76rem;
+  padding:4px 8px;
+  border-radius:6px;
+  border:1px solid var(--bd);
+  background:var(--card);
+  color:var(--mu);
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.note-btn:hover{color:var(--tx);border-color:var(--ac)}
+.note-btn.has-notes{color:var(--ac);border-color:var(--ac);background:rgba(79,70,229,.08);font-weight:600}
+
+.yt-btn{
+  font:inherit;
+  font-size:.74rem;
+  font-weight:650;
+  padding:4px 9px;
+  border-radius:6px;
+  border:none;
+  background:#cc0000;
+  color:#fff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  box-shadow:0 2px 6px rgba(204,0,0,.25);
+  transition:.15s;
+}
+.yt-btn:hover{background:#e60000;transform:translateY(-1px)}
+
+.doc-btn{
+  font:inherit;
+  font-size:.74rem;
+  font-weight:650;
+  padding:4px 9px;
+  border-radius:6px;
+  border:1px solid rgba(79,70,229,.3);
+  background:rgba(79,70,229,.08);
+  color:var(--ac);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  transition:.15s;
+  white-space:nowrap;
+}
+.doc-btn:hover{background:var(--ac);color:#fff;transform:translateY(-1px)}
+
+/* =========================================================================
+   MODAL DE ANOTAÇÕES (MARKDOWN, TABELAS, CÓDIGO)
+   ========================================================================= */
+.note-modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.72);
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+  z-index:999;
+  display:none; /* Invisível por padrão */
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  animation:noteFadeIn .2s ease;
+}
+.note-modal-overlay.active{
+  display:flex !important;
+}
+.note-modal-overlay[hidden]{
+  display:none !important;
+}
+@keyframes noteFadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.note-modal-box{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:16px;
+  width:100%;
+  max-width:1080px;
+  height:90vh;
+  max-height:860px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
+  overflow:hidden;
+}
+.note-modal-header{
+  padding:14px 20px;
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  background:var(--card);
+}
+.note-header-left{display:flex;flex-direction:column;gap:2px}
+.note-breadcrumb{font-size:.72rem;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.note-topic-title{font-size:1.05rem;font-weight:750;color:var(--tx);margin:0}
+.note-header-right{display:flex;align-items:center;gap:10px}
+.note-status-wrap{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mu)}
+.note-status-pill{font:inherit;font-size:.76rem;font-weight:650;padding:4px 10px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer}
+.note-date-wrap{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mu)}
+.note-date-wrap input{font:inherit;font-size:.76rem;padding:3px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.note-close-btn{font:inherit;font-size:1.1rem;border:none;background:transparent;color:var(--mu);cursor:pointer;padding:4px 8px;border-radius:6px}
+.note-close-btn:hover{background:var(--bg);color:var(--tx)}
+
+.note-toolbar{
+  padding:8px 16px;
+  background:var(--bg);
+  border-bottom:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.toolbar-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.tb-btn{font:inherit;font-size:.76rem;padding:5px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+.tb-btn:hover{border-color:var(--ac);color:var(--ac)}
+.tb-sep{width:1px;height:18px;background:var(--bd);margin:0 2px}
+.tb-select{font:inherit;font-size:.76rem;padding:4px 8px;border-radius:6px;border:1px solid var(--bd);background:var(--card);color:var(--tx)}
+.toolbar-modes{display:flex;align-items:center;gap:3px}
+.tb-mode-btn{font:inherit;font-size:.74rem;padding:4px 8px;border-radius:6px;border:1px solid transparent;background:transparent;color:var(--mu);cursor:pointer}
+.tb-mode-btn.active{background:var(--card);border-color:var(--bd);color:var(--tx);font-weight:600}
+
+.note-workspace{display:flex;flex:1;min-height:0;overflow:hidden}
+.note-editor-pane{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--bd)}
+.note-editor-pane textarea{width:100%;height:100%;resize:none;border:none;outline:none;padding:16px 20px;font:14px/1.65 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:transparent;color:var(--tx)}
+.note-preview-pane{flex:1;overflow-y:auto;padding:18px 22px;background:var(--card)}
+.preview-header{font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.preview-body{font-size:.92rem;line-height:1.65;color:var(--tx)}
+
+.mode-editor .note-preview-pane{display:none}
+.mode-editor .note-editor-pane{border-right:none}
+.mode-preview .note-editor-pane{display:none}
+
+.note-modal-footer{
+  padding:10px 18px;
+  background:var(--card);
+  border-top:1px solid var(--bd);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.footer-stats{font-size:.76rem;color:var(--mu)}
+.footer-sync{font-size:.76rem;color:var(--e);font-weight:600}
+.footer-actions{display:flex;align-items:center;gap:8px}
+.note-clear-btn{font:inherit;font-size:.78rem;padding:5px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--bg);color:var(--mu);cursor:pointer}
+.note-save-btn{font:inherit;font-size:.8rem;font-weight:650;padding:6px 14px;border-radius:8px;border:none;background:var(--ac);color:#fff;cursor:pointer}
+
+/* Formatação do Preview Markdown */
+.note-table-wrap{overflow-x:auto;margin:12px 0}
+.note-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.note-table th,.note-table td{border:1px solid var(--bd);padding:8px 12px;text-align:left}
+.note-table th{background:var(--bg);font-weight:700}
+.note-code-block{background:var(--bg);border:1px solid var(--bd);border-radius:8px;margin:12px 0;overflow:hidden}
+.code-header{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;border-bottom:1px solid var(--bd);background:rgba(0,0,0,.03);font-size:.72rem;color:var(--mu)}
+.copy-code-btn{font:inherit;font-size:.7rem;border:none;background:transparent;color:var(--ac);cursor:pointer}
+.note-code-block pre{margin:0;padding:12px 14px;font:13px/1.55 ui-monospace,SFMono-Regular,monospace;overflow-x:auto}
+.note-checklist{list-style:none;padding-left:0;margin:10px 0}
+.note-todo{display:flex;align-items:center;gap:8px;margin:4px 0}
+.note-todo.done{text-decoration:line-through;color:var(--mu)}
+.note-quote{border-left:4px solid var(--ac);background:rgba(79,70,229,.07);padding:8px 12px;margin:10px 0;border-radius:0 6px 6px 0}
+.empty-notes-hint{color:var(--mu);font-style:italic;padding:30px 10px;text-align:center}
+
+
+
+
+/* =========================================================================
+   ESTÚDIO UNIFICADO DE ESTUDO & ANOTAÇÕES (VÍDEO À ESQUERDA | NOTAS À DIREITA)
+   ========================================================================= */
+.unified-study-box {
+  max-width: 1560px !important;
+  width: 96vw !important;
+  height: 94vh !important;
+  max-height: 980px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  border-radius: 16px;
+  box-shadow: 0 28px 70px rgba(0,0,0,.55);
+}
+
+/* Switch de Progresso Automático */
+.auto-prog-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--tx);
+  background: var(--bg);
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  user-select: none;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: var(--bd); transition: .2s; border-radius: 99px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px;
+  background-color: white; transition: .2s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--e); }
+input:checked + .slider:before { transform: translateX(14px); }
+
+/* Layout Dividido em Duas Colunas: Vídeo à Esquerda e Anotações à Direita */
+.study-columns-layout {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--card);
+}
+
+/* Coluna da Esquerda: Vídeo & Sessão de Estudo */
+.study-player-col {
+  flex: 0 0 50%;
+  width: 50%;
+  max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--bd);
+  background: var(--card);
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: all .25s ease;
+}
+
+.study-player-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+}
+
+.player-topbar-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .84rem;
+  min-width: 0;
+}
+
+.player-source-tag {
+  font-size: .72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--ac);
+  color: #fff;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.player-source-title {
+  font-weight: 700;
+  color: var(--tx);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 240px;
+}
+
+.player-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-ext-btn {
+  font-size: .76rem;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: .15s;
+  white-space: nowrap;
+}
+.player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
+.player-ext-btn.doc-ext { background: rgba(79,70,229,.1); border-color: rgba(79,70,229,.3); color: var(--ac); }
+
+.player-collapse-btn {
+  font: inherit;
+  font-size: .76rem;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+  white-space: nowrap;
+}
+.player-collapse-btn:hover { background: var(--bd); }
+
+/* Responsive Video Wrapper em 16:9 */
+.video-responsive-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  transition: all .3s cubic-bezier(.4,0,.2,1);
+}
+.video-responsive-wrap.collapsed {
+  display: none !important;
+}
+.video-responsive-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Barra de Progresso da Sessão / Auto-Progresso */
+.session-progress-bar-wrap {
+  padding: 8px 16px;
+  background: var(--card);
+  border-top: 1px solid var(--bd);
+  border-bottom: 1px solid var(--bd);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.session-progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .76rem;
+  color: var(--mu);
+}
+
+.session-finish-btn {
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 750;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: none;
+  background: var(--e);
+  color: #fff;
+  cursor: pointer;
+  transition: .15s;
+  white-space: nowrap;
+}
+.session-finish-btn:hover { opacity: .9; transform: scale(1.02); }
+
+.session-bar-track {
+  height: 5px;
+  background: var(--bd);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.session-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ac), var(--e));
+  border-radius: 99px;
+  transition: width .5s linear;
+}
+
+/* Card de contexto e dicas no painel esquerdo */
+.study-left-extra-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  background: var(--bg);
+}
+.study-left-card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.03);
+}
+.study-left-card-title {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+  margin-bottom: 6px;
+}
+.study-left-card p {
+  font-size: .8rem;
+  line-height: 1.55;
+  color: var(--mu);
+  margin: 0;
+}
+
+/* Coluna da Direita: Caderno de Anotações & Esquemas */
+.study-notes-col {
+  flex: 1 1 50%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.notes-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--bd);
+}
+
+.notes-head-title {
+  font-size: .88rem;
+  font-weight: 750;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Botões especiais na Toolbar */
+.tb-btn.tb-highlight-math {
+  background: rgba(79,70,229,.1);
+  border-color: rgba(79,70,229,.35);
+  color: var(--ac);
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-math:hover { background: var(--ac); color: #fff; }
+
+.tb-btn.tb-highlight-3d {
+  background: rgba(139,92,246,.12);
+  border-color: rgba(139,92,246,.35);
+  color: #8b5cf6;
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-3d:hover { background: #8b5cf6; color: #fff; }
+
+.tb-btn.tb-highlight-draw {
+  background: rgba(6,182,212,.12);
+  border-color: rgba(6,182,212,.35);
+  color: #06b6d4;
+  font-weight: 750;
+}
+.tb-btn.tb-highlight-draw:hover { background: #06b6d4; color: #fff; }
+
+/* Paleta de Símbolos Matemáticos */
+.math-palette-wrap {
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  padding: 10px 16px;
+  animation: noteFadeIn .18s ease;
+}
+.math-palette-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: .8rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.math-palette-close {
+  background: transparent;
+  border: none;
+  font-size: .95rem;
+  color: var(--mu);
+  cursor: pointer;
+}
+.math-symbols-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+.sym-btn {
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 650;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .12s;
+}
+.sym-btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+  transform: translateY(-1px);
+}
+.math-templates-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--bd);
+}
+.sym-tmpl-btn {
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 650;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(79,70,229,.25);
+  background: rgba(79,70,229,.07);
+  color: var(--ac);
+  cursor: pointer;
+  transition: .15s;
+}
+.sym-tmpl-btn:hover { background: var(--ac); color: #fff; }
+
+/* Modos de visualização do Workspace de Anotações */
+.note-workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.note-workspace.mode-editor .note-editor-pane {
+  flex: 1;
+  border-right: none;
+}
+.note-workspace.mode-editor .note-preview-pane {
+  display: none !important;
+}
+
+.note-workspace.mode-preview .note-editor-pane {
+  display: none !important;
+}
+.note-workspace.mode-preview .note-preview-pane {
+  flex: 1;
+}
+
+.note-workspace.mode-split {
+  flex-direction: column;
+}
+.note-workspace.mode-split .note-editor-pane {
+  flex: 1 1 50%;
+  border-right: none;
+  border-bottom: 1px solid var(--bd);
+  min-height: 140px;
+}
+.note-workspace.mode-split .note-preview-pane {
+  flex: 1 1 50%;
+  min-height: 140px;
+}
+
+@media (min-width: 1440px) {
+  .note-workspace.mode-split {
+    flex-direction: row;
+  }
+  .note-workspace.mode-split .note-editor-pane {
+    border-right: 1px solid var(--bd);
+    border-bottom: none;
+  }
+}
+
+/* Responsividade em Telas Pequenas e Tablets */
+@media (max-width: 1040px) {
+  .study-columns-layout {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .study-player-col {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--bd) !important;
+  }
+  .study-notes-col {
+    flex: 1 0 auto !important;
+    width: 100% !important;
+    min-height: 580px !important;
+  }
+}
+
+/* Submodais: Estúdio 3D e Lousa de Desenho */
+.modal-sub-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: noteFadeIn .2s ease;
+}
+.modal-sub-overlay.active {
+  display: flex !important;
+}
+.modal-sub-overlay[hidden] {
+  display: none !important;
+}
+
+.modal-sub-box {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-3d-box {
+  max-width: 1050px;
+  width: 95vw;
+  max-height: 90vh;
+}
+
+.modal-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--bd);
+}
+
+.modal-3d-body {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: calc(90vh - 65px);
+}
+
+.canvas-3d-wrap {
+  flex: 1 1 500px;
+  background: #0f1218;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--bd);
+  user-select: none;
+}
+#canvas-3d {
+  width: 100%;
+  max-width: 650px;
+  height: 440px;
+  cursor: grab;
+}
+#canvas-3d:active { cursor: grabbing; }
+
+.canvas-3d-overlay-hint {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: .74rem;
+  font-weight: 650;
+  color: rgba(255,255,255,.7);
+  background: rgba(0,0,0,.6);
+  padding: 4px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.canvas-3d-axes-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  display: flex;
+  gap: 10px;
+  font-size: .76rem;
+  font-weight: 750;
+  background: rgba(0,0,0,.6);
+  padding: 4px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+.controls-3d-wrap {
+  flex: 1 1 340px;
+  padding: 18px 20px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.v3d-panel-title {
+  font-size: .95rem;
+  font-weight: 800;
+  color: var(--tx);
+}
+
+.v3d-vector-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.v3d-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: .84rem;
+}
+.v3d-norm-tag {
+  font-size: .76rem;
+  font-weight: 750;
+  color: var(--mu);
+}
+.v3d-inputs-row {
+  display: flex;
+  gap: 10px;
+}
+.v3d-inputs-row label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+.v3d-inputs-row input[type="number"] {
+  font: inherit;
+  font-size: .82rem;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  width: 100%;
+}
+
+.v3d-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+}
+.v3d-opt-label {
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.v3d-select {
+  font: inherit;
+  font-size: .78rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+}
+
+.v3d-math-results {
+  background: rgba(79,70,229,.07);
+  border: 1px solid rgba(79,70,229,.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--tx);
+}
+.v3d-math-results b { color: var(--ac); }
+
+.v3d-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+.v3d-snapshot-btn {
+  flex: 1;
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 750;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #8b5cf6;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(139,92,246,.35);
+  transition: .18s;
+}
+.v3d-snapshot-btn:hover { background: #7c3aed; transform: translateY(-1px); }
+
+.v3d-reset-btn {
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 650;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+  cursor: pointer;
+}
+.v3d-reset-btn:hover { background: var(--bd); }
+
+/* Lousa de Desenho 2D */
+.modal-draw-box {
+  max-width: 900px;
+  width: 95vw;
+}
+.draw-toolbar {
+  padding: 10px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--bd);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.draw-tool-group {
+  display: flex;
+  gap: 4px;
+}
+.draw-tool-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+}
+.draw-tool-btn.active {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+  font-weight: 700;
+}
+
+.draw-color-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform .15s;
+}
+.color-dot.active {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--ac);
+}
+
+.draw-action-group {
+  display: flex;
+  gap: 8px;
+}
+.draw-act-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+}
+.draw-insert-btn {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+  font-weight: 700;
+}
+.draw-insert-btn:hover { background: var(--ac-hover); }
+
+.draw-canvas-wrap {
+  background: #11141c;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+#whiteboard-canvas {
+  max-width: 100%;
+  height: 450px;
+  cursor: crosshair;
+}
+
+/* Toast de Notificação */
+.toast-notice {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card);
+  color: var(--tx);
+  border: 1px solid var(--ac);
+  border-radius: 99px;
+  padding: 10px 20px;
+  font-size: .86rem;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(0,0,0,.3);
+  z-index: 2000;
+  opacity: 0;
+  transition: all .25s ease;
+  pointer-events: none;
+}
+.toast-notice.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* =========================================================================
+   BARRA DIVISÓRIA ARRASTÁVEL (SPLIT RESIZER)
+   ========================================================================= */
+.study-split-resizer {
+  width: 8px;
+  background: var(--bg);
+  border-left: 1px solid var(--bd);
+  border-right: 1px solid var(--bd);
+  cursor: col-resize;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  transition: background .15s ease;
+  z-index: 5;
+}
+.study-split-resizer:hover, .study-split-resizer.dragging {
+  background: var(--ac);
+  border-color: var(--ac);
+}
+.resizer-handle {
+  width: 2px;
+  height: 28px;
+  background: var(--mu);
+  border-radius: 2px;
+  transition: all .15s ease;
+}
+.study-split-resizer:hover .resizer-handle, .study-split-resizer.dragging .resizer-handle {
+  background: #fff;
+  height: 40px;
+}
+
+/* =========================================================================
+   MARCADORES DE TEMPO INTERATIVOS NO VÍDEO (TIMESTAMPS)
+   ========================================================================= */
+.note-timestamp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-family: inherit;
+  font-size: .76rem;
+  font-weight: 750;
+  border-radius: 6px;
+  background: rgba(79,70,229,.12);
+  border: 1px solid rgba(79,70,229,.35);
+  color: var(--ac);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .15s ease;
+  margin: 0 2px;
+}
+.note-timestamp-pill:hover {
+  background: var(--ac);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(79,70,229,.3);
+}
+
+/* =========================================================================
+   TEMPORIZADOR POMODORO INTEGRADO
+   ========================================================================= */
+.pomodoro-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  padding: 3px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  user-select: none;
+}
+.pomo-toggle-btn {
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 750;
+  padding: 2px 6px;
+  border: none;
+  background: transparent;
+  color: var(--tx);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: .15s;
+}
+.pomo-toggle-btn.running {
+  color: #ef4444;
+  animation: pomoPulse 1.5s infinite;
+}
+@keyframes pomoPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .65; }
+}
+.pomo-reset-btn {
+  font: inherit;
+  font-size: .78rem;
+  padding: 1px 4px;
+  border: none;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+}
+.pomo-reset-btn:hover { color: var(--tx); }
+.pomo-count-badge {
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--mu);
+  padding-left: 4px;
+  border-left: 1px solid var(--bd);
+}
+
+/* =========================================================================
+   BOTÕES DE UNDO / REDO & ÁUDIO
+   ========================================================================= */
+.tb-btn-undo, .tb-btn-redo {
+  font-size: .84rem !important;
+  font-weight: 800 !important;
+}
+.tb-audio-btn {
+  background: rgba(16,185,129,.1) !important;
+  border-color: rgba(16,185,129,.35) !important;
+  color: #10b981 !important;
+  font-weight: 750 !important;
+}
+.tb-audio-btn:hover {
+  background: #10b981 !important;
+  color: #fff !important;
+}
+
+/* =========================================================================
+   FLASHCARDS NAS ANOTAÇÕES & MODAL DE REVISÃO (ANKI LITE)
+   ========================================================================= */
+.note-flashcard-box {
+  background: var(--bg);
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+  margin: 12px 0;
+}
+.note-flashcard-title {
+  font-size: .78rem;
+  font-weight: 800;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.note-flashcard-q {
+  font-weight: 700;
+  color: var(--tx);
+  margin-bottom: 4px;
+}
+.note-flashcard-a {
+  color: var(--mu);
+  font-size: .92rem;
+}
+
+.modal-fc-box {
+  max-width: 680px;
+  width: 95vw;
+}
+.fc-card-viewport {
+  perspective: 1000px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+.fc-card-inner {
+  width: 100%;
+  min-height: 220px;
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  text-align: center;
+  position: relative;
+  transition: all .25s ease;
+}
+.fc-card-tag {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--mu);
+  letter-spacing: .05em;
+}
+.fc-card-content {
+  font-size: 1.15rem;
+  font-weight: 650;
+  color: var(--tx);
+  line-height: 1.6;
+  margin: 18px 0;
+}
+.fc-card-answer-wrap {
+  display: none;
+  animation: noteFadeIn .2s ease;
+  padding-top: 14px;
+  border-top: 1px dashed var(--bd);
+  font-size: 1.05rem;
+  color: var(--ac);
+  font-weight: 600;
+}
+.fc-card-answer-wrap.show {
+  display: block;
+}
+.fc-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: var(--card);
+  border-top: 1px solid var(--bd);
+}
+.fc-reveal-btn {
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 750;
+  padding: 10px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--ac);
+  color: #fff;
+  cursor: pointer;
+  transition: .15s;
+}
+.fc-reveal-btn:hover { background: var(--ac-hover); }
+.fc-rating-btns {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.fc-rating-btns.show {
+  display: flex;
+}
+.fc-rate-btn {
+  flex: 1;
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 750;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: .15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.fc-rate-btn.rate-hard { background: rgba(239,68,68,.12); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+.fc-rate-btn.rate-good { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+.fc-rate-btn.rate-easy { background: rgba(16,185,129,.12); color: #10b981; border: 1px solid rgba(16,185,129,.3); }
+.fc-rate-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+/* =========================================================================
+   CALCULADORA DE MATRIZES & VETORES
+   ========================================================================= */
+.modal-calc-box {
+  max-width: 880px;
+  width: 95vw;
+}
+.calc-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--bd);
+  background: var(--bg);
+}
+.calc-tab-btn {
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 700;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.calc-tab-btn.active {
+  color: var(--ac);
+  border-bottom-color: var(--ac);
+  background: var(--card);
+}
+.calc-tab-pane {
+  display: none;
+  padding: 20px;
+  flex-direction: column;
+  gap: 16px;
+}
+.calc-tab-pane.active {
+  display: flex;
+}
+.calc-matrices-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.calc-matrix-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.calc-matrix-title {
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.calc-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  gap: 6px;
+}
+.calc-matrix-grid.dim-3 {
+  grid-template-columns: repeat(3, 50px);
+}
+.calc-matrix-grid input {
+  font: inherit;
+  font-size: .86rem;
+  padding: 8px 4px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+}
+.calc-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.calc-op-btn {
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+}
+.calc-op-btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+}
+.calc-result-box {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 16px;
+  font-family: inherit;
+  font-size: .95rem;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================================
+   MODAL DE EXPORTAÇÃO DO CADERNO
+   ========================================================================= */
+.modal-export-box {
+  max-width: 720px;
+  width: 95vw;
+}
+.export-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 24px;
+  background: var(--bg);
+}
+.export-card-btn {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all .2s ease;
+  font: inherit;
+}
+.export-card-btn:hover {
+  border-color: var(--ac);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+.export-card-icon {
+  font-size: 2rem;
+}
+.export-card-title {
+  font-size: .92rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.export-card-desc {
+  font-size: .78rem;
+  color: var(--mu);
+  line-height: 1.45;
+}
+
+
+/* Hub Cards e Seções Específicas */
+.hub-main{max-width:1260px;margin:0 auto;padding:32px 24px 100px}
+.hub-hero{text-align:center;margin-bottom:34px}
+.hub-hero h1{font-size:2.2rem;font-weight:850;letter-spacing:-.03em;margin:0 0 10px;background:linear-gradient(135deg,var(--tx) 30%,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hub-hero p{font-size:1.08rem;color:var(--mu);max-width:760px;margin:0 auto}
+
+/* Card de Esclarecimento sobre Metas & Inglês */
+.clarification-card{
+  background:linear-gradient(135deg,rgba(79,70,229,.08),rgba(236,72,153,.05));
+  border:1px solid rgba(79,70,229,.25);
+  border-radius:18px;
+  padding:24px 28px;
+  margin-bottom:32px;
+  box-shadow:0 8px 24px rgba(79,70,229,.06);
+}
+.clarification-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.clarification-badge{background:var(--ac);color:#fff;font-size:.76rem;font-weight:750;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.clarification-title{font-size:1.25rem;font-weight:800;color:var(--tx)}
+.clarification-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.clarification-col{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+.clarification-col h4{margin:0 0 8px;font-size:.95rem;font-weight:750;color:var(--tx);display:flex;align-items:center;gap:6px}
+.clarification-col p{margin:0;font-size:.86rem;line-height:1.55;color:var(--mu)}
+.clarification-col b{color:var(--tx)}
+
+/* =========================================================================
+   VELOCÍMETRO GLOBAL E PAINEL DE METAS & RITMO
+   ========================================================================= */
+.speedometer-sect {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 18px;
+  padding: 24px 26px;
+  margin-bottom: 34px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.04);
+  position: relative;
+  overflow: hidden;
+}
+
+.speed-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.speed-title {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.speed-presets-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.speed-preset-btn {
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 650;
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+  cursor: pointer;
+  transition: all .18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.speed-preset-btn:hover {
+  border-color: var(--ac);
+  color: var(--ac);
+  transform: translateY(-1px);
+}
+
+.speed-preset-btn.active {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(79,70,229,.35);
+}
+
+.speed-date-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  font-size: .84rem;
+}
+
+.speed-date-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.speed-date-inputs label {
+  color: var(--mu);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.speed-date-input {
+  font: inherit;
+  font-size: .82rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  outline: none;
+}
+
+.speed-date-input:focus {
+  border-color: var(--ac);
+}
+
+.speed-reset-btn {
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 650;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  cursor: pointer;
+  transition: .15s;
+}
+
+.speed-reset-btn:hover {
+  background: var(--bd);
+}
+
+/* Card de Diagnóstico Dinâmico ao Vivo */
+.speed-diagnosis-card {
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: .9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  transition: all .25s ease;
+}
+
+.speed-diagnosis-card.pace-ahead {
+  background: rgba(47,163,107,.12);
+  border: 1px solid rgba(47,163,107,.35);
+  color: var(--e);
+}
+
+.speed-diagnosis-card.pace-ontrack {
+  background: rgba(79,70,229,.1);
+  border: 1px solid rgba(79,70,229,.3);
+  color: var(--ac);
+}
+
+.speed-diagnosis-card.pace-behind {
+  background: rgba(229,72,77,.12);
+  border: 1px solid rgba(229,72,77,.35);
+  color: var(--z);
+}
+
+.speed-diag-badge {
+  font-size: .8rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 99px;
+  background: var(--card);
+  border: 1px solid currentColor;
+  white-space: nowrap;
+  letter-spacing: .02em;
+}
+
+/* O Medidor / Velocímetro Visual (Speedometer Gauge) */
+.speed-gauge-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+.speed-gauge-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.speed-gauge-head-title {
+  font-size: .95rem;
+  font-weight: 750;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.speed-gauge-multiplier {
+  font-size: .86rem;
+  font-weight: 850;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: linear-gradient(135deg,rgba(79,70,229,.15),rgba(236,72,153,.15));
+  color: var(--ac);
+  border: 1px solid rgba(79,70,229,.3);
+  letter-spacing: .02em;
+}
+
+.speed-gauge-track-wrap {
+  position: relative;
+  margin: 22px 0 14px;
+}
+
+.speed-gauge-bar {
+  height: 16px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #f59e0b 0%, #10b981 38%, #06b6d4 72%, #8b5cf6 100%);
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.22);
+}
+
+.speed-gauge-marker {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 6px;
+  background: #fff;
+  border: 2px solid var(--tx);
+  border-radius: 99px;
+  transform: translateX(-50%);
+  transition: left .5s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 12px rgba(0,0,0,.35), 0 0 0 3px rgba(79,70,229,.35);
+  z-index: 2;
+}
+
+.speed-gauge-marker-pin {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .72rem;
+  font-weight: 850;
+  color: var(--tx);
+  background: var(--card);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--bd);
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0,0,0,.18);
+}
+
+.speed-gauge-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: .72rem;
+  color: var(--mu);
+  font-weight: 650;
+  padding: 0 4px;
+}
+
+/* Grade de Métricas de Velocidade e Cronograma */
+.speed-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.speed-metric-box {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.speed-metric-lbl {
+  font-size: .76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--mu);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.speed-metric-val {
+  font-size: 1.35rem;
+  font-weight: 850;
+  color: var(--tx);
+  line-height: 1.2;
+}
+
+.speed-metric-sub {
+  font-size: .76rem;
+  font-weight: 600;
+  color: var(--mu);
+}
+
+/* Barras Comparativas: Real vs Meta Esperada */
+.comp-bars-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comp-bar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .84rem;
+  font-weight: 700;
+  color: var(--tx);
+}
+
+.comp-bar-track {
+  height: 9px;
+  background: var(--bd);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.comp-bar-fill-real {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+.comp-bar-fill-target {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+/* Mini Radar das 3 Trilhas no Hub */
+.hub-radar-card {
+  background: var(--bg);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+
+.hub-radar-title {
+  font-size: .92rem;
+  font-weight: 750;
+  color: var(--tx);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hub-radar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.hub-radar-item {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .2s, transform .2s;
+}
+
+.hub-radar-item:hover {
+  border-color: var(--ac);
+  transform: translateY(-2px);
+}
+
+.hub-radar-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hub-radar-name {
+  font-size: .86rem;
+  font-weight: 750;
+  color: var(--tx);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hub-radar-count {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--mu);
+}
+
+.hub-radar-bar {
+  height: 6px;
+  background: var(--bd);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.hub-radar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+.hub-radar-link {
+  align-self: flex-end;
+  font-size: .76rem;
+  font-weight: 700;
+  color: var(--ac);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hub-radar-link:hover {
+  text-decoration: underline;
+}
+
+/* Próximo Passo Sugerido */
+.hub-next-box {
+  background: linear-gradient(135deg,rgba(79,70,229,.07),rgba(236,72,153,.05));
+  border: 1px dashed var(--ac);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hub-next-tag {
+  font-size: .7rem;
+  font-weight: 750;
+  letter-spacing: .05em;
+  color: var(--ac);
+  text-transform: uppercase;
+}
+
+.hub-next-title {
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--tx);
+  margin-top: 2px;
+}
+
+.hub-next-action-btn {
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 750;
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: none;
+  background: var(--ac);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 12px rgba(79,70,229,.3);
+  transition: .2s;
+}
+
+.hub-next-action-btn:hover {
+  background: var(--ac-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(79,70,229,.4);
+}
+
+@keyframes hubPulseAnim {
+  0% { box-shadow: 0 0 0 0 rgba(79,70,229,.4); }
+  70% { box-shadow: 0 0 0 14px rgba(79,70,229,0); }
+  100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+}
+.pulse-update {
+  animation: hubPulseAnim .7s ease-out;
+}
+
+/* Grade dos 3 Cards Principais de Trilha */
+.track-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-bottom:40px}
+.track-card{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:18px;
+  padding:26px 24px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  box-shadow:0 6px 22px rgba(0,0,0,.03);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  position:relative;
+  overflow:hidden;
+}
+.track-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(79,70,229,.12);
+  border-color:var(--ac);
+}
+.track-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.track-card-icon{font-size:2.2rem}
+.track-badge-count{font-size:.76rem;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--ac);border:1px solid var(--bd)}
+.track-card-title{font-size:1.25rem;font-weight:800;color:var(--tx);margin:0 0 8px}
+.track-card-desc{font-size:.88rem;color:var(--mu);line-height:1.55;margin:0 0 18px;flex:1}
+
+.track-progress-wrap{margin-bottom:20px;padding-top:14px;border-top:1px solid var(--bd)}
+.track-progress-info{display:flex;justify-content:space-between;font-size:.82rem;font-weight:650;color:var(--tx);margin-bottom:6px}
+.track-progress-bar{height:7px;background:var(--bd);border-radius:99px;overflow:hidden}
+.track-progress-fill{height:100%;border-radius:99px;transition:width .4s}
+
+.track-access-btn{
+  font:inherit;
+  font-size:.92rem;
+  font-weight:750;
+  padding:12px 20px;
+  border-radius:12px;
+  border:none;
+  background:var(--ac);
+  color:#fff;
+  text-decoration:none;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  box-shadow:0 4px 14px rgba(79,70,229,.28);
+  transition:.2s;
+}
+.track-access-btn:hover{background:var(--ac-hover);transform:scale(1.01)}
+
+/* Contexto Global de Mercado */
+.market-box{
+  background:var(--card);
+  border:1px solid var(--bd);
+  border-radius:18px;
+  padding:26px 28px;
+  box-shadow:0 4px 18px rgba(0,0,0,.02);
+}
+.market-title{font-size:1.2rem;font-weight:800;color:var(--tx);margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.market-desc{font-size:.92rem;line-height:1.65;color:var(--mu);margin-bottom:18px}
+.market-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.market-stat{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:14px 16px}
+.market-stat-num{font-size:1.4rem;font-weight:850;color:var(--ac);display:block;margin-bottom:3px}
+.market-stat-lbl{font-size:.82rem;color:var(--tx);font-weight:600}
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR FIXA -->
+<header class="top-nav">
+  <div class="top-nav-inner">
+    <a href="index.html" class="nav-brand">🚀 <span>Roteiro IA</span></a>
+    <nav class="nav-links">
+      <a href="index.html" class="nav-link active">🏠 Hub Central</a>
+      <a href="ia.html" class="nav-link">🤖 IA & Código</a>
+      <a href="matematica.html" class="nav-link">📐 Matemática</a>
+      <a href="ingles.html" class="nav-link">🇺🇸 Inglês EnglishBay</a>
+    </nav>
+    <div class="nav-right">
+      <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
+      <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
+    </div>
+  </div>
+</header>
+
+<main class="hub-main">
+  <!-- HERO HEAD -->
+  <section class="hub-hero">
+    <h1>Hub Central de Aprendizado</h1>
+    <p>Do zero absoluto até o desenvolvimento e engenharia de Inteligência Artificial moderna. Escolha uma das 3 trilhas estruturadas abaixo para gerenciar seus estudos, anotações e progresso.</p>
+  </section>
+
+  <!-- ESCLARECIMENTO DE METAS & PRAZOS -->
+  <section class="clarification-card">
+    <div class="clarification-head">
+      <span class="clarification-badge">🎯 Alinhamento de Cronograma</span>
+      <h2 class="clarification-title">Como o Inglês se encaixa no prazo de 12 a 18 meses?</h2>
+    </div>
+    <p style="margin:0;font-size:.93rem;line-height:1.6;color:var(--tx)">
+      O prazo estimado de <b>12 a 18 meses (8 a 10h/semana)</b> ou <b>4 a 6 meses acelerado (20 a 25h/semana)</b> foi calculado <b>especificamente para o conteúdo técnico de IA e programação</b>. 
+      O inglês não é uma barreira nem atrasa esse tempo: ele roda em <b>paralelo como um micro-hábito diário de 25 a 30 minutos</b>.
+    </p>
+
+    <div class="clarification-grid">
+      <div class="clarification-col">
+        <h4>🤖 Trilha de IA & Programação</h4>
+        <p><b>173 tópicos práticos</b> divididos em 6 fases: Python, Dados, Machine Learning, Deep Learning, Transformers/LLMs e MLOps. É o núcleo das suas 8 a 10 horas semanais de estudo focado.</p>
+      </div>
+
+      <div class="clarification-col">
+        <h4>📐 Trilha de Matemática para IA</h4>
+        <p><b>43 tópicos aplicados</b> (Álgebra Linear, Cálculo de Gradientes, Probabilidade Bayesiana e Embeddings). Estudada junto com as Fases 1 a 3 para criar a intuição geométrica real.</p>
+      </div>
+
+      <div class="clarification-col">
+        <h4>🇺🇸 Trilha de Inglês EnglishBay</h4>
+        <p><b>73 vídeo-aulas da Playlist Oficial</b>. Assistindo apenas <b>1 aula por dia</b> (25 a 30 min), você conclui o curso inteiro em <b>apenas ~10 a 11 semanas (2 meses e meio)</b>! Ou seja, você se torna fluente em leitura técnica bem antes de chegar nas fases de Deep Learning.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       PROGRESSO GLOBAL, VELOCÍMETRO & MEDIDOR DE RITMO EM TEMPO REAL
+       ======================================================================= -->
+  <section class="speedometer-sect" id="hub-tracker-sect">
+    <!-- CABEÇALHO DO RASTREADOR & SELEÇÃO DE METAS -->
+    <div class="speed-head">
+      <div class="speed-title">
+        <span>⚡ Velocímetro & Medidor de Ritmo Global (289 Itens no Total)</span>
+      </div>
+      <div class="speed-presets-wrap">
+        <span style="font-size:.78rem;font-weight:700;color:var(--mu);margin-right:2px">Meta de Prazo:</span>
+        <button class="speed-preset-btn" id="btn-pace-sprint" onclick="setHubPace('sprint')" title="Sprint intensivo de 4 meses">⚡ Ultra (4 meses)</button>
+        <button class="speed-preset-btn active" id="btn-pace-optimistic" onclick="setHubPace('optimistic')" title="Ritmo acelerado focado de 6 meses">🚀 Otimista (6 meses)</button>
+        <button class="speed-preset-btn" id="btn-pace-standard" onclick="setHubPace('standard')" title="Ritmo equilibrado sustentável de 14 meses">🎯 Equilibrado (14 meses)</button>
+      </div>
+    </div>
+
+    <!-- SELETOR DE DATA DE INÍCIO & STATUS -->
+    <div class="speed-date-row">
+      <div class="speed-date-inputs">
+        <label for="hub-start-date">📅 Data de Início da Jornada:</label>
+        <input type="date" id="hub-start-date" class="speed-date-input" onchange="onStartDateChange(this.value)">
+        <button class="speed-reset-btn" onclick="resetStartDateToday()" title="Redefinir data de início para hoje">Redefinir Hoje</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="nav-status-pill" id="global-badge" style="font-size:.78rem;padding:3px 10px">Sincronizado</span>
+      </div>
+    </div>
+
+    <!-- BANNER DE PATENTE & XP GLOBAL -->
+    <div class="level-banner">
+      <div class="level-info">
+        <div class="level-icon" id="global-icon">🚀</div>
+        <div>
+          <div class="level-name" id="global-rank">Iniciante Curioso</div>
+          <div class="level-desc" id="global-desc">Acompanhe seu avanço em todas as 3 trilhas integradas</div>
+        </div>
+      </div>
+      <div class="level-xp-wrap">
+        <div class="level-xp-text" id="global-xp-text">0 de 289 concluídos (0%)</div>
+        <div class="level-xp-bar"><div class="level-xp-fill" id="global-xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- CARD DE DIAGNÓSTICO DINÂMICO AO VIVO -->
+    <div class="speed-diagnosis-card pace-ontrack" id="hub-diagnosis-card">
+      <div id="hub-diagnosis-text" style="flex:1">Calculando ritmo de estudo...</div>
+      <span class="speed-diag-badge" id="hub-diagnosis-badge">⏱️ Calculando</span>
+    </div>
+
+    <!-- MEDIDOR VISUAL DE VELOCIDADE (SPEEDOMETER GAUGE) -->
+    <div class="speed-gauge-card">
+      <div class="speed-gauge-header">
+        <div class="speed-gauge-head-title">
+          <span>⚡ Medidor de Velocidade em Tempo Real</span>
+          <span style="font-size:.78rem;color:var(--mu);font-weight:normal">(Comparação com o ritmo alvo necessário)</span>
+        </div>
+        <span class="speed-gauge-multiplier" id="hub-speed-multiplier">1.0x Ritmo Alvo</span>
+      </div>
+
+      <div class="speed-gauge-track-wrap">
+        <div class="speed-gauge-bar">
+          <div class="speed-gauge-marker" id="hub-speed-marker" style="left:40%">
+            <div class="speed-gauge-marker-pin" id="hub-speed-pin">1.0x</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="speed-gauge-scale">
+        <span>0.0x (Partida)</span>
+        <span>0.5x (Lento)</span>
+        <span>1.0x (Meta Ideal)</span>
+        <span>1.5x (Acelerado)</span>
+        <span>2.0x+ (Turbo Sprint ⚡)</span>
+      </div>
+    </div>
+
+    <!-- GRADE DE 4 CARDS DE MÉTRICAS -->
+    <div class="speed-metrics-grid">
+      <div class="speed-metric-box">
+        <span class="speed-metric-lbl">⚡ Velocidade Real</span>
+        <span class="speed-metric-val" id="hub-val-speed">0.0 /sem</span>
+        <span class="speed-metric-sub" id="hub-sub-speed">0.0 tópicos/dia</span>
+      </div>
+
+      <div class="speed-metric-box">
+        <span class="speed-metric-lbl">🎯 Velocidade Alvo</span>
+        <span class="speed-metric-val" id="hub-val-target-speed">11.2 /sem</span>
+        <span class="speed-metric-sub" id="hub-sub-target-speed">Meta de 6 meses (180 dias)</span>
+      </div>
+
+      <div class="speed-metric-box">
+        <span class="speed-metric-lbl">📅 Previsão de Formatura</span>
+        <span class="speed-metric-val" id="hub-val-forecast">--/--/----</span>
+        <span class="speed-metric-sub" id="hub-sub-forecast">no seu ritmo atual</span>
+      </div>
+
+      <div class="speed-metric-box">
+        <span class="speed-metric-lbl">⏳ Prazo da Meta</span>
+        <span class="speed-metric-val" id="hub-val-deadline">--/--/----</span>
+        <span class="speed-metric-sub" id="hub-sub-daysleft">0 dias restantes</span>
+      </div>
+    </div>
+
+    <!-- BARRAS COMPARATIVAS: REAL VS ESPERADO -->
+    <div class="comp-bars-card">
+      <div class="comp-bar-item">
+        <div class="comp-bar-head">
+          <span>🟢 Seu Progresso Real Concluído:</span>
+          <span id="hub-comp-txt-real">0 de 289 tópicos (0%)</span>
+        </div>
+        <div class="comp-bar-track">
+          <div class="comp-bar-fill-real" id="hub-comp-fill-real" style="width:0%"></div>
+        </div>
+      </div>
+
+      <div class="comp-bar-item">
+        <div class="comp-bar-head">
+          <span>🎯 Meta Esperada para Hoje (no prazo):</span>
+          <span id="hub-comp-txt-target">0 de 289 tópicos (0%)</span>
+        </div>
+        <div class="comp-bar-track">
+          <div class="comp-bar-fill-target" id="hub-comp-fill-target" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MINI-RADAR DAS 3 TRILHAS INTEGRADAS -->
+    <div class="hub-radar-card">
+      <div class="hub-radar-title">
+        <span>🗺️ Radar de Conclusão por Trilha Integrada</span>
+      </div>
+      <div class="hub-radar-grid">
+        <div class="hub-radar-item">
+          <div class="hub-radar-item-top">
+            <span class="hub-radar-name">🤖 IA & Código</span>
+            <span class="hub-radar-count" id="radar-ia-count">0 / 173 (0%)</span>
+          </div>
+          <div class="hub-radar-bar">
+            <div class="hub-radar-fill" id="radar-ia-fill" style="width:0%;background:var(--ac)"></div>
+          </div>
+          <a href="ia.html" class="hub-radar-link">Abrir Trilha de IA ➔</a>
+        </div>
+
+        <div class="hub-radar-item">
+          <div class="hub-radar-item-top">
+            <span class="hub-radar-name">📐 Matemática</span>
+            <span class="hub-radar-count" id="radar-mat-count">0 / 43 (0%)</span>
+          </div>
+          <div class="hub-radar-bar">
+            <div class="hub-radar-fill" id="radar-mat-fill" style="width:0%;background:#e8a100"></div>
+          </div>
+          <a href="matematica.html" class="hub-radar-link" style="color:#e8a100">Abrir Trilha de Matemática ➔</a>
+        </div>
+
+        <div class="hub-radar-item">
+          <div class="hub-radar-item-top">
+            <span class="hub-radar-name">🇺🇸 Inglês EnglishBay</span>
+            <span class="hub-radar-count" id="radar-ing-count">0 / 73 (0%)</span>
+          </div>
+          <div class="hub-radar-bar">
+            <div class="hub-radar-fill" id="radar-ing-fill" style="width:0%;background:#2fa36b"></div>
+          </div>
+          <a href="ingles.html" class="hub-radar-link" style="color:#2fa36b">Abrir Trilha de Inglês ➔</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRÓXIMO PASSO SUGERIDO -->
+    <div class="hub-next-box">
+      <div>
+        <div class="hub-next-tag">🎯 Próximo Passo Sugerido</div>
+        <div class="hub-next-title" id="hub-next-step-title">Acessar a Trilha de IA & Programação para iniciar seus estudos</div>
+      </div>
+      <a href="ia.html" id="hub-next-step-btn" class="hub-next-action-btn">Ir para o Tópico ➔</a>
+    </div>
+  </section>
+
+  <!-- OS 3 CARDS GRANDES DE REDIRECIONAMENTO -->
+  <div style="font-size:1.15rem;font-weight:800;color:var(--tx);margin-bottom:16px;display:flex;align-items:center;gap:8px">
+    🎯 Escolha sua Trilha de Estudo:
+  </div>
+
+  <section class="track-cards-grid">
+    <!-- CARD 1: IA & PROGRAMAÇÃO -->
+    <div class="track-card">
+      <div>
+        <div class="track-card-top">
+          <div class="track-card-icon">🤖</div>
+          <span class="track-badge-count">173 Tópicos · 6 Fases</span>
+        </div>
+        <h3 class="track-card-title">Inteligência Artificial & Código</h3>
+        <p class="track-card-desc">
+          Do zero ao domínio técnico completo: Python essencial, Git, consumo de APIs, Pandas, Scikit-learn, PyTorch, Redes Neurais, Transformers, LLMs, Agentes e MLOps.
+        </p>
+      </div>
+
+      <div>
+        <div class="track-progress-wrap">
+          <div class="track-progress-info">
+            <span>Progresso em IA:</span>
+            <span id="card-ia-pct">0%</span>
+          </div>
+          <div class="track-progress-bar">
+            <div class="track-progress-fill" id="card-ia-fill" style="width:0%;background:var(--ac)"></div>
+          </div>
+        </div>
+        <a href="ia.html" class="track-access-btn">Acessar Trilha de IA & Programação ➔</a>
+      </div>
+    </div>
+
+    <!-- CARD 2: MATEMÁTICA PARA IA -->
+    <div class="track-card">
+      <div>
+        <div class="track-card-top">
+          <div class="track-card-icon">📐</div>
+          <span class="track-badge-count">43 Tópicos · 5 Módulos</span>
+        </div>
+        <h3 class="track-card-title">Matemática Essencial para IA</h3>
+        <p class="track-card-desc">
+          Apenas a matemática que você realmente usa: Álgebra Linear com tensores, Cálculo com gradientes e Backpropagation, Probabilidade Bayesiana e Geometria de Embeddings.
+        </p>
+      </div>
+
+      <div>
+        <div class="track-progress-wrap">
+          <div class="track-progress-info">
+            <span>Progresso em Matemática:</span>
+            <span id="card-mat-pct">0%</span>
+          </div>
+          <div class="track-progress-bar">
+            <div class="track-progress-fill" id="card-mat-fill" style="width:0%;background:#e8a100"></div>
+          </div>
+        </div>
+        <a href="matematica.html" class="track-access-btn" style="background:#e8a100">Acessar Trilha de Matemática ➔</a>
+      </div>
+    </div>
+
+    <!-- CARD 3: INGLÊS ENGLISHBAY -->
+    <div class="track-card">
+      <div>
+        <div class="track-card-top">
+          <div class="track-card-icon">🇺🇸</div>
+          <span class="track-badge-count">73 Aulas · 6 Módulos</span>
+        </div>
+        <h3 class="track-card-title">Curso de Inglês EnglishBay</h3>
+        <p class="track-card-desc">
+          Sequência completa e organizada da playlist oficial do YouTube: da apresentação pessoal e estruturas básicas até tempos perfeitos, verbos modais e voz passiva.
+        </p>
+      </div>
+
+      <div>
+        <div class="track-progress-wrap">
+          <div class="track-progress-info">
+            <span>Progresso em Inglês:</span>
+            <span id="card-ing-pct">0%</span>
+          </div>
+          <div class="track-progress-bar">
+            <div class="track-progress-fill" id="card-ing-fill" style="width:0%;background:#2fa36b"></div>
+          </div>
+        </div>
+        <a href="ingles.html" class="track-access-btn" style="background:#2fa36b">Acessar Trilha de Inglês ➔</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEXTO GLOBAL DE MERCADO -->
+  <section class="market-box">
+    <div class="market-title">🗺️ O Cenário Global do Talento em IA</div>
+    <div class="market-desc">
+      Dados do <b>Stanford AI Index</b> e do <b>Global AI Talent Tracker</b> (Carnegie/Paulson Institute) mostram que existem hoje cerca de 150.000 a 200.000 pessoas no mundo trabalhando diretamente no desenvolvimento de ponta em IA. Quando incluímos quem cria integrações e aplicações com APIs e modelos abertos, o número salta para a casa dos milhões (mais de 5,6 milhões de repositórios ativos no GitHub e Hugging Face).
+      <br><br>
+      Quem domina a tríade <b>Código Python + Matemática Aplicada + Inglês Técnico</b> se posiciona imediatamente no percentil mais valorizado do mercado mundial de tecnologia.
+    </div>
+
+    <div class="market-stats-grid">
+      <div class="market-stat">
+        <span class="market-stat-num">34,2% a 59%</span>
+        <span class="market-stat-lbl">Talentos de elite empregados nos EUA (OpenAI, Google, Anthropic, Meta)</span>
+      </div>
+      <div class="market-stat">
+        <span class="market-stat-num">40,6%</span>
+        <span class="market-stat-lbl">Origem de pesquisadores seniores na China (formação matemática de ponta)</span>
+      </div>
+      <div class="market-stat">
+        <span class="market-stat-num">5,6 Milhões</span>
+        <span class="market-stat-lbl">Projetos de IA ativos no ecossistema global do GitHub & Hugging Face</span>
+      </div>
+      <div class="market-stat">
+        <span class="market-stat-num">289 Tópicos</span>
+        <span class="market-stat-lbl">Currículo completo deste roteiro cobrindo as 3 habilidades essenciais</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const KEY = "roteiro-ia-v1";
+const PACE_KEY = "roteiro-hub-pace";
+const START_KEY = "roteiro-start-date";
+
+let PR = {};
+let API_BASE = "http://localhost:8000";
+
+const HUB_PRESETS = {
+  sprint: { name: "⚡ Ultra Otimista", months: 4, days: 120, label: "Meta de 4 meses (Sprint intensivo)" },
+  optimistic: { name: "🚀 Otimista Acelerado", months: 6, days: 180, label: "Meta de 6 meses (Ritmo acelerado)" },
+  standard: { name: "🎯 Equilibrado Sustentável", months: 14, days: 420, label: "Meta de 14 meses (Sustentável)" }
+};
+
+let currentPace = "optimistic";
+let currentStartDate = "";
+
+function loadPaceSettings() {
+  try {
+    const savedPace = localStorage.getItem(PACE_KEY);
+    if(savedPace && HUB_PRESETS[savedPace]) currentPace = savedPace;
+    
+    const savedStart = localStorage.getItem(START_KEY);
+    if(savedStart && /^\d{4}-\d{2}-\d{2}$/.test(savedStart)) {
+      currentStartDate = savedStart;
+    } else {
+      currentStartDate = new Date().toISOString().slice(0, 10);
+      try { localStorage.setItem(START_KEY, currentStartDate); } catch(e){}
+    }
+  } catch(e) {
+    currentPace = "optimistic";
+    currentStartDate = new Date().toISOString().slice(0, 10);
+  }
+}
+
+function setHubPace(presetKey) {
+  if(!HUB_PRESETS[presetKey]) return;
+  currentPace = presetKey;
+  try { localStorage.setItem(PACE_KEY, presetKey); } catch(e){}
+  
+  document.querySelectorAll(".speed-preset-btn").forEach(b => b.classList.remove("active"));
+  const activeBtn = document.getElementById("btn-pace-" + presetKey);
+  if(activeBtn) activeBtn.classList.add("active");
+  
+  triggerPulse();
+  calcAndPaint();
+}
+
+function onStartDateChange(val) {
+  if(!val) return;
+  currentStartDate = val;
+  try { localStorage.setItem(START_KEY, val); } catch(e){}
+  triggerPulse();
+  calcAndPaint();
+}
+
+function resetStartDateToday() {
+  currentStartDate = new Date().toISOString().slice(0, 10);
+  const inputEl = document.getElementById("hub-start-date");
+  if(inputEl) inputEl.value = currentStartDate;
+  try { localStorage.setItem(START_KEY, currentStartDate); } catch(e){}
+  triggerPulse();
+  calcAndPaint();
+}
+
+function triggerPulse() {
+  const card = document.getElementById("hub-tracker-sect");
+  if(card) {
+    card.classList.remove("pulse-update");
+    void card.offsetWidth;
+    card.classList.add("pulse-update");
+    setTimeout(() => card.classList.remove("pulse-update"), 700);
+  }
+}
+
+function formatDateBR(d) {
+  if(!d || isNaN(d.getTime())) return "--/--/----";
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) PR = JSON.parse(raw);
+  }catch(e){}
+}
+
+async function initSync(){
+  loadData();
+  loadPaceSettings();
+  calcAndPaint();
+
+  try{
+    let res = await fetch(API_BASE + "/api/status", { cache: "no-store" }).catch(()=>null);
+    if(!res && !window.location.origin.startsWith("http")){
+      res = await fetch("http://localhost:8080/api/status", { cache: "no-store" }).catch(()=>null);
+      if(res) API_BASE = "http://localhost:8080";
+    }
+
+    if(res && res.ok){
+      const data = await res.json();
+      const dbBadge = document.getElementById("nav-db-status");
+      if(dbBadge){
+        if(data.db_type === "postgres"){
+          dbBadge.className = "nav-status-pill badge-pg";
+          dbBadge.textContent = "🐘 PostgreSQL";
+        } else {
+          dbBadge.className = "nav-status-pill badge-sq";
+          dbBadge.textContent = "💾 SQLite";
+        }
+      }
+
+      const progRes = await fetch(API_BASE + "/api/progress?user_id=1");
+      if(progRes.ok){
+        const dbData = await progRes.json();
+        for(const k in dbData){
+          PR[k] = Object.assign({s:"z", n:"", d:""}, dbData[k]);
+        }
+        try{ localStorage.setItem(KEY, JSON.stringify(PR)); }catch(e){}
+        calcAndPaint();
+      }
+    }
+  }catch(e){}
+}
+
+function calcAndPaint(){
+  let iaDone = 0, matDone = 0, ingDone = 0;
+  let totalNotes = 0;
+
+  for(const k in PR){
+    const item = PR[k];
+    if(item.s === "e"){
+      if(k.startsWith("ia-")) iaDone++;
+      else if(k.startsWith("mat-")) matDone++;
+      else if(k.startsWith("ing-")) ingDone++;
+      else iaDone++; // fallback para IDs antigos da trilha de IA
+    }
+    if(item.n && item.n.trim()) totalNotes++;
+  }
+
+  // Porcentagens dos Cards Individuais
+  const iaPct = Math.round((iaDone / 173) * 100);
+  const matPct = Math.round((matDone / 43) * 100);
+  const ingPct = Math.round((ingDone / 73) * 100);
+
+  const elIaPct = document.getElementById("card-ia-pct");
+  if(elIaPct) elIaPct.textContent = `${iaPct}% (${iaDone}/173)`;
+  const elIaFill = document.getElementById("card-ia-fill");
+  if(elIaFill) elIaFill.style.width = `${iaPct}%`;
+
+  const elMatPct = document.getElementById("card-mat-pct");
+  if(elMatPct) elMatPct.textContent = `${matPct}% (${matDone}/43)`;
+  const elMatFill = document.getElementById("card-mat-fill");
+  if(elMatFill) elMatFill.style.width = `${matPct}%`;
+
+  const elIngPct = document.getElementById("card-ing-pct");
+  if(elIngPct) elIngPct.textContent = `${ingPct}% (${ingDone}/73)`;
+  const elIngFill = document.getElementById("card-ing-fill");
+  if(elIngFill) elIngFill.style.width = `${ingPct}%`;
+
+  // Mini Radar das Trilhas
+  const rIaCount = document.getElementById("radar-ia-count");
+  if(rIaCount) rIaCount.textContent = `${iaDone} / 173 (${iaPct}%)`;
+  const rIaFill = document.getElementById("radar-ia-fill");
+  if(rIaFill) rIaFill.style.width = `${iaPct}%`;
+
+  const rMatCount = document.getElementById("radar-mat-count");
+  if(rMatCount) rMatCount.textContent = `${matDone} / 43 (${matPct}%)`;
+  const rMatFill = document.getElementById("radar-mat-fill");
+  if(rMatFill) rMatFill.style.width = `${matPct}%`;
+
+  const rIngCount = document.getElementById("radar-ing-count");
+  if(rIngCount) rIngCount.textContent = `${ingDone} / 73 (${ingPct}%)`;
+  const rIngFill = document.getElementById("radar-ing-fill");
+  if(rIngFill) rIngFill.style.width = `${ingPct}%`;
+
+  // Total Global (289 tópicos)
+  const totalDone = iaDone + matDone + ingDone;
+  const globalPct = Math.round((totalDone / 289) * 100);
+
+  const elGlobalXpText = document.getElementById("global-xp-text");
+  if(elGlobalXpText) elGlobalXpText.textContent = `${totalDone} de 289 concluídos (${globalPct}%)`;
+  const elGlobalXpFill = document.getElementById("global-xp-fill");
+  if(elGlobalXpFill) elGlobalXpFill.style.width = `${globalPct}%`;
+
+  const rankEl = document.getElementById("global-rank");
+  const descEl = document.getElementById("global-desc");
+  const iconEl = document.getElementById("global-icon");
+
+  if(globalPct >= 100){
+    if(iconEl) iconEl.textContent = "👑";
+    if(rankEl) rankEl.textContent = "Mestre Supremo em IA";
+    if(descEl) descEl.textContent = "Currículo 100% concluído em Código, Matemática e Inglês!";
+  } else if(globalPct >= 70){
+    if(iconEl) iconEl.textContent = "🏆";
+    if(rankEl) rankEl.textContent = "Engenheiro de IA Avançado";
+    if(descEl) descEl.textContent = "Grande domínio prático e pronto para posições sênior.";
+  } else if(globalPct >= 40){
+    if(iconEl) iconEl.textContent = "⚡";
+    if(rankEl) rankEl.textContent = "Desenvolvedor & Praticante";
+    if(descEl) descEl.textContent = "Construindo modelos e conectando componentes reais.";
+  } else if(globalPct >= 15){
+    if(iconEl) iconEl.textContent = "🔥";
+    if(rankEl) rankEl.textContent = "Estudante Focado";
+    if(descEl) descEl.textContent = "Ganhando tração consistente nas 3 trilhas.";
+  } else {
+    if(iconEl) iconEl.textContent = "🌱";
+    if(rankEl) rankEl.textContent = "Iniciante Curioso";
+    if(descEl) descEl.textContent = "Dando os primeiros passos do zero absoluto.";
+  }
+
+  // Sincronizar input de data
+  const sInput = document.getElementById("hub-start-date");
+  if(sInput && !sInput.value) sInput.value = currentStartDate;
+
+  // Botões de Preset
+  document.querySelectorAll(".speed-preset-btn").forEach(b => b.classList.remove("active"));
+  const curBtn = document.getElementById("btn-pace-" + currentPace);
+  if(curBtn) curBtn.classList.add("active");
+
+  // =========================================================================
+  // CÁLCULO MATEMÁTICO DO VELOCÍMETRO E CRONOGRAMA
+  // =========================================================================
+  const preset = HUB_PRESETS[currentPace] || HUB_PRESETS.optimistic;
+  const startMs = new Date(currentStartDate + "T00:00:00").getTime();
+  const nowMs = Date.now();
+  const elapsedDays = Math.max(1, Math.round((nowMs - startMs) / 86400000));
+  const elapsedWeeks = Math.max(0.14, elapsedDays / 7);
+
+  // Meta de velocidade
+  const targetDays = preset.days;
+  const targetWeeks = targetDays / 7;
+  const targetSpeedPerWeek = 289 / targetWeeks;
+  const targetSpeedPerDay = 289 / targetDays;
+
+  // Velocidade real atual
+  const realSpeedPerWeek = totalDone / elapsedWeeks;
+  const realSpeedPerDay = totalDone / elapsedDays;
+
+  // Tópicos esperados para hoje
+  const expectedDoneToday = Math.min(289, Math.round(targetSpeedPerDay * elapsedDays));
+  const diffTopics = totalDone - expectedDoneToday;
+  const diffDays = Math.round(diffTopics / targetSpeedPerDay);
+
+  // Data limite da meta selecionada
+  const targetDeadlineDate = new Date(startMs + targetDays * 86400000);
+  const daysRemaining = Math.max(0, Math.round((targetDeadlineDate.getTime() - nowMs) / 86400000));
+
+  // Previsão de conclusão no ritmo atual
+  let forecastDate = null;
+  let forecastSub = "";
+  if(totalDone === 0){
+    forecastDate = targetDeadlineDate;
+    forecastSub = "Aguardando primeiro tópico concluído";
+  } else {
+    const remainingTopics = 289 - totalDone;
+    const daysToFinish = Math.round(remainingTopics / Math.max(0.05, realSpeedPerDay));
+    forecastDate = new Date(nowMs + daysToFinish * 86400000);
+    const diffForecastDays = Math.round((targetDeadlineDate.getTime() - forecastDate.getTime()) / 86400000);
+    if(diffForecastDays >= 0){
+      forecastSub = `🚀 ${diffForecastDays} dias antes do prazo!`;
+    } else {
+      forecastSub = `⚠️ ${Math.abs(diffForecastDays)} dias além do prazo`;
+    }
+  }
+
+  // Preencher os 4 Cards de Métricas
+  const elValSpeed = document.getElementById("hub-val-speed");
+  const elSubSpeed = document.getElementById("hub-sub-speed");
+  if(elValSpeed) elValSpeed.textContent = `${realSpeedPerWeek.toFixed(1)} /sem`;
+  if(elSubSpeed) elSubSpeed.textContent = `${realSpeedPerDay.toFixed(1)} tópicos/dia (Dia ${elapsedDays})`;
+
+  const elValTargetSpeed = document.getElementById("hub-val-target-speed");
+  const elSubTargetSpeed = document.getElementById("hub-sub-target-speed");
+  if(elValTargetSpeed) elValTargetSpeed.textContent = `${targetSpeedPerWeek.toFixed(1)} /sem`;
+  if(elSubTargetSpeed) elSubTargetSpeed.textContent = preset.label;
+
+  const elValForecast = document.getElementById("hub-val-forecast");
+  const elSubForecast = document.getElementById("hub-sub-forecast");
+  if(elValForecast) elValForecast.textContent = formatDateBR(forecastDate);
+  if(elSubForecast) elSubForecast.textContent = forecastSub;
+
+  const elValDeadline = document.getElementById("hub-val-deadline");
+  const elSubDaysLeft = document.getElementById("hub-sub-daysleft");
+  if(elValDeadline) elValDeadline.textContent = formatDateBR(targetDeadlineDate);
+  if(elSubDaysLeft) elSubDaysLeft.textContent = `${daysRemaining} dias restantes`;
+
+  // Velocímetro Visual (Speedometer Gauge)
+  let speedRatio = 0;
+  if(totalDone > 0 && targetSpeedPerWeek > 0){
+    speedRatio = realSpeedPerWeek / targetSpeedPerWeek;
+  }
+  
+  // Marker position: escala de 0.0x a 2.5x (1.0x fica em 40%)
+  const markerPct = Math.min(97, Math.max(3, Math.round((speedRatio / 2.5) * 100)));
+  const markerEl = document.getElementById("hub-speed-marker");
+  const pinEl = document.getElementById("hub-speed-pin");
+  const multiplierEl = document.getElementById("hub-speed-multiplier");
+
+  if(markerEl) markerEl.style.left = `${markerPct}%`;
+  if(pinEl) pinEl.textContent = `${speedRatio.toFixed(1)}x`;
+
+  if(multiplierEl){
+    if(totalDone === 0){
+      multiplierEl.textContent = "0.0x · Ponto de Partida";
+    } else if(speedRatio >= 1.3){
+      multiplierEl.textContent = `⚡ ${speedRatio.toFixed(1)}x do Ritmo Alvo · TURBO SPRINT!`;
+    } else if(speedRatio >= 0.9){
+      multiplierEl.textContent = `🎯 ${speedRatio.toFixed(1)}x do Ritmo Alvo · NA META IDEAL`;
+    } else {
+      multiplierEl.textContent = `🟡 ${speedRatio.toFixed(1)}x do Ritmo Alvo · RITMO MODERADO`;
+    }
+  }
+
+  // Diagnóstico Dinâmico ao Vivo (Card & Badge)
+  const diagCard = document.getElementById("hub-diagnosis-card");
+  const diagText = document.getElementById("hub-diagnosis-text");
+  const diagBadge = document.getElementById("hub-diagnosis-badge");
+
+  if(diagCard && diagText && diagBadge){
+    if(totalDone === 0){
+      diagCard.className = "speed-diagnosis-card pace-ontrack";
+      diagBadge.textContent = "🚀 Pronto para a Largada";
+      diagText.innerHTML = `Você está no <b>Dia ${elapsedDays}</b>! Marque seus tópicos estudados em uma das 3 trilhas abaixo para começar a calibrar seu velocímetro em tempo real.`;
+    } else if(diffTopics >= 2){
+      diagCard.className = "speed-diagnosis-card pace-ahead";
+      diagBadge.textContent = `🟢 ADIANTADO (+${diffTopics} TÓPICOS · +${diffDays} DIAS)`;
+      diagText.innerHTML = `Ritmo Espetacular! Você está <b>${diffTopics} tópicos à frente</b> da sua meta para a data de hoje (+${diffDays} dias adiantado). No ritmo de <b>${realSpeedPerWeek.toFixed(1)} tópicos/semana</b>, você alcançará o domínio de IA antes do planejado!`;
+    } else if(diffTopics >= -2){
+      diagCard.className = "speed-diagnosis-card pace-ontrack";
+      diagBadge.textContent = "🔵 NO PRAZO IDEAL (Ritmo Perfeito)";
+      diagText.innerHTML = `Excelente consistência! Seu estudo está <b>rigorosamente no cronograma</b> da sua meta (${preset.name}). Mantenha esse ritmo para se formar em <b>${formatDateBR(targetDeadlineDate)}</b>.`;
+    } else {
+      const behind = Math.abs(diffTopics);
+      diagCard.className = "speed-diagnosis-card pace-behind";
+      diagBadge.textContent = `🟡 RITMO MODERADO (-${behind} TÓPICOS)`;
+      diagText.innerHTML = `Atenção à meta: Você está <b>${behind} tópicos atrás</b> do planejado para hoje. Aumente um pouco a carga de estudo nesta semana para recolocar o velocímetro na zona verde!`;
+    }
+  }
+
+  // Barras Comparativas: Real vs Esperado
+  const compTxtReal = document.getElementById("hub-comp-txt-real");
+  const compFillReal = document.getElementById("hub-comp-fill-real");
+  const compTxtTarget = document.getElementById("hub-comp-txt-target");
+  const compFillTarget = document.getElementById("hub-comp-fill-target");
+
+  const expectedPct = Math.min(100, Math.round((expectedDoneToday / 289) * 100));
+
+  if(compTxtReal) compTxtReal.textContent = `${totalDone} de 289 tópicos (${globalPct}%)`;
+  if(compFillReal) compFillReal.style.width = `${globalPct}%`;
+
+  if(compTxtTarget) compTxtTarget.textContent = `${expectedDoneToday} de 289 tópicos (${expectedPct}%)`;
+  if(compFillTarget) compFillTarget.style.width = `${expectedPct}%`;
+
+  // Próximo Passo Sugerido
+  const nextTitle = document.getElementById("hub-next-step-title");
+  const nextBtn = document.getElementById("hub-next-step-btn");
+  if(nextTitle && nextBtn){
+    if(iaDone === 0){
+      nextTitle.textContent = "Iniciar os Fundamentos na Trilha de IA & Código (Python essencial e lógica)";
+      nextBtn.href = "ia.html";
+      nextBtn.textContent = "Acessar IA & Código ➔";
+    } else if(matDone === 0){
+      nextTitle.textContent = "Iniciar a Trilha de Matemática Essencial para IA (Módulo 1: Álgebra Linear)";
+      nextBtn.href = "matematica.html";
+      nextBtn.textContent = "Acessar Matemática ➔";
+    } else if(ingDone === 0){
+      nextTitle.textContent = "Iniciar a Trilha de Inglês EnglishBay (Aula 1 da Playlist Oficial)";
+      nextBtn.href = "ingles.html";
+      nextBtn.textContent = "Acessar Inglês ➔";
+    } else {
+      if(iaPct <= matPct && iaPct <= ingPct){
+        nextTitle.textContent = `Continuar Trilha de IA & Programação (${iaDone}/173 concluídos · ${iaPct}%)`;
+        nextBtn.href = "ia.html";
+        nextBtn.textContent = "Ir para Trilha de IA ➔";
+      } else if(matPct <= ingPct){
+        nextTitle.textContent = `Continuar Trilha de Matemática para IA (${matDone}/43 concluídos · ${matPct}%)`;
+        nextBtn.href = "matematica.html";
+        nextBtn.textContent = "Ir para Matemática ➔";
+      } else {
+        nextTitle.textContent = `Continuar Curso de Inglês EnglishBay (${ingDone}/73 concluídos · ${ingPct}%)`;
+        nextBtn.href = "ingles.html";
+        nextBtn.textContent = "Ir para Inglês ➔";
+      }
+    }
+  }
+}
+
+function toggleTheme(){
+  const html = document.documentElement;
+  const isDark = html.getAttribute("data-theme") === "dark" || (!html.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const next = isDark ? "light" : "dark";
+  html.setAttribute("data-theme", next);
+  try{ localStorage.setItem("roteiro-theme", next); }catch(e){}
+}
+
+try{
+  const savedTheme = localStorage.getItem("roteiro-theme");
+  if(savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+}catch(e){}
+
+window.addEventListener("DOMContentLoaded", initSync);
+</script>
+</body>
+</html>
