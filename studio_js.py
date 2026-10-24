@@ -147,7 +147,81 @@ function showToast(msg) {
 // =========================================================================
 // ABRIR E FECHAR O ESTÚDIO UNIFICADO DE ESTUDO & ANOTAÇÕES
 // =========================================================================
-function openStudyModal(topicId, focusGuide = false) {
+let CURRENT_MODAL_VIDEO_OPT = 1;
+
+function switchModalVideoOption(optNum, resetPlayerTimer = false) {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId) return;
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const video1Url = topicInfo.url || "";
+  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy (PT-BR)";
+  const video2Url = topicInfo.url2 || "";
+  const video2Label = topicInfo.label2 || "🎬 Opção 2: 3B1B / StatQuest";
+
+  CURRENT_MODAL_VIDEO_OPT = (optNum === 2 && video2Url) ? 2 : 1;
+  const activeUrl = CURRENT_MODAL_VIDEO_OPT === 2 ? video2Url : video1Url;
+  const activeLabel = CURRENT_MODAL_VIDEO_OPT === 2 ? video2Label : video1Label;
+
+  const iframe = document.getElementById("modal-video-iframe");
+  const extLink = document.getElementById("modal-external-link");
+  const playerTag = document.getElementById("modal-player-tag");
+  const switcherWrap = document.getElementById("modal-video-switcher-wrap");
+  const btnOpt1 = document.getElementById("modal-video-opt1-btn");
+  const btnOpt2 = document.getElementById("modal-video-opt2-btn");
+
+  if (switcherWrap) {
+    if (video1Url && video2Url) {
+      switcherWrap.style.display = "inline-flex";
+      if (btnOpt1) {
+        btnOpt1.textContent = video1Label;
+        btnOpt1.style.background = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--card)";
+        btnOpt1.style.color = CURRENT_MODAL_VIDEO_OPT === 1 ? "#fff" : "var(--tx)";
+        btnOpt1.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--bd)";
+      }
+      if (btnOpt2) {
+        btnOpt2.textContent = video2Label;
+        btnOpt2.style.background = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--card)";
+        btnOpt2.style.color = CURRENT_MODAL_VIDEO_OPT === 2 ? "#fff" : "var(--tx)";
+        btnOpt2.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--bd)";
+      }
+    } else {
+      switcherWrap.style.display = "none";
+    }
+  }
+
+  if (activeUrl) {
+    if (iframe) {
+      ytCurrentTime = 0;
+      ytDuration = 0;
+      iframe.onload = () => {
+        sendYoutubeListeningHandshake();
+        setTimeout(sendYoutubeListeningHandshake, 700);
+        setTimeout(sendYoutubeListeningHandshake, 1800);
+      };
+      iframe.src = getYoutubeEmbedUrl(activeUrl);
+    }
+    if (extLink) {
+      extLink.href = activeUrl;
+      extLink.style.display = "inline-flex";
+    }
+    if (playerTag) playerTag.textContent = activeLabel;
+  }
+
+  const vWrap = document.getElementById("video-wrapper");
+  const cBtn = document.getElementById("modal-collapse-btn");
+  if (vWrap && vWrap.classList.contains("collapsed")) {
+    vWrap.classList.remove("collapsed");
+    if (cBtn) cBtn.textContent = "▲ Ocultar Vídeo";
+  }
+
+  if (!resetPlayerTimer) {
+    const p = document.getElementById("study-player-sect");
+    if (p) p.scrollTo({ top: 0, behavior: "smooth" });
+    showToast(`🎬 Reproduzindo: ${activeLabel}`);
+  }
+}
+
+function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
   CURRENT_MODAL_TOPIC_ID = topicId;
   const modal = document.getElementById("note-modal");
   if (!modal) return;
@@ -178,28 +252,18 @@ function openStudyModal(topicId, focusGuide = false) {
   const playerTitle = document.getElementById("modal-player-title");
 
   const videoUrl = topicInfo.url || "";
+  const video2Url = topicInfo.url2 || "";
   const docUrl = topicInfo.doc_url || "";
   const videoLabel = topicInfo.label || "▶ Vídeo Aula";
+  const video2Label = topicInfo.label2 || "🎬 2ª Opção";
   const docLabel = topicInfo.doc_label || "📖 Material Oficial";
   const ytPtUrl = topicInfo.yt_pt_url || "";
   const ptGuide = topicInfo.pt_guide || null;
 
-  if (videoUrl) {
+  if (videoUrl || video2Url) {
     if (playerSect) playerSect.style.display = "flex";
-    if (iframe) {
-      iframe.onload = () => {
-        sendYoutubeListeningHandshake();
-        setTimeout(sendYoutubeListeningHandshake, 700);
-        setTimeout(sendYoutubeListeningHandshake, 1800);
-      };
-      iframe.src = getYoutubeEmbedUrl(videoUrl);
-    }
-    if (extLink) {
-      extLink.href = videoUrl;
-      extLink.style.display = "inline-flex";
-    }
-    if (playerTag) playerTag.textContent = videoLabel;
     if (playerTitle) playerTitle.textContent = title;
+    switchModalVideoOption(videoOpt, true);
   } else {
     if (iframe) iframe.src = "";
     if (extLink) extLink.style.display = "none";
@@ -208,7 +272,7 @@ function openStudyModal(topicId, focusGuide = false) {
 
   if (docUrl && docLink) {
     docLink.href = docUrl;
-    docLink.textContent = ptGuide ? "🌐 Artigo Externo PT-BR ↗" : docLabel;
+    docLink.textContent = ptGuide ? "🌐 Khan Academy / Fonte PT-BR ↗" : docLabel;
     docLink.style.display = "inline-flex";
   } else if (docLink) {
     docLink.style.display = "none";
@@ -226,17 +290,17 @@ function openStudyModal(topicId, focusGuide = false) {
         <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(99,102,241,.45);background:linear-gradient(160deg,rgba(79,70,229,.09),rgba(16,185,129,.05));padding:16px 18px;border-radius:14px;margin-bottom:10px">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
             <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual & Apostila Descomplicada (PT-BR)</span>
+              <span>📘 Aula Visual Passo a Passo — Método Khan Academy (PT-BR)</span>
             </div>
             <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button type="button" onclick="const p=document.getElementById('study-player-sect');if(p)p.scrollTo({top:0,behavior:'smooth'})" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
+              <button type="button" onclick="switchModalVideoOption(1)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
                 ${videoLabel} ↑
               </button>
+              ${video2Url ? `<button type="button" onclick="switchModalVideoOption(2)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#f59e0b;cursor:pointer">${video2Label} ↑</button>` : ""}
               <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
                 📥 Copiar para Meu Caderno
               </button>
-              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.12);color:#ef4444;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🇧🇷 Aulas Brasileiras no YouTube ↗</a>` : ""}
-              ${docUrl ? `<a href="${docUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🌐 Fonte Complementar PT-BR ↗</a>` : ""}
+              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🎓 Canal @khanacademyportugues ↗</a>` : ""}
             </div>
           </div>
 

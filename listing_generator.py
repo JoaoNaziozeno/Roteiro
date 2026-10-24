@@ -37,11 +37,15 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 
                 pt_guide = None
                 yt_pt_url = ""
+                yt2_url = ""
+                yt2_label = ""
 
                 if isinstance(raw_t, dict):
                     topic_title = raw_t.get("title", "")
                     yt_url = raw_t.get("video_url") or raw_t.get("url") or ""
                     yt_label = raw_t.get("video_label") or ("▶ YouTube" if is_english else "▶ Vídeo")
+                    yt2_url = raw_t.get("video2_url") or ""
+                    yt2_label = raw_t.get("video2_label") or "🎬 2ª Opção de Vídeo"
                     doc_url = raw_t.get("doc_url") or ""
                     doc_label = raw_t.get("doc_label") or "📖 Material"
                     pt_guide = raw_t.get("pt_guide")
@@ -58,6 +62,8 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     "title": topic_title,
                     "url": yt_url,
                     "label": yt_label,
+                    "url2": yt2_url,
+                    "label2": yt2_label,
                     "doc_url": doc_url,
                     "doc_label": doc_label,
                     "pt_guide": pt_guide,
@@ -119,28 +125,34 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                 yt_btn_html = ""
                 if t.get("url"):
                     t_lbl = t.get("label", "▶ Vídeo")
-                    yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\', false)" title="Assistir vídeo no Estúdio Integrado">{t_lbl}</button>'
+                    yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">{t_lbl}</button>'
+
+                yt2_btn_html = ""
+                if t.get("url2"):
+                    t2_lbl = t.get("label2", "🎬 2ª Opção")
+                    yt2_btn_html = f'<button class="doc-btn" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4);color:#f59e0b;cursor:pointer" onclick="openStudyModal(\'{t_id}\', false, 2)" title="Assistir 2ª Opção de Videoaula (Animação Visual 3B1B / StatQuest) no Estúdio Integrado">{t2_lbl}</button>'
 
                 visual_btn_html = ""
                 if t.get("pt_guide"):
-                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>'
+                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true, 1)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>'
 
                 doc_btn_html = ""
                 if t.get("doc_url"):
                     doc_lbl_clean = t.get("doc_label", "📖 Material").replace("📘 Aula Visual PT-BR:", "📖 Artigo PT-BR:")
-                    doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / documentação em nova aba">{doc_lbl_clean} ↗</a>'
+                    doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">{doc_lbl_clean} ↗</a>'
 
                 topics_rows.append(f"""
                 <div class="topic-row" data-id="{t['id']}" id="top-{t['id']}">
-                  <div class="topic-left" onclick="openStudyModal('{t['id']}', false)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
+                  <div class="topic-left" onclick="openStudyModal('{t['id']}', false, 1)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
                     <span class="topic-title-text">{t['title']}</span>
                   </div>
                   <div class="topic-actions">
                     {yt_btn_html}
+                    {yt2_btn_html}
                     {visual_btn_html}
                     {doc_btn_html}
                     <button class="status-btn status-btn-z" onclick="cycleStatus('{t['id']}')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('{t['id']}', false)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
+                    <button class="note-btn" onclick="openStudyModal('{t['id']}', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
                 </div>
                 """)
@@ -406,9 +418,13 @@ __AUTH_AWS_CSS__
 
       <!-- COLUNA DA ESQUERDA: VÍDEO, MATERIAIS & SESSÃO DE ESTUDO -->
       <div class="study-player-col" id="study-player-sect">
-        <div class="study-player-topbar">
-          <div class="player-topbar-info">
+        <div class="study-player-topbar" style="flex-wrap:wrap;gap:8px">
+          <div class="player-topbar-info" style="flex-wrap:wrap;gap:6px">
             <span class="player-source-tag" id="modal-player-tag">▶ Vídeo Aula</span>
+            <div id="modal-video-switcher-wrap" style="display:none;align-items:center;gap:5px">
+              <button type="button" id="modal-video-opt1-btn" class="player-ext-btn" onclick="switchModalVideoOption(1)" style="cursor:pointer;font-weight:800;border-color:var(--ac);background:var(--ac);color:#fff" title="Opção 1: Aula Passo a Passo em Português (Khan Academy Brasil)">🇧🇷 Opção 1: Khan Academy</button>
+              <button type="button" id="modal-video-opt2-btn" class="player-ext-btn" onclick="switchModalVideoOption(2)" style="cursor:pointer;font-weight:750" title="Opção 2: Animação Visual Complementar (3B1B / StatQuest)">🎬 Opção 2: 3B1B / StatQuest</button>
+            </div>
             <span class="player-source-title" id="modal-player-title">Material de Estudo</span>
           </div>
           <div class="player-topbar-actions">
@@ -883,6 +899,7 @@ function loadLocal() {
 function saveLocal() {
   try {
     localStorage.setItem(KEY, JSON.stringify(PR));
+    if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
   } catch(e) {}
 }
 

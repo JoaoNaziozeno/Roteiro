@@ -3747,8 +3747,8 @@ input:checked + .slider:before { transform: translateX(14px); }
     <div class="aws-stats-grid">
       <div class="aws-stat-card">
         <span class="aws-stat-lbl">Status da Conexão</span>
-        <div class="aws-stat-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
-          <span class="nav-aws-pulse"></span> Sincronizado
+        <div class="aws-stat-val" id="aws-conn-status-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
+          <span class="nav-aws-pulse"></span> Sincronização Automática Ativa
         </div>
       </div>
       <div class="aws-stat-card">
@@ -3757,7 +3757,7 @@ input:checked + .slider:before { transform: translateX(14px); }
       </div>
       <div class="aws-stat-card">
         <span class="aws-stat-lbl">Armazenamento Usado</span>
-        <div class="aws-stat-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+        <div class="aws-stat-val" id="aws-storage-used-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
       </div>
       <div class="aws-stat-card">
         <span class="aws-stat-lbl">Conta AWS Ativa</span>
@@ -3766,7 +3766,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     </div>
 
     <div class="aws-actions-row">
-      <button class="aws-btn-primary" onclick="triggerAwsManualSync()">
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync(event)">
         🔄 Sincronizar Tudo Agora
       </button>
       <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
@@ -3774,23 +3774,29 @@ input:checked + .slider:before { transform: translateX(14px); }
       </button>
     </div>
 
-    <details class="aws-cfg-details">
-      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (Avançado)</summary>
+    <details class="aws-cfg-details" open>
+      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (DynamoDB + Lambda)</summary>
       <div class="aws-cfg-form">
         <div>
-          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS (Default: us-east-1)</label>
-          <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">URL de Sincronização AWS Lambda (Function URL HTTPS · Always Free)</label>
+          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" placeholder="Ex: https://xxxxxx.lambda-url.us-east-1.on.aws/">
         </div>
-        <div>
-          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
-          <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS</label>
+            <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+          </div>
+          <div>
+            <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
+            <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
+          </div>
         </div>
         <div>
           <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
           <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
         </div>
         <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
-          💾 Salvar Configurações da AWS
+          💾 Salvar & Conectar Sincronização Automática
         </button>
       </div>
     </details>
@@ -4039,11 +4045,167 @@ async function handleSaveNewCredentials(e) {
 
   closeChangeCredentialsModal();
   updateNavAuthUI();
+  scheduleAwsRealtimeSync();
 
   if (typeof showToast === "function") {
-    showToast("🔑 Senha criptografada (SHA-256) e dados atualizados!");
+    showToast("🔑 Senha criptografada (SHA-256) e sincronizada!");
   } else {
     alert("Dados e senha criptografada (SHA-256) atualizados com sucesso!");
+  }
+}
+
+let _awsRealtimeTimer = null;
+
+function getAwsConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+  } catch(e) {
+    return {};
+  }
+}
+
+function getAwsEndpointUrl() {
+  const cfg = getAwsConfig();
+  if (cfg.endpoint && cfg.endpoint.trim()) return cfg.endpoint.trim();
+  if (typeof window !== "undefined" && window.ROTEIRO_AWS_ENDPOINT) return window.ROTEIRO_AWS_ENDPOINT;
+  return "";
+}
+
+function updateAwsStorageSizeDisplay() {
+  try {
+    const rawProg = localStorage.getItem("roteiro-ia-v1") || "{}";
+    const rawProj = localStorage.getItem("roteiro_portfolio_projects") || "[]";
+    const kb = Math.max(1, Math.round((rawProg.length + rawProj.length) / 1024));
+    const el = document.getElementById("aws-storage-used-val");
+    if (el) {
+      el.innerHTML = `~${kb} KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span>`;
+    }
+  } catch(e) {}
+}
+
+function scheduleAwsRealtimeSync() {
+  clearTimeout(_awsRealtimeTimer);
+  _awsRealtimeTimer = setTimeout(() => {
+    awsRealtimePushToDynamoDB(true);
+  }, 650);
+}
+
+async function awsRealtimePushToDynamoDB(silent = true) {
+  const endpoint = getAwsEndpointUrl();
+  const nowStr = "Hoje, às " + new Date().toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+  try {
+    localStorage.setItem("roteiro_aws_last_sync", nowStr);
+  } catch(e) {}
+
+  const lastSyncEl = document.getElementById("aws-last-sync-time");
+  if (lastSyncEl) lastSyncEl.textContent = nowStr;
+  updateAwsStorageSizeDisplay();
+
+  const syncInd = document.getElementById("modal-sync-indicator");
+  if (syncInd) syncInd.textContent = endpoint ? "☁️ Sincronizando AWS..." : "💾 Salvo automaticamente";
+
+  if (!endpoint) {
+    if (syncInd) syncInd.textContent = "💾 Salvo automaticamente";
+    return false;
+  }
+
+  const user = getLoggedInUser() || {};
+  let progressObj = {};
+  let projectsArr = [];
+  try { progressObj = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"); } catch(e) {}
+  try { projectsArr = JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]"); } catch(e) {}
+
+  const payload = {
+    user_id: (user.email || "joao@roteiro.ia").toLowerCase(),
+    user_name: user.name || "João Naziozeno",
+    pwd_hash: localStorage.getItem(PASSWORD_HASH_KEY) || "",
+    progress: progressObj,
+    projects: projectsArr,
+    start_date: localStorage.getItem("roteiro-hub-start") || "",
+    pace: localStorage.getItem("roteiro-hub-pace") || "std",
+    updated_at: Date.now()
+  };
+
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const dbBadge = document.getElementById("nav-db-status");
+      if (dbBadge) {
+        dbBadge.className = "nav-status-pill badge-pg";
+        dbBadge.style.background = "#10b981";
+        dbBadge.style.color = "#fff";
+        dbBadge.textContent = "☁️ DynamoDB";
+      }
+      if (syncInd) syncInd.textContent = "☁️ Salvo no DynamoDB (" + new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"}) + ")";
+      if (!silent && typeof showToast === "function") {
+        showToast("☁️ Sincronizado em tempo real com o Amazon DynamoDB!");
+      }
+      return true;
+    }
+  } catch(e) {
+    if (!silent && typeof showToast === "function") {
+      showToast("⚠️ Salvo localmente (verifique a URL da Lambda AWS)");
+    }
+  }
+  if (syncInd) syncInd.textContent = "💾 Salvo localmente";
+  return false;
+}
+
+async function awsRealtimePullFromDynamoDB() {
+  const endpoint = getAwsEndpointUrl();
+  if (!endpoint) return false;
+
+  const user = getLoggedInUser() || {};
+  const userId = (user.email || "joao@roteiro.ia").toLowerCase();
+  const sep = endpoint.includes("?") ? "&" : "?";
+
+  try {
+    const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(userId)}`, { cache: "no-store" });
+    if (!res.ok) return false;
+    const json = await res.json();
+    const dbBadge = document.getElementById("nav-db-status");
+    if (dbBadge) {
+      dbBadge.className = "nav-status-pill badge-pg";
+      dbBadge.style.background = "#10b981";
+      dbBadge.style.color = "#fff";
+      dbBadge.textContent = "☁️ DynamoDB";
+    }
+
+    if (json && json.found && json.data) {
+      const cloud = json.data;
+      if (cloud.pwd_hash) {
+        localStorage.setItem(PASSWORD_HASH_KEY, cloud.pwd_hash);
+      }
+      if (cloud.progress && typeof cloud.progress === "object") {
+        let localPr = {};
+        try { localPr = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"); } catch(e) {}
+        const merged = Object.assign({}, localPr, cloud.progress);
+        localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged));
+        if (typeof PR !== "undefined") {
+          for (const k in merged) PR[k] = merged[k];
+        }
+      }
+      if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
+        localStorage.setItem("roteiro_portfolio_projects", JSON.stringify(cloud.projects));
+      }
+      if (cloud.start_date) localStorage.setItem("roteiro-hub-start", cloud.start_date);
+      if (cloud.pace) localStorage.setItem("roteiro-hub-pace", cloud.pace);
+
+      if (typeof paint === "function") paint();
+      if (typeof renderHubDashboard === "function") renderHubDashboard();
+      if (typeof renderProjects === "function") renderProjects();
+      return true;
+    } else {
+      // Primeiro acesso na nuvem: envia os dados locais atuais para inicializar a tabela no DynamoDB
+      await awsRealtimePushToDynamoDB(true);
+      return true;
+    }
+  } catch(e) {
+    return false;
   }
 }
 
@@ -4057,12 +4219,16 @@ function openAwsSyncModal() {
     
     const lastSyncEl = document.getElementById("aws-last-sync-time");
     if (lastSyncEl) {
+      const savedSync = localStorage.getItem("roteiro_aws_last_sync");
       const now = new Date();
-      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+      lastSyncEl.textContent = savedSync || ("Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"}));
     }
+    updateAwsStorageSizeDisplay();
     
     try {
-      const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+      const cfg = getAwsConfig();
+      const epInput = document.getElementById("aws-cfg-endpoint");
+      if (epInput && cfg.endpoint) epInput.value = cfg.endpoint;
       if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
       if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
       if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
@@ -4079,12 +4245,14 @@ function closeAwsSyncModal() {
   }
 }
 
-function triggerAwsManualSync() {
-  const btn = event?.currentTarget;
+async function triggerAwsManualSync(ev) {
+  const btn = ev?.currentTarget;
   if (btn) {
     btn.disabled = true;
     btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
   }
+  
+  await awsRealtimePushToDynamoDB(false);
   
   setTimeout(() => {
     if (btn) {
@@ -4094,14 +4262,14 @@ function triggerAwsManualSync() {
     const lastSyncEl = document.getElementById("aws-last-sync-time");
     if (lastSyncEl) {
       const now = new Date();
-      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"});
+      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
     }
-    if (typeof showToast === "function") {
-      showToast("☁️ Dados 100% sincronizados com a nuvem AWS com sucesso!");
-    } else {
-      alert("☁️ Dados sincronizados com a nuvem AWS com sucesso!");
+    if (!getAwsEndpointUrl()) {
+      if (typeof showToast === "function") {
+        showToast("💾 Dados salvos! Cole a URL da sua função AWS Lambda abaixo para replicar no DynamoDB.");
+      }
     }
-  }, 900);
+  }, 450);
 }
 
 function exportAwsBackupFile() {
@@ -4134,18 +4302,23 @@ function exportAwsBackupFile() {
   }
 }
 
-function saveAwsConfigParams() {
+async function saveAwsConfigParams() {
   try {
+    const epEl = document.getElementById("aws-cfg-endpoint");
     const cfg = {
+      endpoint: epEl ? epEl.value.trim() : "",
       region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
       table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
       pool: document.getElementById("aws-cfg-pool").value.trim() || ""
     };
     localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
-    if (typeof showToast === "function") {
-      showToast("💾 Configurações da AWS salvas!");
+    if (cfg.endpoint) {
+      await awsRealtimePullFromDynamoDB();
+      await awsRealtimePushToDynamoDB(false);
     } else {
-      alert("Configurações da AWS salvas com sucesso!");
+      if (typeof showToast === "function") {
+        showToast("💾 Configurações da AWS salvas!");
+      }
     }
   } catch(e) {
     alert("Erro ao salvar: " + e.message);
@@ -4154,6 +4327,8 @@ function saveAwsConfigParams() {
 
 window.addEventListener("DOMContentLoaded", () => {
   updateNavAuthUI();
+  updateAwsStorageSizeDisplay();
+  awsRealtimePullFromDynamoDB();
 });
 
 

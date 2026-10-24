@@ -572,6 +572,7 @@ function loadProjects() {{
 function saveProjects() {{
   try {{
     localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(projectsData));
+    if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
   }} catch(e) {{}}
 }}
 
