@@ -2401,12 +2401,15 @@ input:checked + .slider:before { transform: translateX(14px); }
       <div class="aws-cfg-form">
         <div>
           <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">URL de Sincronização AWS Lambda (Function URL HTTPS · Always Free)</label>
-          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" placeholder="Ex: https://xxxxxx.lambda-url.us-east-1.on.aws/">
+          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" placeholder="Ex: https://xxxxxx.lambda-url.us-east-2.on.aws/">
         </div>
+
+        <div id="aws-conn-test-feedback" style="display:none;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5;border:1px solid var(--bd);margin:8px 0"></div>
+
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div>
             <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS</label>
-            <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-1">
+            <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-2">
           </div>
           <div>
             <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
@@ -2415,11 +2418,16 @@ input:checked + .slider:before { transform: translateX(14px); }
         </div>
         <div>
           <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
-          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-1_a1B2c3D4">
+          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-2_a1B2c3D4">
         </div>
-        <button class="aws-btn-sec" style="margin-top:6px;width:100%" onclick="saveAwsConfigParams()">
-          💾 Salvar & Conectar Sincronização Automática
-        </button>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button type="button" class="aws-btn-primary" style="flex:1" onclick="saveAwsConfigParams()">
+            💾 Salvar & Testar Conexão Agora
+          </button>
+          <button type="button" class="aws-btn-sec" onclick="testAwsLambdaConnection()">
+            🧪 Testar
+          </button>
+        </div>
       </div>
     </details>
   </div>
@@ -2812,12 +2820,18 @@ async function awsRealtimePushToDynamoDB(silent = true) {
   };
 
   try {
+    console.log("☁️ [AWS Sync] Enviando dados para:", endpoint, payload);
     const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if (res.ok) {
+
+    const resText = await res.text();
+    let json = null;
+    try { json = JSON.parse(resText); } catch(e) {}
+
+    if (res.ok && json && json.ok) {
       const dbBadge = document.getElementById("nav-db-status");
       if (dbBadge) {
         dbBadge.className = "nav-status-pill badge-pg";
@@ -2829,11 +2843,21 @@ async function awsRealtimePushToDynamoDB(silent = true) {
       if (!silent && typeof showToast === "function") {
         showToast("☁️ Sincronizado em tempo real com o Amazon DynamoDB!");
       }
+      console.log("✅ [AWS Sync] Gravado com sucesso no DynamoDB:", json);
       return true;
+    } else {
+      const errMsg = (json && (json.error || json.hint)) || resText || `HTTP ${res.status}`;
+      console.error("❌ [AWS Sync Error]", errMsg);
+      if (syncInd) syncInd.textContent = "⚠️ Erro de sincronização AWS";
+      if (!silent) {
+        alert("⚠️ Erro ao salvar no DynamoDB pela Lambda:\n\n" + errMsg);
+      }
+      return false;
     }
   } catch(e) {
-    if (!silent && typeof showToast === "function") {
-      showToast("⚠️ Salvo localmente (verifique a URL da Lambda AWS)");
+    console.error("❌ [AWS Sync Network Error]", e);
+    if (!silent) {
+      alert("⚠️ Erro de conexão ou CORS ao acessar a AWS Lambda:\n\n" + e.message + "\n\nVerifique se o Tipo de Autenticação da Function URL é NONE e se o CORS está liberado.");
     }
   }
   if (syncInd) syncInd.textContent = "💾 Salvo localmente";
@@ -2987,19 +3011,127 @@ function exportAwsBackupFile() {
   }
 }
 
+async function testAwsLambdaConnection() {
+  const epEl = document.getElementById("aws-cfg-endpoint");
+  const endpoint = epEl ? epEl.value.trim() : "";
+  const statusEl = document.getElementById("aws-conn-test-feedback");
+
+  if (!endpoint) {
+    if (statusEl) {
+      statusEl.style.display = "block";
+      statusEl.style.background = "rgba(239,68,68,.12)";
+      statusEl.style.borderColor = "rgba(239,68,68,.35)";
+      statusEl.style.color = "#ef4444";
+      statusEl.innerHTML = "⚠️ <b>Cole a URL da função AWS Lambda</b> no campo acima antes de testar.";
+    }
+    return false;
+  }
+
+  // Auto-detectar região da URL
+  const regMatch = endpoint.match(/lambda-url\.([a-z0-9-]+)\.on\.aws/);
+  if (regMatch && regMatch[1]) {
+    const regInput = document.getElementById("aws-cfg-region");
+    if (regInput) regInput.value = regMatch[1];
+  }
+
+  if (statusEl) {
+    statusEl.style.display = "block";
+    statusEl.style.background = "rgba(79,70,229,.1)";
+    statusEl.style.borderColor = "rgba(79,70,229,.35)";
+    statusEl.style.color = "var(--ac)";
+    statusEl.innerHTML = "⏳ <b>Testando conexão com AWS Lambda e DynamoDB...</b>";
+  }
+
+  const user = getLoggedInUser() || {};
+  const userId = (user.email || "joao@roteiro.ia").toLowerCase();
+  const sep = endpoint.includes("?") ? "&" : "?";
+
+  try {
+    const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(userId)}&test=1`, { cache: "no-store" });
+    const text = await res.text();
+    let json = null;
+    try { json = JSON.parse(text); } catch(e) {}
+
+    if (text.includes("Hello from Lambda!")) {
+      if (statusEl) {
+        statusEl.style.background = "rgba(245,158,11,.14)";
+        statusEl.style.borderColor = "rgba(245,158,11,.45)";
+        statusEl.style.color = "#f59e0b";
+        statusEl.innerHTML = "⚠️ <b>Código padrão da AWS detectado!</b> A sua função Lambda ainda está rodando o código de exemplo inicial da AWS (<i>Hello from Lambda!</i>).<br><br>👉 <b>Como corrigir:</b> Abra o painel da sua função Lambda na AWS, vá na aba <b>Código (Code)</b>, apague o que estiver lá, cole todo o código do arquivo <code>aws_lambda_dynamodb.py</code> e clique no botão azul <b>Deploy</b>!";
+      }
+      return false;
+    }
+
+    if (res.status === 403 || text.includes("Forbidden")) {
+      if (statusEl) {
+        statusEl.style.background = "rgba(239,68,68,.12)";
+        statusEl.style.borderColor = "rgba(239,68,68,.35)";
+        statusEl.style.color = "#ef4444";
+        statusEl.innerHTML = "⚠️ <b>Erro 403 Forbidden!</b> A sua Function URL está exigindo autenticação AWS IAM.<br><br>👉 <b>Como corrigir:</b> Na página da sua Lambda na AWS, vá em <b>Configuração ➔ URL da função ➔ Editar</b> e altere <b>Tipo de autenticação</b> para <b>NONE</b>.";
+      }
+      return false;
+    }
+
+    if (!res.ok || (json && json.ok === false)) {
+      const errMsg = (json && json.error) || text;
+      const hint = (json && json.hint) || "";
+      if (statusEl) {
+        statusEl.style.background = "rgba(239,68,68,.12)";
+        statusEl.style.borderColor = "rgba(239,68,68,.35)";
+        statusEl.style.color = "#ef4444";
+        statusEl.innerHTML = `⚠️ <b>Erro na AWS (${res.status}):</b> ${errMsg}${hint ? `<br><br>💡 <b>Dica:</b> ${hint}` : ""}`;
+      }
+      return false;
+    }
+
+    if (json && json.ok) {
+      const pushed = await awsRealtimePushToDynamoDB(true);
+      if (statusEl) {
+        statusEl.style.background = "rgba(16,185,129,.14)";
+        statusEl.style.borderColor = "rgba(16,185,129,.4)";
+        statusEl.style.color = "#10b981";
+        statusEl.innerHTML = `✅ <b>Conexão 100% Ativa e Funcionando!</b><br>• Tabela DynamoDB: <code>${json.table || "roteiro_estudos_joao"}</code><br>• Região identificada: <code>${json.region || "AWS"}</code><br>• Status: Seus dados locais foram enviados e gravados no DynamoDB agora mesmo! Atualize a tela do DynamoDB na AWS para ver os dados.`;
+      }
+      if (typeof showToast === "function") {
+        showToast("☁️ Conectado com sucesso ao Amazon DynamoDB!");
+      }
+      return true;
+    }
+
+    if (statusEl) {
+      statusEl.innerHTML = `⚠️ Resposta inesperada da Lambda: ${text.slice(0, 160)}`;
+    }
+    return false;
+  } catch(err) {
+    if (statusEl) {
+      statusEl.style.background = "rgba(239,68,68,.12)";
+      statusEl.style.borderColor = "rgba(239,68,68,.35)";
+      statusEl.style.color = "#ef4444";
+      statusEl.innerHTML = `⚠️ <b>Falha ao conectar na URL:</b> ${err.message}<br><br>👉 Verifique se marcou a caixinha <b>Configurar CORS</b> na Function URL da Lambda com <i>Allow Origin = *</i> e <i>Allow Methods = GET, POST, OPTIONS</i>.`;
+    }
+    return false;
+  }
+}
+
 async function saveAwsConfigParams() {
   try {
     const epEl = document.getElementById("aws-cfg-endpoint");
+    const endpoint = epEl ? epEl.value.trim() : "";
+    const regMatch = endpoint.match(/lambda-url\.([a-z0-9-]+)\.on\.aws/);
+    const detectedRegion = (regMatch && regMatch[1]) || document.getElementById("aws-cfg-region").value.trim() || "us-east-2";
+
     const cfg = {
-      endpoint: epEl ? epEl.value.trim() : "",
-      region: document.getElementById("aws-cfg-region").value.trim() || "us-east-1",
+      endpoint: endpoint,
+      region: detectedRegion,
       table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
       pool: document.getElementById("aws-cfg-pool").value.trim() || ""
     };
     localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
+    const regInput = document.getElementById("aws-cfg-region");
+    if (regInput) regInput.value = detectedRegion;
+
     if (cfg.endpoint) {
-      await awsRealtimePullFromDynamoDB();
-      await awsRealtimePushToDynamoDB(false);
+      await testAwsLambdaConnection();
     } else {
       if (typeof showToast === "function") {
         showToast("💾 Configurações da AWS salvas!");
