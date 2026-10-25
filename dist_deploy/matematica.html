@@ -3536,7 +3536,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
       <div class="aws-cfg-form">
         <div>
           <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">URL de Sincronização AWS Lambda (Function URL HTTPS · Always Free)</label>
-          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" placeholder="Ex: https://xxxxxx.lambda-url.us-east-2.on.aws/">
+          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" value="https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/">
         </div>
 
         <div id="aws-conn-test-feedback" style="display:none;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5;border:1px solid var(--bd);margin:8px 0"></div>
@@ -3819,21 +3819,30 @@ async function handleSaveNewCredentials(e) {
   }
 }
 
+const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/";
 let _awsRealtimeTimer = null;
 
 function getAwsConfig() {
   try {
-    return JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}");
+    const raw = localStorage.getItem(AWS_CONFIG_KEY);
+    let cfg = raw ? JSON.parse(raw) : {};
+    // Auto-corrigir se o endpoint estiver vazio ou contiver o erro de digitação anterior (rwwcq em vez de rwweq)
+    if (!cfg.endpoint || cfg.endpoint.includes("rwwcq")) {
+      cfg.endpoint = OFFICIAL_LAMBDA_URL;
+      cfg.region = "us-east-2";
+      cfg.table = "roteiro_estudos_joao";
+      try { localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg)); } catch(e) {}
+    }
+    return cfg;
   } catch(e) {
-    return {};
+    return { endpoint: OFFICIAL_LAMBDA_URL, region: "us-east-2", table: "roteiro_estudos_joao" };
   }
 }
 
 function getAwsEndpointUrl() {
   const cfg = getAwsConfig();
   if (cfg.endpoint && cfg.endpoint.trim()) return cfg.endpoint.trim();
-  if (typeof window !== "undefined" && window.ROTEIRO_AWS_ENDPOINT) return window.ROTEIRO_AWS_ENDPOINT;
-  return "";
+  return OFFICIAL_LAMBDA_URL;
 }
 
 function updateAwsStorageSizeDisplay() {
