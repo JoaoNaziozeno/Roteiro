@@ -424,6 +424,15 @@ function closeNoteModal() {
   const iframe = document.getElementById("modal-video-iframe");
   if (iframe) iframe.src = "";
 
+  // Registrar tempo da sessão de estudo
+  try {
+    if (CURRENT_MODAL_TOPIC_ID && sessionSeconds >= 20) {
+      const l = JSON.parse(localStorage.getItem("roteiro-sessions-v1") || "[]");
+      l.push({ t: Date.now(), id: CURRENT_MODAL_TOPIC_ID, sec: sessionSeconds });
+      localStorage.setItem("roteiro-sessions-v1", JSON.stringify(l.slice(-2000)));
+    }
+  } catch(e) {}
+
   // Parar timer de sessão
   clearInterval(studySessionTimer);
   studySessionTimer = null;
@@ -699,6 +708,7 @@ function syncSessionStudyProgressUI() {
 
     // Só conclui o tópico automaticamente quando totalPct chega a 100%
     if (totalPct >= 100 && curStatus !== "e") {
+      window.__evSrc = "auto";
       PR[topicId].s = "e";
       updateModalStatusBtn("e");
       saveLocal();
@@ -785,7 +795,7 @@ function initStudySessionTimer(topicId) {
   syncSessionStudyProgressUI();
 
   studySessionTimer = setInterval(() => {
-    sessionSeconds++;
+    if (document.visibilityState === "visible") sessionSeconds++;
     if (ytDuration === 0) {
       sendYoutubeListeningHandshake();
     }
@@ -797,6 +807,7 @@ function initStudySessionTimer(topicId) {
 // Botão rápido de concluir tópico agora (100% manual)
 function markTopicCompleteNow() {
   if (!CURRENT_MODAL_TOPIC_ID) return;
+  window.__evSrc = "manual";
   if (!PR[CURRENT_MODAL_TOPIC_ID]) PR[CURRENT_MODAL_TOPIC_ID] = { s: "z", n: "", d: "" };
   PR[CURRENT_MODAL_TOPIC_ID].s = "e";
   PR[CURRENT_MODAL_TOPIC_ID].vp = 100;

@@ -896,9 +896,30 @@ function loadLocal() {
   } catch(e) {}
 }
 
+function diffAndLogEvents(){
+  try{
+    const cur = {}; for (const k in PR) cur[k] = PR[k].s || "z";
+    const raw = localStorage.getItem("roteiro-snap-v1");
+    if (!raw){
+      localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur));
+      localStorage.setItem("roteiro-log-start", String(Date.now()));
+      return;
+    }
+    const snap = JSON.parse(raw), now = Date.now(), ev = [];
+    for (const k in cur){ const f = snap[k] || "z"; if (f !== cur[k]) ev.push({t:now, id:k, f, to:cur[k]}); }
+    if (!ev.length) return;
+    const src = window.__evSrc || (ev.length > 5 ? "bulk" : "ui"); window.__evSrc = null;
+    ev.forEach(e => e.src = src);
+    const log = JSON.parse(localStorage.getItem("roteiro-events-v1") || "[]").concat(ev).slice(-5000);
+    localStorage.setItem("roteiro-events-v1", JSON.stringify(log));
+    localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur));
+  }catch(e){}
+}
+
 function saveLocal() {
   try {
     localStorage.setItem(KEY, JSON.stringify(PR));
+    diffAndLogEvents();
     if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
   } catch(e) {}
 }

@@ -3042,6 +3042,34 @@ input:checked + .slider:before { transform: translateX(14px); }
 .market-stat-num{font-size:1.4rem;font-weight:850;color:var(--ac);display:block;margin-bottom:3px}
 .market-stat-lbl{font-size:.82rem;color:var(--tx);font-weight:600}
 
+.jr-sect{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:24px 26px;margin-bottom:36px;box-shadow:0 14px 40px rgba(0,0,0,.06)}
+.jr-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:14px 0}
+.jr-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
+.jr-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+@media(max-width:980px){.jr-grid{grid-template-columns:1fr}}
+.jr-col{display:flex;flex-direction:column;gap:16px}
+.jr-card{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px 18px}
+.jr-h{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:0 0 10px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.jr-big{font-size:1.5rem;font-weight:850;color:var(--tx);line-height:1.15}
+.jr-sub{font-size:.78rem;color:var(--mu);line-height:1.45;margin-top:4px}
+.jr-bar{height:9px;background:var(--bd);border-radius:99px;overflow:hidden;position:relative}
+.jr-bar>i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.jr-bar>i.s{background:rgba(79,70,229,.35);position:absolute;left:0;top:0}
+.jr-bar>i.w{background:linear-gradient(90deg,#10b981,#06b6d4);position:absolute;left:0;top:0}
+.jr-row{display:flex;justify-content:space-between;gap:8px;font-size:.78rem;font-weight:700;color:var(--tx);margin:10px 0 4px}
+.jr-svg{width:100%;height:auto;display:block}
+.jr-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:.72rem;font-weight:700;color:var(--mu);margin-top:6px}
+.jr-chip{font-size:.7rem;font-weight:800;padding:2px 9px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--mu)}
+.jr-list{margin:0;padding:0;list-style:none;font-size:.8rem;display:flex;flex-direction:column;gap:6px}
+.jr-list li{display:flex;justify-content:space-between;gap:8px;color:var(--tx)}
+.jr-list li span:last-child{color:var(--mu);font-weight:700}
+.speed-diagnosis-card.pace-attn{background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);color:#b77f00}
+.speed-diagnosis-card.pace-late{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.35);color:#c2410c}
+.speed-diagnosis-card.pace-nodata{background:var(--bg);border:1px solid var(--bd);color:var(--mu)}
+.jr-weights input{width:62px;font:inherit;font-size:.8rem;padding:4px 6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.jr-weights{margin-bottom:14px;font-size:.8rem;color:var(--mu)}
+.jr-weights summary{cursor:pointer;font-weight:750;color:var(--tx)}
+
 </style>
 </head>
 <body>
@@ -3136,448 +3164,100 @@ input:checked + .slider:before { transform: translateX(14px); }
   <!-- =======================================================================
        COCKPIT NEURAL DE TELEMETRIA 360°, VELOCÍMETRO SVG & SIMULADOR PREDITIVO
        ======================================================================= -->
-  <section class="speedometer-sect" id="hub-tracker-sect">
-    <!-- CABEÇALHO DO COCKPIT & METAS DE PRAZO -->
-    <div class="speed-head">
+  <section class="jr-sect" id="hub-tracker-sect">
+    <div class="speed-head" style="margin-bottom:0">
       <div class="speed-title-wrap">
-        <div class="speed-title-icon" id="global-icon">🎛️</div>
+        <div class="speed-title-icon" id="global-icon">🧭</div>
         <div>
-          <div class="speed-title">
-            <span>Cockpit Neural de Telemetria & Ritmo Global</span>
-            <span class="nav-status-pill" id="global-badge" style="font-size:.73rem;padding:3px 10px">Sincronizado</span>
-          </div>
-          <div class="speed-subtitle" id="global-desc">
-            Monitoramento unificado em tempo real: 289 tópicos (IA, Matemática, Inglês) + 6 Projetos de Portfólio
-          </div>
+          <div class="speed-title">A Jornada <span class="nav-status-pill" id="global-badge">Esforço real, não só contagem</span></div>
+          <div class="speed-subtitle">De onde você começou, onde está e o que falta, medido em esforço.</div>
         </div>
       </div>
-
       <div class="speed-presets-wrap">
         <span style="font-size:.74rem;font-weight:800;color:var(--mu);padding:0 6px">Meta:</span>
-        <button class="speed-preset-btn" id="btn-pace-sprint" onclick="setHubPace('sprint')" title="Sprint intensivo de 4 meses (120 dias)">⚡ Ultra (4m)</button>
-        <button class="speed-preset-btn active" id="btn-pace-optimistic" onclick="setHubPace('optimistic')" title="Ritmo acelerado focado de 6 meses (180 dias)">🚀 Otimista (6m)</button>
-        <button class="speed-preset-btn" id="btn-pace-standard" onclick="setHubPace('standard')" title="Ritmo equilibrado sustentável de 14 meses (420 dias)">🎯 Equilibrado (14m)</button>
+        <button class="speed-preset-btn" id="btn-pace-none" onclick="setHubPace('none')">Sem meta</button>
+        <button class="speed-preset-btn" id="btn-pace-sprint" onclick="setHubPace('sprint')">⚡ 4 meses</button>
+        <button class="speed-preset-btn active" id="btn-pace-optimistic" onclick="setHubPace('optimistic')">🚀 6 meses</button>
+        <button class="speed-preset-btn" id="btn-pace-standard" onclick="setHubPace('standard')">🎯 14 meses</button>
       </div>
     </div>
 
-    <!-- BARRA DE FERRAMENTAS DO COCKPIT: SELETOR DE VISÃO + DATA DE INÍCIO + TEST-DRIVE -->
-    <div class="cockpit-toolbar">
-      <div class="cockpit-view-tabs">
-        <button class="cockpit-tab-btn active" id="ctab-all" onclick="setCockpitView('all')">🚀 Cockpit 360° (Completo)</button>
-        <button class="cockpit-tab-btn" id="ctab-gauge" onclick="setCockpitView('gauge')">🏎️ Tacômetro & Anéis</button>
-        <button class="cockpit-tab-btn" id="ctab-chart" onclick="setCockpitView('chart')">📈 Curva Burn-Up & "E Se?"</button>
-        <button class="cockpit-tab-btn" id="ctab-radar" onclick="setCockpitView('radar')">🏆 Patentes & Radar</button>
-      </div>
-
+    <div class="jr-toolbar">
       <div class="speed-date-inputs">
         <label for="hub-start-date">📅 Início:</label>
         <input type="date" id="hub-start-date" class="speed-date-input" onchange="onStartDateChange(this.value)">
-        <button class="speed-reset-btn" onclick="resetStartDateToday()" title="Redefinir data de início para hoje">Hoje</button>
-        <button class="speed-demo-btn" id="btn-toggle-demo" onclick="toggleTelemetryDemo()" title="Simular avanço para testar o velocímetro e gráficos sem alterar seus dados reais">🧪 Testar Simulador</button>
+        <button class="speed-reset-btn" onclick="resetStartDateToday()">Hoje</button>
       </div>
+      <details class="jr-weights">
+        <summary>⚖️ Pesos de esforço por trilha</summary>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <label>IA <input type="number" id="w-ia" min="0.5" max="10" step="0.5" value="1"></label>
+          <label>Matemática <input type="number" id="w-mat" min="0.5" max="10" step="0.5" value="1"></label>
+          <label>Inglês <input type="number" id="w-ing" min="0.5" max="10" step="0.5" value="1"></label>
+          <button class="speed-reset-btn" onclick="saveWeights()">Aplicar</button>
+        </div>
+        <div style="margin-top:6px">Peso 1 = um tópico "padrão". Um tópico de peso 3 conta como 3 tópicos de esforço. Valores definidos por você, não verdades absolutas.</div>
+      </details>
     </div>
 
-    <!-- GAVETA EXPANSÍVEL DO MODO TEST-DRIVE (NÃO ALTERA OS DADOS REAIS DO ALUNO) -->
-    <div class="cockpit-demo-drawer" id="cockpit-demo-drawer">
-      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px">
-        <div style="font-size:.82rem;font-weight:800;color:#06b6d4;display:flex;align-items:center;gap:6px">
-          <span>🧪 Modo Simulação Interativa Ativo</span>
-          <span style="font-size:.74rem;font-weight:600;color:var(--mu)">(Arraste os controles para ver o Cockpit reagir — seu progresso real permanece intacto!)</span>
-        </div>
-        <button class="speed-reset-btn" onclick="toggleTelemetryDemo()" style="border-color:#06b6d4;color:#06b6d4">✕ Voltar aos Dados Reais</button>
-      </div>
-      <div class="cockpit-demo-grid">
-        <div class="cockpit-demo-ctrl">
-          <label><span>🤖 IA Concluídos:</span> <span id="demo-lbl-ia" style="color:var(--ac)">72 / 173</span></label>
-          <input type="range" id="demo-rng-ia" min="0" max="173" value="72" oninput="calcAndPaint()">
-        </div>
-        <div class="cockpit-demo-ctrl">
-          <label><span>📐 Matemática:</span> <span id="demo-lbl-mat" style="color:#f59e0b">21 / 43</span></label>
-          <input type="range" id="demo-rng-mat" min="0" max="43" value="21" oninput="calcAndPaint()">
-        </div>
-        <div class="cockpit-demo-ctrl">
-          <label><span>🇺🇸 Inglês:</span> <span id="demo-lbl-ing" style="color:#10b981">38 / 73</span></label>
-          <input type="range" id="demo-rng-ing" min="0" max="73" value="38" oninput="calcAndPaint()">
-        </div>
-        <div class="cockpit-demo-ctrl">
-          <label><span>⏱️ Dias Decorridos:</span> <span id="demo-lbl-days" style="color:#06b6d4">68 dias</span></label>
-          <input type="range" id="demo-rng-days" min="1" max="300" value="68" oninput="calcAndPaint()">
-        </div>
-      </div>
+    <div class="speed-diagnosis-card pace-nodata" id="jr-banner">
+      <div id="jr-banner-text" style="flex:1">Carregando seus dados…</div>
+      <span class="speed-diag-badge" id="jr-banner-badge">…</span>
     </div>
 
-    <!-- DIAGNÓSTICO DINÂMICO AO VIVO -->
-    <div class="speed-diagnosis-card pace-ontrack" id="hub-diagnosis-card">
-      <div id="hub-diagnosis-text" style="flex:1">Calculando telemetria de estudo...</div>
-      <span class="speed-diag-badge" id="hub-diagnosis-badge">⏱️ Calculando</span>
-    </div>
-
-    <!-- =====================================================================
-         MÓDULO 1: TACÔMETRO CURVO SVG 270° + ANÉIS CONCÊNTRICOS + KPIs
-         ===================================================================== -->
-    <div class="cockpit-main-grid" id="cockpit-mod-gauge">
-      <!-- PAINEL 1: TACÔMETRO SVG EM ARCO -->
-      <div class="cockpit-panel">
-        <div class="cockpit-panel-head">
-          <span class="cockpit-panel-title">🏎️ Tacômetro de Velocidade</span>
-          <span class="speed-gauge-multiplier" id="hub-speed-multiplier">1.0x Ritmo Alvo</span>
-        </div>
-
-        <div class="tachometer-svg-wrap">
-          <svg width="250" height="168" viewBox="0 0 280 190">
-            <defs>
-              <linearGradient id="hubGaugeGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#f43f5e" />
-                <stop offset="30%" stop-color="#f59e0b" />
-                <stop offset="55%" stop-color="#10b981" />
-                <stop offset="80%" stop-color="#06b6d4" />
-                <stop offset="100%" stop-color="#8b5cf6" />
-              </linearGradient>
-              <filter id="hubGaugeGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feGaussianBlur stdDeviation="3.5" result="blur" />
-                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-              </filter>
-            </defs>
-
-            <!-- Trilha de Fundo do Arco -->
-            <path d="M 35 155 A 110 110 0 1 1 245 155" fill="none" stroke="var(--bd)" stroke-width="18" stroke-linecap="round" />
-
-            <!-- Arco Preenchido Dinâmico -->
-            <path id="hub-gauge-arc" d="M 35 155 A 110 110 0 1 1 245 155" fill="none" stroke="url(#hubGaugeGrad)" stroke-width="18" stroke-linecap="round" stroke-dasharray="395" stroke-dashoffset="395" filter="url(#hubGaugeGlow)" style="transition: stroke-dashoffset .65s ease;" />
-
-            <!-- Escala do Velocímetro -->
-            <text x="14" y="176" fill="var(--mu)" font-size="10" font-weight="800">0.0x</text>
-            <text x="32" y="68" fill="#f59e0b" font-size="10" font-weight="800">0.5x</text>
-            <text x="114" y="21" fill="#10b981" font-size="11" font-weight="900">1.0x META</text>
-            <text x="220" y="68" fill="#06b6d4" font-size="10" font-weight="800">1.5x</text>
-            <text x="234" y="176" fill="#8b5cf6" font-size="10" font-weight="900">2.0x+</text>
-
-            <!-- Ponteiro (Needle) -->
-            <g id="hub-gauge-needle" class="tachometer-needle" style="transform: rotate(-115deg);">
-              <polygon points="136,140 144,140 140,42" fill="var(--tx)" />
-              <circle cx="140" cy="140" r="11" fill="var(--ac)" stroke="var(--card)" stroke-width="3" />
-            </g>
-          </svg>
-
-          <div class="tachometer-readout">
-            <div class="tachometer-big-val" id="hub-val-speed">0.0 /sem</div>
-            <div class="tachometer-sub-val" id="hub-sub-speed">0.0 tópicos/dia</div>
-          </div>
-        </div>
-
-        <div class="tachometer-mini-row">
-          <div class="tachometer-mini-box">
-            <div class="tachometer-mini-lbl">⚡ Ritmo Diário Real</div>
-            <div class="tachometer-mini-num" id="hub-daily-real" style="color:#10b981">0.00 /dia</div>
-          </div>
-          <div class="tachometer-mini-box">
-            <div class="tachometer-mini-lbl">🎯 Velocidade Alvo</div>
-            <div class="tachometer-mini-num" id="hub-val-target-speed" style="color:var(--ac)">11.2 /sem</div>
-          </div>
+    <div class="jr-grid">
+      <div class="jr-card">
+        <div class="jr-h"><span>📈 Sua evolução acumulada</span><span class="jr-chip" id="jr-chart-chip">esforço (pontos)</span></div>
+        <div id="jr-chart"></div>
+        <div class="jr-leg">
+          <span style="color:#6366f1">┄ Plano da meta</span><span style="color:#10b981">━ Realizado</span>
+          <span style="color:#06b6d4">▨ Faixa de previsão</span><span>· trecho claro = antes do início do registro</span>
         </div>
       </div>
-
-      <!-- PAINEL 2: ANÉIS CONCÊNTRICOS DE SINERGIA (4 TRILHAS) -->
-      <div class="cockpit-panel">
-        <div class="cockpit-panel-head">
-          <span class="cockpit-panel-title">🎯 Anéis de Sinergia Multi-Trilha</span>
-          <span class="speed-gauge-multiplier" id="global-xp-text" style="background:rgba(16,185,129,.14);color:#10b981;border-color:rgba(16,185,129,.3)">0 / 289 (0%)</span>
+      <div class="jr-col">
+        <div class="jr-card">
+          <div class="jr-h"><span>🎯 Progresso</span></div>
+          <div class="jr-row"><span>Ponderado (esforço)</span><span id="jr-wpct">0%</span></div>
+          <div class="jr-bar"><i class="w" id="jr-wbar" style="width:0%"></i></div>
+          <div class="jr-row"><span>Estrutural (tópicos)</span><span id="jr-spct">0%</span></div>
+          <div class="jr-bar"><i class="s" id="jr-sbar" style="width:0%"></i></div>
+          <div class="jr-sub" id="jr-explain"></div>
         </div>
-
-        <div class="rings-layout">
-          <div class="rings-svg-box">
-            <svg width="164" height="164" viewBox="0 0 170 170">
-              <!-- Anel 1: IA (r=72, circ=452.4) -->
-              <circle cx="85" cy="85" r="72" fill="none" stroke="var(--bd)" stroke-width="10" />
-              <circle id="ring-svg-ia" class="ring-progress-circle" cx="85" cy="85" r="72" fill="none" stroke="#6366f1" stroke-width="10" stroke-linecap="round" stroke-dasharray="452.4" stroke-dashoffset="452.4" />
-
-              <!-- Anel 2: Matemática (r=57, circ=358.1) -->
-              <circle cx="85" cy="85" r="57" fill="none" stroke="var(--bd)" stroke-width="10" />
-              <circle id="ring-svg-mat" class="ring-progress-circle" cx="85" cy="85" r="57" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="round" stroke-dasharray="358.1" stroke-dashoffset="358.1" />
-
-              <!-- Anel 3: Inglês (r=42, circ=263.9) -->
-              <circle cx="85" cy="85" r="42" fill="none" stroke="var(--bd)" stroke-width="10" />
-              <circle id="ring-svg-ing" class="ring-progress-circle" cx="85" cy="85" r="42" fill="none" stroke="#10b981" stroke-width="10" stroke-linecap="round" stroke-dasharray="263.9" stroke-dashoffset="263.9" />
-
-              <!-- Anel 4: Projetos (r=27, circ=169.6) -->
-              <circle cx="85" cy="85" r="27" fill="none" stroke="var(--bd)" stroke-width="8" />
-              <circle id="ring-svg-proj" class="ring-progress-circle" cx="85" cy="85" r="27" fill="none" stroke="#ec4899" stroke-width="8" stroke-linecap="round" stroke-dasharray="169.6" stroke-dashoffset="169.6" />
-            </svg>
-            <div class="rings-center-label">
-              <div class="rings-center-num" id="ring-center-pct">0%</div>
-              <div class="rings-center-sub">GLOBAL</div>
-            </div>
-          </div>
-
-          <div class="rings-legend-list">
-            <a href="ia.html" class="rings-legend-item">
-              <span style="font-weight:800;color:#6366f1">🤖 IA & Código</span>
-              <span id="ring-leg-ia" style="font-weight:800;color:var(--mu)">0/173 (0%)</span>
-            </a>
-            <a href="matematica.html" class="rings-legend-item">
-              <span style="font-weight:800;color:#f59e0b">📐 Matemática</span>
-              <span id="ring-leg-mat" style="font-weight:800;color:var(--mu)">0/43 (0%)</span>
-            </a>
-            <a href="ingles.html" class="rings-legend-item">
-              <span style="font-weight:800;color:#10b981">🇺🇸 Inglês</span>
-              <span id="ring-leg-ing" style="font-weight:800;color:var(--mu)">0/73 (0%)</span>
-            </a>
-            <a href="projetos.html" class="rings-legend-item">
-              <span style="font-weight:800;color:#ec4899">🛠️ Projetos</span>
-              <span id="ring-leg-proj" style="font-weight:800;color:var(--mu)">0/6 (0%)</span>
-            </a>
-          </div>
-        </div>
-
-        <div style="margin-top:8px">
-          <div style="display:flex;justify-content:space-between;font-size:.73rem;font-weight:750;color:var(--mu);margin-bottom:4px">
-            <span>Progresso Unificado da Carreira</span>
-            <span id="hub-sub-target-speed">Meta de 6 meses (180 dias)</span>
-          </div>
-          <div class="comp-bar-track" style="height:7px">
-            <div id="global-xp-fill" class="comp-bar-fill-real" style="width:0%"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PAINEL 3: COLUNA DE KPIs PREDITIVOS -->
-      <div class="cockpit-kpi-col">
-        <div class="speed-metric-box">
-          <span class="speed-metric-lbl">📅 Previsão de Formatura</span>
-          <span class="speed-metric-val" id="hub-val-forecast">--/--/----</span>
-          <span class="speed-metric-sub" id="hub-sub-forecast">no seu ritmo atual</span>
-        </div>
-
-        <div class="speed-metric-box">
-          <span class="speed-metric-lbl">📊 Saldo vs Meta Hoje</span>
-          <span class="speed-metric-val" id="hub-val-delta">0 tópicos</span>
-          <span class="speed-metric-sub" id="hub-sub-delta">Esperado hoje: 0 de 289</span>
-        </div>
-
-        <div class="speed-metric-box">
-          <span class="speed-metric-lbl">⏳ Prazo Limite da Meta</span>
-          <span class="speed-metric-val" id="hub-val-deadline">--/--/----</span>
-          <span class="speed-metric-sub" id="hub-sub-daysleft">0 dias restantes</span>
+        <div class="jr-card">
+          <div class="jr-h"><span>🏁 Previsão de conclusão</span><span class="jr-chip" id="jr-conf">–</span></div>
+          <div class="jr-big" id="jr-fc-main">–</div>
+          <div class="jr-sub" id="jr-fc-sub"></div>
         </div>
       </div>
     </div>
 
-    <!-- =====================================================================
-         MÓDULO 2: CURVA PREDITIVA BURN-UP EM SVG + SIMULADOR "E SE?"
-         ===================================================================== -->
-    <div class="cockpit-chart-grid" id="cockpit-mod-chart">
-      <!-- GRÁFICO BURN-UP DE TRAJETÓRIA -->
-      <div class="cockpit-panel">
-        <div class="cockpit-panel-head">
-          <span class="cockpit-panel-title">📈 Curva Preditiva Burn-Up (Trajetória Real vs Meta)</span>
-          <div style="display:flex;gap:10px;font-size:.7rem;font-weight:750;color:var(--mu)">
-            <span style="color:#6366f1">● Meta Ideal</span>
-            <span style="color:#10b981">● Seu Avanço</span>
-            <span style="color:#06b6d4">◌ Projeção</span>
-          </div>
-        </div>
-
-        <svg viewBox="0 0 520 165" class="burnup-svg">
-          <line x1="38" y1="18" x2="495" y2="18" stroke="var(--bd)" stroke-dasharray="3 3" />
-          <line x1="38" y1="76" x2="495" y2="76" stroke="var(--bd)" stroke-dasharray="3 3" />
-          <line x1="38" y1="135" x2="495" y2="135" stroke="var(--bd)" stroke-width="1.5" />
-
-          <text x="4" y="22" fill="var(--mu)" font-size="10" font-weight="700">289</text>
-          <text x="4" y="80" fill="var(--mu)" font-size="10" font-weight="700">145</text>
-          <text x="16" y="139" fill="var(--mu)" font-size="10" font-weight="700">0</text>
-
-          <text x="38" y="155" fill="var(--mu)" font-size="10" font-weight="700">Início (Dia 0)</text>
-          <text id="burnup-lbl-target" x="425" y="155" fill="var(--ac)" font-size="10" font-weight="800">Meta (180d)</text>
-
-          <!-- Linha da Meta Ideal -->
-          <line x1="38" y1="135" x2="465" y2="18" stroke="#6366f1" stroke-width="2" stroke-opacity="0.6" />
-
-          <!-- Linha Pontilhada de Projeção Futura -->
-          <line id="burnup-line-proj" x1="38" y1="135" x2="465" y2="18" stroke="#06b6d4" stroke-width="2.2" stroke-dasharray="5 5" />
-
-          <!-- Linha Sólida de Avanço Real -->
-          <line id="burnup-line-real" x1="38" y1="135" x2="38" y2="135" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" />
-
-          <!-- Ponto Hoje -->
-          <circle id="burnup-dot-today" cx="38" cy="135" r="6" fill="#10b981" stroke="var(--card)" stroke-width="2" />
-          <text id="burnup-txt-today" x="45" y="125" fill="var(--tx)" font-size="10" font-weight="800">Hoje (0)</text>
-
-          <!-- Ponto Formatura Projetada -->
-          <circle id="burnup-dot-grad" cx="465" cy="18" r="5" fill="#06b6d4" />
-        </svg>
-
-        <!-- Barras Comparativas Compactas -->
-        <div class="comp-bars-mini">
-          <div>
-            <div class="comp-bar-head">
-              <span>🟢 Progresso Real:</span>
-              <span id="hub-comp-txt-real">0 de 289 (0%)</span>
-            </div>
-            <div class="comp-bar-track">
-              <div class="comp-bar-fill-real" id="hub-comp-fill-real" style="width:0%"></div>
-            </div>
-          </div>
-          <div>
-            <div class="comp-bar-head">
-              <span>🎯 Esperado Hoje:</span>
-              <span id="hub-comp-txt-target">0 de 289 (0%)</span>
-            </div>
-            <div class="comp-bar-track">
-              <div class="comp-bar-fill-target" id="hub-comp-fill-target" style="width:0%"></div>
-            </div>
-          </div>
-        </div>
+    <div class="jr-grid3">
+      <div class="jr-card">
+        <div class="jr-h"><span>⚡ Ritmo e tempo</span></div>
+        <div class="jr-big" id="jr-pace">–</div>
+        <div class="jr-sub" id="jr-pace-sub"></div>
+        <div class="jr-sub" id="jr-time" style="margin-top:8px"></div>
       </div>
-
-      <!-- SIMULADOR INTERATIVO "E SE?" (WHAT-IF PACE PLANNER) -->
-      <div class="whatif-panel">
-        <div>
-          <div class="cockpit-panel-head">
-            <span class="cockpit-panel-title" style="color:var(--ac)">🧪 Simulador Preditivo "E Se?"</span>
-            <span style="font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(6,182,212,.15);color:#06b6d4">Planejador</span>
-          </div>
-          <div style="font-size:.78rem;color:var(--mu);line-height:1.45">
-            Descubra exatamente quando você se formará se mantiver um ritmo específico daqui para frente:
-          </div>
-
-          <div class="whatif-slider-box">
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:.8rem;font-weight:800">
-              <span style="color:var(--mu)">Se eu concluir:</span>
-              <span id="whatif-lbl-rate" style="color:#06b6d4;font-size:.95rem">12 tópicos / semana</span>
-            </div>
-            <input type="range" id="hub-whatif-slider" min="3" max="35" value="12" oninput="updateHubWhatIf()">
-            <div style="display:flex;justify-content:space-between;font-size:.68rem;font-weight:700;color:var(--mu)">
-              <span>3/sem (Suave)</span>
-              <span>12/sem (Otimista)</span>
-              <span>25+/sem (Sprint)</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="whatif-results-grid">
-          <div class="whatif-res-card">
-            <div class="whatif-res-lbl">🎓 Nova Data de Formatura</div>
-            <div class="whatif-res-val" id="whatif-res-date">--/--/----</div>
-            <div class="whatif-res-sub" id="whatif-res-weeks">Em ~24 semanas</div>
-          </div>
-          <div class="whatif-res-card">
-            <div class="whatif-res-lbl">⚡ Hábito Diário Necessário</div>
-            <div class="whatif-res-val" id="whatif-res-daily">1.7 tóp/dia</div>
-            <div class="whatif-res-sub" id="whatif-res-focus">~50 a 75 min/dia</div>
-          </div>
-        </div>
+      <div class="jr-card">
+        <div class="jr-h"><span>🗺️ Onde está o esforço</span></div>
+        <div id="jr-tracks"></div>
       </div>
-    </div>
-
-    <!-- =====================================================================
-         MÓDULO 3: ESCADA DE PATENTES XP + RADAR DAS 4 PÁGINAS + PRÓXIMO PASSO
-         ===================================================================== -->
-    <div id="cockpit-mod-radar">
-      <!-- ESCADA DE 5 PATENTES DE CARREIRA EM IA -->
-      <div class="ranks-ladder-card">
-        <div class="cockpit-panel-head" style="margin-bottom:4px">
-          <span class="cockpit-panel-title">🏆 Patentes de Engenharia de IA · Atual: <strong id="global-rank" style="color:var(--tx)">Iniciante Curioso</strong></span>
-          <span id="hub-next-rank-countdown" style="font-size:.75rem;font-weight:800;color:#f59e0b">Faltam 44 tópicos para: 🔥 Estudante Focado</span>
-        </div>
-
-        <div class="ranks-ladder-grid">
-          <div class="rank-step-card current-rank" id="rank-card-0">
-            <span class="rank-step-icon">🌱</span>
-            <div>
-              <div class="rank-step-name">Iniciante Curioso</div>
-              <div class="rank-step-req" id="rank-req-0">0% · Patente Atual</div>
-            </div>
-          </div>
-          <div class="rank-step-card" id="rank-card-15">
-            <span class="rank-step-icon">🔥</span>
-            <div>
-              <div class="rank-step-name">Estudante Focado</div>
-              <div class="rank-step-req" id="rank-req-15">15% (44 tópicos)</div>
-            </div>
-          </div>
-          <div class="rank-step-card" id="rank-card-40">
-            <span class="rank-step-icon">⚡</span>
-            <div>
-              <div class="rank-step-name">Dev & Praticante</div>
-              <div class="rank-step-req" id="rank-req-40">40% (116 tópicos)</div>
-            </div>
-          </div>
-          <div class="rank-step-card" id="rank-card-70">
-            <span class="rank-step-icon">🏆</span>
-            <div>
-              <div class="rank-step-name">Engenheiro de IA</div>
-              <div class="rank-step-req" id="rank-req-70">70% (202 tópicos)</div>
-            </div>
-          </div>
-          <div class="rank-step-card" id="rank-card-100">
-            <span class="rank-step-icon">👑</span>
-            <div>
-              <div class="rank-step-name">Mestre Supremo</div>
-              <div class="rank-step-req" id="rank-req-100">100% (289 tópicos)</div>
-            </div>
-          </div>
-        </div>
+      <div class="jr-card">
+        <div class="jr-h"><span>👉 Próximo passo</span></div>
+        <div class="jr-big" style="font-size:1rem" id="hub-next-step-title">–</div>
+        <a href="ia.html" id="hub-next-step-btn" class="hub-next-action-btn" style="margin-top:10px">Continuar ➔</a>
+        <div class="jr-sub" id="jr-next-ms" style="margin-top:10px"></div>
       </div>
-
-      <!-- MINI-RADAR DAS 4 PÁGINAS INTEGRADAS -->
-      <div class="hub-radar-card">
-        <div class="hub-radar-title">
-          <span>🗺️ Radar de Conclusão & Acesso Rápido às 4 Páginas</span>
-        </div>
-        <div class="hub-radar-grid">
-          <div class="hub-radar-item">
-            <div class="hub-radar-item-top">
-              <span class="hub-radar-name">🤖 IA & Código</span>
-              <span class="hub-radar-count" id="radar-ia-count">0 / 173 (0%)</span>
-            </div>
-            <div class="hub-radar-bar">
-              <div class="hub-radar-fill" id="radar-ia-fill" style="width:0%;background:var(--ac)"></div>
-            </div>
-            <a href="ia.html" class="hub-radar-link">Abrir Trilha de IA ➔</a>
-          </div>
-
-          <div class="hub-radar-item">
-            <div class="hub-radar-item-top">
-              <span class="hub-radar-name">📐 Matemática</span>
-              <span class="hub-radar-count" id="radar-mat-count">0 / 43 (0%)</span>
-            </div>
-            <div class="hub-radar-bar">
-              <div class="hub-radar-fill" id="radar-mat-fill" style="width:0%;background:#e8a100"></div>
-            </div>
-            <a href="matematica.html" class="hub-radar-link" style="color:#e8a100">Abrir Trilha de Matemática ➔</a>
-          </div>
-
-          <div class="hub-radar-item">
-            <div class="hub-radar-item-top">
-              <span class="hub-radar-name">🇺🇸 Inglês EnglishBay</span>
-              <span class="hub-radar-count" id="radar-ing-count">0 / 73 (0%)</span>
-            </div>
-            <div class="hub-radar-bar">
-              <div class="hub-radar-fill" id="radar-ing-fill" style="width:0%;background:#2fa36b"></div>
-            </div>
-            <a href="ingles.html" class="hub-radar-link" style="color:#2fa36b">Abrir Trilha de Inglês ➔</a>
-          </div>
-
-          <div class="hub-radar-item">
-            <div class="hub-radar-item-top">
-              <span class="hub-radar-name">🛠️ Projetos & Portfólio</span>
-              <span class="hub-radar-count" id="radar-proj-count">0 / 6 (0%)</span>
-            </div>
-            <div class="hub-radar-bar">
-              <div class="hub-radar-fill" id="radar-proj-fill" style="width:0%;background:#ec4899"></div>
-            </div>
-            <a href="projetos.html" class="hub-radar-link" style="color:#ec4899">Abrir Projetos ➔</a>
-          </div>
-        </div>
+      <div class="jr-card">
+        <div class="jr-h"><span>🧪 E se eu acelerar?</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;font-weight:800"><span style="color:var(--mu)">Ritmo</span><span id="whatif-lbl" style="color:#06b6d4">+25%</span></div>
+        <input type="range" id="hub-whatif-slider" min="0" max="100" step="5" value="25" oninput="updateWhatIf()" style="width:100%;accent-color:#06b6d4">
+        <div class="jr-big" style="font-size:1.05rem" id="whatif-res">–</div>
+        <div class="jr-sub" id="whatif-sub"></div>
       </div>
-
-      <!-- PRÓXIMO PASSO SUGERIDO -->
-      <div class="hub-next-box">
-        <div>
-          <div class="hub-next-tag">🎯 Próximo Passo Sugerido pelo Cockpit</div>
-          <div class="hub-next-title" id="hub-next-step-title">Acessar a Trilha de IA & Programação para iniciar seus estudos</div>
-        </div>
-        <a href="ia.html" id="hub-next-step-btn" class="hub-next-action-btn">Ir para o Tópico ➔</a>
+      <div class="jr-card">
+        <div class="jr-h"><span>🏅 Marcos reais</span></div>
+        <ul class="jr-list" id="jr-ms"></ul>
       </div>
     </div>
   </section>
@@ -4569,128 +4249,188 @@ let currentStartDate = "";
 let isDemoMode = false;
 let lastRemainingTopics = 289;
 
-function setCockpitView(viewKey) {
-  document.querySelectorAll(".cockpit-tab-btn").forEach(b => b.classList.remove("active"));
-  const btn = document.getElementById("ctab-" + viewKey);
-  if(btn) btn.classList.add("active");
 
-  const modGauge = document.getElementById("cockpit-mod-gauge");
-  const modChart = document.getElementById("cockpit-mod-chart");
-  const modRadar = document.getElementById("cockpit-mod-radar");
+const RM = (() => {
+  const DAY = 86400000, WEEK = 7 * DAY;
+  const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };
+  const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
+  const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
+  const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
 
-  if(modGauge) modGauge.style.display = (viewKey === "all" || viewKey === "gauge") ? "" : "none";
-  if(modChart) modChart.style.display = (viewKey === "all" || viewKey === "chart") ? "" : "none";
-  if(modRadar) modRadar.style.display = (viewKey === "all" || viewKey === "radar") ? "" : "none";
-  triggerPulse();
-}
-
-function toggleTelemetryDemo() {
-  isDemoMode = !isDemoMode;
-  const drawer = document.getElementById("cockpit-demo-drawer");
-  const btn = document.getElementById("btn-toggle-demo");
-  if(drawer) drawer.classList.toggle("open", isDemoMode);
-  if(btn) {
-    btn.classList.toggle("active", isDemoMode);
-    btn.textContent = isDemoMode ? "🧪 Simulação Ativa" : "🧪 Testar Simulador";
-  }
-  triggerPulse();
-  calcAndPaint();
-}
-
-function updateHubWhatIf() {
-  const slider = document.getElementById("hub-whatif-slider");
-  if(!slider) return;
-  const ratePerWeek = parseInt(slider.value, 10) || 12;
-  const lblRate = document.getElementById("whatif-lbl-rate");
-  if(lblRate) lblRate.textContent = `${ratePerWeek} tópicos / semana`;
-
-  const resDate = document.getElementById("whatif-res-date");
-  const resWeeks = document.getElementById("whatif-res-weeks");
-  const resDaily = document.getElementById("whatif-res-daily");
-  const resFocus = document.getElementById("whatif-res-focus");
-
-  if(lastRemainingTopics <= 0) {
-    if(resDate) resDate.textContent = "Concluído! 🎓";
-    if(resWeeks) resWeeks.textContent = "100% finalizado";
-  } else {
-    const weeksNeeded = lastRemainingTopics / ratePerWeek;
-    const daysNeeded = Math.round(weeksNeeded * 7);
-    const gradDate = new Date(Date.now() + daysNeeded * 86400000);
-    if(resDate) resDate.textContent = formatDateBR(gradDate);
-    if(resWeeks) resWeeks.textContent = `Em ~${weeksNeeded.toFixed(1)} sem (${daysNeeded} dias)`;
+  // Esforço total do roteiro, em "pontos" (1 ponto = tópico de peso 1)
+  function totals(eff) {
+    let topics = 0, points = 0;
+    for (const t in TRACK_TOTAL) { topics += TRACK_TOTAL[t]; points += TRACK_TOTAL[t] * trackW(eff, t); }
+    for (const k in (eff.topics || {})) if (eff.topics[k] > 0) points += eff.topics[k] - trackW(eff, trackOf(k));
+    return { topics, points };
   }
 
-  const dailyTopics = ratePerWeek / 7;
-  const estMinutes = Math.round(dailyTopics * 35);
-  if(resDaily) resDaily.textContent = `${dailyTopics.toFixed(1)} tópicos/dia`;
-  if(resFocus) resFocus.textContent = `~${estMinutes} min de foco/dia`;
-}
-
-function loadPaceSettings() {
-  try {
-    const savedPace = localStorage.getItem(PACE_KEY);
-    if(savedPace && HUB_PRESETS[savedPace]) currentPace = savedPace;
-    
-    const savedStart = localStorage.getItem(START_KEY);
-    if(savedStart && /^\d{4}-\d{2}-\d{2}$/.test(savedStart)) {
-      currentStartDate = savedStart;
-    } else {
-      currentStartDate = new Date().toISOString().slice(0, 10);
-      try { localStorage.setItem(START_KEY, currentStartDate); } catch(e){}
+  // Estrutural = tópicos concluídos. Ponderado = peso dos concluídos + crédito parcial dos "falta terminar"
+  // (crédito parcial = média do % de vídeo (vp) e % de aula visual (gp) já registrados no tópico).
+  function progress(PR, eff) {
+    const per = {};
+    for (const t in TRACK_TOTAL) per[t] = { done: 0, pts: 0, total: TRACK_TOTAL[t], ptsTotal: TRACK_TOTAL[t] * trackW(eff, t) };
+    let structDone = 0, pts = 0;
+    for (const k in PR) {
+      const it = PR[k] || {}, t = trackOf(k), w = weightOf(k, eff);
+      let c = 0;
+      if (it.s === "e") { c = w; structDone++; per[t].done++; }
+      else if (it.s === "r") c = w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200);
+      per[t].pts += c; pts += c;
     }
-  } catch(e) {
-    currentPace = "optimistic";
-    currentStartDate = new Date().toISOString().slice(0, 10);
+    return { structDone, pts, per };
   }
-}
 
-function setHubPace(presetKey) {
-  if(!HUB_PRESETS[presetKey]) return;
-  currentPace = presetKey;
-  try { localStorage.setItem(PACE_KEY, presetKey); } catch(e){}
-  
-  document.querySelectorAll(".speed-preset-btn").forEach(b => b.classList.remove("active"));
-  const activeBtn = document.getElementById("btn-pace-" + presetKey);
-  if(activeBtn) activeBtn.classList.add("active");
-  
-  triggerPulse();
-  calcAndPaint();
-}
+  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}
+  const evNet = (e, eff) => {
+    const w = weightOf(e.id, eff);
+    return (e.to === "e" && e.f !== "e") ? w : (e.f === "e" && e.to !== "e") ? -w : 0;
+  };
 
-function onStartDateChange(val) {
-  if(!val) return;
-  currentStartDate = val;
-  try { localStorage.setItem(START_KEY, val); } catch(e){}
-  triggerPulse();
-  calcAndPaint();
-}
-
-function resetStartDateToday() {
-  currentStartDate = new Date().toISOString().slice(0, 10);
-  const inputEl = document.getElementById("hub-start-date");
-  if(inputEl) inputEl.value = currentStartDate;
-  try { localStorage.setItem(START_KEY, currentStartDate); } catch(e){}
-  triggerPulse();
-  calcAndPaint();
-}
-
-function triggerPulse() {
-  const card = document.getElementById("hub-tracker-sect");
-  if(card) {
-    card.classList.remove("pulse-update");
-    void card.offsetWidth;
-    card.classList.add("pulse-update");
-    setTimeout(() => card.classList.remove("pulse-update"), 700);
+  // Esforço concluído por semana (janelas de 7 dias terminando agora; só semanas COMPLETAS após o início do registro).
+  // Eventos "bulk" (importação em lote) não entram: não representam ritmo real.
+  function weeklySeries(ev, now, logStart, eff, maxWeeks) {
+    const out = [], n = maxWeeks || 8;
+    for (let k = 0; k < n; k++) {
+      const a = now - (k + 1) * WEEK, b = now - k * WEEK;
+      if (!logStart || a < logStart) break;
+      let s = 0;
+      for (const e of ev) if (e.src !== "bulk" && e.t >= a && e.t < b) s += evNet(e, eff);
+      out.push(Math.max(0, s));
+    }
+    return out; // índice 0 = semana mais recente
   }
-}
+
+  // Previsão em faixa. Com poucos dados NÃO devolve data.
+  function forecast(remaining, series) {
+    const n = series.length;
+    if (remaining <= 0) return { level: "done" };
+    if (n < 2) return { level: "insufficient", n, need: 2 };
+    const s = series.slice().sort((a, b) => a - b);
+    const q = p => { const i = (s.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return s[lo] + (s[hi] - s[lo]) * (i - lo); };
+    const mean = series.reduce((a, b) => a + b, 0) / n;
+    const sd = Math.sqrt(series.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
+    const cv = mean > 0 ? sd / mean : 9;
+    const med = q(0.5), slow = n < 4 ? s[0] : q(0.25), fast = n < 4 ? s[n - 1] : q(0.75);
+    let conf = n >= 6 ? "alta" : n >= 4 ? "média" : "baixa";
+    if (cv > 0.8 && conf !== "baixa") conf = conf === "alta" ? "média" : "baixa";
+    const days = p => (p > 0 && remaining / (p / 7) < 1500) ? Math.ceil(remaining / (p / 7)) : null;
+    return { level: n >= 4 ? "ok" : "preliminary", conf, n, med, slow, fast, cv,
+             dMed: days(med), dSlow: days(slow), dFast: days(fast) };
+  }
+
+  const planned = (total, start, deadline, now) =>
+    deadline ? total * Math.min(1, Math.max(0, (now - start) / (deadline - start))) : null;
+
+  // Situação vs plano (esforço, não contagem de tópicos). Tolerância: 5% do esforço total.
+  function status(done, plannedNow, total, elapsedDays) {
+    if (plannedNow == null) return { k: "neutral" };
+    if (elapsedDays < 7) return { k: "nodata" };
+    const d = done - plannedNow, tol = 0.05 * total;
+    const k = d > tol ? "ahead" : d >= -tol ? "ontrack" : d >= -2 * tol ? "attention" : "late";
+    return { k, delta: d };
+  }
+
+  function requiredPace(remaining, now, deadline) {
+    const weeks = (deadline - now) / WEEK;
+    return weeks > 0 ? remaining / weeks : null;
+  }
+
+  // Curva acumulada real. Antes do início do registro só há o "baseline" (não inventamos histórico).
+  function curve(ev, eff, logStart, now, pts) {
+    if (!logStart) return [];
+    const sorted = ev.slice().sort((a, b) => a.t - b.t);
+    const net = sorted.reduce((a, e) => a + evNet(e, eff), 0);
+    let run = Math.max(0, pts - net);
+    const out = [{ t: logStart, v: run }];
+    for (const e of sorted) { const d = evNet(e, eff); if (d !== 0) { run += d; out.push({ t: e.t, v: Math.max(0, run) }); } }
+    out.push({ t: now, v: pts });
+    return out;
+  }
+
+  const STEPS = [10, 25, 50, 75, 100];
+  function milestones(cv, total) {
+    const done = [];
+    for (const th of STEPS) {
+      const i = cv.findIndex(p => p.v / total * 100 >= th);
+      if (i >= 0) done.push({ th, t: i === 0 ? null : cv[i].t });
+    }
+    return done;
+  }
+  const nextStep = pct => STEPS.find(s => s > pct) || null;
+
+  // Horas por ponto de esforço, só com dados suficientes (>=3h registradas e >=3 pontos concluídos no período)
+  function hoursPerPoint(sessions, ev, eff, logStart) {
+    if (!logStart) return null;
+    const sec = sessions.filter(s => s.t >= logStart).reduce((a, s) => a + (s.sec || 0), 0);
+    const pts = ev.filter(e => e.src !== "bulk").reduce((a, e) => a + evNet(e, eff), 0);
+    return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
+  }
+
+  return { TRACK_TOTAL, trackOf, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+           planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
+})();
+if (typeof module !== "undefined") module.exports = RM;
+
+HUB_PRESETS.none = { name: "Sem meta", days: null, label: "Sem data-alvo definida" };
+const EVENTS_KEY = "roteiro-events-v1", SESS_KEY = "roteiro-sessions-v1",
+      LOGSTART_KEY = "roteiro-log-start", EFFORT_KEY = "roteiro-effort-v1";
+const jrEl = id => document.getElementById(id);
+const jrSet = (id, h) => { const e = jrEl(id); if (e) e.innerHTML = h; };
+const jrRead = (k, d) => { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : d; } catch (e) { return d; } };
+const jrF = n => (Math.round(n * 10) / 10).toLocaleString("pt-BR");
+const jrPct = n => (Math.round(n * 10) / 10).toLocaleString("pt-BR") + "%";
+window.__jr = { remaining: 0, fc: null, hpp: null, now: Date.now() };
 
 function formatDateBR(d) {
-  if(!d || isNaN(d.getTime())) return "--/--/----";
-  const day = String(d.getDate()).padStart(2, "0");
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
+  if (!d || isNaN(d.getTime())) return "--/--/----";
+  return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0") + "/" + d.getFullYear();
 }
+function triggerPulse() {
+  const c = jrEl("hub-tracker-sect"); if (!c) return;
+  c.classList.remove("pulse-update"); void c.offsetWidth; c.classList.add("pulse-update");
+  setTimeout(() => c.classList.remove("pulse-update"), 700);
+}
+function loadPaceSettings() {
+  try {
+    const sp = localStorage.getItem(PACE_KEY);
+    if (sp && HUB_PRESETS[sp]) currentPace = sp;
+    const ss = localStorage.getItem(START_KEY);
+    if (ss && /^\d{4}-\d{2}-\d{2}$/.test(ss)) currentStartDate = ss;
+    else { currentStartDate = new Date().toISOString().slice(0, 10); localStorage.setItem(START_KEY, currentStartDate); }
+  } catch (e) { currentPace = "optimistic"; currentStartDate = new Date().toISOString().slice(0, 10); }
+}
+function setHubPace(k) {
+  if (!HUB_PRESETS[k]) return;
+  currentPace = k; try { localStorage.setItem(PACE_KEY, k); } catch (e) {}
+  triggerPulse(); calcAndPaint();
+}
+function onStartDateChange(v) { if (!v) return; currentStartDate = v; try { localStorage.setItem(START_KEY, v); } catch (e) {} triggerPulse(); calcAndPaint(); }
+function resetStartDateToday() { onStartDateChange(new Date().toISOString().slice(0, 10)); const i = jrEl("hub-start-date"); if (i) i.value = currentStartDate; }
+function saveWeights() {
+  const g = id => { const v = parseFloat(String(jrEl(id).value).replace(",", ".")); return v > 0 ? Math.min(10, v) : 1; };
+  const e = jrRead(EFFORT_KEY, {});
+  e.tracks = { ia: g("w-ia"), mat: g("w-mat"), ing: g("w-ing") };
+  try { localStorage.setItem(EFFORT_KEY, JSON.stringify(e)); } catch (x) {}
+  triggerPulse(); calcAndPaint();
+}
+function updateWhatIf() {
+  const sl = jrEl("hub-whatif-slider"); if (!sl) return;
+  const boost = parseInt(sl.value, 10) || 0, { remaining, fc, hpp } = window.__jr, now = window.__jr.now;
+  jrSet("whatif-lbl", "+" + boost + "%");
+  if (!fc || (fc.level !== "ok" && fc.level !== "preliminary") || !fc.dMed) {
+    jrSet("whatif-res", "Disponível após 2 semanas de registro");
+    jrSet("whatif-sub", "Sem histórico de ritmo não há base honesta para simular.");
+    return;
+  }
+  const newPace = fc.med * (1 + boost / 100), nd = Math.ceil(remaining / (newPace / 7)), saved = fc.dMed - nd;
+  jrSet("whatif-res", formatDateBR(new Date(now + nd * 86400000)));
+  let sub = boost === 0 ? "Mantendo o ritmo mediano atual." : "Antecipa ~" + saved + " dia(s) vs. ritmo atual.";
+  if (hpp && boost > 0) sub += " Equivale a ~" + Math.round(fc.med * boost / 100 * hpp * 60 / 7) + " min/dia a mais (seu tempo médio por ponto).";
+  else if (boost > 0) sub += " Registre suas sessões para ver isso em minutos por dia.";
+  jrSet("whatif-sub", sub);
+}
+
 
 function loadData(){
   try{
@@ -4737,409 +4477,157 @@ async function initSync(){
   }catch(e){}
 }
 
-function calcAndPaint(){
-  let iaDone = 0, matDone = 0, ingDone = 0;
-  let totalNotes = 0;
 
-  for(const k in PR){
-    const item = PR[k];
-    if(item.s === "e"){
-      if(k.startsWith("ia-")) iaDone++;
-      else if(k.startsWith("mat-")) matDone++;
-      else if(k.startsWith("ing-")) ingDone++;
-      else iaDone++;
-    }
-    if(item.n && item.n.trim()) totalNotes++;
-  }
-
-  // Projetos do Laboratório
-  let projDone = 0;
-  const totalProj = 6;
-  try {
-    const pList = JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]");
-    if (pList && pList.length > 0) {
-      projDone = pList.filter(x => x.status === "done").length;
-    }
-  } catch(e) {}
-
-  // Se o Modo Simulação (Test-Drive) estiver ativo, usa os valores dos sliders da gaveta para o Cockpit
-  let simElapsedOverride = null;
-  if(isDemoMode) {
-    const rIa = document.getElementById("demo-rng-ia");
-    const rMat = document.getElementById("demo-rng-mat");
-    const rIng = document.getElementById("demo-rng-ing");
-    const rDays = document.getElementById("demo-rng-days");
-    if(rIa) iaDone = parseInt(rIa.value, 10) || 0;
-    if(rMat) matDone = parseInt(rMat.value, 10) || 0;
-    if(rIng) ingDone = parseInt(rIng.value, 10) || 0;
-    if(rDays) simElapsedOverride = parseInt(rDays.value, 10) || 68;
-
-    const lIa = document.getElementById("demo-lbl-ia");
-    const lMat = document.getElementById("demo-lbl-mat");
-    const lIng = document.getElementById("demo-lbl-ing");
-    const lDays = document.getElementById("demo-lbl-days");
-    if(lIa) lIa.textContent = `${iaDone} / 173`;
-    if(lMat) lMat.textContent = `${matDone} / 43`;
-    if(lIng) lIng.textContent = `${ingDone} / 73`;
-    if(lDays) lDays.textContent = `${simElapsedOverride} dias`;
-  }
-
-  // Porcentagens dos Cards Individuais
-  const iaPct = Math.round((iaDone / 173) * 100);
-  const matPct = Math.round((matDone / 43) * 100);
-  const ingPct = Math.round((ingDone / 73) * 100);
-  const projPct = Math.round((projDone / totalProj) * 100);
-
-  const elIaPct = document.getElementById("card-ia-pct");
-  if(elIaPct) elIaPct.textContent = `${iaPct}% (${iaDone}/173)`;
-  const elIaFill = document.getElementById("card-ia-fill");
-  if(elIaFill) elIaFill.style.width = `${iaPct}%`;
-
-  const elMatPct = document.getElementById("card-mat-pct");
-  if(elMatPct) elMatPct.textContent = `${matPct}% (${matDone}/43)`;
-  const elMatFill = document.getElementById("card-mat-fill");
-  if(elMatFill) elMatFill.style.width = `${matPct}%`;
-
-  const elIngPct = document.getElementById("card-ing-pct");
-  if(elIngPct) elIngPct.textContent = `${ingPct}% (${ingDone}/73)`;
-  const elIngFill = document.getElementById("card-ing-fill");
-  if(elIngFill) elIngFill.style.width = `${ingPct}%`;
-
-  const elProjPct = document.getElementById("card-proj-pct");
-  if(elProjPct) elProjPct.textContent = `${projPct}% (${projDone}/${totalProj})`;
-  const elProjFill = document.getElementById("card-proj-fill");
-  if(elProjFill) elProjFill.style.width = `${projPct}%`;
-
-  // Mini Radar das Trilhas
-  const rIaCount = document.getElementById("radar-ia-count");
-  if(rIaCount) rIaCount.textContent = `${iaDone} / 173 (${iaPct}%)`;
-  const rIaFill = document.getElementById("radar-ia-fill");
-  if(rIaFill) rIaFill.style.width = `${iaPct}%`;
-
-  const rMatCount = document.getElementById("radar-mat-count");
-  if(rMatCount) rMatCount.textContent = `${matDone} / 43 (${matPct}%)`;
-  const rMatFill = document.getElementById("radar-mat-fill");
-  if(rMatFill) rMatFill.style.width = `${matPct}%`;
-
-  const rIngCount = document.getElementById("radar-ing-count");
-  if(rIngCount) rIngCount.textContent = `${ingDone} / 73 (${ingPct}%)`;
-  const rIngFill = document.getElementById("radar-ing-fill");
-  if(rIngFill) rIngFill.style.width = `${ingPct}%`;
-
-  const rProjCount = document.getElementById("radar-proj-count");
-  if(rProjCount) rProjCount.textContent = `${projDone} / ${totalProj} (${projPct}%)`;
-  const rProjFill = document.getElementById("radar-proj-fill");
-  if(rProjFill) rProjFill.style.width = `${projPct}%`;
-
-  // Anéis Concêntricos Multi-Trilha (SVG)
-  const ringIa = document.getElementById("ring-svg-ia");
-  if(ringIa) ringIa.style.strokeDashoffset = (452.4 * (1 - iaDone / 173)).toFixed(1);
-  const ringMat = document.getElementById("ring-svg-mat");
-  if(ringMat) ringMat.style.strokeDashoffset = (358.1 * (1 - matDone / 43)).toFixed(1);
-  const ringIng = document.getElementById("ring-svg-ing");
-  if(ringIng) ringIng.style.strokeDashoffset = (263.9 * (1 - ingDone / 73)).toFixed(1);
-  const ringProj = document.getElementById("ring-svg-proj");
-  if(ringProj) ringProj.style.strokeDashoffset = (169.6 * (1 - projDone / totalProj)).toFixed(1);
-
-  const legIa = document.getElementById("ring-leg-ia");
-  if(legIa) legIa.textContent = `${iaDone}/173 (${iaPct}%)`;
-  const legMat = document.getElementById("ring-leg-mat");
-  if(legMat) legMat.textContent = `${matDone}/43 (${matPct}%)`;
-  const legIng = document.getElementById("ring-leg-ing");
-  if(legIng) legIng.textContent = `${ingDone}/73 (${ingPct}%)`;
-  const legProj = document.getElementById("ring-leg-proj");
-  if(legProj) legProj.textContent = `${projDone}/${totalProj} (${projPct}%)`;
-
-  // Total Global (289 tópicos)
-  const totalDone = iaDone + matDone + ingDone;
-  lastRemainingTopics = Math.max(0, 289 - totalDone);
-  const globalPct = Math.round((totalDone / 289) * 100);
-
-  const ringCenterPct = document.getElementById("ring-center-pct");
-  if(ringCenterPct) ringCenterPct.textContent = `${globalPct}%`;
-
-  const elGlobalXpText = document.getElementById("global-xp-text");
-  if(elGlobalXpText) elGlobalXpText.textContent = `${totalDone} / 289 (${globalPct}%)`;
-  const elGlobalXpFill = document.getElementById("global-xp-fill");
-  if(elGlobalXpFill) elGlobalXpFill.style.width = `${globalPct}%`;
-
-  // Escada de 5 Patentes XP
-  const rankEl = document.getElementById("global-rank");
-  const iconEl = document.getElementById("global-icon");
-  const countdownEl = document.getElementById("hub-next-rank-countdown");
-
-  const rankSteps = [
-    { id: "0", pct: 0, topics: 0, name: "Iniciante Curioso", icon: "🌱" },
-    { id: "15", pct: 15, topics: 44, name: "Estudante Focado", icon: "🔥" },
-    { id: "40", pct: 40, topics: 116, name: "Dev & Praticante", icon: "⚡" },
-    { id: "70", pct: 70, topics: 202, name: "Engenheiro de IA", icon: "🏆" },
-    { id: "100", pct: 100, topics: 289, name: "Mestre Supremo", icon: "👑" }
-  ];
-
-  let activeRankIdx = 0;
-  for(let i = 0; i < rankSteps.length; i++){
-    if(totalDone >= rankSteps[i].topics) activeRankIdx = i;
-  }
-
-  rankSteps.forEach((step, idx) => {
-    const cardEl = document.getElementById("rank-card-" + step.id);
-    const reqEl = document.getElementById("rank-req-" + step.id);
-    if(!cardEl) return;
-    cardEl.classList.remove("unlocked", "current-rank");
-    if(idx === activeRankIdx) {
-      cardEl.classList.add("current-rank");
-      if(reqEl) reqEl.textContent = `${step.pct}% · PATENTE ATUAL`;
-    } else if(idx < activeRankIdx) {
-      cardEl.classList.add("unlocked");
-      if(reqEl) reqEl.textContent = `${step.pct}% · Desbloqueado ✓`;
-    } else {
-      if(reqEl) reqEl.textContent = `Requer ${step.pct}% (${step.topics} tóp)`;
-    }
+function drawJourney(o) {
+  const W = 640, H = 230, L = 46, R = 14, T = 14, B = 30, iw = W - L - R, ih = H - T - B, DAY = 86400000;
+  const X = t => L + (t - o.start) / (o.end - o.start) * iw;
+  const Y = v => T + ih - Math.min(v, o.total) / o.total * ih;
+  let s = '<svg viewBox="0 0 ' + W + " " + H + '" class="jr-svg" role="img" aria-label="Evolução acumulada do esforço">';
+  [0, 0.5, 1].forEach(f => {
+    s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(o.total * f) + '" y2="' + Y(o.total * f) + '" stroke="var(--bd)" stroke-dasharray="3 3"/>';
+    s += '<text x="4" y="' + (Y(o.total * f) + 4) + '" fill="var(--mu)" font-size="10" font-weight="700">' + Math.round(o.total * f) + "</text>";
   });
-
-  const curRankObj = rankSteps[activeRankIdx];
-  if(rankEl) rankEl.textContent = curRankObj.name;
-  if(iconEl) iconEl.textContent = curRankObj.icon;
-
-  if(countdownEl) {
-    if(activeRankIdx < rankSteps.length - 1) {
-      const nextRankObj = rankSteps[activeRankIdx + 1];
-      const needed = Math.max(1, nextRankObj.topics - totalDone);
-      countdownEl.textContent = `Faltam ${needed} tópicos para desbloquear: ${nextRankObj.icon} ${nextRankObj.name}`;
-    } else {
-      countdownEl.textContent = "👑 Todas as Patentes Desbloqueadas! Mestre Supremo em IA!";
-    }
+  if (o.deadline) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(o.deadline) + '" y2="' + Y(o.total) + '" stroke="#6366f1" stroke-width="2" stroke-dasharray="5 4" stroke-opacity=".7"/>';
+  const fc = o.fc;
+  if (fc && (fc.level === "ok" || fc.level === "preliminary") && fc.med > 0) {
+    const dd = (o.end - o.now) / DAY, yv = p => o.pts + p / 7 * dd;
+    s += '<polygon points="' + X(o.now) + "," + Y(o.pts) + " " + X(o.end) + "," + Y(yv(fc.fast)) + " " + X(o.end) + "," + Y(yv(fc.slow)) + '" fill="#06b6d4" fill-opacity=".16"/>';
+    s += '<line x1="' + X(o.now) + '" y1="' + Y(o.pts) + '" x2="' + X(o.end) + '" y2="' + Y(yv(fc.med)) + '" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5 4"/>';
   }
-
-  // Sincronizar input de data
-  const sInput = document.getElementById("hub-start-date");
-  if(sInput && !sInput.value) sInput.value = currentStartDate;
-
-  // Botões de Preset
-  document.querySelectorAll(".speed-preset-btn").forEach(b => b.classList.remove("active"));
-  const curBtn = document.getElementById("btn-pace-" + currentPace);
-  if(curBtn) curBtn.classList.add("active");
-
-  // =========================================================================
-  // CÁLCULO MATEMÁTICO DO VELOCÍMETRO, TACÔMETRO SVG E BURN-UP CHART
-  // =========================================================================
-  const preset = HUB_PRESETS[currentPace] || HUB_PRESETS.optimistic;
-  const startMs = new Date(currentStartDate + "T00:00:00").getTime();
-  const nowMs = Date.now();
-  const elapsedDays = simElapsedOverride !== null ? simElapsedOverride : Math.max(1, Math.round((nowMs - startMs) / 86400000));
-  const elapsedWeeks = Math.max(0.14, elapsedDays / 7);
-
-  // Meta de velocidade
-  const targetDays = preset.days;
-  const targetWeeks = targetDays / 7;
-  const targetSpeedPerWeek = 289 / targetWeeks;
-  const targetSpeedPerDay = 289 / targetDays;
-
-  // Velocidade real atual
-  const realSpeedPerWeek = totalDone / elapsedWeeks;
-  const realSpeedPerDay = totalDone / elapsedDays;
-
-  // Tópicos esperados para hoje
-  const expectedDoneToday = Math.min(289, Math.round(targetSpeedPerDay * elapsedDays));
-  const diffTopics = totalDone - expectedDoneToday;
-  const diffDays = Math.round(diffTopics / targetSpeedPerDay);
-
-  // Data limite da meta selecionada
-  const daysRemaining = Math.max(0, targetDays - elapsedDays);
-  const targetDeadlineDate = new Date(nowMs + daysRemaining * 86400000);
-
-  // Previsão de conclusão no ritmo atual
-  let forecastDate = null;
-  let forecastSub = "";
-  let daysToFinish = targetDays;
-  if(totalDone === 0){
-    forecastDate = targetDeadlineDate;
-    forecastSub = "Conclua o 1º tópico para projetar";
-  } else {
-    const remainingTopics = 289 - totalDone;
-    daysToFinish = Math.round(remainingTopics / Math.max(0.05, realSpeedPerDay));
-    forecastDate = new Date(nowMs + daysToFinish * 86400000);
-    const diffForecastDays = daysRemaining - daysToFinish;
-    if(diffForecastDays >= 0){
-      forecastSub = `🚀 ${diffForecastDays} dias antes do prazo!`;
-    } else {
-      forecastSub = `⚠️ ${Math.abs(diffForecastDays)} dias além do prazo`;
-    }
+  const cv = o.curve;
+  if (cv.length) {
+    if (cv[0].t > o.start) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(cv[0].t) + '" y2="' + Y(cv[0].v) + '" stroke="#10b981" stroke-opacity=".35" stroke-width="3"/>';
+    s += '<polyline fill="none" stroke="#10b981" stroke-width="3.5" stroke-linejoin="round" points="' + cv.map(p => X(p.t) + "," + Y(p.v)).join(" ") + '"/>';
   }
-
-  // Preencher Leituras do Tacômetro & KPIs
-  const elValSpeed = document.getElementById("hub-val-speed");
-  const elSubSpeed = document.getElementById("hub-sub-speed");
-  const elDailyReal = document.getElementById("hub-daily-real");
-  if(elValSpeed) elValSpeed.textContent = `${realSpeedPerWeek.toFixed(1)} tóp/sem`;
-  if(elSubSpeed) elSubSpeed.textContent = `Dia ${elapsedDays} da Jornada · Meta: ${targetSpeedPerWeek.toFixed(1)}/sem`;
-  if(elDailyReal) elDailyReal.textContent = `${realSpeedPerDay.toFixed(2)} /dia`;
-
-  const elValTargetSpeed = document.getElementById("hub-val-target-speed");
-  const elSubTargetSpeed = document.getElementById("hub-sub-target-speed");
-  if(elValTargetSpeed) elValTargetSpeed.textContent = `${targetSpeedPerWeek.toFixed(1)} /sem`;
-  if(elSubTargetSpeed) elSubTargetSpeed.textContent = preset.label;
-
-  const elValForecast = document.getElementById("hub-val-forecast");
-  const elSubForecast = document.getElementById("hub-sub-forecast");
-  if(elValForecast) elValForecast.textContent = formatDateBR(forecastDate);
-  if(elSubForecast) elSubForecast.textContent = forecastSub;
-
-  const elValDelta = document.getElementById("hub-val-delta");
-  const elSubDelta = document.getElementById("hub-sub-delta");
-  if(elValDelta) {
-    elValDelta.textContent = diffTopics >= 0 ? `+${diffTopics} tópicos` : `${diffTopics} tópicos`;
-    elValDelta.style.color = diffTopics >= 0 ? "#10b981" : "#f59e0b";
-  }
-  if(elSubDelta) elSubDelta.textContent = `Esperado hoje: ${expectedDoneToday} de 289`;
-
-  const elValDeadline = document.getElementById("hub-val-deadline");
-  const elSubDaysLeft = document.getElementById("hub-sub-daysleft");
-  if(elValDeadline) elValDeadline.textContent = formatDateBR(targetDeadlineDate);
-  if(elSubDaysLeft) elSubDaysLeft.textContent = `${daysRemaining} dias restantes na meta`;
-
-  // Rotação do Ponteiro SVG do Tacômetro (-115deg a +115deg para 0.0x a 2.0x)
-  let speedRatio = 0;
-  if(totalDone > 0 && targetSpeedPerWeek > 0){
-    speedRatio = realSpeedPerWeek / targetSpeedPerWeek;
-  }
-  const clampedRatio = Math.min(2.0, Math.max(0, speedRatio));
-  const needleDeg = -115 + (clampedRatio / 2.0) * 230;
-  const arcOffset = 395 - (clampedRatio / 2.0) * 395;
-
-  const needleEl = document.getElementById("hub-gauge-needle");
-  const arcEl = document.getElementById("hub-gauge-arc");
-  const multiplierEl = document.getElementById("hub-speed-multiplier");
-
-  if(needleEl) needleEl.style.transform = `rotate(${needleDeg.toFixed(1)}deg)`;
-  if(arcEl) arcEl.style.strokeDashoffset = arcOffset.toFixed(1);
-
-  if(multiplierEl){
-    if(totalDone === 0){
-      multiplierEl.textContent = "0.0x · Ignição Pronta";
-    } else if(speedRatio >= 1.25){
-      multiplierEl.textContent = `⚡ ${speedRatio.toFixed(2)}x · TURBO SPRINT`;
-    } else if(speedRatio >= 0.92){
-      multiplierEl.textContent = `🟢 ${speedRatio.toFixed(2)}x · NA META IDEAL`;
-    } else {
-      multiplierEl.textContent = `🟡 ${speedRatio.toFixed(2)}x · RITMO MODERADO`;
-    }
-  }
-
-  // Atualizar Gráfico Burn-Up em SVG
-  const xRatio = Math.min(1, elapsedDays / targetDays);
-  const curX = Math.round(38 + xRatio * 427);
-  const curY = Math.round(135 - (totalDone / 289) * 117);
-
-  const lineReal = document.getElementById("burnup-line-real");
-  const dotToday = document.getElementById("burnup-dot-today");
-  const txtToday = document.getElementById("burnup-txt-today");
-  const lineProj = document.getElementById("burnup-line-proj");
-  const dotGrad = document.getElementById("burnup-dot-grad");
-  const lblTarget = document.getElementById("burnup-lbl-target");
-
-  if(lineReal) {
-    lineReal.setAttribute("x2", curX);
-    lineReal.setAttribute("y2", curY);
-  }
-  if(dotToday) {
-    dotToday.setAttribute("cx", curX);
-    dotToday.setAttribute("cy", curY);
-  }
-  if(txtToday) {
-    txtToday.setAttribute("x", Math.min(440, Math.max(42, curX - 20)));
-    txtToday.setAttribute("y", Math.max(14, curY - 10));
-    txtToday.textContent = `Hoje (${totalDone})`;
-  }
-
-  const totalProjDays = totalDone > 0 ? (elapsedDays + daysToFinish) : targetDays;
-  const projX = Math.min(495, Math.max(curX + 8, Math.round(38 + (totalProjDays / targetDays) * 427)));
-  if(lineProj) {
-    lineProj.setAttribute("x1", curX);
-    lineProj.setAttribute("y1", curY);
-    lineProj.setAttribute("x2", projX);
-    lineProj.setAttribute("y2", 18);
-  }
-  if(dotGrad) dotGrad.setAttribute("cx", projX);
-  if(lblTarget) lblTarget.textContent = `Meta (${targetDays}d)`;
-
-  // Atualizar Simulador "E Se?"
-  updateHubWhatIf();
-
-  // Diagnóstico Dinâmico ao Vivo (Card & Badge)
-  const diagCard = document.getElementById("hub-diagnosis-card");
-  const diagText = document.getElementById("hub-diagnosis-text");
-  const diagBadge = document.getElementById("hub-diagnosis-badge");
-
-  if(diagCard && diagText && diagBadge){
-    const demoPrefix = isDemoMode ? "<b>[MODO SIMULAÇÃO]</b> " : "";
-    if(totalDone === 0){
-      diagCard.className = "speed-diagnosis-card pace-ontrack";
-      diagBadge.textContent = "🚀 Pronto para a Largada";
-      diagText.innerHTML = `${demoPrefix}Você está no <b>Dia ${elapsedDays}</b>! Marque seus tópicos estudados nas trilhas ou clique em <b>"🧪 Testar Simulador"</b> acima para ver o Cockpit em ação.`;
-    } else if(diffTopics >= 2){
-      diagCard.className = "speed-diagnosis-card pace-ahead";
-      diagBadge.textContent = `🟢 ADIANTADO (+${diffTopics} TÓPICOS · +${diffDays} DIAS)`;
-      diagText.innerHTML = `${demoPrefix}Ritmo Espetacular! Você está <b>${diffTopics} tópicos à frente</b> da meta para hoje (+${diffDays} dias adiantado). No ritmo de <b>${realSpeedPerWeek.toFixed(1)} tópicos/semana</b>, você concluirá antes do prazo!`;
-    } else if(diffTopics >= -2){
-      diagCard.className = "speed-diagnosis-card pace-ontrack";
-      diagBadge.textContent = "🔵 NO PRAZO IDEAL (Ritmo Perfeito)";
-      diagText.innerHTML = `${demoPrefix}Excelente consistência! Seu estudo está <b>rigorosamente no cronograma</b> da meta (${preset.name}). Mantenha esse ritmo para se formar em <b>${formatDateBR(targetDeadlineDate)}</b>.`;
-    } else {
-      const behind = Math.abs(diffTopics);
-      diagCard.className = "speed-diagnosis-card pace-behind";
-      diagBadge.textContent = `🟡 RITMO MODERADO (-${behind} TÓPICOS)`;
-      diagText.innerHTML = `${demoPrefix}Atenção à meta: Você está <b>${behind} tópicos atrás</b> do esperado para hoje. Use o <b>Simulador "E Se?"</b> abaixo para planejar sua recuperação nesta semana!`;
-    }
-  }
-
-  // Barras Comparativas: Real vs Esperado
-  const compTxtReal = document.getElementById("hub-comp-txt-real");
-  const compFillReal = document.getElementById("hub-comp-fill-real");
-  const compTxtTarget = document.getElementById("hub-comp-txt-target");
-  const compFillTarget = document.getElementById("hub-comp-fill-target");
-
-  const expectedPct = Math.min(100, Math.round((expectedDoneToday / 289) * 100));
-
-  if(compTxtReal) compTxtReal.textContent = `${totalDone} de 289 (${globalPct}%)`;
-  if(compFillReal) compFillReal.style.width = `${globalPct}%`;
-
-  if(compTxtTarget) compTxtTarget.textContent = `${expectedDoneToday} de 289 (${expectedPct}%)`;
-  if(compFillTarget) compFillTarget.style.width = `${expectedPct}%`;
-
-  // Próximo Passo Sugerido
-  const nextTitle = document.getElementById("hub-next-step-title");
-  const nextBtn = document.getElementById("hub-next-step-btn");
-  if(nextTitle && nextBtn){
-    if(iaDone === 0){
-      nextTitle.textContent = "Iniciar os Fundamentos na Trilha de IA & Código (Python essencial e lógica)";
-      nextBtn.href = "ia.html";
-      nextBtn.textContent = "Acessar IA & Código ➔";
-    } else if(matDone === 0){
-      nextTitle.textContent = "Iniciar a Trilha de Matemática Essencial para IA (Módulo 1: Álgebra Linear)";
-      nextBtn.href = "matematica.html";
-      nextBtn.textContent = "Acessar Matemática ➔";
-    } else if(ingDone === 0){
-      nextTitle.textContent = "Iniciar a Trilha de Inglês EnglishBay (Aula 1 da Playlist Oficial)";
-      nextBtn.href = "ingles.html";
-      nextBtn.textContent = "Acessar Inglês ➔";
-    } else {
-      if(iaPct <= matPct && iaPct <= ingPct){
-        nextTitle.textContent = `Continuar Trilha de IA & Programação (${iaDone}/173 concluídos · ${iaPct}%)`;
-        nextBtn.href = "ia.html";
-        nextBtn.textContent = "Ir para Trilha de IA ➔";
-      } else if(matPct <= ingPct){
-        nextTitle.textContent = `Continuar Trilha de Matemática para IA (${matDone}/43 concluídos · ${matPct}%)`;
-        nextBtn.href = "matematica.html";
-        nextBtn.textContent = "Ir para Matemática ➔";
-      } else {
-        nextTitle.textContent = `Continuar Curso de Inglês EnglishBay (${ingDone}/73 concluídos · ${ingPct}%)`;
-        nextBtn.href = "ingles.html";
-        nextBtn.textContent = "Ir para Inglês ➔";
-      }
-    }
-  }
+  s += '<circle cx="' + X(o.now) + '" cy="' + Y(o.pts) + '" r="5.5" fill="#10b981" stroke="var(--card)" stroke-width="2"/>';
+  s += '<text x="' + L + '" y="' + (H - 8) + '" fill="var(--mu)" font-size="10" font-weight="700">' + formatDateBR(new Date(o.start)) + "</text>";
+  s += '<text x="' + (W - R) + '" y="' + (H - 8) + '" text-anchor="end" fill="var(--mu)" font-size="10" font-weight="700">' + formatDateBR(new Date(o.end)) + "</text></svg>";
+  return s;
 }
+
+function calcAndPaint() {
+  const DAY = 86400000, now = Date.now();
+  const raw = jrRead(EFFORT_KEY, {});
+  const eff = { tracks: Object.assign({ ia: 1, mat: 1, ing: 1 }, raw.tracks || {}), topics: raw.topics || {} };
+  const customW = Object.values(eff.tracks).some(v => v !== 1) || Object.keys(eff.topics).length > 0;
+  ["ia", "mat", "ing"].forEach(t => { const i = jrEl("w-" + t); if (i && document.activeElement !== i) i.value = eff.tracks[t]; });
+  const ev = jrRead(EVENTS_KEY, []), ses = jrRead(SESS_KEY, []);
+  const logStart = parseInt(localStorage.getItem(LOGSTART_KEY) || "", 10) || null;
+
+  const P = RM.progress(PR, eff), T = RM.totals(eff);
+  const sPct = P.structDone / T.topics * 100, wPct = P.pts / T.points * 100, remaining = Math.max(0, T.points - P.pts);
+
+  // cards das trilhas (mantém os 4 cards grandes do hub)
+  let projDone = 0; const totalProj = 6;
+  try { const pl = JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]"); projDone = pl.filter(x => x.status === "done").length; } catch (e) {}
+  const trackUI = { ia: "ia", mat: "mat", ing: "ing" };
+  for (const t in trackUI) {
+    const p = P.per[t], pc = Math.round(p.done / p.total * 100);
+    jrSet("card-" + t + "-pct", pc + "% (" + p.done + "/" + p.total + ")");
+    const f = jrEl("card-" + t + "-fill"); if (f) f.style.width = pc + "%";
+  }
+  jrSet("card-proj-pct", Math.round(projDone / totalProj * 100) + "% (" + projDone + "/" + totalProj + ")");
+  const pf = jrEl("card-proj-fill"); if (pf) pf.style.width = Math.round(projDone / totalProj * 100) + "%";
+
+  // meta e plano
+  const preset = HUB_PRESETS[currentPace] || HUB_PRESETS.optimistic;
+  const start = new Date(currentStartDate + "T00:00:00").getTime();
+  const elapsed = Math.max(0, Math.floor((now - start) / DAY));
+  const deadline = preset.days ? start + preset.days * DAY : null;
+  const planned = RM.planned(T.points, start, deadline, now);
+  const st = RM.status(P.pts, planned, T.points, elapsed);
+  const series = RM.weeklySeries(ev, now, logStart, eff);
+  const fc = RM.forecast(remaining, series);
+  const req = deadline ? RM.requiredPace(remaining, now, deadline) : null;
+  const curPace = series.length ? series.slice(0, 4).reduce((a, b) => a + b, 0) / Math.min(4, series.length) : null;
+  const hpp = RM.hoursPerPoint(ses, ev, eff, logStart);
+  window.__jr = { remaining, fc, hpp, now };
+
+  const sInput = jrEl("hub-start-date"); if (sInput && !sInput.value) sInput.value = currentStartDate;
+  document.querySelectorAll(".speed-preset-btn").forEach(b => b.classList.remove("active"));
+  const cb = jrEl("btn-pace-" + currentPace); if (cb) cb.classList.add("active");
+
+  // faixa de situação (5 estados)
+  const B = { ahead: ["pace-ahead", "🟢 ADIANTADO"], ontrack: ["pace-ontrack", "🔵 NO RITMO"], attention: ["pace-attn", "🟡 ATENÇÃO"],
+              late: ["pace-late", "🟠 ABAIXO DA META"], nodata: ["pace-nodata", "⚪ SEM DADOS SUFICIENTES"], neutral: ["pace-nodata", "⚪ SEM META DEFINIDA"] }[st.k];
+  let msg;
+  const perDay = deadline ? T.points / ((deadline - start) / DAY) : 0;
+  if (st.k === "neutral") msg = "Sem data-alvo: acompanhando seu ritmo sem comparar com plano. Escolha uma meta acima se quiser um referencial.";
+  else if (st.k === "nodata") msg = "Dia " + elapsed + " da jornada. A comparação com o plano começa após 7 dias, antes disso o número seria ruído.";
+  else {
+    const d = Math.abs(st.delta), dd = perDay ? Math.round(d / perDay) : 0;
+    if (st.k === "ahead") msg = "Você está " + jrF(d) + " pontos de esforço à frente do plano (≈ " + dd + " dia(s)).";
+    else if (st.k === "ontrack") msg = "Dentro do ritmo esperado: diferença de " + jrF(st.delta) + " pontos em relação ao plano.";
+    else msg = "Você está " + jrF(d) + " pontos abaixo do plano (≈ " + dd + " dia(s))." + (req ? " Para voltar ao plano: ~" + jrF(req) + " pontos/semana" + (curPace != null ? " (hoje: " + jrF(curPace) + ")." : ".") : "");
+  }
+  const bn = jrEl("jr-banner"); if (bn) bn.className = "speed-diagnosis-card " + B[0];
+  jrSet("jr-banner-text", msg); jrSet("jr-banner-badge", B[1]);
+
+  // progresso
+  jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
+  jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
+  jrSet("jr-explain", customW
+    ? "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. A diferença vem dos pesos que você definiu."
+    : "Os pesos ainda são iguais (1 por tópico), então os dois percentuais só diferem pelo que está em andamento. Defina pesos acima para o ponderado refletir a complexidade.");
+
+  // previsão
+  const fmt = d => formatDateBR(new Date(now + d * DAY));
+  jrSet("jr-conf", fc.level === "ok" || fc.level === "preliminary" ? "confiança " + fc.conf : fc.level === "done" ? "concluído" : "preliminar");
+  if (fc.level === "done") { jrSet("jr-fc-main", "Roteiro concluído 🎓"); jrSet("jr-fc-sub", ""); }
+  else if (fc.level === "insufficient") {
+    jrSet("jr-fc-main", "Ainda sem data");
+    jrSet("jr-fc-sub", "Faltam dados para prever sem inventar precisão: preciso de " + fc.need + " semanas completas de registro (você tem " + fc.n + ")." +
+      (logStart ? " Registro iniciado em " + formatDateBR(new Date(logStart)) + "." : " O registro começa quando você marcar o próximo tópico.") +
+      (req ? " Para a meta, o ritmo necessário é ~" + jrF(req) + " pontos/semana." : ""));
+  } else if (!fc.dMed) { jrSet("jr-fc-main", "Sem ritmo recente"); jrSet("jr-fc-sub", "Nas últimas semanas não houve conclusões, então não há projeção."); }
+  else {
+    jrSet("jr-fc-main", fmt(fc.dMed));
+    jrSet("jr-fc-sub", "Faixa: " + (fc.dFast ? fmt(fc.dFast) : "–") + " a " + (fc.dSlow ? fmt(fc.dSlow) : "mais de 4 anos") + " (otimista a conservador)." +
+      (fc.level === "preliminary" ? " Prévia: baseada em " + fc.n + " semanas; estreita com mais histórico." : " Baseada em " + fc.n + " semanas de registro.") +
+      (deadline ? (fc.dMed * DAY + now <= deadline ? " Provável antes da meta." : " Provável depois da meta.") : ""));
+  }
+
+  // ritmo e tempo
+  jrSet("jr-pace", curPace != null ? jrF(curPace) + " pts/sem" : "–");
+  let ps = series.length ? "Média das últimas " + Math.min(4, series.length) + " semanas completas." : "Ainda sem semana completa de registro.";
+  if (series.length >= 8) { const a = series.slice(0, 4).reduce((x, y) => x + y, 0), b = series.slice(4, 8).reduce((x, y) => x + y, 0); ps += b > 0 ? " Vs. 4 semanas anteriores: " + (a >= b ? "+" : "") + Math.round((a - b) / b * 100) + "%." : ""; }
+  jrSet("jr-pace-sub", ps);
+  const secAll = ses.reduce((a, s) => a + (s.sec || 0), 0), sec7 = ses.filter(s => s.t >= now - 7 * DAY).reduce((a, s) => a + (s.sec || 0), 0);
+  jrSet("jr-time", ses.length ? "⏱️ " + jrF(secAll / 3600) + " h registradas (" + jrF(sec7 / 3600) + " h nos últimos 7 dias). Tempo não é progresso: só ajuda a estimar ritmo." : "⏱️ Tempo de estudo ainda não registrado (veja o patch de sessões).");
+
+  // trilhas
+  const nm = { ia: ["🤖 IA & Código", "ia.html"], mat: ["📐 Matemática", "matematica.html"], ing: ["🇺🇸 Inglês", "ingles.html"] };
+  jrSet("jr-tracks", Object.keys(nm).map(t => {
+    const p = P.per[t], w = p.pts / p.ptsTotal * 100, s2 = p.done / p.total * 100;
+    return '<div class="jr-row"><a href="' + nm[t][1] + '" style="color:inherit;text-decoration:none">' + nm[t][0] + "</a><span>" + p.done + "/" + p.total + " · esforço " + jrPct(w) + '</span></div><div class="jr-bar"><i class="s" style="width:' + s2 + '%"></i><i class="w" style="width:' + w + '%"></i></div>';
+  }).join(""));
+
+  // próximo passo (regras simples e transparentes)
+  const lastAct = Math.max(0, ...ev.map(e => e.t), ...ses.map(s => s.t));
+  const idle = lastAct ? Math.floor((now - lastAct) / DAY) : null;
+  const least = Object.keys(nm).sort((a, b) => P.per[a].pts / P.per[a].ptsTotal - P.per[b].pts / P.per[b].ptsTotal)[0];
+  let nt;
+  if (idle !== null && idle >= 3) nt = "Última atividade registrada há " + idle + " dias. Uma sessão curta em " + nm[least][0] + " retoma o fio sem pressão.";
+  else if ((st.k === "attention" || st.k === "late") && req) nt = "Para voltar ao plano: ~" + jrF(req) + " pontos/semana. Comece por " + nm[least][0] + ", a trilha com menos esforço concluído.";
+  else nt = "Continue em " + nm[least][0] + ", a trilha com menor esforço concluído (" + jrPct(P.per[least].pts / P.per[least].ptsTotal * 100) + ").";
+  jrSet("hub-next-step-title", nt);
+  const nb = jrEl("hub-next-step-btn"); if (nb) { nb.href = nm[least][1]; nb.textContent = "Ir para " + nm[least][0] + " ➔"; }
+
+  // marcos reais (derivados do log de eventos, nunca inventados)
+  const cv = RM.curve(ev, eff, logStart, now, P.pts);
+  const ms = RM.milestones(cv, T.points), nx = RM.nextStep(wPct);
+  jrSet("jr-ms", ms.length ? ms.map(m => "<li><span>✔ " + m.th + "% do esforço</span><span>" + (m.t ? formatDateBR(new Date(m.t)) : "antes do registro") + "</span></li>").join("")
+                           : "<li><span>Nenhum marco registrado ainda</span><span></span></li>");
+  jrSet("jr-next-ms", nx ? "Próximo marco: " + nx + "% do esforço (faltam " + jrF(T.points * nx / 100 - P.pts) + " pontos)." : "Todos os marcos alcançados.");
+
+  // gráfico
+  let end = Math.max(now + 14 * DAY, deadline || 0);
+  if (fc.dSlow) end = Math.max(end, now + Math.min(fc.dSlow, 730) * DAY);
+  else if (!deadline) end = now + 90 * DAY;
+  jrSet("jr-chart", drawJourney({ start, end, now, deadline, total: T.points, pts: P.pts, curve: cv, fc }));
+  updateWhatIf();
+}
+
 
 function toggleTheme(){
   const html = document.documentElement;
