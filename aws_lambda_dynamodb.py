@@ -7,8 +7,7 @@ Custo: US$ 0,00 (100% dentro do AWS Always Free Tier: 25 GB no DynamoDB + 1M req
 Suporta:
 - Multi-região automática (busca a tabela em us-east-2 e us-east-1 sem travar por divergência de região).
 - Decodificação Base64 automática de payloads do navegador.
-- Diagnóstico detalhado de conexão para teste direto no frontend.
-- CORS completo para origens locais (file://) e remotas.
+- Headers limpos sem duplicação de CORS (o AWS Function URL já gerencia o CORS nativamente).
 """
 
 import json
@@ -30,13 +29,12 @@ class DecimalEncoder(json.JSONEncoder):
 
 
 def _cors_response(status_code, body_dict):
+    # NOTA CRUCIAL: O AWS Function URL já injeta Access-Control-Allow-Origin automaticamente.
+    # Não devemos duplicar esses headers aqui para evitar o erro do Chrome 'multiple values *, *'.
     return {
         "statusCode": status_code,
         "headers": {
-            "Content-Type": "application/json; charset=utf-8",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, *"
+            "Content-Type": "application/json; charset=utf-8"
         },
         "body": json.dumps(body_dict, cls=DecimalEncoder, ensure_ascii=False)
     }
@@ -62,7 +60,6 @@ def _execute_dynamo_op(op_func):
             if err_code == "ResourceNotFoundException" or "ResourceNotFoundException" in str(exc):
                 last_exc = exc
                 continue
-            # Se for erro de permissão (AccessDenied) ou outro, lança imediatamente
             raise exc
 
     if last_exc:
@@ -78,7 +75,7 @@ def lambda_handler(event, context):
     ).upper()
 
     if method == "OPTIONS":
-        return _cors_response(200, {"ok": True, "cors": "enabled"})
+        return _cors_response(200, {"ok": True})
 
     try:
         if method == "GET":
