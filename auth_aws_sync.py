@@ -39,8 +39,8 @@ AUTH_AWS_SYNC_CSS = """
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(79,70,229,.12);
-  border: 1px solid rgba(79,70,229,.35);
+  background: rgba(74,92,106,.25);
+  border: 1px solid rgba(155,168,171,.3);
   color: var(--tx);
   font-size: .82rem;
   font-weight: 750;
@@ -51,7 +51,7 @@ AUTH_AWS_SYNC_CSS = """
   user-select: none;
 }
 .nav-user-pill:hover, .nav-user-pill.active {
-  background: rgba(79,70,229,.24);
+  background: rgba(74,92,106,.4);
   border-color: var(--ac);
   transform: translateY(-1px);
 }
@@ -260,6 +260,143 @@ AUTH_AWS_SYNC_CSS = """
   outline: none;
   border-color: #ff9900;
 }
+
+/* LINK E FORMULÁRIO DE RECUPERAÇÃO DE SENHA (2FA / OTP) */
+.forgot-pass-link {
+  font-size: .82rem;
+  color: var(--ac);
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.forgot-pass-link:hover {
+  text-decoration: underline;
+  filter: brightness(1.2);
+}
+.forgot-info-banner {
+  background: rgba(37,55,69,.4);
+  border: 1px solid rgba(155,168,171,.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: .81rem;
+  color: var(--tx);
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+.forgot-success-banner {
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: .82rem;
+  color: #10b981;
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+.forgot-error-box {
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: .82rem;
+  margin-top: 14px;
+  line-height: 1.45;
+}
+.forgot-channel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .forgot-channel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.forgot-channel-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all .2s;
+  user-select: none;
+}
+.forgot-channel-card:hover {
+  border-color: var(--mu);
+  background: var(--card);
+}
+.forgot-channel-card.active {
+  border-color: #9BA8AB;
+  background: rgba(74,92,106,.25);
+  box-shadow: 0 0 0 2px rgba(155,168,171,.25);
+}
+.channel-card-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.channel-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.channel-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.channel-card-desc {
+  font-size: .71rem;
+  color: var(--mu);
+  line-height: 1.25;
+}
+.channel-badge {
+  font-size: .63rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.channel-badge.recommended {
+  background: rgba(16,185,129,.15);
+  color: #10b981;
+}
+.channel-badge.zap {
+  background: rgba(37,211,102,.15);
+  color: #25d366;
+}
+.otp-code-input {
+  font-family: monospace;
+  font-size: 1.45rem;
+  letter-spacing: 8px;
+  text-align: center;
+  font-weight: 800;
+  color: #CCD0CF;
+  padding: 10px;
+}
+.forgot-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--ac);
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.forgot-link-btn:disabled {
+  color: var(--mu);
+  cursor: not-allowed;
+  text-decoration: none;
+  opacity: .65;
+}
 """
 
 CHANGE_CREDENTIALS_MODAL_HTML = """
@@ -312,6 +449,130 @@ CHANGE_CREDENTIALS_MODAL_HTML = """
     </form>
   </div>
 </div>
+"""
+
+FORGOT_PASSWORD_MODAL_HTML = """
+<!-- MODAL: RECUPERAÇÃO DE SENHA (2FA / OTP VIA SES OU WHATSAPP) -->
+<div id="modal-forgot-password" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:490px;width:95%">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.35rem">🔐</span>
+        <div>
+          <h3 class="modal-sub-title" style="margin:0">Recuperação de Acesso</h3>
+          <span style="font-size:.73rem;color:var(--mu);font-weight:600">Verificação Segura em Duas Etapas (OTP)</span>
+        </div>
+      </div>
+      <button class="modal-close-icon" onclick="closeForgotPasswordModal()">✕</button>
+    </div>
+
+    <!-- PASSO 1: ESCOLHA DO CANAL (E-MAIL OU WHATSAPP) -->
+    <div id="forgot-step-channel">
+      <div class="forgot-info-banner">
+        Escolha por onde deseja receber seu código descartável de 6 dígitos (válido por 10 minutos) para validar sua identidade e criar uma nova senha:
+      </div>
+
+      <form id="form-forgot-request" onsubmit="handleSendResetCode(event)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Seu E-mail Cadastrado</label>
+            <input type="email" id="forgot-input-email" class="aws-cfg-input" required placeholder="seu-email@dominio.com">
+          </div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:8px">Canal de Envio do Código</label>
+            <div class="forgot-channel-grid">
+              <!-- CANAL 1: EMAIL (SES) -->
+              <div class="forgot-channel-card active" id="channel-card-email" onclick="selectForgotChannel('email')">
+                <div class="channel-card-icon">✉️</div>
+                <div class="channel-card-body">
+                  <div class="channel-card-title">
+                    <span>E-mail</span>
+                    <span class="channel-badge recommended">Recomendado</span>
+                  </div>
+                  <div class="channel-card-desc">Amazon SES · Grátis</div>
+                </div>
+              </div>
+
+              <!-- CANAL 2: WHATSAPP -->
+              <div class="forgot-channel-card" id="channel-card-whatsapp" onclick="selectForgotChannel('whatsapp')">
+                <div class="channel-card-icon">💬</div>
+                <div class="channel-card-body">
+                  <div class="channel-card-title">
+                    <span>WhatsApp</span>
+                    <span class="channel-badge zap">Webhook</span>
+                  </div>
+                  <div class="channel-card-desc">Twilio / Webhook</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CAMPO ADICIONAL DE TELEFONE (APENAS SE WHATSAPP SELECIONADO) -->
+          <div id="forgot-phone-wrap" style="display:none">
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Número do WhatsApp (com DDD)</label>
+            <input type="tel" id="forgot-input-phone" class="aws-cfg-input" placeholder="+55 (11) 99999-9999">
+            <span style="font-size:.72rem;color:var(--mu);margin-top:3px;display:block">Informe o DDD brasileiro e o número (ex: 11988887777 ou +5511...)</span>
+          </div>
+        </div>
+
+        <div id="forgot-msg-error-step1" class="forgot-error-box" style="display:none"></div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+          <button type="button" class="aws-btn-sec" onclick="closeForgotPasswordModal()">Cancelar</button>
+          <button type="submit" id="btn-send-reset-code" class="aws-btn-primary">
+            <span>🚀 Enviar Código ➔</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASSO 2: DIGITAÇÃO DO CÓDIGO OTP & NOVA SENHA -->
+    <div id="forgot-step-verify" style="display:none">
+      <div class="forgot-success-banner">
+        <span>Código enviado com sucesso para <b id="forgot-target-dest">...</b>! Verifique sua caixa postal ou WhatsApp.</span>
+      </div>
+
+      <form id="form-forgot-verify" onsubmit="handleVerifyAndResetPassword(event)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Código de Verificação (6 dígitos)</label>
+            <input type="text" id="forgot-input-code" class="aws-cfg-input otp-code-input" maxlength="6" pattern="[0-9]{6}" required placeholder="000000" autocomplete="one-time-code">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="font-size:.74rem;color:var(--mu)">Expira em: <b id="forgot-otp-timer" style="color:#ff9900">10:00</b></span>
+              <button type="button" id="btn-resend-otp" class="forgot-link-btn" onclick="resendResetCode()" disabled>Reenviar (<span id="resend-countdown">60</span>s)</button>
+            </div>
+          </div>
+
+          <div class="dropdown-divider" style="margin:4px 0"></div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nova Senha (mínimo 4 caracteres)</label>
+            <input type="password" id="forgot-new-pass" class="aws-cfg-input" required minlength="4" placeholder="Digite a nova senha">
+          </div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Confirmar Nova Senha</label>
+            <input type="password" id="forgot-confirm-pass" class="aws-cfg-input" required minlength="4" placeholder="Confirme a nova senha">
+          </div>
+        </div>
+
+        <div id="forgot-msg-error-step2" class="forgot-error-box" style="display:none"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:8px;flex-wrap:wrap">
+          <button type="button" class="forgot-link-btn" onclick="backToChannelSelection()">← Trocar canal ou e-mail</button>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="aws-btn-sec" onclick="closeForgotPasswordModal()">Cancelar</button>
+            <button type="submit" id="btn-verify-reset-code" class="aws-btn-primary">
+              <span>✅ Redefinir & Entrar ➔</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 """
 
 AWS_SYNC_MODAL_HTML = """
@@ -593,6 +854,296 @@ async function handleSaveNewCredentials(e) {
     showToast("🔑 Senha criptografada (SHA-256) e sincronizada!");
   } else {
     alert("Dados e senha criptografada (SHA-256) atualizados com sucesso!");
+  }
+}
+
+// =========================================================================
+// RECUPERAÇÃO DE SENHA EM DUAS ETAPAS (2FA / OTP VIA SES OU WHATSAPP)
+// =========================================================================
+let _currentForgotChannel = "email";
+let _otpExpiryTimer = null;
+let _otpResendTimer = null;
+let _otpExpirySeconds = 600;
+let _otpResendSeconds = 60;
+
+function openForgotPasswordModal() {
+  const modal = document.getElementById("modal-forgot-password");
+  if (!modal) return;
+
+  const err1 = document.getElementById("forgot-msg-error-step1");
+  const err2 = document.getElementById("forgot-msg-error-step2");
+  if (err1) err1.style.display = "none";
+  if (err2) err2.style.display = "none";
+
+  const step1 = document.getElementById("forgot-step-channel");
+  const step2 = document.getElementById("forgot-step-verify");
+  if (step1) step1.style.display = "block";
+  if (step2) step2.style.display = "none";
+
+  const emailInput = document.getElementById("forgot-input-email");
+  const loginEmail = document.getElementById("login-input-email");
+  const user = getLoggedInUser();
+  if (emailInput) {
+    emailInput.value = (user && user.email) || (loginEmail ? loginEmail.value.trim() : "") || "joao@roteiro.ia";
+  }
+
+  selectForgotChannel("email");
+
+  modal.hidden = false;
+  modal.removeAttribute("hidden");
+  modal.style.display = "flex";
+}
+
+function closeForgotPasswordModal() {
+  const modal = document.getElementById("modal-forgot-password");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+  clearInterval(_otpExpiryTimer);
+  clearInterval(_otpResendTimer);
+}
+
+function selectForgotChannel(channel) {
+  _currentForgotChannel = channel;
+  const cardEmail = document.getElementById("channel-card-email");
+  const cardZap = document.getElementById("channel-card-whatsapp");
+  const phoneWrap = document.getElementById("forgot-phone-wrap");
+  const phoneInput = document.getElementById("forgot-input-phone");
+
+  if (cardEmail) cardEmail.classList.toggle("active", channel === "email");
+  if (cardZap) cardZap.classList.toggle("active", channel === "whatsapp");
+
+  if (phoneWrap) {
+    phoneWrap.style.display = channel === "whatsapp" ? "block" : "none";
+  }
+  if (phoneInput && channel === "whatsapp") {
+    phoneInput.required = true;
+    phoneInput.focus();
+  } else if (phoneInput) {
+    phoneInput.required = false;
+  }
+}
+
+function backToChannelSelection() {
+  clearInterval(_otpExpiryTimer);
+  clearInterval(_otpResendTimer);
+  const step1 = document.getElementById("forgot-step-channel");
+  const step2 = document.getElementById("forgot-step-verify");
+  if (step1) step1.style.display = "block";
+  if (step2) step2.style.display = "none";
+}
+
+async function handleSendResetCode(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById("forgot-input-email").value.trim();
+  const phone = document.getElementById("forgot-input-phone")?.value.trim() || "";
+  const errEl = document.getElementById("forgot-msg-error-step1");
+  const btn = document.getElementById("btn-send-reset-code");
+
+  if (!email) {
+    if (errEl) { errEl.textContent = "Informe seu e-mail cadastrado."; errEl.style.display = "block"; }
+    return;
+  }
+  if (_currentForgotChannel === "whatsapp" && !phone) {
+    if (errEl) { errEl.textContent = "Informe o número do WhatsApp com DDD."; errEl.style.display = "block"; }
+    return;
+  }
+
+  if (errEl) errEl.style.display = "none";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span>⏳ Enviando código...</span>`;
+  }
+
+  try {
+    const endpoint = getAwsEndpointUrl();
+    const payload = {
+      action: "request_reset",
+      user_id: email.toLowerCase(),
+      channel: _currentForgotChannel,
+      phone: phone
+    };
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      let msg = data.error || "Não foi possível enviar o código de verificação.";
+      if (data.hint) msg += "\n👉 " + data.hint;
+      throw new Error(msg);
+    }
+
+    const targetDest = document.getElementById("forgot-target-dest");
+    if (targetDest) {
+      targetDest.textContent = data.masked_destination || (_currentForgotChannel === "email" ? email : phone);
+    }
+
+    const step1 = document.getElementById("forgot-step-channel");
+    const step2 = document.getElementById("forgot-step-verify");
+    if (step1) step1.style.display = "none";
+    if (step2) step2.style.display = "block";
+
+    const codeInput = document.getElementById("forgot-input-code");
+    if (codeInput) codeInput.value = "";
+    const newPassInput = document.getElementById("forgot-new-pass");
+    if (newPassInput) newPassInput.value = "";
+    const confirmPassInput = document.getElementById("forgot-confirm-pass");
+    if (confirmPassInput) confirmPassInput.value = "";
+    const err2 = document.getElementById("forgot-msg-error-step2");
+    if (err2) err2.style.display = "none";
+
+    startOtpCountdown(data.expires_in_seconds || 600);
+    startResendCountdown(60);
+    if (codeInput) codeInput.focus();
+
+  } catch(err) {
+    if (errEl) {
+      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message.replace(/\n/g, "<br>")}`;
+      errEl.style.display = "block";
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>🚀 Enviar Código ➔</span>`;
+    }
+  }
+}
+
+async function resendResetCode() {
+  const btnResend = document.getElementById("btn-resend-otp");
+  if (btnResend && btnResend.disabled) return;
+  await handleSendResetCode(null);
+}
+
+function startOtpCountdown(totalSec) {
+  clearInterval(_otpExpiryTimer);
+  _otpExpirySeconds = totalSec;
+  const timerEl = document.getElementById("forgot-otp-timer");
+
+  function updateTimer() {
+    const mins = Math.floor(_otpExpirySeconds / 60);
+    const secs = _otpExpirySeconds % 60;
+    if (timerEl) timerEl.textContent = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    if (_otpExpirySeconds <= 0) {
+      clearInterval(_otpExpiryTimer);
+      if (timerEl) timerEl.textContent = "Expirado";
+    }
+    _otpExpirySeconds--;
+  }
+  updateTimer();
+  _otpExpiryTimer = setInterval(updateTimer, 1000);
+}
+
+function startResendCountdown(sec) {
+  clearInterval(_otpResendTimer);
+  _otpResendSeconds = sec;
+  const btnResend = document.getElementById("btn-resend-otp");
+  const countdownSpan = document.getElementById("resend-countdown");
+  if (btnResend) {
+    btnResend.disabled = true;
+    btnResend.innerHTML = `Reenviar (<span id="resend-countdown">${sec}</span>s)`;
+  }
+
+  _otpResendTimer = setInterval(() => {
+    _otpResendSeconds--;
+    const span = document.getElementById("resend-countdown");
+    if (span) span.textContent = _otpResendSeconds;
+    if (_otpResendSeconds <= 0) {
+      clearInterval(_otpResendTimer);
+      if (btnResend) {
+        btnResend.disabled = false;
+        btnResend.textContent = "Reenviar código agora";
+      }
+    }
+  }, 1000);
+}
+
+async function handleVerifyAndResetPassword(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById("forgot-input-email").value.trim();
+  const code = document.getElementById("forgot-input-code").value.trim();
+  const newPass = document.getElementById("forgot-new-pass").value.trim();
+  const confirmPass = document.getElementById("forgot-confirm-pass").value.trim();
+  const errEl = document.getElementById("forgot-msg-error-step2");
+  const btn = document.getElementById("btn-verify-reset-code");
+
+  if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+    if (errEl) { errEl.textContent = "O código deve conter exatamente 6 dígitos numéricos."; errEl.style.display = "block"; }
+    return;
+  }
+  if (newPass.length < 4) {
+    if (errEl) { errEl.textContent = "A nova senha deve ter no mínimo 4 caracteres."; errEl.style.display = "block"; }
+    return;
+  }
+  if (newPass !== confirmPass) {
+    if (errEl) { errEl.textContent = "A confirmação de senha não confere."; errEl.style.display = "block"; }
+    return;
+  }
+
+  if (errEl) errEl.style.display = "none";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span>⏳ Validando...</span>`;
+  }
+
+  try {
+    const newHash = await computeSha256(newPass);
+    const endpoint = getAwsEndpointUrl();
+    const payload = {
+      action: "confirm_reset",
+      user_id: email.toLowerCase(),
+      code: code,
+      new_pwd_hash: newHash
+    };
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      throw new Error(data.error || "Código de verificação incorreto ou expirado.");
+    }
+
+    localStorage.setItem(PASSWORD_HASH_KEY, newHash);
+    const userObj = {
+      authenticated: true,
+      name: data.user_name || "João Naziozeno",
+      email: email,
+      loginTime: Date.now(),
+      provider: "aws-dynamodb-verified"
+    };
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(userObj));
+
+    closeForgotPasswordModal();
+
+    if (typeof checkHubAuth === "function") checkHubAuth();
+    if (typeof updateNavAuthUI === "function") updateNavAuthUI();
+
+    if (typeof showToast === "function") {
+      showToast("🎉 Senha redefinida com sucesso! Acesso liberado.");
+    } else {
+      alert("🎉 Senha redefinida com sucesso! Você já está autenticado no ecossistema.");
+    }
+
+  } catch(err) {
+    if (errEl) {
+      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message}`;
+      errEl.style.display = "block";
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>✅ Redefinir & Entrar ➔</span>`;
+    }
   }
 }
 
@@ -894,8 +1445,8 @@ async function testAwsLambdaConnection() {
 
   if (statusEl) {
     statusEl.style.display = "block";
-    statusEl.style.background = "rgba(79,70,229,.1)";
-    statusEl.style.borderColor = "rgba(79,70,229,.35)";
+    statusEl.style.background = "rgba(74,92,106,.2)";
+    statusEl.style.borderColor = "rgba(155,168,171,.35)";
     statusEl.style.color = "var(--ac)";
     statusEl.innerHTML = "⏳ <b>Testando conexão com AWS Lambda e DynamoDB...</b>";
   }

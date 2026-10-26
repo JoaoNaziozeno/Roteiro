@@ -138,7 +138,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   white-space: nowrap;
 }
 .player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
-.player-ext-btn.doc-ext { background: rgba(79,70,229,.1); border-color: rgba(79,70,229,.3); color: var(--ac); }
+.player-ext-btn.doc-ext { background: rgba(74,92,106,.2); border-color: rgba(155,168,171,.3); color: var(--ac); }
 
 .player-collapse-btn {
   font: inherit;
@@ -290,8 +290,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 /* Botões especiais na Toolbar */
 .tb-btn.tb-highlight-math {
-  background: rgba(79,70,229,.1);
-  border-color: rgba(79,70,229,.35);
+  background: rgba(74,92,106,.2);
+  border-color: rgba(155,168,171,.35);
   color: var(--ac);
   font-weight: 750;
 }
@@ -373,8 +373,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-weight: 650;
   padding: 3px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(79,70,229,.25);
-  background: rgba(79,70,229,.07);
+  border: 1px solid rgba(155,168,171,.3);
+  background: rgba(74,92,106,.2);
   color: var(--ac);
   cursor: pointer;
   transition: .15s;
@@ -503,7 +503,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .canvas-3d-wrap {
   flex: 1 1 500px;
-  background: #0f1218;
+  background: #06141B;
   position: relative;
   display: flex;
   align-items: center;
@@ -634,8 +634,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .v3d-math-results {
-  background: rgba(79,70,229,.07);
-  border: 1px solid rgba(79,70,229,.25);
+  background: rgba(37,55,69,.4);
+  border: 1px solid rgba(155,168,171,.25);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: .82rem;
@@ -755,7 +755,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .draw-insert-btn:hover { background: var(--ac-hover); }
 
 .draw-canvas-wrap {
-  background: #11141c;
+  background: #11212D;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -835,8 +835,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-size: .76rem;
   font-weight: 750;
   border-radius: 6px;
-  background: rgba(79,70,229,.12);
-  border: 1px solid rgba(79,70,229,.35);
+  background: rgba(74,92,106,.2);
+  border: 1px solid rgba(155,168,171,.3);
   color: var(--ac);
   cursor: pointer;
   text-decoration: none;
@@ -845,9 +845,9 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .note-timestamp-pill:hover {
   background: var(--ac);
-  color: #fff;
+  color: #06141B;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(79,70,229,.3);
+  box-shadow: 0 2px 8px rgba(6,20,27,.4);
 }
 
 /* =========================================================================

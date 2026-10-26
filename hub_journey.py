@@ -3,7 +3,7 @@
 from metrics_js import METRICS_JS
 
 JOURNEY_CSS = r"""
-.jr-sect{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:24px 26px;margin-bottom:36px;box-shadow:0 14px 40px rgba(0,0,0,.06)}
+.jr-sect{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:24px 26px;margin-bottom:36px;box-shadow:0 14px 40px rgba(6,20,27,.4)}
 .jr-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:14px 0}
 .jr-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
 .jr-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
@@ -15,8 +15,8 @@ JOURNEY_CSS = r"""
 .jr-sub{font-size:.78rem;color:var(--mu);line-height:1.45;margin-top:4px}
 .jr-bar{height:9px;background:var(--bd);border-radius:99px;overflow:hidden;position:relative}
 .jr-bar>i{display:block;height:100%;border-radius:99px;transition:width .4s}
-.jr-bar>i.s{background:rgba(79,70,229,.35);position:absolute;left:0;top:0}
-.jr-bar>i.w{background:linear-gradient(90deg,#10b981,#06b6d4);position:absolute;left:0;top:0}
+.jr-bar>i.s{background:#253745;position:absolute;left:0;top:0}
+.jr-bar>i.w{background:linear-gradient(90deg,#4A5C6A,#9BA8AB);position:absolute;left:0;top:0}
 .jr-row{display:flex;justify-content:space-between;gap:8px;font-size:.78rem;font-weight:700;color:var(--tx);margin:10px 0 4px}
 .jr-svg{width:100%;height:auto;display:block}
 .jr-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:.72rem;font-weight:700;color:var(--mu);margin-top:6px}
@@ -78,8 +78,8 @@ JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
         <div class="jr-h"><span>📈 Sua evolução acumulada</span><span class="jr-chip" id="jr-chart-chip">esforço (pontos)</span></div>
         <div id="jr-chart"></div>
         <div class="jr-leg">
-          <span style="color:#6366f1">┄ Plano da meta</span><span style="color:#10b981">━ Realizado</span>
-          <span style="color:#06b6d4">▨ Faixa de previsão</span><span>· trecho claro = antes do início do registro</span>
+          <span style="color:#9BA8AB">┄ Plano da meta</span><span style="color:#10b981">━ Realizado</span>
+          <span style="color:#CCD0CF">▨ Faixa de previsão</span><span>· trecho claro = antes do início do registro</span>
         </div>
       </div>
       <div class="jr-col">
@@ -201,12 +201,12 @@ function drawJourney(o) {
     s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(o.total * f) + '" y2="' + Y(o.total * f) + '" stroke="var(--bd)" stroke-dasharray="3 3"/>';
     s += '<text x="4" y="' + (Y(o.total * f) + 4) + '" fill="var(--mu)" font-size="10" font-weight="700">' + Math.round(o.total * f) + "</text>";
   });
-  if (o.deadline) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(o.deadline) + '" y2="' + Y(o.total) + '" stroke="#6366f1" stroke-width="2" stroke-dasharray="5 4" stroke-opacity=".7"/>';
+  if (o.deadline) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(o.deadline) + '" y2="' + Y(o.total) + '" stroke="#9BA8AB" stroke-width="2" stroke-dasharray="5 4" stroke-opacity=".7"/>';
   const fc = o.fc;
   if (fc && (fc.level === "ok" || fc.level === "preliminary") && fc.med > 0) {
     const dd = (o.end - o.now) / DAY, yv = p => o.pts + p / 7 * dd;
-    s += '<polygon points="' + X(o.now) + "," + Y(o.pts) + " " + X(o.end) + "," + Y(yv(fc.fast)) + " " + X(o.end) + "," + Y(yv(fc.slow)) + '" fill="#06b6d4" fill-opacity=".16"/>';
-    s += '<line x1="' + X(o.now) + '" y1="' + Y(o.pts) + '" x2="' + X(o.end) + '" y2="' + Y(yv(fc.med)) + '" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5 4"/>';
+    s += '<polygon points="' + X(o.now) + "," + Y(o.pts) + " " + X(o.end) + "," + Y(yv(fc.fast)) + " " + X(o.end) + "," + Y(yv(fc.slow)) + '" fill="#4A5C6A" fill-opacity=".22"/>';
+    s += '<line x1="' + X(o.now) + '" y1="' + Y(o.pts) + '" x2="' + X(o.end) + '" y2="' + Y(yv(fc.med)) + '" stroke="#CCD0CF" stroke-width="2" stroke-dasharray="5 4"/>';
   }
   const cv = o.curve;
   if (cv.length) {

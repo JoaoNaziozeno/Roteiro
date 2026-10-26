@@ -287,7 +287,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
       const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
       const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
       guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(99,102,241,.45);background:linear-gradient(160deg,rgba(79,70,229,.09),rgba(16,185,129,.05));padding:16px 18px;border-radius:14px;margin-bottom:10px">
+        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(155,168,171,.3);background:linear-gradient(160deg,rgba(37,55,69,.5),rgba(74,92,106,.2));padding:16px 18px;border-radius:14px;margin-bottom:10px">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
             <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
               <span>📘 Aula Visual Passo a Passo — Método Khan Academy (PT-BR)</span>
@@ -626,13 +626,13 @@ function syncSessionStudyProgressUI() {
       videoPill.style.color = "#10b981";
     } else if (ytDuration > 0) {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
-      videoPill.style.background = "rgba(79,70,229,.1)";
-      videoPill.style.borderColor = "rgba(79,70,229,.35)";
+      videoPill.style.background = "rgba(74,92,106,.2)";
+      videoPill.style.borderColor = "rgba(155,168,171,.35)";
       videoPill.style.color = "var(--ac)";
     } else {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
-      videoPill.style.background = "rgba(79,70,229,.1)";
-      videoPill.style.borderColor = "rgba(79,70,229,.35)";
+      videoPill.style.background = "rgba(74,92,106,.2)";
+      videoPill.style.borderColor = "rgba(155,168,171,.35)";
       videoPill.style.color = "var(--ac)";
     }
   }
@@ -1029,7 +1029,7 @@ function update3DScene() {
   const cx = w / 2, cy = h / 2;
 
   // Limpar fundo escuro
-  ctx.fillStyle = "#0f1218";
+  ctx.fillStyle = "#06141B";
   ctx.fillRect(0, 0, w, h);
 
   // Grade no plano XZ
@@ -1288,7 +1288,7 @@ function clearWhiteboard() {
   const canvas = document.getElementById("whiteboard-canvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#11141c";
+  ctx.fillStyle = "#11212D";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 

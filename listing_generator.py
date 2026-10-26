@@ -1537,8 +1537,8 @@ function toggleTheme() {
 }
 
 try {
-  const savedTheme = localStorage.getItem("roteiro-theme");
-  if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  const savedTheme = localStorage.getItem("roteiro-theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
 } catch(e) {}
 
 window.addEventListener("DOMContentLoaded", () => {

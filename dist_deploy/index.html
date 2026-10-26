@@ -6,10 +6,27 @@
 <title>Hub Central - Roteiro de Estudo do zero à IA</title>
 <style>
 
-:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f27;--mu:#667085;--bd:#e3e6ec;--ac:#4f46e5;--ac-hover:#4338ca;--z:#e5484d;--r:#e8a100;--e:#2fa36b;
-box-sizing:border-box}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f1218;--card:#181c25;--tx:#e8eaf0;--mu:#9aa3b2;--bd:#2a303c;--ac:#8b85ff;--ac-hover:#9d98ff;color-scheme:dark}
+:root{
+  --c1:#06141B;--c2:#11212D;--c3:#253745;--c4:#4A5C6A;--c5:#9BA8AB;--c6:#CCD0CF;
+  --bg:#06141B;--card:#11212D;--tx:#CCD0CF;--mu:#9BA8AB;--bd:#253745;--ac:#9BA8AB;--ac-hover:#CCD0CF;
+  --z:#e5484d;--r:#e8a100;--e:#2fa36b;
+  box-sizing:border-box;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#06141B;--card:#11212D;--tx:#CCD0CF;--mu:#9BA8AB;--bd:#253745;--ac:#9BA8AB;--ac-hover:#CCD0CF;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#06141B;--card:#11212D;--tx:#CCD0CF;--mu:#9BA8AB;--bd:#253745;--ac:#9BA8AB;--ac-hover:#CCD0CF;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --bg:#edf1f2;--card:#ffffff;--tx:#06141B;--mu:#4A5C6A;--bd:#CCD0CF;--ac:#253745;--ac-hover:#11212D;
+  color-scheme:light;
+}
 html{scroll-padding-top:70px;scroll-behavior:smooth}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -19,13 +36,13 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
   position:sticky;
   top:0;
   z-index:100;
-  background:rgba(255,255,255,.88);
+  background:rgba(17,33,45,.92);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
   border-bottom:1px solid var(--bd);
   transition:background .2s;
 }
-:root[data-theme="dark"] .top-nav, @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .top-nav{background:rgba(24,28,37,.88)}}
+:root[data-theme="light"] .top-nav{background:rgba(255,255,255,.92)}
 
 .top-nav-inner{
   max-width:1440px;
@@ -47,7 +64,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
   text-decoration:none;
 }
 .nav-brand span{
-  background:linear-gradient(135deg,var(--ac),#ec4899);
+  background:linear-gradient(135deg,#CCD0CF,#9BA8AB);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
@@ -72,7 +89,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
   transition:.15s;
 }
 .nav-link:hover{color:var(--tx);background:var(--bg)}
-.nav-link.active{color:var(--ac);background:rgba(79,70,229,.1);font-weight:700}
+.nav-link.active{color:#CCD0CF;background:rgba(155,168,171,.15);border:1px solid rgba(155,168,171,.25);font-weight:700}
 
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-status-pill{
@@ -128,7 +145,7 @@ details.sb-phase{border-radius:8px;background:transparent}
 details.sb-phase summary{list-style:none;cursor:pointer;padding:7px 9px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.82rem;font-weight:650;color:var(--tx);transition:.15s}
 details.sb-phase summary::-webkit-details-marker{display:none}
 details.sb-phase summary:hover{background:var(--bg)}
-details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--ac)}
+details.sb-phase.active-phase summary{background:rgba(74,92,106,.25);color:var(--tx)}
 .sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
 
@@ -150,7 +167,7 @@ details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--
   transition:.15s;
 }
 .sb-sub-btn:hover{background:var(--bg);color:var(--tx)}
-.sb-sub-btn.active-group{color:var(--ac);font-weight:600;background:rgba(79,70,229,.08)}
+.sb-sub-btn.active-group{color:#CCD0CF;font-weight:600;background:rgba(74,92,106,.2)}
 
 /* Botão Mobile da Sidebar */
 .sb-toggle-btn{
@@ -158,9 +175,9 @@ details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--
   bottom:20px;
   right:20px;
   z-index:95;
-  background:var(--ac);
-  color:#fff;
-  border:none;
+  background:linear-gradient(135deg,#253745,#4A5C6A);
+  color:#CCD0CF;
+  border:1px solid rgba(155,168,171,.3);
   border-radius:99px;
   padding:10px 18px;
   font:inherit;
@@ -170,7 +187,7 @@ details.sb-phase.active-phase summary{background:rgba(79,70,229,.1);color:var(--
   align-items:center;
   gap:8px;
   cursor:pointer;
-  box-shadow:0 4px 18px rgba(79,70,229,.35);
+  box-shadow:0 4px 18px rgba(6,20,27,.6);
 }
 .sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:85}
 .sb-backdrop.active{display:block}
@@ -191,8 +208,8 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 /* Animação de Scroll */
 @keyframes highlightHeading {
   0% { background: transparent; }
-  25% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
-  75% { background: rgba(79, 70, 229, 0.22); color: var(--ac); padding-left: 8px; border-radius: 6px; }
+  25% { background: rgba(74, 92, 106, 0.35); color: var(--tx); padding-left: 8px; border-radius: 6px; }
+  75% { background: rgba(74, 92, 106, 0.35); color: var(--tx); padding-left: 8px; border-radius: 6px; }
   100% { background: transparent; padding-left: 0; }
 }
 .target-highlight {
@@ -214,7 +231,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 .tracker-presets{display:flex;flex-wrap:wrap;gap:6px}
 .trk-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:.15s}
 .trk-btn:hover{border-color:var(--ac);color:var(--ac)}
-.trk-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.trk-btn.active{background:var(--ac);color:#06141B;border-color:var(--ac);font-weight:700}
 
 .level-banner{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .level-info{display:flex;align-items:center;gap:10px}
@@ -224,19 +241,19 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 .level-xp-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:1 1 200px}
 .level-xp-text{font-size:.78rem;font-weight:600;color:var(--ac)}
 .level-xp-bar{width:100%;max-width:220px;height:6px;background:var(--bd);border-radius:99px;overflow:hidden}
-.level-xp-fill{height:100%;background:linear-gradient(90deg,var(--ac),#ec4899);border-radius:99px;transition:width .4s ease}
+.level-xp-fill{height:100%;background:linear-gradient(90deg,#4A5C6A,#9BA8AB);border-radius:99px;transition:width .4s ease}
 
 .pace-status-card{padding:12px 16px;border-radius:10px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;font-size:.88rem;font-weight:600}
 .pace-ahead{background:rgba(47,163,107,.12);border:1px solid rgba(47,163,107,.3);color:var(--e)}
-.pace-ontrack{background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.28);color:var(--ac)}
+.pace-ontrack{background:rgba(74,92,106,.2);border:1px solid rgba(155,168,171,.35);color:#CCD0CF}
 .pace-behind{background:rgba(229,72,77,.12);border:1px solid rgba(229,72,77,.3);color:var(--z)}
 
-.next-step-box{background:rgba(79,70,229,.06);border:1px dashed var(--ac);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.next-step-box{background:rgba(37,55,69,.35);border:1px dashed rgba(155,168,171,.4);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
 .next-step-info{display:flex;flex-direction:column;gap:2px}
 .next-step-tag{font-size:.72rem;font-weight:700;letter-spacing:.05em;color:var(--ac);text-transform:uppercase}
 .next-step-title{font-size:.88rem;font-weight:650;color:var(--tx)}
-.next-step-btn{font:inherit;font-size:.82rem;font-weight:650;padding:8px 16px;border-radius:99px;border:none;background:var(--ac);color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(79,70,229,.3);transition:.2s}
-.next-step-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(79,70,229,.4)}
+.next-step-btn{font:inherit;font-size:.82rem;font-weight:650;padding:8px 16px;border-radius:99px;border:1px solid rgba(155,168,171,.3);background:linear-gradient(135deg,#253745,#4A5C6A);color:#CCD0CF;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(6,20,27,.5);transition:.2s}
+.next-step-btn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(6,20,27,.6);color:#fff}
 
 .pace-stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
 .pace-stat-card{background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px 14px;display:flex;flex-direction:column;gap:3px}
@@ -256,7 +273,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 .filters{display:flex;flex-wrap:wrap;gap:6px}
 .fil-btn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer;transition:.15s}
 .fil-btn:hover{border-color:var(--ac)}
-.fil-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.fil-btn.active{background:var(--ac);color:#06141B;border-color:var(--ac);font-weight:700}
 .search-input{font:inherit;font-size:.82rem;padding:6px 12px;border-radius:99px;border:1px solid var(--bd);background:var(--card);color:var(--tx);min-width:220px}
 .search-input:focus{outline:none;border-color:var(--ac)}
 
@@ -267,7 +284,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 .phase-dur{font-size:.74rem;padding:3px 10px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600}
 .phase-body{padding:18px}
 .phase-callout{padding:10px 14px;border-radius:8px;font-size:.82rem;margin-bottom:12px}
-.callout-tip{background:rgba(79,70,229,.07);border-left:3px solid var(--ac);color:var(--tx)}
+.callout-tip{background:rgba(37,55,69,.35);border-left:3px solid var(--ac);color:var(--tx)}
 .callout-proj{background:rgba(47,163,107,.08);border-left:3px solid var(--e);color:var(--tx)}
 .callout-res{background:var(--bg);border:1px solid var(--bd);color:var(--mu);font-size:.8rem}
 
@@ -351,7 +368,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
   white-space:nowrap;
 }
 .note-btn:hover{color:var(--tx);border-color:var(--ac)}
-.note-btn.has-notes{color:var(--ac);border-color:var(--ac);background:rgba(79,70,229,.08);font-weight:600}
+.note-btn.has-notes{color:#CCD0CF;border-color:var(--ac);background:rgba(74,92,106,.25);font-weight:600}
 
 .yt-btn{
   font:inherit;
@@ -643,7 +660,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   white-space: nowrap;
 }
 .player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
-.player-ext-btn.doc-ext { background: rgba(79,70,229,.1); border-color: rgba(79,70,229,.3); color: var(--ac); }
+.player-ext-btn.doc-ext { background: rgba(74,92,106,.2); border-color: rgba(155,168,171,.3); color: var(--ac); }
 
 .player-collapse-btn {
   font: inherit;
@@ -795,8 +812,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 /* Botões especiais na Toolbar */
 .tb-btn.tb-highlight-math {
-  background: rgba(79,70,229,.1);
-  border-color: rgba(79,70,229,.35);
+  background: rgba(74,92,106,.2);
+  border-color: rgba(155,168,171,.35);
   color: var(--ac);
   font-weight: 750;
 }
@@ -878,8 +895,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-weight: 650;
   padding: 3px 8px;
   border-radius: 6px;
-  border: 1px solid rgba(79,70,229,.25);
-  background: rgba(79,70,229,.07);
+  border: 1px solid rgba(155,168,171,.3);
+  background: rgba(74,92,106,.2);
   color: var(--ac);
   cursor: pointer;
   transition: .15s;
@@ -1008,7 +1025,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .canvas-3d-wrap {
   flex: 1 1 500px;
-  background: #0f1218;
+  background: #06141B;
   position: relative;
   display: flex;
   align-items: center;
@@ -1139,8 +1156,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 .v3d-math-results {
-  background: rgba(79,70,229,.07);
-  border: 1px solid rgba(79,70,229,.25);
+  background: rgba(37,55,69,.4);
+  border: 1px solid rgba(155,168,171,.25);
   border-radius: 10px;
   padding: 10px 14px;
   font-size: .82rem;
@@ -1260,7 +1277,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .draw-insert-btn:hover { background: var(--ac-hover); }
 
 .draw-canvas-wrap {
-  background: #11141c;
+  background: #11212D;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -1340,8 +1357,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-size: .76rem;
   font-weight: 750;
   border-radius: 6px;
-  background: rgba(79,70,229,.12);
-  border: 1px solid rgba(79,70,229,.35);
+  background: rgba(74,92,106,.2);
+  border: 1px solid rgba(155,168,171,.3);
   color: var(--ac);
   cursor: pointer;
   text-decoration: none;
@@ -1350,9 +1367,9 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .note-timestamp-pill:hover {
   background: var(--ac);
-  color: #fff;
+  color: #06141B;
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(79,70,229,.3);
+  box-shadow: 0 2px 8px rgba(6,20,27,.4);
 }
 
 /* =========================================================================
@@ -1727,8 +1744,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(79,70,229,.12);
-  border: 1px solid rgba(79,70,229,.35);
+  background: rgba(74,92,106,.25);
+  border: 1px solid rgba(155,168,171,.3);
   color: var(--tx);
   font-size: .82rem;
   font-weight: 750;
@@ -1739,7 +1756,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   user-select: none;
 }
 .nav-user-pill:hover, .nav-user-pill.active {
-  background: rgba(79,70,229,.24);
+  background: rgba(74,92,106,.4);
   border-color: var(--ac);
   transform: translateY(-1px);
 }
@@ -1949,6 +1966,143 @@ input:checked + .slider:before { transform: translateX(14px); }
   border-color: #ff9900;
 }
 
+/* LINK E FORMULÁRIO DE RECUPERAÇÃO DE SENHA (2FA / OTP) */
+.forgot-pass-link {
+  font-size: .82rem;
+  color: var(--ac);
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.forgot-pass-link:hover {
+  text-decoration: underline;
+  filter: brightness(1.2);
+}
+.forgot-info-banner {
+  background: rgba(37,55,69,.4);
+  border: 1px solid rgba(155,168,171,.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: .81rem;
+  color: var(--tx);
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+.forgot-success-banner {
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: .82rem;
+  color: #10b981;
+  margin-bottom: 16px;
+  line-height: 1.45;
+}
+.forgot-error-box {
+  background: rgba(239,68,68,.12);
+  border: 1px solid rgba(239,68,68,.3);
+  color: #ef4444;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: .82rem;
+  margin-top: 14px;
+  line-height: 1.45;
+}
+.forgot-channel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .forgot-channel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.forgot-channel-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  cursor: pointer;
+  transition: all .2s;
+  user-select: none;
+}
+.forgot-channel-card:hover {
+  border-color: var(--mu);
+  background: var(--card);
+}
+.forgot-channel-card.active {
+  border-color: #9BA8AB;
+  background: rgba(74,92,106,.25);
+  box-shadow: 0 0 0 2px rgba(155,168,171,.25);
+}
+.channel-card-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.channel-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.channel-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .84rem;
+  font-weight: 750;
+  color: var(--tx);
+}
+.channel-card-desc {
+  font-size: .71rem;
+  color: var(--mu);
+  line-height: 1.25;
+}
+.channel-badge {
+  font-size: .63rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.channel-badge.recommended {
+  background: rgba(16,185,129,.15);
+  color: #10b981;
+}
+.channel-badge.zap {
+  background: rgba(37,211,102,.15);
+  color: #25d366;
+}
+.otp-code-input {
+  font-family: monospace;
+  font-size: 1.45rem;
+  letter-spacing: 8px;
+  text-align: center;
+  font-weight: 800;
+  color: #CCD0CF;
+  padding: 10px;
+}
+.forgot-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--ac);
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+.forgot-link-btn:disabled {
+  color: var(--mu);
+  cursor: not-allowed;
+  text-decoration: none;
+  opacity: .65;
+}
+
 /* =========================================================================
    PORTAL DE LOGIN & ACESSO RESTRITO
    ========================================================================= */
@@ -1959,19 +2113,19 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .portal-card {
   background: var(--card);
-  border: 1px solid rgba(79,70,229,.35);
+  border: 1px solid var(--bd);
   border-radius: 24px;
   padding: 38px 42px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.15), 0 0 40px rgba(79,70,229,.08);
+  box-shadow: 0 20px 60px rgba(6,20,27,.6), 0 0 40px rgba(37,55,69,.25);
   text-align: center;
   position: relative;
   overflow: hidden;
 }
 .portal-badge {
   display: inline-block;
-  background: rgba(79,70,229,.15);
-  border: 1px solid rgba(79,70,229,.35);
-  color: var(--ac);
+  background: rgba(74,92,106,.25);
+  border: 1px solid rgba(155,168,171,.3);
+  color: #CCD0CF;
   font-size: .8rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -2022,8 +2176,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .portal-input:focus {
   outline: none;
-  border-color: var(--ac);
-  box-shadow: 0 0 0 3px rgba(79,70,229,.18);
+  border-color: #9BA8AB;
+  box-shadow: 0 0 0 3px rgba(155,168,171,.2);
 }
 .portal-remember-row {
   margin-bottom: 22px;
@@ -2031,20 +2185,21 @@ input:checked + .slider:before { transform: translateX(14px); }
 .portal-submit-btn {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, var(--ac), #8b5cf6);
-  color: #fff;
-  border: none;
+  background: linear-gradient(135deg, #253745, #4A5C6A);
+  color: #CCD0CF;
+  border: 1px solid rgba(155,168,171,.35);
   border-radius: 12px;
   font-size: 1.05rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(79,70,229,.3);
+  box-shadow: 0 6px 20px rgba(6,20,27,.4);
   transition: all .2s;
 }
 .portal-submit-btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.15);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(79,70,229,.4);
+  box-shadow: 0 8px 24px rgba(6,20,27,.6);
+  color: #fff;
 }
 .portal-error-msg {
   background: rgba(239,68,68,.12);
@@ -2060,20 +2215,20 @@ input:checked + .slider:before { transform: translateX(14px); }
 /* Hub Cards e Seções Específicas */
 .hub-main{max-width:1260px;margin:0 auto;padding:32px 24px 100px}
 .hub-hero{text-align:center;margin-bottom:34px}
-.hub-hero h1{font-size:2.2rem;font-weight:850;letter-spacing:-.03em;margin:0 0 10px;background:linear-gradient(135deg,var(--tx) 30%,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hub-hero h1{font-size:2.2rem;font-weight:850;letter-spacing:-.03em;margin:0 0 10px;background:linear-gradient(135deg,#CCD0CF 40%,#9BA8AB);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .hub-hero p{font-size:1.08rem;color:var(--mu);max-width:760px;margin:0 auto}
 
 /* Card de Esclarecimento sobre Metas & Inglês */
 .clarification-card{
-  background:linear-gradient(135deg,rgba(79,70,229,.08),rgba(236,72,153,.05));
-  border:1px solid rgba(79,70,229,.25);
+  background:linear-gradient(135deg,rgba(37,55,69,.4),rgba(74,92,106,.2));
+  border:1px solid var(--bd);
   border-radius:18px;
   padding:24px 28px;
   margin-bottom:32px;
-  box-shadow:0 8px 24px rgba(79,70,229,.06);
+  box-shadow:0 8px 24px rgba(6,20,27,.3);
 }
 .clarification-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.clarification-badge{background:var(--ac);color:#fff;font-size:.76rem;font-weight:750;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.clarification-badge{background:#253745;color:#CCD0CF;border:1px solid rgba(155,168,171,.3);font-size:.76rem;font-weight:750;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
 .clarification-title{font-size:1.25rem;font-weight:800;color:var(--tx)}
 .clarification-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
 .clarification-col{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
@@ -2090,7 +2245,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   border-radius: 22px;
   padding: 26px 28px;
   margin-bottom: 36px;
-  box-shadow: 0 14px 40px rgba(0,0,0,.08), 0 0 0 1px rgba(79,70,229,.08);
+  box-shadow: 0 14px 40px rgba(6,20,27,.4);
   position: relative;
   overflow: hidden;
 }
@@ -2116,8 +2271,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   width: 44px;
   height: 44px;
   border-radius: 13px;
-  background: linear-gradient(135deg, rgba(79,70,229,.18), rgba(139,92,246,.18));
-  border: 1px solid rgba(79,70,229,.35);
+  background: linear-gradient(135deg, rgba(37,55,69,.5), rgba(74,92,106,.3));
+  border: 1px solid var(--bd);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2222,7 +2377,7 @@ input:checked + .slider:before { transform: translateX(14px); }
   background: var(--card);
   color: var(--ac);
   box-shadow: 0 2px 8px rgba(0,0,0,.08);
-  border: 1px solid rgba(79,70,229,.25);
+  border: 1px solid rgba(155,168,171,.35);
 }
 
 .speed-date-inputs {
@@ -2690,7 +2845,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .comp-bar-fill-target {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  background: linear-gradient(90deg, #4A5C6A, #9BA8AB);
   border-radius: 99px;
   transition: width .4s ease;
 }
@@ -2917,8 +3072,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 /* Próximo Passo Sugerido */
 .hub-next-box {
-  background: linear-gradient(135deg,rgba(79,70,229,.08),rgba(236,72,153,.06));
-  border: 1px dashed var(--ac);
+  background: linear-gradient(135deg,rgba(37,55,69,.4),rgba(74,92,106,.2));
+  border: 1px dashed rgba(155,168,171,.4);
   border-radius: 14px;
   padding: 14px 18px;
   display: flex;
@@ -2949,28 +3104,29 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-weight: 750;
   padding: 8px 18px;
   border-radius: 99px;
-  border: none;
-  background: var(--ac);
-  color: #fff;
+  border: 1px solid rgba(155,168,171,.3);
+  background: linear-gradient(135deg, #253745, #4A5C6A);
+  color: #CCD0CF;
   cursor: pointer;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 3px 12px rgba(79,70,229,.3);
+  box-shadow: 0 3px 12px rgba(6,20,27,.4);
   transition: .2s;
 }
 
 .hub-next-action-btn:hover {
-  background: var(--ac-hover);
+  background: linear-gradient(135deg, #4A5C6A, #253745);
+  color: #fff;
   transform: translateY(-1px);
-  box-shadow: 0 5px 16px rgba(79,70,229,.4);
+  box-shadow: 0 5px 16px rgba(6,20,27,.6);
 }
 
 @keyframes hubPulseAnim {
-  0% { box-shadow: 0 0 0 0 rgba(79,70,229,.4); }
-  70% { box-shadow: 0 0 0 14px rgba(79,70,229,0); }
-  100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+  0% { box-shadow: 0 0 0 0 rgba(155,168,171,.4); }
+  70% { box-shadow: 0 0 0 14px rgba(155,168,171,0); }
+  100% { box-shadow: 0 0 0 0 rgba(155,168,171,0); }
 }
 .pulse-update {
   animation: hubPulseAnim .7s ease-out;
@@ -2993,8 +3149,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .track-card:hover{
   transform:translateY(-4px);
-  box-shadow:0 12px 32px rgba(79,70,229,.12);
-  border-color:var(--ac);
+  box-shadow:0 12px 32px rgba(6,20,27,.5);
+  border-color:#9BA8AB;
 }
 .track-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .track-card-icon{font-size:2.2rem}
@@ -3013,19 +3169,24 @@ input:checked + .slider:before { transform: translateX(14px); }
   font-weight:750;
   padding:12px 20px;
   border-radius:12px;
-  border:none;
-  background:var(--ac);
-  color:#fff;
+  border:1px solid rgba(155,168,171,.35);
+  background:linear-gradient(135deg, #253745, #4A5C6A);
+  color:#CCD0CF;
   text-decoration:none;
   text-align:center;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:8px;
-  box-shadow:0 4px 14px rgba(79,70,229,.28);
+  box-shadow:0 4px 14px rgba(6,20,27,.4);
   transition:.2s;
 }
-.track-access-btn:hover{background:var(--ac-hover);transform:scale(1.01)}
+.track-access-btn:hover{
+  background:linear-gradient(135deg, #4A5C6A, #253745);
+  color:#fff;
+  border-color:#CCD0CF;
+  transform:scale(1.01);
+}
 
 /* Contexto Global de Mercado */
 .market-box{
@@ -3042,7 +3203,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .market-stat-num{font-size:1.4rem;font-weight:850;color:var(--ac);display:block;margin-bottom:3px}
 .market-stat-lbl{font-size:.82rem;color:var(--tx);font-weight:600}
 
-.jr-sect{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:24px 26px;margin-bottom:36px;box-shadow:0 14px 40px rgba(0,0,0,.06)}
+.jr-sect{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:24px 26px;margin-bottom:36px;box-shadow:0 14px 40px rgba(6,20,27,.4)}
 .jr-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin:14px 0}
 .jr-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-bottom:16px}
 .jr-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
@@ -3054,8 +3215,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 .jr-sub{font-size:.78rem;color:var(--mu);line-height:1.45;margin-top:4px}
 .jr-bar{height:9px;background:var(--bd);border-radius:99px;overflow:hidden;position:relative}
 .jr-bar>i{display:block;height:100%;border-radius:99px;transition:width .4s}
-.jr-bar>i.s{background:rgba(79,70,229,.35);position:absolute;left:0;top:0}
-.jr-bar>i.w{background:linear-gradient(90deg,#10b981,#06b6d4);position:absolute;left:0;top:0}
+.jr-bar>i.s{background:#253745;position:absolute;left:0;top:0}
+.jr-bar>i.w{background:linear-gradient(90deg,#4A5C6A,#9BA8AB);position:absolute;left:0;top:0}
 .jr-row{display:flex;justify-content:space-between;gap:8px;font-size:.78rem;font-weight:700;color:var(--tx);margin:10px 0 4px}
 .jr-svg{width:100%;height:auto;display:block}
 .jr-leg{display:flex;flex-wrap:wrap;gap:12px;font-size:.72rem;font-weight:700;color:var(--mu);margin-top:6px}
@@ -3136,11 +3297,12 @@ input:checked + .slider:before { transform: translateX(14px); }
             <input type="password" id="login-input-pass" class="portal-input" required placeholder="Digite sua senha">
           </div>
 
-          <div class="portal-remember-row">
+          <div class="portal-remember-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
             <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.82rem;color:var(--mu);user-select:none">
               <input type="checkbox" id="login-remember-me" checked>
-              <span>Lembrar meu acesso neste dispositivo</span>
+              <span>Lembrar meu acesso</span>
             </label>
+            <a href="javascript:void(0)" onclick="openForgotPasswordModal()" class="forgot-pass-link" title="Recuperar senha com código via E-mail (SES) ou WhatsApp">Esqueci minha senha</a>
           </div>
 
           <div id="login-error-msg" class="portal-error-msg" style="display:none"></div>
@@ -3210,8 +3372,8 @@ input:checked + .slider:before { transform: translateX(14px); }
         <div class="jr-h"><span>📈 Sua evolução acumulada</span><span class="jr-chip" id="jr-chart-chip">esforço (pontos)</span></div>
         <div id="jr-chart"></div>
         <div class="jr-leg">
-          <span style="color:#6366f1">┄ Plano da meta</span><span style="color:#10b981">━ Realizado</span>
-          <span style="color:#06b6d4">▨ Faixa de previsão</span><span>· trecho claro = antes do início do registro</span>
+          <span style="color:#9BA8AB">┄ Plano da meta</span><span style="color:#10b981">━ Realizado</span>
+          <span style="color:#CCD0CF">▨ Faixa de previsão</span><span>· trecho claro = antes do início do registro</span>
         </div>
       </div>
       <div class="jr-col">
@@ -3543,6 +3705,129 @@ input:checked + .slider:before { transform: translateX(14px); }
 </div>
 
 
+<!-- MODAL: RECUPERAÇÃO DE SENHA (2FA / OTP VIA SES OU WHATSAPP) -->
+<div id="modal-forgot-password" class="modal-sub-overlay" hidden>
+  <div class="modal-sub-box" style="max-width:490px;width:95%">
+    <div class="modal-sub-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.35rem">🔐</span>
+        <div>
+          <h3 class="modal-sub-title" style="margin:0">Recuperação de Acesso</h3>
+          <span style="font-size:.73rem;color:var(--mu);font-weight:600">Verificação Segura em Duas Etapas (OTP)</span>
+        </div>
+      </div>
+      <button class="modal-close-icon" onclick="closeForgotPasswordModal()">✕</button>
+    </div>
+
+    <!-- PASSO 1: ESCOLHA DO CANAL (E-MAIL OU WHATSAPP) -->
+    <div id="forgot-step-channel">
+      <div class="forgot-info-banner">
+        Escolha por onde deseja receber seu código descartável de 6 dígitos (válido por 10 minutos) para validar sua identidade e criar uma nova senha:
+      </div>
+
+      <form id="form-forgot-request" onsubmit="handleSendResetCode(event)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Seu E-mail Cadastrado</label>
+            <input type="email" id="forgot-input-email" class="aws-cfg-input" required placeholder="seu-email@dominio.com">
+          </div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:8px">Canal de Envio do Código</label>
+            <div class="forgot-channel-grid">
+              <!-- CANAL 1: EMAIL (SES) -->
+              <div class="forgot-channel-card active" id="channel-card-email" onclick="selectForgotChannel('email')">
+                <div class="channel-card-icon">✉️</div>
+                <div class="channel-card-body">
+                  <div class="channel-card-title">
+                    <span>E-mail</span>
+                    <span class="channel-badge recommended">Recomendado</span>
+                  </div>
+                  <div class="channel-card-desc">Amazon SES · Grátis</div>
+                </div>
+              </div>
+
+              <!-- CANAL 2: WHATSAPP -->
+              <div class="forgot-channel-card" id="channel-card-whatsapp" onclick="selectForgotChannel('whatsapp')">
+                <div class="channel-card-icon">💬</div>
+                <div class="channel-card-body">
+                  <div class="channel-card-title">
+                    <span>WhatsApp</span>
+                    <span class="channel-badge zap">Webhook</span>
+                  </div>
+                  <div class="channel-card-desc">Twilio / Webhook</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CAMPO ADICIONAL DE TELEFONE (APENAS SE WHATSAPP SELECIONADO) -->
+          <div id="forgot-phone-wrap" style="display:none">
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Número do WhatsApp (com DDD)</label>
+            <input type="tel" id="forgot-input-phone" class="aws-cfg-input" placeholder="+55 (11) 99999-9999">
+            <span style="font-size:.72rem;color:var(--mu);margin-top:3px;display:block">Informe o DDD brasileiro e o número (ex: 11988887777 ou +5511...)</span>
+          </div>
+        </div>
+
+        <div id="forgot-msg-error-step1" class="forgot-error-box" style="display:none"></div>
+
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px">
+          <button type="button" class="aws-btn-sec" onclick="closeForgotPasswordModal()">Cancelar</button>
+          <button type="submit" id="btn-send-reset-code" class="aws-btn-primary">
+            <span>🚀 Enviar Código ➔</span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- PASSO 2: DIGITAÇÃO DO CÓDIGO OTP & NOVA SENHA -->
+    <div id="forgot-step-verify" style="display:none">
+      <div class="forgot-success-banner">
+        <span>Código enviado com sucesso para <b id="forgot-target-dest">...</b>! Verifique sua caixa postal ou WhatsApp.</span>
+      </div>
+
+      <form id="form-forgot-verify" onsubmit="handleVerifyAndResetPassword(event)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Código de Verificação (6 dígitos)</label>
+            <input type="text" id="forgot-input-code" class="aws-cfg-input otp-code-input" maxlength="6" pattern="[0-9]{6}" required placeholder="000000" autocomplete="one-time-code">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+              <span style="font-size:.74rem;color:var(--mu)">Expira em: <b id="forgot-otp-timer" style="color:#ff9900">10:00</b></span>
+              <button type="button" id="btn-resend-otp" class="forgot-link-btn" onclick="resendResetCode()" disabled>Reenviar (<span id="resend-countdown">60</span>s)</button>
+            </div>
+          </div>
+
+          <div class="dropdown-divider" style="margin:4px 0"></div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nova Senha (mínimo 4 caracteres)</label>
+            <input type="password" id="forgot-new-pass" class="aws-cfg-input" required minlength="4" placeholder="Digite a nova senha">
+          </div>
+
+          <div>
+            <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Confirmar Nova Senha</label>
+            <input type="password" id="forgot-confirm-pass" class="aws-cfg-input" required minlength="4" placeholder="Confirme a nova senha">
+          </div>
+        </div>
+
+        <div id="forgot-msg-error-step2" class="forgot-error-box" style="display:none"></div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:8px;flex-wrap:wrap">
+          <button type="button" class="forgot-link-btn" onclick="backToChannelSelection()">← Trocar canal ou e-mail</button>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="aws-btn-sec" onclick="closeForgotPasswordModal()">Cancelar</button>
+            <button type="submit" id="btn-verify-reset-code" class="aws-btn-primary">
+              <span>✅ Redefinir & Entrar ➔</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
 <script>
 
 // =========================================================================
@@ -3739,6 +4024,296 @@ async function handleSaveNewCredentials(e) {
     showToast("🔑 Senha criptografada (SHA-256) e sincronizada!");
   } else {
     alert("Dados e senha criptografada (SHA-256) atualizados com sucesso!");
+  }
+}
+
+// =========================================================================
+// RECUPERAÇÃO DE SENHA EM DUAS ETAPAS (2FA / OTP VIA SES OU WHATSAPP)
+// =========================================================================
+let _currentForgotChannel = "email";
+let _otpExpiryTimer = null;
+let _otpResendTimer = null;
+let _otpExpirySeconds = 600;
+let _otpResendSeconds = 60;
+
+function openForgotPasswordModal() {
+  const modal = document.getElementById("modal-forgot-password");
+  if (!modal) return;
+
+  const err1 = document.getElementById("forgot-msg-error-step1");
+  const err2 = document.getElementById("forgot-msg-error-step2");
+  if (err1) err1.style.display = "none";
+  if (err2) err2.style.display = "none";
+
+  const step1 = document.getElementById("forgot-step-channel");
+  const step2 = document.getElementById("forgot-step-verify");
+  if (step1) step1.style.display = "block";
+  if (step2) step2.style.display = "none";
+
+  const emailInput = document.getElementById("forgot-input-email");
+  const loginEmail = document.getElementById("login-input-email");
+  const user = getLoggedInUser();
+  if (emailInput) {
+    emailInput.value = (user && user.email) || (loginEmail ? loginEmail.value.trim() : "") || "joao@roteiro.ia";
+  }
+
+  selectForgotChannel("email");
+
+  modal.hidden = false;
+  modal.removeAttribute("hidden");
+  modal.style.display = "flex";
+}
+
+function closeForgotPasswordModal() {
+  const modal = document.getElementById("modal-forgot-password");
+  if (modal) {
+    modal.hidden = true;
+    modal.setAttribute("hidden", "true");
+    modal.style.display = "none";
+  }
+  clearInterval(_otpExpiryTimer);
+  clearInterval(_otpResendTimer);
+}
+
+function selectForgotChannel(channel) {
+  _currentForgotChannel = channel;
+  const cardEmail = document.getElementById("channel-card-email");
+  const cardZap = document.getElementById("channel-card-whatsapp");
+  const phoneWrap = document.getElementById("forgot-phone-wrap");
+  const phoneInput = document.getElementById("forgot-input-phone");
+
+  if (cardEmail) cardEmail.classList.toggle("active", channel === "email");
+  if (cardZap) cardZap.classList.toggle("active", channel === "whatsapp");
+
+  if (phoneWrap) {
+    phoneWrap.style.display = channel === "whatsapp" ? "block" : "none";
+  }
+  if (phoneInput && channel === "whatsapp") {
+    phoneInput.required = true;
+    phoneInput.focus();
+  } else if (phoneInput) {
+    phoneInput.required = false;
+  }
+}
+
+function backToChannelSelection() {
+  clearInterval(_otpExpiryTimer);
+  clearInterval(_otpResendTimer);
+  const step1 = document.getElementById("forgot-step-channel");
+  const step2 = document.getElementById("forgot-step-verify");
+  if (step1) step1.style.display = "block";
+  if (step2) step2.style.display = "none";
+}
+
+async function handleSendResetCode(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById("forgot-input-email").value.trim();
+  const phone = document.getElementById("forgot-input-phone")?.value.trim() || "";
+  const errEl = document.getElementById("forgot-msg-error-step1");
+  const btn = document.getElementById("btn-send-reset-code");
+
+  if (!email) {
+    if (errEl) { errEl.textContent = "Informe seu e-mail cadastrado."; errEl.style.display = "block"; }
+    return;
+  }
+  if (_currentForgotChannel === "whatsapp" && !phone) {
+    if (errEl) { errEl.textContent = "Informe o número do WhatsApp com DDD."; errEl.style.display = "block"; }
+    return;
+  }
+
+  if (errEl) errEl.style.display = "none";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span>⏳ Enviando código...</span>`;
+  }
+
+  try {
+    const endpoint = getAwsEndpointUrl();
+    const payload = {
+      action: "request_reset",
+      user_id: email.toLowerCase(),
+      channel: _currentForgotChannel,
+      phone: phone
+    };
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      let msg = data.error || "Não foi possível enviar o código de verificação.";
+      if (data.hint) msg += "\n👉 " + data.hint;
+      throw new Error(msg);
+    }
+
+    const targetDest = document.getElementById("forgot-target-dest");
+    if (targetDest) {
+      targetDest.textContent = data.masked_destination || (_currentForgotChannel === "email" ? email : phone);
+    }
+
+    const step1 = document.getElementById("forgot-step-channel");
+    const step2 = document.getElementById("forgot-step-verify");
+    if (step1) step1.style.display = "none";
+    if (step2) step2.style.display = "block";
+
+    const codeInput = document.getElementById("forgot-input-code");
+    if (codeInput) codeInput.value = "";
+    const newPassInput = document.getElementById("forgot-new-pass");
+    if (newPassInput) newPassInput.value = "";
+    const confirmPassInput = document.getElementById("forgot-confirm-pass");
+    if (confirmPassInput) confirmPassInput.value = "";
+    const err2 = document.getElementById("forgot-msg-error-step2");
+    if (err2) err2.style.display = "none";
+
+    startOtpCountdown(data.expires_in_seconds || 600);
+    startResendCountdown(60);
+    if (codeInput) codeInput.focus();
+
+  } catch(err) {
+    if (errEl) {
+      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message.replace(/\n/g, "<br>")}`;
+      errEl.style.display = "block";
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>🚀 Enviar Código ➔</span>`;
+    }
+  }
+}
+
+async function resendResetCode() {
+  const btnResend = document.getElementById("btn-resend-otp");
+  if (btnResend && btnResend.disabled) return;
+  await handleSendResetCode(null);
+}
+
+function startOtpCountdown(totalSec) {
+  clearInterval(_otpExpiryTimer);
+  _otpExpirySeconds = totalSec;
+  const timerEl = document.getElementById("forgot-otp-timer");
+
+  function updateTimer() {
+    const mins = Math.floor(_otpExpirySeconds / 60);
+    const secs = _otpExpirySeconds % 60;
+    if (timerEl) timerEl.textContent = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    if (_otpExpirySeconds <= 0) {
+      clearInterval(_otpExpiryTimer);
+      if (timerEl) timerEl.textContent = "Expirado";
+    }
+    _otpExpirySeconds--;
+  }
+  updateTimer();
+  _otpExpiryTimer = setInterval(updateTimer, 1000);
+}
+
+function startResendCountdown(sec) {
+  clearInterval(_otpResendTimer);
+  _otpResendSeconds = sec;
+  const btnResend = document.getElementById("btn-resend-otp");
+  const countdownSpan = document.getElementById("resend-countdown");
+  if (btnResend) {
+    btnResend.disabled = true;
+    btnResend.innerHTML = `Reenviar (<span id="resend-countdown">${sec}</span>s)`;
+  }
+
+  _otpResendTimer = setInterval(() => {
+    _otpResendSeconds--;
+    const span = document.getElementById("resend-countdown");
+    if (span) span.textContent = _otpResendSeconds;
+    if (_otpResendSeconds <= 0) {
+      clearInterval(_otpResendTimer);
+      if (btnResend) {
+        btnResend.disabled = false;
+        btnResend.textContent = "Reenviar código agora";
+      }
+    }
+  }, 1000);
+}
+
+async function handleVerifyAndResetPassword(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById("forgot-input-email").value.trim();
+  const code = document.getElementById("forgot-input-code").value.trim();
+  const newPass = document.getElementById("forgot-new-pass").value.trim();
+  const confirmPass = document.getElementById("forgot-confirm-pass").value.trim();
+  const errEl = document.getElementById("forgot-msg-error-step2");
+  const btn = document.getElementById("btn-verify-reset-code");
+
+  if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+    if (errEl) { errEl.textContent = "O código deve conter exatamente 6 dígitos numéricos."; errEl.style.display = "block"; }
+    return;
+  }
+  if (newPass.length < 4) {
+    if (errEl) { errEl.textContent = "A nova senha deve ter no mínimo 4 caracteres."; errEl.style.display = "block"; }
+    return;
+  }
+  if (newPass !== confirmPass) {
+    if (errEl) { errEl.textContent = "A confirmação de senha não confere."; errEl.style.display = "block"; }
+    return;
+  }
+
+  if (errEl) errEl.style.display = "none";
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<span>⏳ Validando...</span>`;
+  }
+
+  try {
+    const newHash = await computeSha256(newPass);
+    const endpoint = getAwsEndpointUrl();
+    const payload = {
+      action: "confirm_reset",
+      user_id: email.toLowerCase(),
+      code: code,
+      new_pwd_hash: newHash
+    };
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await resp.json();
+    if (!resp.ok || !data.ok) {
+      throw new Error(data.error || "Código de verificação incorreto ou expirado.");
+    }
+
+    localStorage.setItem(PASSWORD_HASH_KEY, newHash);
+    const userObj = {
+      authenticated: true,
+      name: data.user_name || "João Naziozeno",
+      email: email,
+      loginTime: Date.now(),
+      provider: "aws-dynamodb-verified"
+    };
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(userObj));
+
+    closeForgotPasswordModal();
+
+    if (typeof checkHubAuth === "function") checkHubAuth();
+    if (typeof updateNavAuthUI === "function") updateNavAuthUI();
+
+    if (typeof showToast === "function") {
+      showToast("🎉 Senha redefinida com sucesso! Acesso liberado.");
+    } else {
+      alert("🎉 Senha redefinida com sucesso! Você já está autenticado no ecossistema.");
+    }
+
+  } catch(err) {
+    if (errEl) {
+      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message}`;
+      errEl.style.display = "block";
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<span>✅ Redefinir & Entrar ➔</span>`;
+    }
   }
 }
 
@@ -4040,8 +4615,8 @@ async function testAwsLambdaConnection() {
 
   if (statusEl) {
     statusEl.style.display = "block";
-    statusEl.style.background = "rgba(79,70,229,.1)";
-    statusEl.style.borderColor = "rgba(79,70,229,.35)";
+    statusEl.style.background = "rgba(74,92,106,.2)";
+    statusEl.style.borderColor = "rgba(155,168,171,.35)";
     statusEl.style.color = "var(--ac)";
     statusEl.innerHTML = "⏳ <b>Testando conexão com AWS Lambda e DynamoDB...</b>";
   }
@@ -4487,12 +5062,12 @@ function drawJourney(o) {
     s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(o.total * f) + '" y2="' + Y(o.total * f) + '" stroke="var(--bd)" stroke-dasharray="3 3"/>';
     s += '<text x="4" y="' + (Y(o.total * f) + 4) + '" fill="var(--mu)" font-size="10" font-weight="700">' + Math.round(o.total * f) + "</text>";
   });
-  if (o.deadline) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(o.deadline) + '" y2="' + Y(o.total) + '" stroke="#6366f1" stroke-width="2" stroke-dasharray="5 4" stroke-opacity=".7"/>';
+  if (o.deadline) s += '<line x1="' + X(o.start) + '" y1="' + Y(0) + '" x2="' + X(o.deadline) + '" y2="' + Y(o.total) + '" stroke="#9BA8AB" stroke-width="2" stroke-dasharray="5 4" stroke-opacity=".7"/>';
   const fc = o.fc;
   if (fc && (fc.level === "ok" || fc.level === "preliminary") && fc.med > 0) {
     const dd = (o.end - o.now) / DAY, yv = p => o.pts + p / 7 * dd;
-    s += '<polygon points="' + X(o.now) + "," + Y(o.pts) + " " + X(o.end) + "," + Y(yv(fc.fast)) + " " + X(o.end) + "," + Y(yv(fc.slow)) + '" fill="#06b6d4" fill-opacity=".16"/>';
-    s += '<line x1="' + X(o.now) + '" y1="' + Y(o.pts) + '" x2="' + X(o.end) + '" y2="' + Y(yv(fc.med)) + '" stroke="#06b6d4" stroke-width="2" stroke-dasharray="5 4"/>';
+    s += '<polygon points="' + X(o.now) + "," + Y(o.pts) + " " + X(o.end) + "," + Y(yv(fc.fast)) + " " + X(o.end) + "," + Y(yv(fc.slow)) + '" fill="#4A5C6A" fill-opacity=".22"/>';
+    s += '<line x1="' + X(o.now) + '" y1="' + Y(o.pts) + '" x2="' + X(o.end) + '" y2="' + Y(yv(fc.med)) + '" stroke="#CCD0CF" stroke-width="2" stroke-dasharray="5 4"/>';
   }
   const cv = o.curve;
   if (cv.length) {
@@ -4638,8 +5213,8 @@ function toggleTheme(){
 }
 
 try{
-  const savedTheme = localStorage.getItem("roteiro-theme");
-  if(savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+  const savedTheme = localStorage.getItem("roteiro-theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
 }catch(e){}
 
 window.addEventListener("DOMContentLoaded", () => {

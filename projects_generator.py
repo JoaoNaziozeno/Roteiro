@@ -270,9 +270,9 @@ PROJECTS_CSS = """
   color: var(--ac);
 }
 .proj-notes-btn {
-  background: rgba(79,70,229,.1);
-  border: 1px solid rgba(79,70,229,.25);
-  color: var(--ac);
+  background: rgba(74,92,106,.2);
+  border: 1px solid rgba(155,168,171,.3);
+  color: var(--tx);
   font-size: .78rem;
   font-weight: 700;
   padding: 5px 10px;
@@ -282,7 +282,7 @@ PROJECTS_CSS = """
 }
 .proj-notes-btn:hover {
   background: var(--ac);
-  color: #fff;
+  color: #06141B;
 }
 """
 
