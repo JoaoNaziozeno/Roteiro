@@ -134,11 +134,11 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 
                 visual_btn_html = ""
                 if t.get("pt_guide"):
-                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true, 1)" title="Abrir Aula Visual & Apostila Interativa em Português + Fórmulas + Exemplos + Código Python">📘 Aula Visual PT-BR</button>'
+                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true, 1)" title="Abrir Aula Visual & Apostila Interativa + Fórmulas + Exemplos + Código Python">📘 Aula Visual</button>'
 
                 doc_btn_html = ""
                 if t.get("doc_url"):
-                    doc_lbl_clean = t.get("doc_label", "📖 Material").replace("📘 Aula Visual PT-BR:", "📖 Artigo PT-BR:")
+                    doc_lbl_clean = t.get("doc_label", "📖 Material").replace("📘 Aula Visual PT-BR:", "📖 Artigo:").replace("📘 Aula Visual:", "📖 Artigo:").replace(" PT-BR", "")
                     doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">{doc_lbl_clean} ↗</a>'
 
                 topics_rows.append(f"""
@@ -385,7 +385,7 @@ __AUTH_AWS_CSS__
     <!-- 1. CABEÇALHO DO ESTÚDIO DE ESTUDO -->
     <div class="note-modal-header">
       <div class="note-header-left">
-        <div class="note-breadcrumb" id="modal-breadcrumb">__PAGE_TITLE__</div>
+        <div class="note-breadcrumb" id="modal-breadcrumb">__MODAL_TRACK_NAME__</div>
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
       <div class="note-header-right">
@@ -418,19 +418,17 @@ __AUTH_AWS_CSS__
 
       <!-- COLUNA DA ESQUERDA: VÍDEO, MATERIAIS & SESSÃO DE ESTUDO -->
       <div class="study-player-col" id="study-player-sect">
-        <div class="study-player-topbar" style="flex-wrap:wrap;gap:8px">
-          <div class="player-topbar-info" style="flex-wrap:wrap;gap:6px">
+        <div class="study-player-topbar">
+          <div class="player-topbar-info">
             <span class="player-source-tag" id="modal-player-tag">▶ Vídeo Aula</span>
-            <div id="modal-video-switcher-wrap" style="display:none;align-items:center;gap:5px">
-              <button type="button" id="modal-video-opt1-btn" class="player-ext-btn" onclick="switchModalVideoOption(1)" style="cursor:pointer;font-weight:800;border-color:var(--ac);background:var(--ac);color:#fff" title="Opção 1: Aula Passo a Passo em Português (Khan Academy Brasil)">🇧🇷 Opção 1: Khan Academy</button>
-              <button type="button" id="modal-video-opt2-btn" class="player-ext-btn" onclick="switchModalVideoOption(2)" style="cursor:pointer;font-weight:750" title="Opção 2: Animação Visual Complementar (3B1B / StatQuest)">🎬 Opção 2: 3B1B / StatQuest</button>
+            <div id="modal-video-switcher-wrap" class="video-segmented-switcher" style="display:none">
+              <button type="button" id="modal-video-opt1-btn" class="video-seg-btn active" onclick="switchModalVideoOption(1)" title="Opção 1: Aula Principal">1. Principal</button>
+              <button type="button" id="modal-video-opt2-btn" class="video-seg-btn" onclick="switchModalVideoOption(2)" title="Opção 2: Vídeo Complementar">2. Complementar</button>
             </div>
             <span class="player-source-title" id="modal-player-title">Material de Estudo</span>
           </div>
           <div class="player-topbar-actions">
-            <a href="#" target="_blank" rel="noopener" id="modal-external-link" class="player-ext-btn" title="Abrir vídeo no YouTube em nova aba">↗ YouTube Externo</a>
-            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir documentação ou material oficial">📖 Documentação</a>
-            <button class="player-collapse-btn" id="modal-collapse-btn" onclick="toggleVideoCollapse()" title="Recolher / Ocultar player de vídeo">▲ Ocultar Vídeo</button>
+            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir artigo ou material oficial da aula">Fonte Oficial ↗</a>
           </div>
         </div>
 
@@ -447,7 +445,7 @@ __AUTH_AWS_CSS__
               <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
                 🎬 Vídeo: 0%
               </button>
-              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual PT-BR (Role pelos 4 cards + ~45s de leitura na tela, ou clique em 'Marcar Aula Visual como Lida' ao final)">
+              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual (Role pelos 4 cards + ~45s de leitura na tela)">
                 📘 Aula Visual: 0%
               </button>
             </div>
@@ -461,7 +459,7 @@ __AUTH_AWS_CSS__
           </div>
         </div>
 
-        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA EM PORTUGUÊS -->
+        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA -->
         <div class="study-left-extra-info" id="study-left-extra-info">
           <div id="modal-pt-guide-container"></div>
           <div class="study-left-card" id="modal-default-tip-card">
@@ -590,7 +588,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
         <!-- RODAPÉ -->
         <div class="note-modal-footer">
           <div class="footer-stats" id="modal-footer-stats">0 palavras · 0 caracteres</div>
-          <div class="footer-sync" id="modal-sync-indicator">💾 Salvo automaticamente</div>
+          <div class="footer-sync" id="modal-sync-indicator" style="display:none"></div>
           <div class="footer-actions">
             <button class="note-clear-btn" onclick="clearModalNote()">Limpar</button>
             <button class="note-save-btn" onclick="closeNoteModal()">💾 Salvar & Fechar</button>
@@ -1550,6 +1548,13 @@ window.addEventListener("DOMContentLoaded", () => {
 </html>
 """
 
+    modal_track_names = {
+        "ia": "Inteligência Artificial",
+        "mat": "Matemática",
+        "ing": "Inglês"
+    }
+    modal_track_name = modal_track_names.get(track_id, page_title)
+
     rendered = (template
         .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
         .replace("__AUTH_AWS_CSS__", AUTH_AWS_SYNC_CSS)
@@ -1557,6 +1562,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
         .replace("__PAGE_TITLE__", page_title)
+        .replace("__MODAL_TRACK_NAME__", modal_track_name)
         .replace("__PAGE_SUB__", page_sub)
         .replace("__TRACK_ICON__", track_icon)
         .replace("__TRACK_ID__", track_id)

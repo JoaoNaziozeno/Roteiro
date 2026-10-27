@@ -11,7 +11,7 @@ from build_ia_data import get_enriched_ia_phases
 ia_phases = get_enriched_ia_phases()
 
 # ---------------------------------------------------------------------------
-# 2. Dados de Matemática (5 Módulos - 43 Tópicos 100% em Português PT-BR)
+# 2. Dados de Matemática (5 Módulos - 43 Tópicos de Matemática Essencial para IA)
 # ---------------------------------------------------------------------------
 from build_math_data import get_enriched_mat_phases
 mat_phases = get_enriched_mat_phases()
@@ -2241,4 +2241,26 @@ generate_projects_page(out_proj, SHARED_CSS)
 generate_hub_page(out_hub)
 generate_hub_page(out_mirror)
 
+# Sincronização automática para produção em dist_deploy/ e roteiro_aws_deploy.zip
+import shutil, zipfile
+base_dir = os.path.dirname(out_hub)
+dist_dir = os.path.join(base_dir, "dist_deploy")
+os.makedirs(dist_dir, exist_ok=True)
+deploy_files = [
+    (out_ia, "ia.html"),
+    (out_mat, "matematica.html"),
+    (out_ing, "ingles.html"),
+    (out_proj, "projetos.html"),
+    (out_hub, "index.html"),
+    (out_mirror, "Roteiro de Estudo_ do zero à IA.html")
+]
+for src, name in deploy_files:
+    shutil.copy2(src, os.path.join(dist_dir, name))
+
+zip_path = os.path.join(base_dir, "roteiro_aws_deploy.zip")
+with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+    for _, name in deploy_files:
+        zf.write(os.path.join(dist_dir, name), arcname=name)
+
+print("📦 Pacote de deploy dist_deploy/ e roteiro_aws_deploy.zip atualizados com sucesso!")
 print("\n🚀 Todos os arquivos do ecossistema gerados com sucesso!")

@@ -626,11 +626,11 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .study-player-topbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 10px;
+  padding: 8px 14px;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
   flex-shrink: 0;
@@ -642,17 +642,22 @@ input:checked + .slider:before { transform: translateX(14px); }
   gap: 8px;
   font-size: .84rem;
   min-width: 0;
+  flex: 1;
 }
 
 .player-source-tag {
   font-size: .72rem;
-  font-weight: 800;
-  padding: 2px 8px;
+  font-weight: 750;
+  padding: 3px 8px;
   border-radius: 6px;
-  background: var(--ac);
-  color: #fff;
+  background: #253745;
+  color: #CCD0CF;
   letter-spacing: .02em;
   white-space: nowrap;
+}
+[data-theme="light"] .player-source-tag {
+  background: #253745;
+  color: #ffffff;
 }
 
 .player-source-title {
@@ -661,18 +666,19 @@ input:checked + .slider:before { transform: translateX(14px); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 240px;
+  max-width: 360px;
 }
 
 .player-topbar-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .player-ext-btn {
-  font-size: .76rem;
-  font-weight: 650;
+  font-size: .74rem;
+  font-weight: 700;
   padding: 4px 10px;
   border-radius: 6px;
   border: 1px solid var(--bd);
@@ -682,11 +688,34 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: .15s;
+  transition: all .16s ease;
   white-space: nowrap;
+  user-select: none;
 }
-.player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
-.player-ext-btn.doc-ext { background: rgba(74,92,106,.2); border-color: rgba(155,168,171,.3); color: var(--ac); }
+.player-ext-btn:hover {
+  border-color: #4A5C6A;
+  background: rgba(155, 168, 171, 0.15);
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext {
+  background: var(--card);
+  border-color: #9BA8AB;
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext:hover {
+  background: rgba(155, 168, 171, 0.18);
+  border-color: #4A5C6A;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext {
+  background: #11212D;
+  border-color: #4A5C6A;
+  color: #CCD0CF;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext:hover {
+  background: #253745;
+  border-color: #9BA8AB;
+  color: #ffffff;
+}
 
 .player-collapse-btn {
   font: inherit;
@@ -1399,6 +1428,137 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 /* =========================================================================
+   CONTROLE SEGMENTADO DE VÍDEOS (CLEAN & OBJETIVO - PALETA OFICIAL)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.video-segmented-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(37, 55, 69, 0.08);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 3px;
+}
+[data-theme="dark"] .video-segmented-switcher {
+  background: rgba(37, 55, 69, 0.35);
+  border-color: #253745;
+}
+.video-seg-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+  transition: all .16s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+.video-seg-btn:hover {
+  color: var(--tx);
+  background: rgba(155, 168, 171, 0.16);
+}
+.video-seg-btn.active {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.2);
+}
+[data-theme="light"] .video-seg-btn.active {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+
+/* =========================================================================
+   BOTÕES DA AULA VISUAL (MÉTODO KHAN ACADEMY - PALETA CLEAN & OBJETIVA)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.pt-guide-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.06);
+  transition: all .16s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+}
+.pt-guide-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(6, 20, 27, 0.14);
+}
+.pt-guide-btn:active {
+  transform: translateY(0);
+}
+
+/* Botão Primário (Ação Principal / Vídeo 1) */
+.pt-btn-primary {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+.pt-btn-primary:hover {
+  background: #4A5C6A !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+[data-theme="light"] .pt-btn-primary {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+[data-theme="light"] .pt-btn-primary:hover {
+  background: #11212D !important;
+  color: #ffffff !important;
+}
+
+/* Botão Secundário / Outline Clean (Vídeo 2, Copiar, Links) */
+.pt-btn-secondary {
+  background: var(--card) !important;
+  color: var(--tx) !important;
+  border-color: #9BA8AB !important;
+}
+.pt-btn-secondary:hover {
+  background: rgba(155, 168, 171, 0.15) !important;
+  border-color: #4A5C6A !important;
+  color: var(--tx) !important;
+}
+[data-theme="dark"] .pt-btn-secondary {
+  background: #11212D !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+[data-theme="dark"] .pt-btn-secondary:hover {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+
+/* Compatibilidade com classes anteriores */
+.pt-btn-red, .pt-btn-amber, .pt-btn-green, .pt-btn-slate {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #4A5C6A !important;
+}
+
+/* =========================================================================
    TEMPORIZADOR POMODORO INTEGRADO
    ========================================================================= */
 .pomodoro-wrap {
@@ -1757,6 +1917,68 @@ input:checked + .slider:before { transform: translateX(14px); }
   line-height: 1.45;
 }
 
+
+/* ===== Aula Visual v2 ===== */
+.lv2{display:flex;flex-direction:column;gap:12px;font-size:.88rem;line-height:1.65;color:var(--tx)}
+.lv2 p{margin:0 0 .7em}.lv2 p:last-child{margin-bottom:0}
+.lv2 code{background:rgba(74,92,106,.22);padding:1px 5px;border-radius:4px;font-size:.84em}
+.lv2 ul{margin:.3em 0 .6em;padding-left:1.2em}.lv2 li{margin:.15em 0}
+.lv2-hero{border:1px solid var(--bd);border-radius:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(74,92,106,.20),rgba(37,55,69,.06))}
+.lv2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.lv2-chip{font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid var(--bd);color:var(--mu);background:var(--card)}
+.lv2-hook{font-size:.97rem;font-weight:600;line-height:1.55}
+.lv2-meta{display:grid;gap:10px;margin-top:12px}
+.lv2-meta-title{font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
+.lv2-block{border:1px solid var(--bd);border-radius:12px;padding:12px 15px;background:var(--card);transition:border-color .2s}
+.lv2-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px}
+.lv2-kicker{font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu)}
+.lv2-badge{font-size:.66rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd);white-space:nowrap}
+.lv2-title{margin:2px 0 8px;font-size:.98rem;font-weight:800;line-height:1.35}
+.lv2-notation{display:grid;gap:7px;margin:8px 0 4px}
+.lv2-not-row{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:12px;align-items:center;padding:8px 10px;border-radius:8px;background:rgba(74,92,106,.13)}
+.lv2-not-sym{font-size:1.02rem;text-align:center}
+.lv2-not-read{font-size:.78rem;color:var(--mu)}
+.lv2-steps{list-style:none;counter-reset:lv2s;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.lv2-steps li{counter-increment:lv2s;position:relative;padding:8px 10px 8px 42px;border-radius:8px;background:rgba(74,92,106,.10)}
+.lv2-steps li::before{content:counter(lv2s);position:absolute;left:11px;top:9px;width:21px;height:21px;border-radius:50%;background:var(--bd);color:var(--tx);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.lv2-step-why{font-size:.82rem;color:var(--mu);margin-top:4px}
+.lv2-conclusion{margin-top:10px;padding:9px 12px;border-radius:8px;border:1px dashed var(--mu)}
+.lv2-q{font-weight:650}
+.lv2 details{margin-top:8px;border:1px solid var(--bd);border-radius:8px;padding:6px 10px;background:var(--bg)}
+.lv2 summary{cursor:pointer;font-weight:700;font-size:.8rem;color:var(--mu);user-select:none}
+.lv2 details[open]>summary{margin-bottom:6px}
+.lv2-code,.lv2 pre{margin:8px 0 0;padding:10px 12px;background:#06141B;color:#CCD0CF;border:1px solid #253745;border-radius:8px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.79rem;line-height:1.5}
+.lv2 pre code{background:none;padding:0;font-size:inherit}
+.lv2-exp-title{font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--mu);margin-top:10px}
+.lv2-ex{padding:10px 0 4px;border-top:1px solid var(--bd)}.lv2-ex:first-of-type{border-top:none;padding-top:4px}
+.lv2-ex-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--bd);font-size:.72rem;font-weight:800;margin-right:8px}
+.lv2-pitfalls{display:grid;gap:8px;margin-top:6px}
+.lv2-pit{padding:8px 11px;border-radius:8px;background:rgba(74,92,106,.11)}
+.lv2-pit-wrong{color:var(--mu);font-weight:650}
+.lv2-pit-right{margin-top:3px}
+.lv2-table-wrap{overflow-x:auto;margin-top:8px}
+.lv2-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.lv2-table th{font-size:.72rem;text-transform:uppercase;color:var(--mu);text-align:left;padding:6px 8px;border-bottom:1.5px solid var(--bd)}
+.lv2-table td{padding:6px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+.lv2-fig{margin:10px 0 2px}
+.lv2-svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.lv2-fig figcaption{font-size:.78rem;color:var(--mu);text-align:center;margin-top:6px}
+.lv2-legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:.76rem;color:var(--mu);margin-top:6px}
+.lv2-leg{display:inline-flex;align-items:center;gap:5px}
+.lv2-dot-s0{fill:var(--bd)}.lv2-dot-s1{fill:var(--tx)}.lv2-dot-s2{fill:var(--mu)}.lv2-dot-s3{fill:none;stroke:var(--tx);stroke-width:1.5}
+.sv-ax{stroke:var(--mu);stroke-width:1;opacity:.55}
+.sv-a{stroke:var(--tx);stroke-width:2.6;fill:none}
+.sv-b{stroke:var(--mu);stroke-width:2.6;fill:none}
+.sv-thin{stroke:var(--mu);stroke-width:1.4;fill:none}
+.sv-dash{stroke-dasharray:4 4}
+.sv-t{fill:var(--tx);font-size:12px;font-family:inherit}
+.sv-tm{fill:var(--mu);font-size:11px;font-family:inherit}
+.sv-it{font-style:italic}
+.sv-fill{fill:var(--tx)}.sv-fillm{fill:var(--mu)}
+.sv-node{fill:var(--card);stroke:var(--mu);stroke-width:1.5}
+.lv2-footer{border:1px solid var(--bd);border-radius:12px;padding:12px 15px;background:linear-gradient(135deg,rgba(37,55,69,.06),rgba(74,92,106,.18))}
+.lv2-refs{font-size:.78rem;color:var(--mu);margin-top:10px}
+.lv2-refs li{margin:.25em 0}
 
 
 /* =========================================================================
@@ -3769,7 +3991,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     <!-- 1. CABEÇALHO DO ESTÚDIO DE ESTUDO -->
     <div class="note-modal-header">
       <div class="note-header-left">
-        <div class="note-breadcrumb" id="modal-breadcrumb">Curso de Inglês EnglishBay (Playlist Oficial)</div>
+        <div class="note-breadcrumb" id="modal-breadcrumb">Inglês</div>
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
       <div class="note-header-right">
@@ -3802,19 +4024,17 @@ input:checked + .slider:before { transform: translateX(14px); }
 
       <!-- COLUNA DA ESQUERDA: VÍDEO, MATERIAIS & SESSÃO DE ESTUDO -->
       <div class="study-player-col" id="study-player-sect">
-        <div class="study-player-topbar" style="flex-wrap:wrap;gap:8px">
-          <div class="player-topbar-info" style="flex-wrap:wrap;gap:6px">
+        <div class="study-player-topbar">
+          <div class="player-topbar-info">
             <span class="player-source-tag" id="modal-player-tag">▶ Vídeo Aula</span>
-            <div id="modal-video-switcher-wrap" style="display:none;align-items:center;gap:5px">
-              <button type="button" id="modal-video-opt1-btn" class="player-ext-btn" onclick="switchModalVideoOption(1)" style="cursor:pointer;font-weight:800;border-color:var(--ac);background:var(--ac);color:#fff" title="Opção 1: Aula Passo a Passo em Português (Khan Academy Brasil)">🇧🇷 Opção 1: Khan Academy</button>
-              <button type="button" id="modal-video-opt2-btn" class="player-ext-btn" onclick="switchModalVideoOption(2)" style="cursor:pointer;font-weight:750" title="Opção 2: Animação Visual Complementar (3B1B / StatQuest)">🎬 Opção 2: 3B1B / StatQuest</button>
+            <div id="modal-video-switcher-wrap" class="video-segmented-switcher" style="display:none">
+              <button type="button" id="modal-video-opt1-btn" class="video-seg-btn active" onclick="switchModalVideoOption(1)" title="Opção 1: Aula Principal">1. Principal</button>
+              <button type="button" id="modal-video-opt2-btn" class="video-seg-btn" onclick="switchModalVideoOption(2)" title="Opção 2: Vídeo Complementar">2. Complementar</button>
             </div>
             <span class="player-source-title" id="modal-player-title">Material de Estudo</span>
           </div>
           <div class="player-topbar-actions">
-            <a href="#" target="_blank" rel="noopener" id="modal-external-link" class="player-ext-btn" title="Abrir vídeo no YouTube em nova aba">↗ YouTube Externo</a>
-            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir documentação ou material oficial">📖 Documentação</a>
-            <button class="player-collapse-btn" id="modal-collapse-btn" onclick="toggleVideoCollapse()" title="Recolher / Ocultar player de vídeo">▲ Ocultar Vídeo</button>
+            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir artigo ou material oficial da aula">Fonte Oficial ↗</a>
           </div>
         </div>
 
@@ -3831,7 +4051,7 @@ input:checked + .slider:before { transform: translateX(14px); }
               <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
                 🎬 Vídeo: 0%
               </button>
-              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual PT-BR (Role pelos 4 cards + ~45s de leitura na tela, ou clique em 'Marcar Aula Visual como Lida' ao final)">
+              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual (Role pelos 4 cards + ~45s de leitura na tela)">
                 📘 Aula Visual: 0%
               </button>
             </div>
@@ -3845,7 +4065,7 @@ input:checked + .slider:before { transform: translateX(14px); }
           </div>
         </div>
 
-        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA EM PORTUGUÊS -->
+        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA -->
         <div class="study-left-extra-info" id="study-left-extra-info">
           <div id="modal-pt-guide-container"></div>
           <div class="study-left-card" id="modal-default-tip-card">
@@ -3974,7 +4194,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
         <!-- RODAPÉ -->
         <div class="note-modal-footer">
           <div class="footer-stats" id="modal-footer-stats">0 palavras · 0 caracteres</div>
-          <div class="footer-sync" id="modal-sync-indicator">💾 Salvo automaticamente</div>
+          <div class="footer-sync" id="modal-sync-indicator" style="display:none"></div>
           <div class="footer-actions">
             <button class="note-clear-btn" onclick="clearModalNote()">Limpar</button>
             <button class="note-save-btn" onclick="closeNoteModal()">💾 Salvar & Fechar</button>
@@ -5948,7 +6168,7 @@ let sessionSeconds = 0;
 const GUIDE_READ_TARGET_SECONDS = 45; // 45s de leitura ativa na Aula Visual + rolagem pelos 4 cards
 let autoProgressEnabled = true;
 
-// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual PT-BR
+// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual
 let ytCurrentTime = 0;
 let ytMaxTime = 0;
 let ytDuration = 0;
@@ -6036,33 +6256,38 @@ function copyPtGuideToNotebook(topicId) {
   const editor = document.getElementById("modal-note-editor");
   if (!editor) return;
 
-  const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const mdBlock = [
-    `## 📘 Resumo em Português: ${topicInfo.title || ""}`,
-    "",
-    `### 🎯 1. Intuição & Conceito`,
-    cleanIntuicao,
-    "",
-    `### 📐 2. Fórmula Matemática`,
-    g.formula || "",
-    "",
-    `### 🔢 3. Exemplo Prático Passo a Passo`,
-    cleanExemplo,
-    "",
-    `### 🐍 4. Aplicação em Python (IA)`,
-    "```python",
-    g.codigo || "",
-    "```",
-    ""
-  ].join("\n");
+  let mdBlock = "";
+  if (typeof isPtGuideV2 === "function" && isPtGuideV2(g)) {
+    mdBlock = lv2ToMarkdown(g, topicInfo.title);
+  } else {
+    const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
+    const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
+    mdBlock = [
+      `## 📘 Resumo: ${topicInfo.title || ""}`,
+      "",
+      `### 🎯 1. Intuição & Conceito`,
+      cleanIntuicao,
+      "",
+      `### 📐 2. Fórmula Matemática & Significado`,
+      g.formula || "",
+      "",
+      `### 🔢 3. Exemplo Prático com Cálculos Passo a Passo`,
+      cleanExemplo,
+      "",
+      `### 🐍 4. Como a IA calcula isso em Python / NumPy`,
+      "```python",
+      g.codigo || "",
+      "```",
+      ""
+    ].join("\n");
+  }
 
   const cur = editor.value.trim();
   editor.value = cur ? (cur + "\n\n" + mdBlock) : mdBlock;
   onNoteEditorInput();
   setNoteViewMode("split");
   markPtGuideReadNow(true);
-  showToast("📘 Apostila em Português copiada para o Caderno e Aula Visual validada (100%)!");
+  showToast("📘 Resumo da aula copiado para o Caderno!");
 }
 
 function showToast(msg) {
@@ -6084,12 +6309,23 @@ function showToast(msg) {
 // =========================================================================
 let CURRENT_MODAL_VIDEO_OPT = 1;
 
-function switchModalVideoOption(optNum, resetPlayerTimer = false) {
+function formatCleanVideoOptLabel(lbl, fallback) {
+  if (!lbl) return fallback;
+  let s = lbl.replace(/^[▶🎬\s]+/, "")
+             .replace(/^2ª\s*Opção:\s*/i, "")
+             .replace(/\s*\(PT-BR\)/i, "")
+             .replace(/\s*PT-BR/i, "")
+             .trim();
+  if (s.length > 20) s = s.substring(0, 18).trim() + "…";
+  return s || fallback;
+}
+
+function switchModalVideoOption(optNum, resetPlayerTimer = false, scrollUp = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
   const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
   const video1Url = topicInfo.url || "";
-  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy (PT-BR)";
+  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy";
   const video2Url = topicInfo.url2 || "";
   const video2Label = topicInfo.label2 || "🎬 Opção 2: 3B1B / StatQuest";
 
@@ -6104,23 +6340,36 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   const btnOpt1 = document.getElementById("modal-video-opt1-btn");
   const btnOpt2 = document.getElementById("modal-video-opt2-btn");
 
+  const cleanOpt1 = formatCleanVideoOptLabel(video1Label, "Principal");
+  const cleanOpt2 = formatCleanVideoOptLabel(video2Label, "Complementar");
+
   if (switcherWrap) {
     if (video1Url && video2Url) {
       switcherWrap.style.display = "inline-flex";
+      // Ocultar tag redundante para não poluir o cabeçalho ao lado dos botões
+      if (playerTag) playerTag.style.display = "none";
       if (btnOpt1) {
-        btnOpt1.textContent = video1Label;
-        btnOpt1.style.background = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--card)";
-        btnOpt1.style.color = CURRENT_MODAL_VIDEO_OPT === 1 ? "#fff" : "var(--tx)";
-        btnOpt1.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--bd)";
+        btnOpt1.textContent = "1. " + cleanOpt1;
+        btnOpt1.className = CURRENT_MODAL_VIDEO_OPT === 1 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt1.title = "Assistir: " + video1Label;
+        btnOpt1.style.background = "";
+        btnOpt1.style.color = "";
+        btnOpt1.style.borderColor = "";
       }
       if (btnOpt2) {
-        btnOpt2.textContent = video2Label;
-        btnOpt2.style.background = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--card)";
-        btnOpt2.style.color = CURRENT_MODAL_VIDEO_OPT === 2 ? "#fff" : "var(--tx)";
-        btnOpt2.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--bd)";
+        btnOpt2.textContent = "2. " + cleanOpt2;
+        btnOpt2.className = CURRENT_MODAL_VIDEO_OPT === 2 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt2.title = "Assistir: " + video2Label;
+        btnOpt2.style.background = "";
+        btnOpt2.style.color = "";
+        btnOpt2.style.borderColor = "";
       }
     } else {
       switcherWrap.style.display = "none";
+      if (playerTag) {
+        playerTag.style.display = "inline-flex";
+        playerTag.textContent = activeLabel;
+      }
     }
   }
 
@@ -6138,8 +6387,9 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
     if (extLink) {
       extLink.href = activeUrl;
       extLink.style.display = "inline-flex";
+      extLink.textContent = "↗ YouTube";
     }
-    if (playerTag) playerTag.textContent = activeLabel;
+    if (playerTag && (!video1Url || !video2Url)) playerTag.textContent = activeLabel;
   }
 
   const vWrap = document.getElementById("video-wrapper");
@@ -6147,6 +6397,11 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   if (vWrap && vWrap.classList.contains("collapsed")) {
     vWrap.classList.remove("collapsed");
     if (cBtn) cBtn.textContent = "▲ Ocultar Vídeo";
+  }
+
+  if (scrollUp) {
+    const p = document.getElementById("study-player-sect");
+    if (p) p.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (!resetPlayerTimer) {
@@ -6207,42 +6462,54 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
   if (docUrl && docLink) {
     docLink.href = docUrl;
-    docLink.textContent = ptGuide ? "🌐 Khan Academy / Fonte PT-BR ↗" : docLabel;
+    docLink.textContent = ptGuide ? "Fonte Oficial ↗" : (docLabel || "Fonte ↗");
     docLink.style.display = "inline-flex";
   } else if (docLink) {
     docLink.style.display = "none";
   }
 
-  // Renderizar Apostila Interativa em Português (quando disponível no tópico)
+  // Renderizar Apostila Interativa (quando disponível no tópico)
   const guideContainer = document.getElementById("modal-pt-guide-container");
   const defaultTipCard = document.getElementById("modal-default-tip-card");
   if (guideContainer) {
     if (ptGuide) {
       if (defaultTipCard) defaultTipCard.style.display = "none";
-      const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
-      const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
-      guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(155,168,171,.3);background:linear-gradient(160deg,rgba(37,55,69,.5),rgba(74,92,106,.2));padding:16px 18px;border-radius:14px;margin-bottom:10px">
+      if (typeof isPtGuideV2 === "function" && isPtGuideV2(ptGuide)) {
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
-            <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual Passo a Passo — Método Khan Academy (PT-BR)</span>
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
             </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button type="button" onclick="switchModalVideoOption(1)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
-                ${videoLabel} ↑
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${video2Url ? `<button type="button" onclick="switchModalVideoOption(2)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#f59e0b;cursor:pointer">${video2Label} ↑</button>` : ""}
-              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
-                📥 Copiar para Meu Caderno
+            </div>
+          </div>
+          ${renderPtGuideV2Body(ptGuide)}
+        </div>
+        `;
+      } else {
+        const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
+        const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
+            </div>
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🎓 Canal @khanacademyportugues ↗</a>` : ""}
             </div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
             <div id="pt-step-card-1" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica</div>
                 <span id="pt-step-badge-1" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">1/4</span>
               </div>
               <div>${ptGuide.intuicao || ""}</div>
@@ -6250,7 +6517,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-2" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b">📐 2. Fórmula Matemática & Significado</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">📐 2. Fórmula Matemática & Significado dos Termos</div>
                 <span id="pt-step-badge-2" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">2/4</span>
               </div>
               <div id="pt-guide-formula-render">${fmtFormula}</div>
@@ -6258,7 +6525,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-3" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981">🔢 3. Exemplo Prático Passo a Passo</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#253745">🔢 3. Exemplo Prático com Cálculos Passo a Passo</div>
                 <span id="pt-step-badge-3" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">3/4</span>
               </div>
               <div id="pt-guide-example-render">${fmtExemplo}</div>
@@ -6266,24 +6533,15 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-4" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">🐍 4. Como a IA calcula isso em Python / NumPy</div>
                 <span id="pt-step-badge-4" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">4/4</span>
               </div>
               <pre style="margin:6px 0 0;padding:10px 12px;background:#0d1017;color:#e5e7eb;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:.8rem;line-height:1.45"><code>${(ptGuide.codigo || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
             </div>
           </div>
-
-          <div id="pt-guide-validation-bar" style="margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed rgba(16,185,129,.45);background:rgba(16,185,129,.07);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
-            <div style="display:flex;flex-direction:column;gap:2px">
-              <span id="pt-guide-val-title" style="font-size:.82rem;font-weight:800;color:#10b981">📖 Validação de Leitura da Aula Visual (Vale 50% da Conclusão)</span>
-              <span id="pt-guide-val-sub" style="font-size:.75rem;color:var(--mu)">Role pelos 4 cards + ~45s de leitura na tela, ou clique ao lado para confirmar leitura imediata.</span>
-            </div>
-            <button type="button" id="pt-guide-complete-btn" onclick="markPtGuideReadNow()" style="font:inherit;font-size:.78rem;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid #10b981;background:#10b981;color:#fff;cursor:pointer;transition:.15s;white-space:nowrap">
-              ☑️ Marcar Aula Visual como Lida
-            </button>
-          </div>
         </div>
-      `;
+        `;
+      }
       if (typeof renderMathInElement === "function") {
         try {
           renderMathInElement(guideContainer, {
@@ -6412,22 +6670,28 @@ function toggleAutoProgress(enabled) {
 }
 
 // =========================================================================
-// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL PT-BR)
+// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL)
 // =========================================================================
 function resetSessionStudyProgress() {
   ytCurrentTime = 0;
   ytMaxTime = 0;
   ytVideoCompleted = false;
   guideReadSeconds = 0;
-  guideCardsSeen = { 1: false, 2: false, 3: false, 4: false };
+  guideCardsSeen = {};
   guideCompleted = false;
   notifiedVideoHalf = false;
   notifiedGuideHalf = false;
-  for (let i = 1; i <= 4; i++) {
+
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = false;
     const b = document.getElementById(`pt-step-badge-${i}`);
     const c = document.getElementById(`pt-step-card-${i}`);
     if (b) {
-      b.textContent = `${i}/4`;
+      b.textContent = `${i}/${totalCards}`;
       b.style.background = "var(--bg)";
       b.style.color = "var(--mu)";
       b.style.borderColor = "var(--bd)";
@@ -6456,8 +6720,9 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
     guideReadSeconds++;
   }
 
-  // Verifica quais dos 4 cards já entraram no campo de visão
-  for (let i = 1; i <= 4; i++) {
+  // Verifica quais cards já entraram no campo de visão
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+  for (let i = 1; i <= totalCards; i++) {
     const card = document.getElementById(`pt-step-card-${i}`);
     if (!card) continue;
     const r = card.getBoundingClientRect();
@@ -6466,7 +6731,7 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
         guideCardsSeen[i] = true;
         const badge = document.getElementById(`pt-step-badge-${i}`);
         if (badge) {
-          badge.textContent = `✓ ${i}/4 Lido`;
+          badge.textContent = `✓ ${i}/${totalCards} Lido`;
           badge.style.background = "rgba(16,185,129,.15)";
           badge.style.color = "#10b981";
           badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -6495,22 +6760,23 @@ function getComputedVideoAndGuideProgress(topicId) {
     if (videoPct >= 100) ytVideoCompleted = true;
   }
 
-  // 2. Cálculo do Progresso da Aula Visual PT-BR (0 a 100%)
+  // 2. Cálculo do Progresso da Aula Visual (0 a 100%)
   let guidePct = saved.gp || 0;
   if (saved.s === "e") guidePct = 100;
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   let seenCount = 0;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     if (guideCardsSeen[i]) seenCount++;
   }
   if (guideCompleted) {
     guidePct = 100;
-  } else if (hasGuide) {
-    // 50% pela visualização dos 4 cards na rolagem + 50% pelos 45s de leitura ativa na tela
-    const cardsScore = (seenCount / 4) * 50;
+  } else if (hasGuide && totalCards > 0) {
+    // 50% pela visualização dos cards na rolagem + 50% pelos 45s de leitura ativa na tela
+    const cardsScore = (seenCount / totalCards) * 50;
     const timeScore = Math.min(50, (guideReadSeconds / GUIDE_READ_TARGET_SECONDS) * 50);
     const calcGuide = Math.min(100, Math.round(cardsScore + timeScore));
     if (calcGuide > guidePct) guidePct = calcGuide;
-    if (seenCount === 4 && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
+    if (seenCount === totalCards && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
       guidePct = 100;
       guideCompleted = true;
     }
@@ -6539,6 +6805,8 @@ function syncSessionStudyProgressUI() {
   if (!topicId) return;
 
   const { hasVideo, hasGuide, videoPct, guidePct, seenCount, totalPct } = getComputedVideoAndGuideProgress(topicId);
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
 
   const timerTxt = document.getElementById("session-progress-text");
   const videoPill = document.getElementById("session-video-pill");
@@ -6556,19 +6824,19 @@ function syncSessionStudyProgressUI() {
     videoPill.style.display = hasVideo ? "inline-flex" : "none";
     if (videoPct >= 100) {
       videoPill.textContent = hasGuide ? `🎬 Vídeo: 100% ✓ (50/50%)` : `🎬 Vídeo: 100% ✓`;
-      videoPill.style.background = "rgba(16,185,129,.15)";
-      videoPill.style.borderColor = "rgba(16,185,129,.45)";
-      videoPill.style.color = "#10b981";
+      videoPill.style.background = "rgba(37,55,69,.12)";
+      videoPill.style.borderColor = "#4A5C6A";
+      videoPill.style.color = "var(--tx)";
     } else if (ytDuration > 0) {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     } else {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     }
   }
 
@@ -6576,37 +6844,41 @@ function syncSessionStudyProgressUI() {
     guidePill.style.display = hasGuide ? "inline-flex" : "none";
     if (guidePct >= 100) {
       guidePill.textContent = `📘 Aula Visual: 100% ✓ (50/50%)`;
-      guidePill.style.background = "rgba(16,185,129,.18)";
-      guidePill.style.borderColor = "rgba(16,185,129,.5)";
-      guidePill.style.color = "#10b981";
+      guidePill.style.background = "rgba(37,55,69,.12)";
+      guidePill.style.borderColor = "#4A5C6A";
+      guidePill.style.color = "var(--tx)";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/4 cards · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
-      guidePill.style.background = "rgba(16,185,129,.08)";
-      guidePill.style.borderColor = "rgba(16,185,129,.32)";
-      guidePill.style.color = "#10b981";
+      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      guidePill.style.background = "rgba(74,92,106,.15)";
+      guidePill.style.borderColor = "var(--bd)";
+      guidePill.style.color = "var(--tx)";
     }
   }
 
-  // Atualizar barra de validação no rodapé da Aula Visual PT-BR
+  // Atualizar barra de validação no rodapé da Aula Visual
   const valBtn = document.getElementById("pt-guide-complete-btn");
   const valTitle = document.getElementById("pt-guide-val-title");
   const valSub = document.getElementById("pt-guide-val-sub");
   if (valBtn && hasGuide) {
     if (guidePct >= 100) {
-      valBtn.textContent = "✅ Aula Visual Lida (100%)";
-      valBtn.style.background = "rgba(16,185,129,.2)";
-      valBtn.style.color = "#10b981";
-      if (valTitle) valTitle.textContent = "✅ Leitura da Aula Visual Concluída! (+50% garantidos)";
+      valBtn.textContent = "✓ Aula Visual Concluída";
+      valBtn.className = "pt-guide-btn pt-btn-secondary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = "✓ Leitura da Aula Visual Concluída (+50% garantidos)";
       if (valSub) valSub.textContent = videoPct >= 100
-        ? "🎉 Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
-        : "Agora conclua o vídeo acima para atingir 100% do estudo completo.";
+        ? "Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
+        : "Agora conclua o vídeo acima para atingir 100% do estudo.";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      valBtn.textContent = `☑️ Marcar Aula Visual como Lida (${guidePct}%)`;
-      valBtn.style.background = "#10b981";
-      valBtn.style.color = "#fff";
-      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/4 cards vistos · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      valBtn.textContent = `☑️ Marcar Leitura Concluída (${guidePct}%)`;
+      valBtn.className = "pt-guide-btn pt-btn-primary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas vistas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
     }
   }
 
@@ -6632,7 +6904,7 @@ function syncSessionStudyProgressUI() {
       if (videoPct >= 100 && guidePct < 100 && !notifiedVideoHalf) {
         notifiedVideoHalf = true;
         saveLocal();
-        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual PT-BR abaixo para completar 100%!");
+        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual abaixo para completar 100%!");
       }
       if (guidePct >= 100 && videoPct < 100 && !notifiedGuideHalf) {
         notifiedGuideHalf = true;
@@ -6659,13 +6931,15 @@ function syncSessionStudyProgressUI() {
 function markPtGuideReadNow(silent = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   guideCompleted = true;
   guideReadSeconds = GUIDE_READ_TARGET_SECONDS;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     guideCardsSeen[i] = true;
     const badge = document.getElementById(`pt-step-badge-${i}`);
     if (badge) {
-      badge.textContent = `✓ ${i}/4 Lido`;
+      badge.textContent = `✓ ${i}/${totalCards} Lido`;
       badge.style.background = "rgba(16,185,129,.15)";
       badge.style.color = "#10b981";
       badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -6676,7 +6950,7 @@ function markPtGuideReadNow(silent = false) {
   saveLocal();
   syncSessionStudyProgressUI();
   if (!silent) {
-    showToast("📘 Aula Visual PT-BR marcada como 100% Lida!");
+    showToast("📘 Aula Visual marcada como 100% Lida!");
   }
 }
 
@@ -6684,7 +6958,7 @@ function scrollOrValidatePtGuide() {
   const gBox = document.getElementById("pt-guide-box");
   if (gBox) {
     gBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    showToast("📘 Role pelos 4 cards da Aula Visual ou clique no botão verde ao final para validar!");
+    showToast("📘 Role pelas etapas da Aula Visual ou clique no botão verde ao final para validar!");
   }
 }
 
@@ -6713,16 +6987,17 @@ function initStudySessionTimer(topicId) {
   ytDuration = 0;
   ytPlayerState = -1;
 
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
   const saved = PR[topicId] || { s: "z", n: "", d: "" };
   ytVideoCompleted = (saved.s === "e" || (saved.vp || 0) >= 100);
   guideCompleted = (saved.s === "e" || (saved.gp || 0) >= 100);
   guideReadSeconds = guideCompleted ? GUIDE_READ_TARGET_SECONDS : 0;
-  guideCardsSeen = {
-    1: guideCompleted,
-    2: guideCompleted,
-    3: guideCompleted,
-    4: guideCompleted
-  };
+  guideCardsSeen = {};
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = guideCompleted;
+  }
   notifiedVideoHalf = ytVideoCompleted;
   notifiedGuideHalf = guideCompleted;
 
@@ -7854,6 +8129,168 @@ function exportBackupJson() {
   closeExportModal();
 }
 
+
+
+// =========================================================================
+// AULA VISUAL v2 — renderizador de blocos pedagógicos flexíveis
+// =========================================================================
+const LV2_META = {
+  texto:       { icon: "📖", label: "Explicação" },
+  notacao:     { icon: "🔤", label: "Como ler a notação" },
+  visual:      { icon: "👁️", label: "Visualize" },
+  icones:      { icon: "👥", label: "Visualize" },
+  passos:      { icon: "🧮", label: "Resolvido passo a passo" },
+  pense:       { icon: "🤔", label: "Pare e pense" },
+  laboratorio: { icon: "🧪", label: "Laboratório" },
+  desafio:     { icon: "🎯", label: "Sua vez" },
+  armadilhas:  { icon: "⚠️", label: "Armadilhas comuns" },
+  ponte:       { icon: "🔗", label: "Onde isso aparece na IA" },
+  tabela:      { icon: "📊", label: "Compare" }
+};
+
+function isPtGuideV2(g) { return Boolean(g && g.v === 2 && Array.isArray(g.blocos)); }
+function ptGuideCardCount(g) { return isPtGuideV2(g) ? g.blocos.length : 4; }
+
+function lv2Esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function lv2IconArray(b) {
+  const cols = b.colunas || 40, total = b.total || 1000, gap = 11, r = 4;
+  const rows = Math.ceil(total / cols);
+  const cls = [];
+  (b.grupos || []).forEach(g => { for (let k = 0; k < g.n; k++) cls.push(g.estilo || "s1"); });
+  while (cls.length < total) cls.push("s0");
+  let dots = "";
+  for (let k = 0; k < total; k++) {
+    const cx = 8 + (k % cols) * gap, cy = 8 + Math.floor(k / cols) * gap;
+    dots += `<circle cx="${cx}" cy="${cy}" r="${r}" class="lv2-dot-${cls[k]}"/>`;
+  }
+  const W = 16 + (cols - 1) * gap, H = 16 + (rows - 1) * gap;
+  const sw = st => `<svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" class="lv2-dot-${st}"/></svg>`;
+  let legend = (b.grupos || []).map(g => `<span class="lv2-leg">${sw(g.estilo || "s1")}${g.rotulo}</span>`).join("");
+  if (b.resto) legend += `<span class="lv2-leg">${sw("s0")}${b.resto}</span>`;
+  return `<figure class="lv2-fig"><svg viewBox="0 0 ${W} ${H}" class="lv2-svg" role="img">${dots}</svg>` +
+         `<div class="lv2-legend">${legend}</div>${b.legenda ? `<figcaption>${b.legenda}</figcaption>` : ""}</figure>`;
+}
+
+function lv2Block(b, i, n) {
+  const tipo = b.tipo || "texto";
+  const meta = LV2_META[tipo] || LV2_META.texto;
+  let inner = b.corpo ? `<div class="lv2-prose">${b.corpo}</div>` : "";
+  switch (tipo) {
+    case "notacao":
+      inner += `<div class="lv2-notation">` + (b.itens || []).map(it =>
+        `<div class="lv2-not-row"><div class="lv2-not-sym">${it.simbolo}</div><div>` +
+        `<div class="lv2-not-read">lê-se: <i>${it.leitura}</i></div><div>${it.significado}</div></div></div>`).join("") + `</div>`;
+      break;
+    case "visual":
+      inner += `<figure class="lv2-fig">${b.svg || ""}${b.legenda ? `<figcaption>${b.legenda}</figcaption>` : ""}</figure>`;
+      break;
+    case "icones":
+      inner += lv2IconArray(b);
+      break;
+    case "passos":
+      inner += `<ol class="lv2-steps">` + (b.passos || []).map(p =>
+        `<li><div>${p.faca}</div>${p.porque ? `<div class="lv2-step-why"><b>Por quê?</b> ${p.porque}</div>` : ""}</li>`).join("") + `</ol>` +
+        (b.conclusao ? `<div class="lv2-conclusion">${b.conclusao}</div>` : "");
+      break;
+    case "pense":
+      inner += `<div class="lv2-q">${b.pergunta || ""}</div>` +
+               `<details><summary>Pensou? Ver a resposta</summary><div>${b.resposta || ""}</div></details>`;
+      break;
+    case "laboratorio":
+      inner += `<pre class="lv2-code"><code>${lv2Esc(b.codigo)}</code></pre>`;
+      if (b.experimentos && b.experimentos.length) {
+        inner += `<div class="lv2-exp-title">🔬 Experimente e observe</div><ul>${b.experimentos.map(e => `<li>${e}</li>`).join("")}</ul>`;
+      }
+      break;
+    case "desafio":
+      inner += (b.exercicios || []).map((ex, k) =>
+        `<div class="lv2-ex"><div><span class="lv2-ex-n">${k + 1}</span>${ex.enunciado}</div>` +
+        (ex.dicas || []).map((d, j) => `<details><summary>💡 Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
+        `<details><summary>✅ Resposta comentada</summary><div>${ex.resposta || ""}</div></details></div>`).join("");
+      break;
+    case "armadilhas":
+      inner += `<div class="lv2-pitfalls">` + (b.itens || []).map(it =>
+        `<div class="lv2-pit"><div class="lv2-pit-wrong">✗ ${it.erro}</div><div class="lv2-pit-right">✓ ${it.correcao}</div></div>`).join("") + `</div>`;
+      break;
+    case "tabela":
+      inner += `<div class="lv2-table-wrap"><table class="lv2-table"><thead><tr>${(b.cabecalho || []).map(h => `<th>${h}</th>`).join("")}</tr></thead>` +
+               `<tbody>${(b.linhas || []).map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+      break;
+  }
+  if (b.depois) inner += `<div class="lv2-prose" style="margin-top:10px">${b.depois}</div>`;
+  return `<section class="lv2-block lv2-${tipo}" id="pt-step-card-${i}">` +
+         `<header class="lv2-head"><div class="lv2-kicker">${meta.icon} ${b.rotulo || meta.label}</div>` +
+         `<span class="lv2-badge" id="pt-step-badge-${i}">${i}/${n}</span></header>` +
+         (b.titulo ? `<h4 class="lv2-title">${b.titulo}</h4>` : "") + inner + `</section>`;
+}
+
+function renderPtGuideV2Body(g) {
+  const blocos = g.blocos || [];
+  const n = blocos.length;
+  const chips = [];
+  if (g.duracao) chips.push(`⏱️ ~${g.duracao} min`);
+  chips.push(`🧩 ${n} etapas`);
+  const exCount = blocos.filter(b => b.tipo === "desafio").reduce((s, b) => s + (b.exercicios || []).length, 0);
+  if (exCount) chips.push(`🎯 ${exCount} exercícios`);
+  if (blocos.some(b => b.tipo === "laboratorio")) chips.push("🧪 laboratório");
+
+  let html = `<div class="lv2"><div class="lv2-hero">` +
+    `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
+    `<div class="lv2-hook">${g.gancho || ""}</div><div class="lv2-meta">`;
+  if (g.objetivos && g.objetivos.length) {
+    html += `<div><div class="lv2-meta-title">Ao final desta aula você vai</div><ul>${g.objetivos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
+  }
+  if (g.prerequisitos && g.prerequisitos.length) {
+    html += `<div><div class="lv2-meta-title">Você vai reutilizar</div><ul>${g.prerequisitos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
+  }
+  html += `</div></div>`;
+  blocos.forEach((b, k) => { html += lv2Block(b, k + 1, n); });
+
+  html += `<div class="lv2-footer">`;
+  if (g.resumo && g.resumo.length) {
+    html += `<div class="lv2-meta-title">🧠 Para levar desta aula</div><ul>${g.resumo.map(r => `<li>${r}</li>`).join("")}</ul>`;
+  }
+  if (g.proxima) html += `<div class="lv2-meta-title" style="margin-top:10px">➡️ Próximo passo da jornada</div><div>${g.proxima}</div>`;
+  if (g.referencias && g.referencias.length) {
+    html += `<div class="lv2-refs"><div class="lv2-meta-title">📚 Referências usadas nesta aula</div><ul>` +
+      g.referencias.map(r => `<li><b>${r.obra}</b>${r.trecho ? ` — ${r.trecho}` : ""}${r.uso ? `. <i>${r.uso}</i>` : ""}</li>`).join("") + `</ul></div>`;
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+function lv2Strip(html) {
+  return String(html || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|li|div|h4|tr)>/gi, "\n")
+    .replace(/<li>/gi, "- ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+    .replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function lv2ToMarkdown(g, title) {
+  const out = [`## 📘 ${title || ""}`, ""];
+  if (g.gancho) out.push(`> ${lv2Strip(g.gancho)}`, "");
+  if (g.resumo && g.resumo.length) { out.push("### 🧠 Ideias-chave"); g.resumo.forEach(r => out.push(`- ${lv2Strip(r)}`)); out.push(""); }
+  (g.blocos || []).forEach(b => {
+    if (b.tipo === "notacao") {
+      out.push(`### 🔤 ${lv2Strip(b.titulo) || "Notação"}`);
+      (b.itens || []).forEach(it => out.push(`- ${it.simbolo} — *${lv2Strip(it.leitura)}*: ${lv2Strip(it.significado)}`));
+      out.push("");
+    } else if (b.tipo === "laboratorio" && b.codigo) {
+      out.push(`### 🧪 ${lv2Strip(b.titulo) || "Laboratório"}`, "```python", b.codigo, "```", "");
+    } else if (b.tipo === "desafio") {
+      out.push(`### 🎯 ${lv2Strip(b.titulo) || "Exercícios"}`);
+      (b.exercicios || []).forEach((ex, k) => out.push(`${k + 1}. ${lv2Strip(ex.enunciado)}`));
+      out.push("");
+    }
+  });
+  return out.join("\n");
+}
 
 
 function toggleTheme() {

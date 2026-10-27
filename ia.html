@@ -626,11 +626,11 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .study-player-topbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 10px;
+  padding: 8px 14px;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
   flex-shrink: 0;
@@ -642,17 +642,22 @@ input:checked + .slider:before { transform: translateX(14px); }
   gap: 8px;
   font-size: .84rem;
   min-width: 0;
+  flex: 1;
 }
 
 .player-source-tag {
   font-size: .72rem;
-  font-weight: 800;
-  padding: 2px 8px;
+  font-weight: 750;
+  padding: 3px 8px;
   border-radius: 6px;
-  background: var(--ac);
-  color: #fff;
+  background: #253745;
+  color: #CCD0CF;
   letter-spacing: .02em;
   white-space: nowrap;
+}
+[data-theme="light"] .player-source-tag {
+  background: #253745;
+  color: #ffffff;
 }
 
 .player-source-title {
@@ -661,18 +666,19 @@ input:checked + .slider:before { transform: translateX(14px); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 240px;
+  max-width: 360px;
 }
 
 .player-topbar-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .player-ext-btn {
-  font-size: .76rem;
-  font-weight: 650;
+  font-size: .74rem;
+  font-weight: 700;
   padding: 4px 10px;
   border-radius: 6px;
   border: 1px solid var(--bd);
@@ -682,11 +688,34 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: .15s;
+  transition: all .16s ease;
   white-space: nowrap;
+  user-select: none;
 }
-.player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
-.player-ext-btn.doc-ext { background: rgba(74,92,106,.2); border-color: rgba(155,168,171,.3); color: var(--ac); }
+.player-ext-btn:hover {
+  border-color: #4A5C6A;
+  background: rgba(155, 168, 171, 0.15);
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext {
+  background: var(--card);
+  border-color: #9BA8AB;
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext:hover {
+  background: rgba(155, 168, 171, 0.18);
+  border-color: #4A5C6A;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext {
+  background: #11212D;
+  border-color: #4A5C6A;
+  color: #CCD0CF;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext:hover {
+  background: #253745;
+  border-color: #9BA8AB;
+  color: #ffffff;
+}
 
 .player-collapse-btn {
   font: inherit;
@@ -1399,6 +1428,137 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 /* =========================================================================
+   CONTROLE SEGMENTADO DE VÍDEOS (CLEAN & OBJETIVO - PALETA OFICIAL)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.video-segmented-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(37, 55, 69, 0.08);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 3px;
+}
+[data-theme="dark"] .video-segmented-switcher {
+  background: rgba(37, 55, 69, 0.35);
+  border-color: #253745;
+}
+.video-seg-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+  transition: all .16s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+.video-seg-btn:hover {
+  color: var(--tx);
+  background: rgba(155, 168, 171, 0.16);
+}
+.video-seg-btn.active {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.2);
+}
+[data-theme="light"] .video-seg-btn.active {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+
+/* =========================================================================
+   BOTÕES DA AULA VISUAL (MÉTODO KHAN ACADEMY - PALETA CLEAN & OBJETIVA)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.pt-guide-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.06);
+  transition: all .16s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+}
+.pt-guide-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(6, 20, 27, 0.14);
+}
+.pt-guide-btn:active {
+  transform: translateY(0);
+}
+
+/* Botão Primário (Ação Principal / Vídeo 1) */
+.pt-btn-primary {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+.pt-btn-primary:hover {
+  background: #4A5C6A !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+[data-theme="light"] .pt-btn-primary {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+[data-theme="light"] .pt-btn-primary:hover {
+  background: #11212D !important;
+  color: #ffffff !important;
+}
+
+/* Botão Secundário / Outline Clean (Vídeo 2, Copiar, Links) */
+.pt-btn-secondary {
+  background: var(--card) !important;
+  color: var(--tx) !important;
+  border-color: #9BA8AB !important;
+}
+.pt-btn-secondary:hover {
+  background: rgba(155, 168, 171, 0.15) !important;
+  border-color: #4A5C6A !important;
+  color: var(--tx) !important;
+}
+[data-theme="dark"] .pt-btn-secondary {
+  background: #11212D !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+[data-theme="dark"] .pt-btn-secondary:hover {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+
+/* Compatibilidade com classes anteriores */
+.pt-btn-red, .pt-btn-amber, .pt-btn-green, .pt-btn-slate {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #4A5C6A !important;
+}
+
+/* =========================================================================
    TEMPORIZADOR POMODORO INTEGRADO
    ========================================================================= */
 .pomodoro-wrap {
@@ -1757,6 +1917,68 @@ input:checked + .slider:before { transform: translateX(14px); }
   line-height: 1.45;
 }
 
+
+/* ===== Aula Visual v2 ===== */
+.lv2{display:flex;flex-direction:column;gap:12px;font-size:.88rem;line-height:1.65;color:var(--tx)}
+.lv2 p{margin:0 0 .7em}.lv2 p:last-child{margin-bottom:0}
+.lv2 code{background:rgba(74,92,106,.22);padding:1px 5px;border-radius:4px;font-size:.84em}
+.lv2 ul{margin:.3em 0 .6em;padding-left:1.2em}.lv2 li{margin:.15em 0}
+.lv2-hero{border:1px solid var(--bd);border-radius:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(74,92,106,.20),rgba(37,55,69,.06))}
+.lv2-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.lv2-chip{font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid var(--bd);color:var(--mu);background:var(--card)}
+.lv2-hook{font-size:.97rem;font-weight:600;line-height:1.55}
+.lv2-meta{display:grid;gap:10px;margin-top:12px}
+.lv2-meta-title{font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}
+.lv2-block{border:1px solid var(--bd);border-radius:12px;padding:12px 15px;background:var(--card);transition:border-color .2s}
+.lv2-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px}
+.lv2-kicker{font-size:.7rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mu)}
+.lv2-badge{font-size:.66rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd);white-space:nowrap}
+.lv2-title{margin:2px 0 8px;font-size:.98rem;font-weight:800;line-height:1.35}
+.lv2-notation{display:grid;gap:7px;margin:8px 0 4px}
+.lv2-not-row{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:12px;align-items:center;padding:8px 10px;border-radius:8px;background:rgba(74,92,106,.13)}
+.lv2-not-sym{font-size:1.02rem;text-align:center}
+.lv2-not-read{font-size:.78rem;color:var(--mu)}
+.lv2-steps{list-style:none;counter-reset:lv2s;padding:0;margin:8px 0 0;display:flex;flex-direction:column;gap:8px}
+.lv2-steps li{counter-increment:lv2s;position:relative;padding:8px 10px 8px 42px;border-radius:8px;background:rgba(74,92,106,.10)}
+.lv2-steps li::before{content:counter(lv2s);position:absolute;left:11px;top:9px;width:21px;height:21px;border-radius:50%;background:var(--bd);color:var(--tx);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+.lv2-step-why{font-size:.82rem;color:var(--mu);margin-top:4px}
+.lv2-conclusion{margin-top:10px;padding:9px 12px;border-radius:8px;border:1px dashed var(--mu)}
+.lv2-q{font-weight:650}
+.lv2 details{margin-top:8px;border:1px solid var(--bd);border-radius:8px;padding:6px 10px;background:var(--bg)}
+.lv2 summary{cursor:pointer;font-weight:700;font-size:.8rem;color:var(--mu);user-select:none}
+.lv2 details[open]>summary{margin-bottom:6px}
+.lv2-code,.lv2 pre{margin:8px 0 0;padding:10px 12px;background:#06141B;color:#CCD0CF;border:1px solid #253745;border-radius:8px;overflow-x:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.79rem;line-height:1.5}
+.lv2 pre code{background:none;padding:0;font-size:inherit}
+.lv2-exp-title{font-size:.72rem;font-weight:800;text-transform:uppercase;color:var(--mu);margin-top:10px}
+.lv2-ex{padding:10px 0 4px;border-top:1px solid var(--bd)}.lv2-ex:first-of-type{border-top:none;padding-top:4px}
+.lv2-ex-n{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--bd);font-size:.72rem;font-weight:800;margin-right:8px}
+.lv2-pitfalls{display:grid;gap:8px;margin-top:6px}
+.lv2-pit{padding:8px 11px;border-radius:8px;background:rgba(74,92,106,.11)}
+.lv2-pit-wrong{color:var(--mu);font-weight:650}
+.lv2-pit-right{margin-top:3px}
+.lv2-table-wrap{overflow-x:auto;margin-top:8px}
+.lv2-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.lv2-table th{font-size:.72rem;text-transform:uppercase;color:var(--mu);text-align:left;padding:6px 8px;border-bottom:1.5px solid var(--bd)}
+.lv2-table td{padding:6px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+.lv2-fig{margin:10px 0 2px}
+.lv2-svg{width:100%;height:auto;display:block;max-width:560px;margin:0 auto}
+.lv2-fig figcaption{font-size:.78rem;color:var(--mu);text-align:center;margin-top:6px}
+.lv2-legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;font-size:.76rem;color:var(--mu);margin-top:6px}
+.lv2-leg{display:inline-flex;align-items:center;gap:5px}
+.lv2-dot-s0{fill:var(--bd)}.lv2-dot-s1{fill:var(--tx)}.lv2-dot-s2{fill:var(--mu)}.lv2-dot-s3{fill:none;stroke:var(--tx);stroke-width:1.5}
+.sv-ax{stroke:var(--mu);stroke-width:1;opacity:.55}
+.sv-a{stroke:var(--tx);stroke-width:2.6;fill:none}
+.sv-b{stroke:var(--mu);stroke-width:2.6;fill:none}
+.sv-thin{stroke:var(--mu);stroke-width:1.4;fill:none}
+.sv-dash{stroke-dasharray:4 4}
+.sv-t{fill:var(--tx);font-size:12px;font-family:inherit}
+.sv-tm{fill:var(--mu);font-size:11px;font-family:inherit}
+.sv-it{font-style:italic}
+.sv-fill{fill:var(--tx)}.sv-fillm{fill:var(--mu)}
+.sv-node{fill:var(--card);stroke:var(--mu);stroke-width:1.5}
+.lv2-footer{border:1px solid var(--bd);border-radius:12px;padding:12px 15px;background:linear-gradient(135deg,rgba(37,55,69,.06),rgba(74,92,106,.18))}
+.lv2-refs{font-size:.78rem;color:var(--mu);margin-top:10px}
+.lv2-refs li{margin:.25em 0}
 
 
 /* =========================================================================
@@ -4555,7 +4777,7 @@ input:checked + .slider:before { transform: translateX(14px); }
                     <button class="yt-btn" onclick="openStudyModal('ia-4-1-2', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">▶ Andrew Ng Prompt Engineering</button>
                     
                     
-                    <a href="https://www.promptingguide.ai/pt" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">📖 Prompt Engineering Guide PT-BR ↗</a>
+                    <a href="https://www.promptingguide.ai/pt" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">📖 Prompt Engineering Guide ↗</a>
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ia-4-1-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
                     <button class="note-btn" onclick="openStudyModal('ia-4-1-2', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
                   </div>
@@ -5325,7 +5547,7 @@ input:checked + .slider:before { transform: translateX(14px); }
     <!-- 1. CABEÇALHO DO ESTÚDIO DE ESTUDO -->
     <div class="note-modal-header">
       <div class="note-header-left">
-        <div class="note-breadcrumb" id="modal-breadcrumb">Inteligência Artificial & Programação Python</div>
+        <div class="note-breadcrumb" id="modal-breadcrumb">Inteligência Artificial</div>
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
       <div class="note-header-right">
@@ -5358,19 +5580,17 @@ input:checked + .slider:before { transform: translateX(14px); }
 
       <!-- COLUNA DA ESQUERDA: VÍDEO, MATERIAIS & SESSÃO DE ESTUDO -->
       <div class="study-player-col" id="study-player-sect">
-        <div class="study-player-topbar" style="flex-wrap:wrap;gap:8px">
-          <div class="player-topbar-info" style="flex-wrap:wrap;gap:6px">
+        <div class="study-player-topbar">
+          <div class="player-topbar-info">
             <span class="player-source-tag" id="modal-player-tag">▶ Vídeo Aula</span>
-            <div id="modal-video-switcher-wrap" style="display:none;align-items:center;gap:5px">
-              <button type="button" id="modal-video-opt1-btn" class="player-ext-btn" onclick="switchModalVideoOption(1)" style="cursor:pointer;font-weight:800;border-color:var(--ac);background:var(--ac);color:#fff" title="Opção 1: Aula Passo a Passo em Português (Khan Academy Brasil)">🇧🇷 Opção 1: Khan Academy</button>
-              <button type="button" id="modal-video-opt2-btn" class="player-ext-btn" onclick="switchModalVideoOption(2)" style="cursor:pointer;font-weight:750" title="Opção 2: Animação Visual Complementar (3B1B / StatQuest)">🎬 Opção 2: 3B1B / StatQuest</button>
+            <div id="modal-video-switcher-wrap" class="video-segmented-switcher" style="display:none">
+              <button type="button" id="modal-video-opt1-btn" class="video-seg-btn active" onclick="switchModalVideoOption(1)" title="Opção 1: Aula Principal">1. Principal</button>
+              <button type="button" id="modal-video-opt2-btn" class="video-seg-btn" onclick="switchModalVideoOption(2)" title="Opção 2: Vídeo Complementar">2. Complementar</button>
             </div>
             <span class="player-source-title" id="modal-player-title">Material de Estudo</span>
           </div>
           <div class="player-topbar-actions">
-            <a href="#" target="_blank" rel="noopener" id="modal-external-link" class="player-ext-btn" title="Abrir vídeo no YouTube em nova aba">↗ YouTube Externo</a>
-            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir documentação ou material oficial">📖 Documentação</a>
-            <button class="player-collapse-btn" id="modal-collapse-btn" onclick="toggleVideoCollapse()" title="Recolher / Ocultar player de vídeo">▲ Ocultar Vídeo</button>
+            <a href="#" target="_blank" rel="noopener" id="modal-doc-link" class="player-ext-btn doc-ext" style="display:none" title="Abrir artigo ou material oficial da aula">Fonte Oficial ↗</a>
           </div>
         </div>
 
@@ -5387,7 +5607,7 @@ input:checked + .slider:before { transform: translateX(14px); }
               <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
                 🎬 Vídeo: 0%
               </button>
-              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual PT-BR (Role pelos 4 cards + ~45s de leitura na tela, ou clique em 'Marcar Aula Visual como Lida' ao final)">
+              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual (Role pelos 4 cards + ~45s de leitura na tela)">
                 📘 Aula Visual: 0%
               </button>
             </div>
@@ -5401,7 +5621,7 @@ input:checked + .slider:before { transform: translateX(14px); }
           </div>
         </div>
 
-        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA EM PORTUGUÊS -->
+        <!-- PAINEL EXTRA DE CONTEXTO E APOSTILA INTERATIVA -->
         <div class="study-left-extra-info" id="study-left-extra-info">
           <div id="modal-pt-guide-container"></div>
           <div class="study-left-card" id="modal-default-tip-card">
@@ -5530,7 +5750,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
         <!-- RODAPÉ -->
         <div class="note-modal-footer">
           <div class="footer-stats" id="modal-footer-stats">0 palavras · 0 caracteres</div>
-          <div class="footer-sync" id="modal-sync-indicator">💾 Salvo automaticamente</div>
+          <div class="footer-sync" id="modal-sync-indicator" style="display:none"></div>
           <div class="footer-actions">
             <button class="note-clear-btn" onclick="clearModalNote()">Limpar</button>
             <button class="note-save-btn" onclick="closeNoteModal()">💾 Salvar & Fechar</button>
@@ -6845,7 +7065,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 const TRACK_ID = "ia";
 const TOTAL_TRACK_TOPICS = 173;
-const TOPICS_MAP = {"ia-0-0-0": {"id": "ia-0-0-0", "title": "Instalar Python e usar o terminal", "url": "https://www.youtube.com/watch?v=S9uPNppGsGo", "label": "▶ Guanabara Python #01/03", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/using/index.html", "doc_label": "📖 Docs Instalação Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-1": {"id": "ia-0-0-1", "title": "Variáveis e tipos (int, float, str, bool)", "url": "https://www.youtube.com/watch?v=hdDHg1p3YVc", "label": "▶ Guanabara Python #06", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/stdtypes.html", "doc_label": "📖 Docs Tipos Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-2": {"id": "ia-0-0-2", "title": "Entrada e saída de dados", "url": "https://www.youtube.com/watch?v=nIHq1MtJaKs", "label": "▶ Guanabara Python #04 - Entrada & Saída", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html", "doc_label": "📖 Docs Entrada/Saída", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-3": {"id": "ia-0-0-3", "title": "Condicionais (if, elif, else)", "url": "https://www.youtube.com/watch?v=K10u3XIf1-Q", "label": "▶ Guanabara Python #10/12", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#if-statements", "doc_label": "📖 Docs Condicionais", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-4": {"id": "ia-0-0-4", "title": "Laços (for, while)", "url": "https://www.youtube.com/watch?v=cL4hDlCYlNU", "label": "▶ Guanabara Python #13/14", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#for-statements", "doc_label": "📖 Docs Laços for/while", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-5": {"id": "ia-0-0-5", "title": "Funções, parâmetros e retorno", "url": "https://www.youtube.com/watch?v=ezfr9d7wd_k", "label": "▶ Guanabara Python #20/21", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#defining-functions", "doc_label": "📖 Docs Funções", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-0": {"id": "ia-0-1-0", "title": "Listas e fatiamento", "url": "https://www.youtube.com/watch?v=N1hTsv4456A", "label": "▶ Guanabara Python #17/18", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists", "doc_label": "📖 Docs Listas e Métodos", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-1": {"id": "ia-0-1-1", "title": "Dicionários", "url": "https://www.youtube.com/watch?v=ZWj8o692qGY", "label": "▶ Guanabara Python #19", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#dictionaries", "doc_label": "📖 Docs Dicionários", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-2": {"id": "ia-0-1-2", "title": "Tuplas e conjuntos", "url": "https://www.youtube.com/watch?v=0LB3FSfjvao", "label": "▶ Guanabara Python #16", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#tuples-and-sequences", "doc_label": "📖 Docs Tuplas & Sets", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-3": {"id": "ia-0-1-3", "title": "List comprehension", "url": "https://www.youtube.com/watch?v=1b_rQoTf1m0", "label": "▶ List Comprehension Prático", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#list-comprehensions", "doc_label": "📖 Docs List Comprehensions", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-0": {"id": "ia-0-2-0", "title": "Orientação a objetos (classes, métodos, herança)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dkqe2aR0tQK74m8SFe-aGsY", "label": "▶ Guanabara POO #01-#05", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/classes.html", "doc_label": "📖 Docs POO Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-1": {"id": "ia-0-2-1", "title": "Módulos e pacotes", "url": "https://www.youtube.com/watch?v=5k9wO7y8_H4", "label": "▶ Guanabara Python #22", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/modules.html", "doc_label": "📖 Docs Módulos & Pacotes", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-2": {"id": "ia-0-2-2", "title": "Arquivos (ler e escrever)", "url": "https://www.youtube.com/watch?v=kYqg4K-p8Fw", "label": "▶ Guanabara Arquivos #115", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html#reading-and-writing-files", "doc_label": "📖 Docs Arquivos I/O", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-3": {"id": "ia-0-2-3", "title": "Tratamento de erros (try/except)", "url": "https://www.youtube.com/watch?v=F5_5bK8iP3M", "label": "▶ Guanabara Python #23", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/errors.html", "doc_label": "📖 Docs Try/Except", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-4": {"id": "ia-0-2-4", "title": "Ambientes virtuais e pip", "url": "https://www.youtube.com/watch?v=mK5C_w3Lh1Y", "label": "▶ Guanabara: venv & pip", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/venv.html", "doc_label": "📖 Docs Ambientes Virtuais", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-0": {"id": "ia-0-3-0", "title": "Git: commit, branch, merge", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ Guanabara Git #01-#06", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://git-scm.com/book/pt-br/v2", "doc_label": "📖 Pro Git Livro Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-1": {"id": "ia-0-3-1", "title": "GitHub: repositórios e README", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Guanabara Git #07/#08", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/get-started", "doc_label": "📖 Docs GitHub Começando", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-2": {"id": "ia-0-3-2", "title": "Consumir APIs com requests e JSON", "url": "https://www.youtube.com/watch?v=0257gqJ0aXU", "label": "▶ Consumo de APIs & Requests", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://requests.readthedocs.io/en/latest/", "doc_label": "📖 Docs Requests Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-0": {"id": "ia-0-4-0", "title": "Estilo de código PEP 8", "url": "https://www.youtube.com/watch?v=Xdf7Z2uWJmY", "label": "▶ PEP 8 & Código Limpo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0008/", "doc_label": "📖 Guia Oficial PEP 8", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-1": {"id": "ia-0-4-1", "title": "Docstrings e comentários", "url": "https://www.youtube.com/watch?v=etjJExVdAa8", "label": "▶ Funções & Docstrings", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0257/", "doc_label": "📖 Docs PEP 257 Docstrings", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-2": {"id": "ia-0-4-2", "title": "Depuração (debug) e leitura de erros", "url": "https://www.youtube.com/watch?v=ElRd0cbXIv4", "label": "▶ Debugging no VS Code", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/pdb.html", "doc_label": "📖 Docs Python Debugger", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-3": {"id": "ia-0-4-3", "title": "Testes simples com pytest", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Introdução ao Pytest", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.pytest.org/en/latest/", "doc_label": "📖 Docs Pytest Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-4": {"id": "ia-0-4-4", "title": "Lambda, map e filter", "url": "https://www.youtube.com/watch?v=9g04i4VwRz8", "label": "▶ Funções Lambda & Map/Filter", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#lambda-expressions", "doc_label": "📖 Docs Expressões Lambda", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-5": {"id": "ia-0-4-5", "title": "Geradores e iteradores", "url": "https://www.youtube.com/watch?v=tmeKsb2Fras", "label": "▶ Generators & Yield", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/howto/functional.html#generators", "doc_label": "📖 Docs Generators Howto", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-6": {"id": "ia-0-4-6", "title": "Decoradores (noção)", "url": "https://www.youtube.com/watch?v=FsAPt_9Bf3U", "label": "▶ Decorators Desmistificados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0318/", "doc_label": "📖 Docs PEP 318 Decorators", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-0": {"id": "ia-0-5-0", "title": "datetime", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Módulo Datetime Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/datetime.html", "doc_label": "📖 Docs datetime Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-1": {"id": "ia-0-5-1", "title": "os e pathlib", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Manipulando Arquivos com Pathlib", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/pathlib.html", "doc_label": "📖 Docs pathlib Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-2": {"id": "ia-0-5-2", "title": "json e csv", "url": "https://www.youtube.com/watch?v=9N6a-VLBa2I", "label": "▶ Arquivos JSON e CSV", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/json.html", "doc_label": "📖 Docs json & csv", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-3": {"id": "ia-0-5-3", "title": "Expressões regulares (re)", "url": "https://www.youtube.com/watch?v=K8L6KVGG-7o", "label": "▶ Regex em Python do Zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/re.html", "doc_label": "📖 Docs Regex Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-4": {"id": "ia-0-5-4", "title": "Web scraping com BeautifulSoup", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping com BeautifulSoup", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://crummy.com/software/BeautifulSoup/bs4/doc/", "doc_label": "📖 Docs BeautifulSoup4", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-0": {"id": "ia-0-6-0", "title": "30 exercícios (Beecrowd, HackerRank, Exercism)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dm6wYOIW20NgkL20I47-10X", "label": "▶ Guanabara 100 Exercícios", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://exercism.org/tracks/python", "doc_label": "💻 Exercism Trilha Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-1": {"id": "ia-0-6-1", "title": "Algoritmos de busca e ordenação", "url": "https://www.youtube.com/watch?v=4UqT_bW5BJE", "label": "▶ Busca Binária e Bubble/Merge", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/sorting.html", "doc_label": "📖 Guia Busca e Ordenação", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-2": {"id": "ia-0-6-2", "title": "Noções de complexidade (Big O)", "url": "https://www.youtube.com/watch?v=v4cd1O4zkGw", "label": "▶ Big O Notation Explicada", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.bigocheatsheet.com/", "doc_label": "📊 Big-O Cheat Sheet", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-3": {"id": "ia-0-6-3", "title": "Projeto de linha de comando completo", "url": "https://www.youtube.com/watch?v=b0TpPn9g11I", "label": "▶ Guanabara Projeto Final Mundo 3", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://click.palletsprojects.com/", "doc_label": "📖 Click CLI Python", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-0": {"id": "ia-1-0-0", "title": "NumPy: arrays e operações vetorizadas", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ NumPy Tutorial Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/quickstart.html", "doc_label": "📖 NumPy Quickstart", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-1": {"id": "ia-1-0-1", "title": "Pandas: DataFrames e Series", "url": "https://www.youtube.com/watch?v=vmEHCJofslg", "label": "▶ Pandas DataFrames Crash Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/10min.html", "doc_label": "📖 10 Minutes to Pandas", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-2": {"id": "ia-1-0-2", "title": "Pandas: filtrar, agrupar e juntar (merge)", "url": "https://www.youtube.com/watch?v=ZyhVh-qRZPA", "label": "▶ Pandas Filter, GroupBy & Merge", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/merging.html", "doc_label": "📖 Pandas Merge & GroupBy", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-3": {"id": "ia-1-0-3", "title": "Limpeza de dados e valores ausentes", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Data Cleaning com Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/missing_data.html", "doc_label": "📖 Pandas Missing Data Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-0": {"id": "ia-1-1-0", "title": "Matplotlib", "url": "https://www.youtube.com/watch?v=UO98lJQ3QGI", "label": "▶ Matplotlib Tutorial Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://matplotlib.org/stable/tutorials/introductory/quick_start.html", "doc_label": "📖 Matplotlib Quick Start", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-1": {"id": "ia-1-1-1", "title": "Seaborn", "url": "https://www.youtube.com/watch?v=6GUZXDef2U0", "label": "▶ Seaborn Visualização Elegante", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://seaborn.pydata.org/tutorial.html", "doc_label": "📖 Seaborn Tutorial Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-2": {"id": "ia-1-1-2", "title": "Análise exploratória de dados (EDA)", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ EDA Passo a Passo na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/data-visualization", "doc_label": "💻 Kaggle Data Visualization", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-0": {"id": "ia-1-2-0", "title": "Jupyter Notebook e Google Colab", "url": "https://www.youtube.com/watch?v=HW29067qVWk", "label": "▶ Jupyter & Colab para Dados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colab.research.google.com/notebooks/intro.ipynb", "doc_label": "📖 Colab Welcome Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-1": {"id": "ia-1-2-1", "title": "SQL: SELECT, WHERE, JOIN, GROUP BY", "url": "https://www.youtube.com/watch?v=HXV3zeRR3h4", "label": "▶ Curso SQL Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.w3schools.com/sql/", "doc_label": "📖 W3Schools SQL Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-2": {"id": "ia-1-2-2", "title": "Ler CSV, Excel e JSON", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Importação de Dados em Python", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/io.html", "doc_label": "📖 Pandas IO Tools Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-0": {"id": "ia-1-3-0", "title": "Broadcasting", "url": "https://www.youtube.com/watch?v=0mffXPTtkVU", "label": "▶ NumPy Broadcasting Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/basics.broadcasting.html", "doc_label": "📖 NumPy Broadcasting Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-1": {"id": "ia-1-3-1", "title": "Máscaras booleanas e indexação", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ Boolean Indexing com NumPy", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/basics.indexing.html", "doc_label": "📖 NumPy Indexing Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-2": {"id": "ia-1-3-2", "title": "Séries temporais", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Time Series com Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/timeseries.html", "doc_label": "📖 Pandas Time Series", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-3": {"id": "ia-1-3-3", "title": "Pivot tables e melt", "url": "https://www.youtube.com/watch?v=xPPs59pn6qU", "label": "▶ Pivot Table e Melt no Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/reshaping.html", "doc_label": "📖 Pandas Reshaping", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-4": {"id": "ia-1-3-4", "title": "Apply e funções vetorizadas", "url": "https://www.youtube.com/watch?v=P_q0tkYqvSk", "label": "▶ Apply vs Operações Vetorizadas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html", "doc_label": "📖 Pandas Apply Reference", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-5": {"id": "ia-1-3-5", "title": "Outliers e duplicados", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Tratamento de Outliers e Duplicatas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Scikit-learn Outliers", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-6": {"id": "ia-1-3-6", "title": "Encoding de variáveis categóricas", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ One-Hot vs Label Encoding", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features", "doc_label": "📖 Sklearn Categorical Encoding", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-0": {"id": "ia-1-4-0", "title": "Web scraping e APIs", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping & Ingestão de Dados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://realpython.com/beautiful-soup-web-scraper-python/", "doc_label": "📖 RealPython Scraping Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-1": {"id": "ia-1-4-1", "title": "SQLite e SQLAlchemy", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ SQLite & SQLAlchemy em Python", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.sqlalchemy.org/en/20/intro.html", "doc_label": "📖 SQLAlchemy 2.0 Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-2": {"id": "ia-1-4-2", "title": "SQL avançado: subconsultas e window functions", "url": "https://www.youtube.com/watch?v=Ww71knvhQ-s", "label": "▶ Window Functions e Subqueries", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://mode.com/sql-tutorial/sql-window-functions/", "doc_label": "📖 Mode SQL Window Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-3": {"id": "ia-1-4-3", "title": "Formato Parquet", "url": "https://www.youtube.com/watch?v=4tB8K2N2k0w", "label": "▶ Apache Parquet vs CSV na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://parquet.apache.org/docs/", "doc_label": "📖 Apache Parquet Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-4": {"id": "ia-1-4-4", "title": "Plotly e gráficos interativos", "url": "https://www.youtube.com/watch?v=GGL6U0k8WYA", "label": "▶ Plotly Gráficos Interativos 2D/3D", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://plotly.com/python/", "doc_label": "📖 Plotly Python Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-0": {"id": "ia-1-5-0", "title": "Notebooks reprodutíveis", "url": "https://www.youtube.com/watch?v=7jiPeIFKA98", "label": "▶ Melhores Práticas em Jupyter", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.jupyter.org/en/latest/", "doc_label": "📖 Jupyter Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-1": {"id": "ia-1-5-1", "title": "Storytelling com dados", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Data Storytelling e Insights", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.storytellingwithdata.com/", "doc_label": "📖 Storytelling With Data", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-2": {"id": "ia-1-5-2", "title": "Dashboards com Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Streamlit Dashboard em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.streamlit.io/", "doc_label": "📖 Streamlit Docs Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-0": {"id": "ia-2-0-0", "title": "Aprendizado supervisionado vs. não supervisionado", "url": "https://www.youtube.com/watch?v=1FZ0A1QCMWc", "label": "▶ Andrew Ng Supervised vs Unsupervised", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/tutorial/basic/tutorial.html", "doc_label": "📖 Sklearn Intro Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-1": {"id": "ia-2-0-1", "title": "Treino, validação e teste", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ StatQuest Train, Test & Cross-Validation", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html", "doc_label": "📖 Sklearn Train-Test Split", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-2": {"id": "ia-2-0-2", "title": "Overfitting e underfitting", "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA", "label": "▶ StatQuest Bias and Variance Tradeoff", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html", "doc_label": "📖 Sklearn Bias-Variance Example", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-3": {"id": "ia-2-0-3", "title": "Validação cruzada", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ K-Fold Cross Validation Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html#k-fold", "doc_label": "📖 Sklearn K-Fold Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-4": {"id": "ia-2-0-4", "title": "Engenharia de atributos (feature engineering)", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Feature Engineering na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/feature-engineering", "doc_label": "💻 Kaggle Feature Engineering", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-0": {"id": "ia-2-1-0", "title": "Regressão linear", "url": "https://www.youtube.com/watch?v=7ArmBVF2dCs", "label": "▶ StatQuest Linear Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares", "doc_label": "📖 Sklearn Linear Regression", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-1": {"id": "ia-2-1-1", "title": "Regressão logística", "url": "https://www.youtube.com/watch?v=yIYKR4gXd5U", "label": "▶ StatQuest Logistic Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression", "doc_label": "📖 Sklearn Logistic Regression", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-2": {"id": "ia-2-1-2", "title": "Árvores de decisão", "url": "https://www.youtube.com/watch?v=7VeUPuFGJHk", "label": "▶ StatQuest Decision Trees", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/tree.html", "doc_label": "📖 Sklearn Decision Trees", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-3": {"id": "ia-2-1-3", "title": "Random Forest", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ StatQuest Random Forests", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-trees", "doc_label": "📖 Sklearn Random Forests", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-4": {"id": "ia-2-1-4", "title": "Gradient Boosting (XGBoost, LightGBM)", "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc", "label": "▶ StatQuest Gradient Boost & XGBoost", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://xgboost.readthedocs.io/en/stable/", "doc_label": "📖 XGBoost Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-5": {"id": "ia-2-1-5", "title": "K-Means e clusterização", "url": "https://www.youtube.com/watch?v=4b5d3muPQmA", "label": "▶ StatQuest K-Means Clustering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#k-means", "doc_label": "📖 Sklearn K-Means", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-6": {"id": "ia-2-1-6", "title": "PCA", "url": "https://www.youtube.com/watch?v=FgakZw6K1QQ", "label": "▶ StatQuest Principal Component Analysis", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/decomposition.html#pca", "doc_label": "📖 Sklearn PCA Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-0": {"id": "ia-2-2-0", "title": "Métricas: acurácia, precisão, recall, F1", "url": "https://www.youtube.com/watch?v=wpNl-HIch9g", "label": "▶ StatQuest Precision, Recall & F1", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics", "doc_label": "📖 Sklearn Classification Metrics", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-1": {"id": "ia-2-2-1", "title": "Matriz de confusão e curva ROC", "url": "https://www.youtube.com/watch?v=4jRBRDbJemM", "label": "▶ StatQuest ROC and AUC Curves", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#roc-metrics", "doc_label": "📖 Sklearn ROC AUC", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-2": {"id": "ia-2-2-2", "title": "Scikit-learn e pipelines", "url": "https://www.youtube.com/watch?v=irHhDMb3n88", "label": "▶ Scikit-Learn Pipelines Práticos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/compose.html#pipeline", "doc_label": "📖 Sklearn Pipeline Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-3": {"id": "ia-2-2-3", "title": "Ajuste de hiperparâmetros", "url": "https://www.youtube.com/watch?v=Gol_qOfhft4", "label": "▶ GridSearchCV & RandomizedSearchCV", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/grid_search.html", "doc_label": "📖 Sklearn Hyperparameter Tuning", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-0": {"id": "ia-2-3-0", "title": "KNN", "url": "https://www.youtube.com/watch?v=HVXime0nQeI", "label": "▶ StatQuest K-Nearest Neighbors", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/neighbors.html", "doc_label": "📖 Sklearn Nearest Neighbors", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-1": {"id": "ia-2-3-1", "title": "Naive Bayes", "url": "https://www.youtube.com/watch?v=O2L2Uv9pdDA", "label": "▶ StatQuest Naive Bayes", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/naive_bayes.html", "doc_label": "📖 Sklearn Naive Bayes", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-2": {"id": "ia-2-3-2", "title": "SVM", "url": "https://www.youtube.com/watch?v=efR1C6CvhmE", "label": "▶ StatQuest Support Vector Machines", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/svm.html", "doc_label": "📖 Sklearn Support Vector Machines", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-3": {"id": "ia-2-3-3", "title": "DBSCAN e clusterização hierárquica", "url": "https://www.youtube.com/watch?v=RDZUdRSDOok", "label": "▶ StatQuest DBSCAN Clustering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#dbscan", "doc_label": "📖 Sklearn DBSCAN Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-4": {"id": "ia-2-3-4", "title": "Regularização Lasso e Ridge", "url": "https://www.youtube.com/watch?v=Q81RR3yKn30", "label": "▶ StatQuest Ridge and Lasso Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification", "doc_label": "📖 Sklearn Regularization", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-5": {"id": "ia-2-3-5", "title": "Detecção de anomalias", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Isolation Forest & Anomaly Detection", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Sklearn Anomaly Detection", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-0": {"id": "ia-2-4-0", "title": "Normalização e padronização", "url": "https://www.youtube.com/watch?v=sxEqtjLC0aM", "label": "▶ StandardScaler vs MinMaxScaler", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#standardization-or-mean-removal-and-variance-scaling", "doc_label": "📖 Sklearn Preprocessing", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-1": {"id": "ia-2-4-1", "title": "Dados desbalanceados (SMOTE)", "url": "https://www.youtube.com/watch?v=YMPMQgzBgPE", "label": "▶ Imbalanced Data & SMOTE", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html", "doc_label": "📖 Imbalanced-Learn SMOTE", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-2": {"id": "ia-2-4-2", "title": "Seleção de atributos", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Feature Selection Techniques", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/feature_selection.html", "doc_label": "📖 Sklearn Feature Selection", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-3": {"id": "ia-2-4-3", "title": "Vazamento de dados (data leakage)", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ Como Evitar Data Leakage", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/data-leakage", "doc_label": "💻 Kaggle Data Leakage", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-4": {"id": "ia-2-4-4", "title": "Séries temporais com ML", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Forecasting com Machine Learning", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://otexts.com/fpp3/", "doc_label": "📖 Forecasting: Principles and Practice", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-0": {"id": "ia-2-5-0", "title": "Importância de atributos", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ Feature Importance no Random Forest", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/permutation_importance.html", "doc_label": "📖 Sklearn Permutation Importance", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-1": {"id": "ia-2-5-1", "title": "SHAP e LIME", "url": "https://www.youtube.com/watch?v=9haIO8uEBrA", "label": "▶ Explainable AI: SHAP & LIME", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://shap.readthedocs.io/en/latest/", "doc_label": "📖 SHAP Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-2": {"id": "ia-2-5-2", "title": "Viés e ética em ML", "url": "https://www.youtube.com/watch?v=ugff3a89e4I", "label": "▶ Fairness & Bias in Machine Learning", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fairlearn.org/", "doc_label": "📖 Fairlearn Project", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-3": {"id": "ia-2-5-3", "title": "Sistemas de recomendação", "url": "https://www.youtube.com/watch?v=n3RKsY2H-NE", "label": "▶ Collaborative Filtering & Recommenders", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://developers.google.com/machine-learning/recommendation", "doc_label": "📖 Google Recommendation Systems", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-0": {"id": "ia-3-0-0", "title": "Neurônio, camadas e pesos", "url": "https://www.youtube.com/watch?v=aircAruvnKk", "label": "▶ 3B1B O que é uma Rede Neural?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearningbook.org/contents/mlp.html", "doc_label": "📖 Deep Learning Book Cap 6", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-1": {"id": "ia-3-0-1", "title": "Funções de ativação", "url": "https://www.youtube.com/watch?v=68BZ5f7P94E", "label": "▶ StatQuest Activation Functions", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-non-linearity", "doc_label": "📖 PyTorch Activation Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-2": {"id": "ia-3-0-2", "title": "Função de perda", "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w", "label": "▶ 3B1B Gradient Descent & Loss", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/nn.html#loss-functions", "doc_label": "📖 PyTorch Loss Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-3": {"id": "ia-3-0-3", "title": "Backpropagation", "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U", "label": "▶ 3B1B O que o Backpropagation faz?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colah.github.io/posts/2015-08-Backprop/", "doc_label": "📖 Colah's Blog Calculus on Graphs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-4": {"id": "ia-3-0-4", "title": "Gradiente descendente e otimizadores (SGD, Adam)", "url": "https://www.youtube.com/watch?v=mdKjMPmcWsc", "label": "▶ StatQuest Gradient Descent & Adam", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/optim.html", "doc_label": "📖 PyTorch Optimizers Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-5": {"id": "ia-3-0-5", "title": "Regularização (dropout, weight decay)", "url": "https://www.youtube.com/watch?v=D8PJAL-Zkm8", "label": "▶ Dropout Regularization Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html", "doc_label": "📖 PyTorch Dropout Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-0": {"id": "ia-3-1-0", "title": "CNNs para imagens", "url": "https://www.youtube.com/watch?v=HGwBXDKFk9I", "label": "▶ StatQuest Convolutional Neural Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html", "doc_label": "📖 PyTorch Training a Classifier", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-1": {"id": "ia-3-1-1", "title": "Transfer learning", "url": "https://www.youtube.com/watch?v=BqqfQnyjmgg", "label": "▶ Transfer Learning com ResNet/VGG", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html", "doc_label": "📖 PyTorch Transfer Learning", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-2": {"id": "ia-3-1-2", "title": "RNNs e LSTMs para sequências", "url": "https://www.youtube.com/watch?v=AsNTP8Kwu80", "label": "▶ StatQuest Recurrent Neural Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", "doc_label": "📖 Understanding LSTM Networks", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-0": {"id": "ia-3-2-0", "title": "Tensores e autograd", "url": "https://www.youtube.com/watch?v=IC0_FRiX-sw", "label": "▶ PyTorch Tensors & Autograd Blitz", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html", "doc_label": "📖 PyTorch Tensor Basics", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-1": {"id": "ia-3-2-1", "title": "Datasets e DataLoaders", "url": "https://www.youtube.com/watch?v=VVDHU_TWwUg", "label": "▶ Custom Datasets em PyTorch", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html", "doc_label": "📖 PyTorch Datasets & DataLoaders", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-2": {"id": "ia-3-2-2", "title": "Loop de treino e avaliação", "url": "https://www.youtube.com/watch?v=c36lUUr864M", "label": "▶ PyTorch Full Training Loop", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html", "doc_label": "📖 PyTorch Model Optimization", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-3": {"id": "ia-3-2-3", "title": "Treinar em GPU (Colab)", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Acelerando PyTorch com CUDA na GPU", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/cuda.html", "doc_label": "📖 PyTorch CUDA Semantics", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-0": {"id": "ia-3-3-0", "title": "Autoencoders", "url": "https://www.youtube.com/watch?v=9zKuYvjFFS8", "label": "▶ Autoencoders e Compressão Latente", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearningbook.org/contents/autoencoders.html", "doc_label": "📖 Deep Learning Book Cap 14", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-1": {"id": "ia-3-3-1", "title": "GANs", "url": "https://www.youtube.com/watch?v=8L11aMN5KY8", "label": "▶ Generative Adversarial Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html", "doc_label": "📖 PyTorch DCGAN Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-2": {"id": "ia-3-3-2", "title": "Modelos de difusão (noção)", "url": "https://www.youtube.com/watch?v=1CIpzeNxIhU", "label": "▶ Como Funcionam Diffusion Models", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/annotated-diffusion", "doc_label": "📖 Annotated Diffusion Model", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-3": {"id": "ia-3-3-3", "title": "Redes de grafos (noção)", "url": "https://www.youtube.com/watch?v=fOctJB4kWlI", "label": "▶ Graph Neural Networks (GNNs)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://distill.pub/2021/gnn-intro/", "doc_label": "📖 Distill GNN Gentle Introduction", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-4": {"id": "ia-3-3-4", "title": "Detecção de objetos (YOLO)", "url": "https://www.youtube.com/watch?v=ag3DLKsl2vk", "label": "▶ YOLO Object Detection", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.ultralytics.com/", "doc_label": "📖 Ultralytics YOLO Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-5": {"id": "ia-3-3-5", "title": "Segmentação de imagens", "url": "https://www.youtube.com/watch?v=u1loyCU4smQ", "label": "▶ Image Segmentation com U-Net", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/hub/mateuszbuda_brain-segmentation-pytorch_unet/", "doc_label": "📖 PyTorch U-Net Hub", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-0": {"id": "ia-3-4-0", "title": "Batch normalization", "url": "https://www.youtube.com/watch?v=tNIpEZLv_l8", "label": "▶ StatQuest Batch Normalization", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html", "doc_label": "📖 PyTorch BatchNorm2d", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-1": {"id": "ia-3-4-1", "title": "Learning rate schedulers", "url": "https://www.youtube.com/watch?v=kpvIcx16i58", "label": "▶ Learning Rate Decay & Schedulers", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", "doc_label": "📖 PyTorch LR Schedulers", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-2": {"id": "ia-3-4-2", "title": "Data augmentation", "url": "https://www.youtube.com/watch?v=mTVf7BN7S8w", "label": "▶ Data Augmentation com Torchvision", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/vision/stable/transforms.html", "doc_label": "📖 Torchvision Transforms", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-3": {"id": "ia-3-4-3", "title": "Early stopping e checkpoints", "url": "https://www.youtube.com/watch?v=k4J8nEaX0Xg", "label": "▶ Checkpoints e Salvamento de Modelos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/saving_loading_models.html", "doc_label": "📖 PyTorch Saving & Loading", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-4": {"id": "ia-3-4-4", "title": "Depurar rede que não aprende", "url": "https://www.youtube.com/watch?v=P6sfmUtP_vY", "label": "▶ Andrej Karpathy: A Recipe for Training NNs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "http://karpathy.github.io/2019/04/25/recipe/", "doc_label": "📖 Karpathy NN Training Recipe", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-5": {"id": "ia-3-4-5", "title": "Mixed precision", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Automatic Mixed Precision (AMP)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/amp.html", "doc_label": "📖 PyTorch AMP Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-0": {"id": "ia-3-5-0", "title": "TensorFlow e Keras (noção)", "url": "https://www.youtube.com/watch?v=tPYj3fFJGjk", "label": "▶ TensorFlow 2.0 / Keras Crash Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.tensorflow.org/tutorials", "doc_label": "📖 TensorFlow Tutorials", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-1": {"id": "ia-3-5-1", "title": "TensorBoard e logs", "url": "https://www.youtube.com/watch?v=VJW92p3n5D8", "label": "▶ Monitorando com TensorBoard", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html", "doc_label": "📖 PyTorch with TensorBoard", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-2": {"id": "ia-3-5-2", "title": "Exportar modelos com ONNX", "url": "https://www.youtube.com/watch?v=P_V5qD1n7Hk", "label": "▶ Exportando PyTorch para ONNX Runtime", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html", "doc_label": "📖 PyTorch ONNX Export", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-3": {"id": "ia-3-5-3", "title": "PyTorch Lightning", "url": "https://www.youtube.com/watch?v=DbESHcCoWbM", "label": "▶ PyTorch Lightning em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://lightning.ai/docs/pytorch/stable/", "doc_label": "📖 Lightning AI Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-0": {"id": "ia-4-0-0", "title": "Tokenização e embeddings", "url": "https://www.youtube.com/watch?v=zduSFxRajkE", "label": "▶ Karpathy Tokenização BPE", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/learn/nlp-course/chapter2/4", "doc_label": "📖 Hugging Face Tokenizers", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-1": {"id": "ia-4-0-1", "title": "Mecanismo de atenção", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Visualizando Mecanismo de Atenção", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://jalammar.github.io/illustrated-transformer/", "doc_label": "📖 The Illustrated Transformer", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-2": {"id": "ia-4-0-2", "title": "Arquitetura Transformer", "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY", "label": "▶ Karpathy Let's build GPT do zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Attention Is All You Need", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-3": {"id": "ia-4-0-3", "title": "Pré-treino, fine-tuning e RLHF (visão geral)", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Karpathy State of GPT / RLHF", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/rlhf", "doc_label": "📖 Hugging Face RLHF Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-0": {"id": "ia-4-1-0", "title": "Hugging Face: modelos, datasets e transformers", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Hugging Face Transformers Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/docs/transformers/index", "doc_label": "📖 Hugging Face Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-1": {"id": "ia-4-1-1", "title": "Fine-tuning com LoRA", "url": "https://www.youtube.com/watch?v=dA-NhCtrrVE", "label": "▶ LoRA & QLoRA Fine-Tuning de LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/docs/peft/index", "doc_label": "📖 Hugging Face PEFT Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-2": {"id": "ia-4-1-2", "title": "Engenharia de prompts", "url": "https://www.youtube.com/watch?v=jC4v5AS4RIM", "label": "▶ Andrew Ng Prompt Engineering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.promptingguide.ai/pt", "doc_label": "📖 Prompt Engineering Guide PT-BR", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-3": {"id": "ia-4-1-3", "title": "Usar APIs de LLMs (chamadas, streaming, tool use)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Consumindo OpenAI, Gemini & Claude", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/api-reference", "doc_label": "📖 OpenAI / Gemini API Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-0": {"id": "ia-4-2-0", "title": "RAG: busca em documentos + LLM", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ RAG Completo do Zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://python.langchain.com/docs/tutorials/rag/", "doc_label": "📖 LangChain RAG Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-1": {"id": "ia-4-2-1", "title": "Bancos vetoriais e busca semântica", "url": "https://www.youtube.com/watch?v=klTvEwg3oJ4", "label": "▶ ChromaDB, Pinecone & Vetores", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.trychroma.com/", "doc_label": "📖 ChromaDB Getting Started", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-2": {"id": "ia-4-2-2", "title": "Agentes e uso de ferramentas", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ Construindo Agentes Autônomos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://python.langchain.com/docs/tutorials/agents/", "doc_label": "📖 LangChain Agents Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-3": {"id": "ia-4-2-3", "title": "Avaliação e segurança de sistemas com LLM", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ Evals, Ragas e LLM Testing", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.ragas.io/", "doc_label": "📖 Ragas Evaluation Framework", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-0": {"id": "ia-4-3-0", "title": "Self-attention e multi-head", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Multi-Head Attention", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Transformer Seção 3.2", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-1": {"id": "ia-4-3-1", "title": "Positional encoding", "url": "https://www.youtube.com/watch?v=dichIC6np5g", "label": "▶ Positional Encoding Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kazemnejad.com/blog/transformer_architecture_positional_encoding/", "doc_label": "📖 Kazemnejad Positional Encoding", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-2": {"id": "ia-4-3-2", "title": "Encoder vs. decoder (BERT vs. GPT)", "url": "https://www.youtube.com/watch?v=FKlPCK1uFrc", "label": "▶ BERT vs GPT vs T5 Arquiteturas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://jalammar.github.io/illustrated-bert/", "doc_label": "📖 The Illustrated BERT", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-3": {"id": "ia-4-3-3", "title": "Janela de contexto e KV cache", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Como Funciona o KV Cache em LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kipp.ly/transformer-inference-optimizations/", "doc_label": "📖 KV Cache Optimization Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-4": {"id": "ia-4-3-4", "title": "Quantização (4-bit, 8-bit)", "url": "https://www.youtube.com/watch?v=TPcUXJvfO20", "label": "▶ Quantização GGUF & AWQ", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/hf-bitsandbytes-integration", "doc_label": "📖 Hugging Face Bitsandbytes", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-5": {"id": "ia-4-3-5", "title": "Scaling laws", "url": "https://www.youtube.com/watch?v=H3pkn1iKx4A", "label": "▶ Chinchilla & Neural Scaling Laws", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/2001.08361", "doc_label": "📄 OpenAI Scaling Laws Paper", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-0": {"id": "ia-4-4-0", "title": "Chunking e estratégias de recuperação no RAG", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ Advanced RAG: Chunking & Hybrid Search", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.pinecone.io/learn/chunking-strategies/", "doc_label": "📖 Pinecone Chunking Strategies", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-1": {"id": "ia-4-4-1", "title": "Reranking", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Cohere Rerank para Melhor RAG", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.cohere.com/docs/reranking", "doc_label": "📖 Cohere Rerank Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-2": {"id": "ia-4-4-2", "title": "Saída estruturada (JSON)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Structured Outputs com Pydantic", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/structured-outputs", "doc_label": "📖 OpenAI Structured Outputs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-3": {"id": "ia-4-4-3", "title": "Memória e orquestração de agentes", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ LangGraph & CrewAI Orquestração", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://langchain-ai.github.io/langgraph/", "doc_label": "📖 LangGraph Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-4": {"id": "ia-4-4-4", "title": "Protocolo MCP", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Model Context Protocol (MCP) Anthropic", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://modelcontextprotocol.io/", "doc_label": "📖 Model Context Protocol Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-5": {"id": "ia-4-4-5", "title": "Multimodalidade: visão e áudio", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Vision Models: GPT-4o & Gemini Vision", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/vision", "doc_label": "📖 OpenAI Vision Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-0": {"id": "ia-4-5-0", "title": "Avaliação de LLMs (evals e benchmarks)", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LLM Evaluation & MMLU Benchmarks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/openai/evals", "doc_label": "📖 OpenAI Evals Framework", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-1": {"id": "ia-4-5-1", "title": "Alucinações e mitigação", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Como Prevenir Alucinações de LLM", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/2309.01219", "doc_label": "📄 Survey on Hallucination in LLMs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-2": {"id": "ia-4-5-2", "title": "Prompt injection", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ OWASP Top 10 for LLMs & Jailbreaks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://genai.owasp.org/llm-top-10/", "doc_label": "📖 OWASP GenAI Top 10", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-3": {"id": "ia-4-5-3", "title": "Custo e latência", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Otimização de Custo de Tokens & Cache", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/production-best-practices", "doc_label": "📖 Production Best Practices", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-4": {"id": "ia-4-5-4", "title": "Modelos locais (Ollama, llama.cpp)", "url": "https://www.youtube.com/watch?v=Gz3k4Z2hLgA", "label": "▶ Rodando LLMs Locais com Ollama", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://ollama.com/", "doc_label": "📖 Ollama Official Website", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-0": {"id": "ia-5-0-0", "title": "Docker", "url": "https://www.youtube.com/watch?v=fqMOX6JJhGo", "label": "▶ Docker para Iniciantes Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.docker.com/get-started/", "doc_label": "📖 Docker Get Started", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-1": {"id": "ia-5-0-1", "title": "FastAPI e criação de APIs", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ FastAPI Tutorial Prático", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fastapi.tiangolo.com/tutorial/", "doc_label": "📖 FastAPI Tutorial Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-2": {"id": "ia-5-0-2", "title": "Deploy em nuvem (AWS, GCP ou Azure)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Deploy de Modelo de ML em Nuvem", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://aws.amazon.com/sagemaker/", "doc_label": "📖 AWS SageMaker Overview", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-3": {"id": "ia-5-0-3", "title": "Testes e boas práticas de código", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Testes Automatizados em ML", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.pytest.org/", "doc_label": "📖 Pytest Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-0": {"id": "ia-5-1-0", "title": "Versionamento de dados e modelos", "url": "https://www.youtube.com/watch?v=k_A3_w8E-Xg", "label": "▶ DVC (Data Version Control)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://dvc.org/doc/start", "doc_label": "📖 DVC Get Started", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-1": {"id": "ia-5-1-1", "title": "MLflow ou Weights & Biases", "url": "https://www.youtube.com/watch?v=qdcKU_gZ5eM", "label": "▶ MLflow Tracking & Registry", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://mlflow.org/docs/latest/index.html", "doc_label": "📖 MLflow Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-2": {"id": "ia-5-1-2", "title": "Monitoramento de modelos", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Data Drift e Model Monitoring", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.evidentlyai.com/", "doc_label": "📖 Evidently AI Model Monitoring", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-0": {"id": "ia-5-2-0", "title": "3 a 5 projetos documentados no GitHub", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Como Montar Portfólio no GitHub", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/topics/machine-learning", "doc_label": "💻 GitHub ML Topics", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-1": {"id": "ia-5-2-1", "title": "READMEs com problema, solução e resultados", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ README Incrível para Projetos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes", "doc_label": "📖 Guia README GitHub", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-2": {"id": "ia-5-2-2", "title": "Perfil ativo no LinkedIn e Kaggle", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Estratégia de LinkedIn & Kaggle", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/", "doc_label": "💻 Kaggle Official", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-3": {"id": "ia-5-2-3", "title": "Inglês técnico", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI", "label": "▶ Playlist Inglês EnglishBay", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/archive/cs", "doc_label": "📄 arXiv Computer Science", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-0": {"id": "ia-5-3-0", "title": "Linux e shell avançado", "url": "https://www.youtube.com/watch?v=oxuRxtrO2Ag", "label": "▶ Linux Terminal do Básico ao Avançado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://ubuntu.com/tutorials/command-line-for-beginners", "doc_label": "📖 Ubuntu Command Line", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-1": {"id": "ia-5-3-1", "title": "CI/CD com GitHub Actions", "url": "https://www.youtube.com/watch?v=R8_veQiYBjI", "label": "▶ GitHub Actions CI/CD Pipeline", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/actions", "doc_label": "📖 GitHub Actions Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-2": {"id": "ia-5-3-2", "title": "Kubernetes (noção)", "url": "https://www.youtube.com/watch?v=X48VuDVv0do", "label": "▶ Kubernetes Explicado em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kubernetes.io/docs/home/", "doc_label": "📖 Kubernetes Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-3": {"id": "ia-5-3-3", "title": "Filas e processamento assíncrono", "url": "https://www.youtube.com/watch?v=THxCy_kL5pE", "label": "▶ Celery & Redis Task Queues", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.celeryq.dev/en/stable/", "doc_label": "📖 Celery Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-4": {"id": "ia-5-3-4", "title": "Redis, Postgres e pgvector", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ PostgreSQL com pgvector para IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/pgvector/pgvector", "doc_label": "📖 pgvector Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-0": {"id": "ia-5-4-0", "title": "Interfaces com Gradio e Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Gradio & Streamlit para Demos de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.gradio.app/docs", "doc_label": "📖 Gradio Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-1": {"id": "ia-5-4-1", "title": "Front-end básico (HTML e JS)", "url": "https://www.youtube.com/watch?v=Ejkb_YpuHWs", "label": "▶ Guanabara HTML5 e CSS3", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://developer.mozilla.org/pt-BR/docs/Learn", "doc_label": "📖 MDN Web Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-2": {"id": "ia-5-4-2", "title": "Autenticação e limites de uso", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ OAuth2, JWT e Rate Limiting", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fastapi.tiangolo.com/tutorial/security/", "doc_label": "📖 FastAPI Security Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-3": {"id": "ia-5-4-3", "title": "Observabilidade de LLMs", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LangSmith & Tracing de LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.smith.langchain.com/", "doc_label": "📖 LangSmith Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-0": {"id": "ia-5-5-0", "title": "Currículo e entrevistas técnicas", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Como Passar em Entrevistas de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearning.ai/the-batch/", "doc_label": "📖 The Batch by Andrew Ng", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-1": {"id": "ia-5-5-1", "title": "Contribuir com open source", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Primeiros Passos no Open Source", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://opensource.guide/pt/", "doc_label": "📖 Guia de Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-2": {"id": "ia-5-5-2", "title": "Escrever artigos e posts", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Criando Conteúdo Técnico e Artigos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://medium.com/topic/machine-learning", "doc_label": "📖 Medium Towards Data Science", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-3": {"id": "ia-5-5-3", "title": "Comunidades e eventos", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Redes e Comunidades de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/community", "doc_label": "💬 Hugging Face Community", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-4": {"id": "ia-5-5-4", "title": "Certificações (opcional)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Certificações AWS/GCP valem a pena?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/", "doc_label": "📖 AWS ML Specialty", "pt_guide": null, "yt_pt_url": ""}};
+const TOPICS_MAP = {"ia-0-0-0": {"id": "ia-0-0-0", "title": "Instalar Python e usar o terminal", "url": "https://www.youtube.com/watch?v=S9uPNppGsGo", "label": "▶ Guanabara Python #01/03", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/using/index.html", "doc_label": "📖 Docs Instalação Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-1": {"id": "ia-0-0-1", "title": "Variáveis e tipos (int, float, str, bool)", "url": "https://www.youtube.com/watch?v=hdDHg1p3YVc", "label": "▶ Guanabara Python #06", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/stdtypes.html", "doc_label": "📖 Docs Tipos Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-2": {"id": "ia-0-0-2", "title": "Entrada e saída de dados", "url": "https://www.youtube.com/watch?v=nIHq1MtJaKs", "label": "▶ Guanabara Python #04 - Entrada & Saída", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html", "doc_label": "📖 Docs Entrada/Saída", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-3": {"id": "ia-0-0-3", "title": "Condicionais (if, elif, else)", "url": "https://www.youtube.com/watch?v=K10u3XIf1-Q", "label": "▶ Guanabara Python #10/12", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#if-statements", "doc_label": "📖 Docs Condicionais", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-4": {"id": "ia-0-0-4", "title": "Laços (for, while)", "url": "https://www.youtube.com/watch?v=cL4hDlCYlNU", "label": "▶ Guanabara Python #13/14", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#for-statements", "doc_label": "📖 Docs Laços for/while", "pt_guide": null, "yt_pt_url": ""}, "ia-0-0-5": {"id": "ia-0-0-5", "title": "Funções, parâmetros e retorno", "url": "https://www.youtube.com/watch?v=ezfr9d7wd_k", "label": "▶ Guanabara Python #20/21", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#defining-functions", "doc_label": "📖 Docs Funções", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-0": {"id": "ia-0-1-0", "title": "Listas e fatiamento", "url": "https://www.youtube.com/watch?v=N1hTsv4456A", "label": "▶ Guanabara Python #17/18", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists", "doc_label": "📖 Docs Listas e Métodos", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-1": {"id": "ia-0-1-1", "title": "Dicionários", "url": "https://www.youtube.com/watch?v=ZWj8o692qGY", "label": "▶ Guanabara Python #19", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#dictionaries", "doc_label": "📖 Docs Dicionários", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-2": {"id": "ia-0-1-2", "title": "Tuplas e conjuntos", "url": "https://www.youtube.com/watch?v=0LB3FSfjvao", "label": "▶ Guanabara Python #16", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#tuples-and-sequences", "doc_label": "📖 Docs Tuplas & Sets", "pt_guide": null, "yt_pt_url": ""}, "ia-0-1-3": {"id": "ia-0-1-3", "title": "List comprehension", "url": "https://www.youtube.com/watch?v=1b_rQoTf1m0", "label": "▶ List Comprehension Prático", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#list-comprehensions", "doc_label": "📖 Docs List Comprehensions", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-0": {"id": "ia-0-2-0", "title": "Orientação a objetos (classes, métodos, herança)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dkqe2aR0tQK74m8SFe-aGsY", "label": "▶ Guanabara POO #01-#05", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/classes.html", "doc_label": "📖 Docs POO Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-1": {"id": "ia-0-2-1", "title": "Módulos e pacotes", "url": "https://www.youtube.com/watch?v=5k9wO7y8_H4", "label": "▶ Guanabara Python #22", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/modules.html", "doc_label": "📖 Docs Módulos & Pacotes", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-2": {"id": "ia-0-2-2", "title": "Arquivos (ler e escrever)", "url": "https://www.youtube.com/watch?v=kYqg4K-p8Fw", "label": "▶ Guanabara Arquivos #115", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html#reading-and-writing-files", "doc_label": "📖 Docs Arquivos I/O", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-3": {"id": "ia-0-2-3", "title": "Tratamento de erros (try/except)", "url": "https://www.youtube.com/watch?v=F5_5bK8iP3M", "label": "▶ Guanabara Python #23", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/errors.html", "doc_label": "📖 Docs Try/Except", "pt_guide": null, "yt_pt_url": ""}, "ia-0-2-4": {"id": "ia-0-2-4", "title": "Ambientes virtuais e pip", "url": "https://www.youtube.com/watch?v=mK5C_w3Lh1Y", "label": "▶ Guanabara: venv & pip", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/venv.html", "doc_label": "📖 Docs Ambientes Virtuais", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-0": {"id": "ia-0-3-0", "title": "Git: commit, branch, merge", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ Guanabara Git #01-#06", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://git-scm.com/book/pt-br/v2", "doc_label": "📖 Pro Git Livro Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-1": {"id": "ia-0-3-1", "title": "GitHub: repositórios e README", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Guanabara Git #07/#08", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/get-started", "doc_label": "📖 Docs GitHub Começando", "pt_guide": null, "yt_pt_url": ""}, "ia-0-3-2": {"id": "ia-0-3-2", "title": "Consumir APIs com requests e JSON", "url": "https://www.youtube.com/watch?v=0257gqJ0aXU", "label": "▶ Consumo de APIs & Requests", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://requests.readthedocs.io/en/latest/", "doc_label": "📖 Docs Requests Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-0": {"id": "ia-0-4-0", "title": "Estilo de código PEP 8", "url": "https://www.youtube.com/watch?v=Xdf7Z2uWJmY", "label": "▶ PEP 8 & Código Limpo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0008/", "doc_label": "📖 Guia Oficial PEP 8", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-1": {"id": "ia-0-4-1", "title": "Docstrings e comentários", "url": "https://www.youtube.com/watch?v=etjJExVdAa8", "label": "▶ Funções & Docstrings", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0257/", "doc_label": "📖 Docs PEP 257 Docstrings", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-2": {"id": "ia-0-4-2", "title": "Depuração (debug) e leitura de erros", "url": "https://www.youtube.com/watch?v=ElRd0cbXIv4", "label": "▶ Debugging no VS Code", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/pdb.html", "doc_label": "📖 Docs Python Debugger", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-3": {"id": "ia-0-4-3", "title": "Testes simples com pytest", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Introdução ao Pytest", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.pytest.org/en/latest/", "doc_label": "📖 Docs Pytest Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-4": {"id": "ia-0-4-4", "title": "Lambda, map e filter", "url": "https://www.youtube.com/watch?v=9g04i4VwRz8", "label": "▶ Funções Lambda & Map/Filter", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#lambda-expressions", "doc_label": "📖 Docs Expressões Lambda", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-5": {"id": "ia-0-4-5", "title": "Geradores e iteradores", "url": "https://www.youtube.com/watch?v=tmeKsb2Fras", "label": "▶ Generators & Yield", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/howto/functional.html#generators", "doc_label": "📖 Docs Generators Howto", "pt_guide": null, "yt_pt_url": ""}, "ia-0-4-6": {"id": "ia-0-4-6", "title": "Decoradores (noção)", "url": "https://www.youtube.com/watch?v=FsAPt_9Bf3U", "label": "▶ Decorators Desmistificados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://peps.python.org/pep-0318/", "doc_label": "📖 Docs PEP 318 Decorators", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-0": {"id": "ia-0-5-0", "title": "datetime", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Módulo Datetime Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/datetime.html", "doc_label": "📖 Docs datetime Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-1": {"id": "ia-0-5-1", "title": "os e pathlib", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Manipulando Arquivos com Pathlib", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/pathlib.html", "doc_label": "📖 Docs pathlib Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-2": {"id": "ia-0-5-2", "title": "json e csv", "url": "https://www.youtube.com/watch?v=9N6a-VLBa2I", "label": "▶ Arquivos JSON e CSV", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/json.html", "doc_label": "📖 Docs json & csv", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-3": {"id": "ia-0-5-3", "title": "Expressões regulares (re)", "url": "https://www.youtube.com/watch?v=K8L6KVGG-7o", "label": "▶ Regex em Python do Zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.python.org/pt-br/3/library/re.html", "doc_label": "📖 Docs Regex Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-0-5-4": {"id": "ia-0-5-4", "title": "Web scraping com BeautifulSoup", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping com BeautifulSoup", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://crummy.com/software/BeautifulSoup/bs4/doc/", "doc_label": "📖 Docs BeautifulSoup4", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-0": {"id": "ia-0-6-0", "title": "30 exercícios (Beecrowd, HackerRank, Exercism)", "url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dm6wYOIW20NgkL20I47-10X", "label": "▶ Guanabara 100 Exercícios", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://exercism.org/tracks/python", "doc_label": "💻 Exercism Trilha Python", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-1": {"id": "ia-0-6-1", "title": "Algoritmos de busca e ordenação", "url": "https://www.youtube.com/watch?v=4UqT_bW5BJE", "label": "▶ Busca Binária e Bubble/Merge", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/sorting.html", "doc_label": "📖 Guia Busca e Ordenação", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-2": {"id": "ia-0-6-2", "title": "Noções de complexidade (Big O)", "url": "https://www.youtube.com/watch?v=v4cd1O4zkGw", "label": "▶ Big O Notation Explicada", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.bigocheatsheet.com/", "doc_label": "📊 Big-O Cheat Sheet", "pt_guide": null, "yt_pt_url": ""}, "ia-0-6-3": {"id": "ia-0-6-3", "title": "Projeto de linha de comando completo", "url": "https://www.youtube.com/watch?v=b0TpPn9g11I", "label": "▶ Guanabara Projeto Final Mundo 3", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://click.palletsprojects.com/", "doc_label": "📖 Click CLI Python", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-0": {"id": "ia-1-0-0", "title": "NumPy: arrays e operações vetorizadas", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ NumPy Tutorial Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/quickstart.html", "doc_label": "📖 NumPy Quickstart", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-1": {"id": "ia-1-0-1", "title": "Pandas: DataFrames e Series", "url": "https://www.youtube.com/watch?v=vmEHCJofslg", "label": "▶ Pandas DataFrames Crash Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/10min.html", "doc_label": "📖 10 Minutes to Pandas", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-2": {"id": "ia-1-0-2", "title": "Pandas: filtrar, agrupar e juntar (merge)", "url": "https://www.youtube.com/watch?v=ZyhVh-qRZPA", "label": "▶ Pandas Filter, GroupBy & Merge", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/merging.html", "doc_label": "📖 Pandas Merge & GroupBy", "pt_guide": null, "yt_pt_url": ""}, "ia-1-0-3": {"id": "ia-1-0-3", "title": "Limpeza de dados e valores ausentes", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Data Cleaning com Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/missing_data.html", "doc_label": "📖 Pandas Missing Data Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-0": {"id": "ia-1-1-0", "title": "Matplotlib", "url": "https://www.youtube.com/watch?v=UO98lJQ3QGI", "label": "▶ Matplotlib Tutorial Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://matplotlib.org/stable/tutorials/introductory/quick_start.html", "doc_label": "📖 Matplotlib Quick Start", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-1": {"id": "ia-1-1-1", "title": "Seaborn", "url": "https://www.youtube.com/watch?v=6GUZXDef2U0", "label": "▶ Seaborn Visualização Elegante", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://seaborn.pydata.org/tutorial.html", "doc_label": "📖 Seaborn Tutorial Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-1-2": {"id": "ia-1-1-2", "title": "Análise exploratória de dados (EDA)", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ EDA Passo a Passo na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/data-visualization", "doc_label": "💻 Kaggle Data Visualization", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-0": {"id": "ia-1-2-0", "title": "Jupyter Notebook e Google Colab", "url": "https://www.youtube.com/watch?v=HW29067qVWk", "label": "▶ Jupyter & Colab para Dados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colab.research.google.com/notebooks/intro.ipynb", "doc_label": "📖 Colab Welcome Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-1": {"id": "ia-1-2-1", "title": "SQL: SELECT, WHERE, JOIN, GROUP BY", "url": "https://www.youtube.com/watch?v=HXV3zeRR3h4", "label": "▶ Curso SQL Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.w3schools.com/sql/", "doc_label": "📖 W3Schools SQL Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-2-2": {"id": "ia-1-2-2", "title": "Ler CSV, Excel e JSON", "url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y", "label": "▶ Importação de Dados em Python", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/io.html", "doc_label": "📖 Pandas IO Tools Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-0": {"id": "ia-1-3-0", "title": "Broadcasting", "url": "https://www.youtube.com/watch?v=0mffXPTtkVU", "label": "▶ NumPy Broadcasting Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/basics.broadcasting.html", "doc_label": "📖 NumPy Broadcasting Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-1": {"id": "ia-1-3-1", "title": "Máscaras booleanas e indexação", "url": "https://www.youtube.com/watch?v=gbSCYq3rNLs", "label": "▶ Boolean Indexing com NumPy", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://numpy.org/doc/stable/user/basics.indexing.html", "doc_label": "📖 NumPy Indexing Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-2": {"id": "ia-1-3-2", "title": "Séries temporais", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Time Series com Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/timeseries.html", "doc_label": "📖 Pandas Time Series", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-3": {"id": "ia-1-3-3", "title": "Pivot tables e melt", "url": "https://www.youtube.com/watch?v=xPPs59pn6qU", "label": "▶ Pivot Table e Melt no Pandas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/user_guide/reshaping.html", "doc_label": "📖 Pandas Reshaping", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-4": {"id": "ia-1-3-4", "title": "Apply e funções vetorizadas", "url": "https://www.youtube.com/watch?v=P_q0tkYqvSk", "label": "▶ Apply vs Operações Vetorizadas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.apply.html", "doc_label": "📖 Pandas Apply Reference", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-5": {"id": "ia-1-3-5", "title": "Outliers e duplicados", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Tratamento de Outliers e Duplicatas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Scikit-learn Outliers", "pt_guide": null, "yt_pt_url": ""}, "ia-1-3-6": {"id": "ia-1-3-6", "title": "Encoding de variáveis categóricas", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ One-Hot vs Label Encoding", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features", "doc_label": "📖 Sklearn Categorical Encoding", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-0": {"id": "ia-1-4-0", "title": "Web scraping e APIs", "url": "https://www.youtube.com/watch?v=QhD0133To3s", "label": "▶ Web Scraping & Ingestão de Dados", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://realpython.com/beautiful-soup-web-scraper-python/", "doc_label": "📖 RealPython Scraping Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-1": {"id": "ia-1-4-1", "title": "SQLite e SQLAlchemy", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ SQLite & SQLAlchemy em Python", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.sqlalchemy.org/en/20/intro.html", "doc_label": "📖 SQLAlchemy 2.0 Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-2": {"id": "ia-1-4-2", "title": "SQL avançado: subconsultas e window functions", "url": "https://www.youtube.com/watch?v=Ww71knvhQ-s", "label": "▶ Window Functions e Subqueries", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://mode.com/sql-tutorial/sql-window-functions/", "doc_label": "📖 Mode SQL Window Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-3": {"id": "ia-1-4-3", "title": "Formato Parquet", "url": "https://www.youtube.com/watch?v=4tB8K2N2k0w", "label": "▶ Apache Parquet vs CSV na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://parquet.apache.org/docs/", "doc_label": "📖 Apache Parquet Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-1-4-4": {"id": "ia-1-4-4", "title": "Plotly e gráficos interativos", "url": "https://www.youtube.com/watch?v=GGL6U0k8WYA", "label": "▶ Plotly Gráficos Interativos 2D/3D", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://plotly.com/python/", "doc_label": "📖 Plotly Python Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-0": {"id": "ia-1-5-0", "title": "Notebooks reprodutíveis", "url": "https://www.youtube.com/watch?v=7jiPeIFKA98", "label": "▶ Melhores Práticas em Jupyter", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.jupyter.org/en/latest/", "doc_label": "📖 Jupyter Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-1": {"id": "ia-1-5-1", "title": "Storytelling com dados", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Data Storytelling e Insights", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.storytellingwithdata.com/", "doc_label": "📖 Storytelling With Data", "pt_guide": null, "yt_pt_url": ""}, "ia-1-5-2": {"id": "ia-1-5-2", "title": "Dashboards com Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Streamlit Dashboard em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.streamlit.io/", "doc_label": "📖 Streamlit Docs Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-0": {"id": "ia-2-0-0", "title": "Aprendizado supervisionado vs. não supervisionado", "url": "https://www.youtube.com/watch?v=1FZ0A1QCMWc", "label": "▶ Andrew Ng Supervised vs Unsupervised", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/tutorial/basic/tutorial.html", "doc_label": "📖 Sklearn Intro Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-1": {"id": "ia-2-0-1", "title": "Treino, validação e teste", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ StatQuest Train, Test & Cross-Validation", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html", "doc_label": "📖 Sklearn Train-Test Split", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-2": {"id": "ia-2-0-2", "title": "Overfitting e underfitting", "url": "https://www.youtube.com/watch?v=EuBBz3bI-aA", "label": "▶ StatQuest Bias and Variance Tradeoff", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_underfitting_overfitting.html", "doc_label": "📖 Sklearn Bias-Variance Example", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-3": {"id": "ia-2-0-3", "title": "Validação cruzada", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ K-Fold Cross Validation Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/cross_validation.html#k-fold", "doc_label": "📖 Sklearn K-Fold Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-0-4": {"id": "ia-2-0-4", "title": "Engenharia de atributos (feature engineering)", "url": "https://www.youtube.com/watch?v=A3gJi3g3w8g", "label": "▶ Feature Engineering na Prática", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/feature-engineering", "doc_label": "💻 Kaggle Feature Engineering", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-0": {"id": "ia-2-1-0", "title": "Regressão linear", "url": "https://www.youtube.com/watch?v=7ArmBVF2dCs", "label": "▶ StatQuest Linear Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ordinary-least-squares", "doc_label": "📖 Sklearn Linear Regression", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-1": {"id": "ia-2-1-1", "title": "Regressão logística", "url": "https://www.youtube.com/watch?v=yIYKR4gXd5U", "label": "▶ StatQuest Logistic Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression", "doc_label": "📖 Sklearn Logistic Regression", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-2": {"id": "ia-2-1-2", "title": "Árvores de decisão", "url": "https://www.youtube.com/watch?v=7VeUPuFGJHk", "label": "▶ StatQuest Decision Trees", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/tree.html", "doc_label": "📖 Sklearn Decision Trees", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-3": {"id": "ia-2-1-3", "title": "Random Forest", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ StatQuest Random Forests", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/ensemble.html#forests-of-randomized-trees", "doc_label": "📖 Sklearn Random Forests", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-4": {"id": "ia-2-1-4", "title": "Gradient Boosting (XGBoost, LightGBM)", "url": "https://www.youtube.com/watch?v=3CC4N4z3GJc", "label": "▶ StatQuest Gradient Boost & XGBoost", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://xgboost.readthedocs.io/en/stable/", "doc_label": "📖 XGBoost Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-5": {"id": "ia-2-1-5", "title": "K-Means e clusterização", "url": "https://www.youtube.com/watch?v=4b5d3muPQmA", "label": "▶ StatQuest K-Means Clustering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#k-means", "doc_label": "📖 Sklearn K-Means", "pt_guide": null, "yt_pt_url": ""}, "ia-2-1-6": {"id": "ia-2-1-6", "title": "PCA", "url": "https://www.youtube.com/watch?v=FgakZw6K1QQ", "label": "▶ StatQuest Principal Component Analysis", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/decomposition.html#pca", "doc_label": "📖 Sklearn PCA Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-0": {"id": "ia-2-2-0", "title": "Métricas: acurácia, precisão, recall, F1", "url": "https://www.youtube.com/watch?v=wpNl-HIch9g", "label": "▶ StatQuest Precision, Recall & F1", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics", "doc_label": "📖 Sklearn Classification Metrics", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-1": {"id": "ia-2-2-1", "title": "Matriz de confusão e curva ROC", "url": "https://www.youtube.com/watch?v=4jRBRDbJemM", "label": "▶ StatQuest ROC and AUC Curves", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#roc-metrics", "doc_label": "📖 Sklearn ROC AUC", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-2": {"id": "ia-2-2-2", "title": "Scikit-learn e pipelines", "url": "https://www.youtube.com/watch?v=irHhDMb3n88", "label": "▶ Scikit-Learn Pipelines Práticos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/compose.html#pipeline", "doc_label": "📖 Sklearn Pipeline Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-2-3": {"id": "ia-2-2-3", "title": "Ajuste de hiperparâmetros", "url": "https://www.youtube.com/watch?v=Gol_qOfhft4", "label": "▶ GridSearchCV & RandomizedSearchCV", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/grid_search.html", "doc_label": "📖 Sklearn Hyperparameter Tuning", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-0": {"id": "ia-2-3-0", "title": "KNN", "url": "https://www.youtube.com/watch?v=HVXime0nQeI", "label": "▶ StatQuest K-Nearest Neighbors", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/neighbors.html", "doc_label": "📖 Sklearn Nearest Neighbors", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-1": {"id": "ia-2-3-1", "title": "Naive Bayes", "url": "https://www.youtube.com/watch?v=O2L2Uv9pdDA", "label": "▶ StatQuest Naive Bayes", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/naive_bayes.html", "doc_label": "📖 Sklearn Naive Bayes", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-2": {"id": "ia-2-3-2", "title": "SVM", "url": "https://www.youtube.com/watch?v=efR1C6CvhmE", "label": "▶ StatQuest Support Vector Machines", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/svm.html", "doc_label": "📖 Sklearn Support Vector Machines", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-3": {"id": "ia-2-3-3", "title": "DBSCAN e clusterização hierárquica", "url": "https://www.youtube.com/watch?v=RDZUdRSDOok", "label": "▶ StatQuest DBSCAN Clustering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/clustering.html#dbscan", "doc_label": "📖 Sklearn DBSCAN Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-4": {"id": "ia-2-3-4", "title": "Regularização Lasso e Ridge", "url": "https://www.youtube.com/watch?v=Q81RR3yKn30", "label": "▶ StatQuest Ridge and Lasso Regression", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#ridge-regression-and-classification", "doc_label": "📖 Sklearn Regularization", "pt_guide": null, "yt_pt_url": ""}, "ia-2-3-5": {"id": "ia-2-3-5", "title": "Detecção de anomalias", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Isolation Forest & Anomaly Detection", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html", "doc_label": "📖 Sklearn Anomaly Detection", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-0": {"id": "ia-2-4-0", "title": "Normalização e padronização", "url": "https://www.youtube.com/watch?v=sxEqtjLC0aM", "label": "▶ StandardScaler vs MinMaxScaler", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#standardization-or-mean-removal-and-variance-scaling", "doc_label": "📖 Sklearn Preprocessing", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-1": {"id": "ia-2-4-1", "title": "Dados desbalanceados (SMOTE)", "url": "https://www.youtube.com/watch?v=YMPMQgzBgPE", "label": "▶ Imbalanced Data & SMOTE", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html", "doc_label": "📖 Imbalanced-Learn SMOTE", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-2": {"id": "ia-2-4-2", "title": "Seleção de atributos", "url": "https://www.youtube.com/watch?v=bDhvCp3_lYw", "label": "▶ Feature Selection Techniques", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/feature_selection.html", "doc_label": "📖 Sklearn Feature Selection", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-3": {"id": "ia-2-4-3", "title": "Vazamento de dados (data leakage)", "url": "https://www.youtube.com/watch?v=fSytzGwwBVw", "label": "▶ Como Evitar Data Leakage", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/learn/data-leakage", "doc_label": "💻 Kaggle Data Leakage", "pt_guide": null, "yt_pt_url": ""}, "ia-2-4-4": {"id": "ia-2-4-4", "title": "Séries temporais com ML", "url": "https://www.youtube.com/watch?v=UFuo7EHI8zc", "label": "▶ Forecasting com Machine Learning", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://otexts.com/fpp3/", "doc_label": "📖 Forecasting: Principles and Practice", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-0": {"id": "ia-2-5-0", "title": "Importância de atributos", "url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ", "label": "▶ Feature Importance no Random Forest", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://scikit-learn.org/stable/modules/permutation_importance.html", "doc_label": "📖 Sklearn Permutation Importance", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-1": {"id": "ia-2-5-1", "title": "SHAP e LIME", "url": "https://www.youtube.com/watch?v=9haIO8uEBrA", "label": "▶ Explainable AI: SHAP & LIME", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://shap.readthedocs.io/en/latest/", "doc_label": "📖 SHAP Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-2": {"id": "ia-2-5-2", "title": "Viés e ética em ML", "url": "https://www.youtube.com/watch?v=ugff3a89e4I", "label": "▶ Fairness & Bias in Machine Learning", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fairlearn.org/", "doc_label": "📖 Fairlearn Project", "pt_guide": null, "yt_pt_url": ""}, "ia-2-5-3": {"id": "ia-2-5-3", "title": "Sistemas de recomendação", "url": "https://www.youtube.com/watch?v=n3RKsY2H-NE", "label": "▶ Collaborative Filtering & Recommenders", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://developers.google.com/machine-learning/recommendation", "doc_label": "📖 Google Recommendation Systems", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-0": {"id": "ia-3-0-0", "title": "Neurônio, camadas e pesos", "url": "https://www.youtube.com/watch?v=aircAruvnKk", "label": "▶ 3B1B O que é uma Rede Neural?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearningbook.org/contents/mlp.html", "doc_label": "📖 Deep Learning Book Cap 6", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-1": {"id": "ia-3-0-1", "title": "Funções de ativação", "url": "https://www.youtube.com/watch?v=68BZ5f7P94E", "label": "▶ StatQuest Activation Functions", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-non-linearity", "doc_label": "📖 PyTorch Activation Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-2": {"id": "ia-3-0-2", "title": "Função de perda", "url": "https://www.youtube.com/watch?v=IHZwWFHWa-w", "label": "▶ 3B1B Gradient Descent & Loss", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/nn.html#loss-functions", "doc_label": "📖 PyTorch Loss Functions", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-3": {"id": "ia-3-0-3", "title": "Backpropagation", "url": "https://www.youtube.com/watch?v=Ilg3gGewQ5U", "label": "▶ 3B1B O que o Backpropagation faz?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colah.github.io/posts/2015-08-Backprop/", "doc_label": "📖 Colah's Blog Calculus on Graphs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-4": {"id": "ia-3-0-4", "title": "Gradiente descendente e otimizadores (SGD, Adam)", "url": "https://www.youtube.com/watch?v=mdKjMPmcWsc", "label": "▶ StatQuest Gradient Descent & Adam", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/optim.html", "doc_label": "📖 PyTorch Optimizers Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-3-0-5": {"id": "ia-3-0-5", "title": "Regularização (dropout, weight decay)", "url": "https://www.youtube.com/watch?v=D8PJAL-Zkm8", "label": "▶ Dropout Regularization Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html", "doc_label": "📖 PyTorch Dropout Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-0": {"id": "ia-3-1-0", "title": "CNNs para imagens", "url": "https://www.youtube.com/watch?v=HGwBXDKFk9I", "label": "▶ StatQuest Convolutional Neural Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html", "doc_label": "📖 PyTorch Training a Classifier", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-1": {"id": "ia-3-1-1", "title": "Transfer learning", "url": "https://www.youtube.com/watch?v=BqqfQnyjmgg", "label": "▶ Transfer Learning com ResNet/VGG", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html", "doc_label": "📖 PyTorch Transfer Learning", "pt_guide": null, "yt_pt_url": ""}, "ia-3-1-2": {"id": "ia-3-1-2", "title": "RNNs e LSTMs para sequências", "url": "https://www.youtube.com/watch?v=AsNTP8Kwu80", "label": "▶ StatQuest Recurrent Neural Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://colah.github.io/posts/2015-08-Understanding-LSTMs/", "doc_label": "📖 Understanding LSTM Networks", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-0": {"id": "ia-3-2-0", "title": "Tensores e autograd", "url": "https://www.youtube.com/watch?v=IC0_FRiX-sw", "label": "▶ PyTorch Tensors & Autograd Blitz", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/blitz/tensor_tutorial.html", "doc_label": "📖 PyTorch Tensor Basics", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-1": {"id": "ia-3-2-1", "title": "Datasets e DataLoaders", "url": "https://www.youtube.com/watch?v=VVDHU_TWwUg", "label": "▶ Custom Datasets em PyTorch", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html", "doc_label": "📖 PyTorch Datasets & DataLoaders", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-2": {"id": "ia-3-2-2", "title": "Loop de treino e avaliação", "url": "https://www.youtube.com/watch?v=c36lUUr864M", "label": "▶ PyTorch Full Training Loop", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html", "doc_label": "📖 PyTorch Model Optimization", "pt_guide": null, "yt_pt_url": ""}, "ia-3-2-3": {"id": "ia-3-2-3", "title": "Treinar em GPU (Colab)", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Acelerando PyTorch com CUDA na GPU", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/cuda.html", "doc_label": "📖 PyTorch CUDA Semantics", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-0": {"id": "ia-3-3-0", "title": "Autoencoders", "url": "https://www.youtube.com/watch?v=9zKuYvjFFS8", "label": "▶ Autoencoders e Compressão Latente", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearningbook.org/contents/autoencoders.html", "doc_label": "📖 Deep Learning Book Cap 14", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-1": {"id": "ia-3-3-1", "title": "GANs", "url": "https://www.youtube.com/watch?v=8L11aMN5KY8", "label": "▶ Generative Adversarial Networks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html", "doc_label": "📖 PyTorch DCGAN Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-2": {"id": "ia-3-3-2", "title": "Modelos de difusão (noção)", "url": "https://www.youtube.com/watch?v=1CIpzeNxIhU", "label": "▶ Como Funcionam Diffusion Models", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/annotated-diffusion", "doc_label": "📖 Annotated Diffusion Model", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-3": {"id": "ia-3-3-3", "title": "Redes de grafos (noção)", "url": "https://www.youtube.com/watch?v=fOctJB4kWlI", "label": "▶ Graph Neural Networks (GNNs)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://distill.pub/2021/gnn-intro/", "doc_label": "📖 Distill GNN Gentle Introduction", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-4": {"id": "ia-3-3-4", "title": "Detecção de objetos (YOLO)", "url": "https://www.youtube.com/watch?v=ag3DLKsl2vk", "label": "▶ YOLO Object Detection", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.ultralytics.com/", "doc_label": "📖 Ultralytics YOLO Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-3-3-5": {"id": "ia-3-3-5", "title": "Segmentação de imagens", "url": "https://www.youtube.com/watch?v=u1loyCU4smQ", "label": "▶ Image Segmentation com U-Net", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/hub/mateuszbuda_brain-segmentation-pytorch_unet/", "doc_label": "📖 PyTorch U-Net Hub", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-0": {"id": "ia-3-4-0", "title": "Batch normalization", "url": "https://www.youtube.com/watch?v=tNIpEZLv_l8", "label": "▶ StatQuest Batch Normalization", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html", "doc_label": "📖 PyTorch BatchNorm2d", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-1": {"id": "ia-3-4-1", "title": "Learning rate schedulers", "url": "https://www.youtube.com/watch?v=kpvIcx16i58", "label": "▶ Learning Rate Decay & Schedulers", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate", "doc_label": "📖 PyTorch LR Schedulers", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-2": {"id": "ia-3-4-2", "title": "Data augmentation", "url": "https://www.youtube.com/watch?v=mTVf7BN7S8w", "label": "▶ Data Augmentation com Torchvision", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/vision/stable/transforms.html", "doc_label": "📖 Torchvision Transforms", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-3": {"id": "ia-3-4-3", "title": "Early stopping e checkpoints", "url": "https://www.youtube.com/watch?v=k4J8nEaX0Xg", "label": "▶ Checkpoints e Salvamento de Modelos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/beginner/saving_loading_models.html", "doc_label": "📖 PyTorch Saving & Loading", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-4": {"id": "ia-3-4-4", "title": "Depurar rede que não aprende", "url": "https://www.youtube.com/watch?v=P6sfmUtP_vY", "label": "▶ Andrej Karpathy: A Recipe for Training NNs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "http://karpathy.github.io/2019/04/25/recipe/", "doc_label": "📖 Karpathy NN Training Recipe", "pt_guide": null, "yt_pt_url": ""}, "ia-3-4-5": {"id": "ia-3-4-5", "title": "Mixed precision", "url": "https://www.youtube.com/watch?v=r7Am-ZGMef8", "label": "▶ Automatic Mixed Precision (AMP)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/docs/stable/amp.html", "doc_label": "📖 PyTorch AMP Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-0": {"id": "ia-3-5-0", "title": "TensorFlow e Keras (noção)", "url": "https://www.youtube.com/watch?v=tPYj3fFJGjk", "label": "▶ TensorFlow 2.0 / Keras Crash Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.tensorflow.org/tutorials", "doc_label": "📖 TensorFlow Tutorials", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-1": {"id": "ia-3-5-1", "title": "TensorBoard e logs", "url": "https://www.youtube.com/watch?v=VJW92p3n5D8", "label": "▶ Monitorando com TensorBoard", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html", "doc_label": "📖 PyTorch with TensorBoard", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-2": {"id": "ia-3-5-2", "title": "Exportar modelos com ONNX", "url": "https://www.youtube.com/watch?v=P_V5qD1n7Hk", "label": "▶ Exportando PyTorch para ONNX Runtime", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html", "doc_label": "📖 PyTorch ONNX Export", "pt_guide": null, "yt_pt_url": ""}, "ia-3-5-3": {"id": "ia-3-5-3", "title": "PyTorch Lightning", "url": "https://www.youtube.com/watch?v=DbESHcCoWbM", "label": "▶ PyTorch Lightning em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://lightning.ai/docs/pytorch/stable/", "doc_label": "📖 Lightning AI Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-0": {"id": "ia-4-0-0", "title": "Tokenização e embeddings", "url": "https://www.youtube.com/watch?v=zduSFxRajkE", "label": "▶ Karpathy Tokenização BPE", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/learn/nlp-course/chapter2/4", "doc_label": "📖 Hugging Face Tokenizers", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-1": {"id": "ia-4-0-1", "title": "Mecanismo de atenção", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Visualizando Mecanismo de Atenção", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://jalammar.github.io/illustrated-transformer/", "doc_label": "📖 The Illustrated Transformer", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-2": {"id": "ia-4-0-2", "title": "Arquitetura Transformer", "url": "https://www.youtube.com/watch?v=kCc8FmEb1nY", "label": "▶ Karpathy Let's build GPT do zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Attention Is All You Need", "pt_guide": null, "yt_pt_url": ""}, "ia-4-0-3": {"id": "ia-4-0-3", "title": "Pré-treino, fine-tuning e RLHF (visão geral)", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Karpathy State of GPT / RLHF", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/rlhf", "doc_label": "📖 Hugging Face RLHF Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-0": {"id": "ia-4-1-0", "title": "Hugging Face: modelos, datasets e transformers", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Hugging Face Transformers Course", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/docs/transformers/index", "doc_label": "📖 Hugging Face Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-1": {"id": "ia-4-1-1", "title": "Fine-tuning com LoRA", "url": "https://www.youtube.com/watch?v=dA-NhCtrrVE", "label": "▶ LoRA & QLoRA Fine-Tuning de LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/docs/peft/index", "doc_label": "📖 Hugging Face PEFT Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-2": {"id": "ia-4-1-2", "title": "Engenharia de prompts", "url": "https://www.youtube.com/watch?v=jC4v5AS4RIM", "label": "▶ Andrew Ng Prompt Engineering", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.promptingguide.ai/pt", "doc_label": "📖 Prompt Engineering Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-1-3": {"id": "ia-4-1-3", "title": "Usar APIs de LLMs (chamadas, streaming, tool use)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Consumindo OpenAI, Gemini & Claude", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/api-reference", "doc_label": "📖 OpenAI / Gemini API Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-0": {"id": "ia-4-2-0", "title": "RAG: busca em documentos + LLM", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ RAG Completo do Zero", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://python.langchain.com/docs/tutorials/rag/", "doc_label": "📖 LangChain RAG Tutorial", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-1": {"id": "ia-4-2-1", "title": "Bancos vetoriais e busca semântica", "url": "https://www.youtube.com/watch?v=klTvEwg3oJ4", "label": "▶ ChromaDB, Pinecone & Vetores", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.trychroma.com/", "doc_label": "📖 ChromaDB Getting Started", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-2": {"id": "ia-4-2-2", "title": "Agentes e uso de ferramentas", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ Construindo Agentes Autônomos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://python.langchain.com/docs/tutorials/agents/", "doc_label": "📖 LangChain Agents Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-2-3": {"id": "ia-4-2-3", "title": "Avaliação e segurança de sistemas com LLM", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ Evals, Ragas e LLM Testing", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.ragas.io/", "doc_label": "📖 Ragas Evaluation Framework", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-0": {"id": "ia-4-3-0", "title": "Self-attention e multi-head", "url": "https://www.youtube.com/watch?v=eMlx5fFNoYc", "label": "▶ 3B1B Multi-Head Attention", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/1706.03762", "doc_label": "📄 Paper Transformer Seção 3.2", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-1": {"id": "ia-4-3-1", "title": "Positional encoding", "url": "https://www.youtube.com/watch?v=dichIC6np5g", "label": "▶ Positional Encoding Explicado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kazemnejad.com/blog/transformer_architecture_positional_encoding/", "doc_label": "📖 Kazemnejad Positional Encoding", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-2": {"id": "ia-4-3-2", "title": "Encoder vs. decoder (BERT vs. GPT)", "url": "https://www.youtube.com/watch?v=FKlPCK1uFrc", "label": "▶ BERT vs GPT vs T5 Arquiteturas", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://jalammar.github.io/illustrated-bert/", "doc_label": "📖 The Illustrated BERT", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-3": {"id": "ia-4-3-3", "title": "Janela de contexto e KV cache", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Como Funciona o KV Cache em LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kipp.ly/transformer-inference-optimizations/", "doc_label": "📖 KV Cache Optimization Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-4": {"id": "ia-4-3-4", "title": "Quantização (4-bit, 8-bit)", "url": "https://www.youtube.com/watch?v=TPcUXJvfO20", "label": "▶ Quantização GGUF & AWQ", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/blog/hf-bitsandbytes-integration", "doc_label": "📖 Hugging Face Bitsandbytes", "pt_guide": null, "yt_pt_url": ""}, "ia-4-3-5": {"id": "ia-4-3-5", "title": "Scaling laws", "url": "https://www.youtube.com/watch?v=H3pkn1iKx4A", "label": "▶ Chinchilla & Neural Scaling Laws", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/2001.08361", "doc_label": "📄 OpenAI Scaling Laws Paper", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-0": {"id": "ia-4-4-0", "title": "Chunking e estratégias de recuperação no RAG", "url": "https://www.youtube.com/watch?v=tcqEUSNCn8I", "label": "▶ Advanced RAG: Chunking & Hybrid Search", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.pinecone.io/learn/chunking-strategies/", "doc_label": "📖 Pinecone Chunking Strategies", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-1": {"id": "ia-4-4-1", "title": "Reranking", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Cohere Rerank para Melhor RAG", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.cohere.com/docs/reranking", "doc_label": "📖 Cohere Rerank Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-2": {"id": "ia-4-4-2", "title": "Saída estruturada (JSON)", "url": "https://www.youtube.com/watch?v=0h3jO_6eF28", "label": "▶ Structured Outputs com Pydantic", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/structured-outputs", "doc_label": "📖 OpenAI Structured Outputs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-3": {"id": "ia-4-4-3", "title": "Memória e orquestração de agentes", "url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA", "label": "▶ LangGraph & CrewAI Orquestração", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://langchain-ai.github.io/langgraph/", "doc_label": "📖 LangGraph Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-4": {"id": "ia-4-4-4", "title": "Protocolo MCP", "url": "https://www.youtube.com/watch?v=r0b06l16qBs", "label": "▶ Model Context Protocol (MCP) Anthropic", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://modelcontextprotocol.io/", "doc_label": "📖 Model Context Protocol Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-4-5": {"id": "ia-4-4-5", "title": "Multimodalidade: visão e áudio", "url": "https://www.youtube.com/watch?v=7h3oP9xP_98", "label": "▶ Vision Models: GPT-4o & Gemini Vision", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/vision", "doc_label": "📖 OpenAI Vision Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-0": {"id": "ia-4-5-0", "title": "Avaliação de LLMs (evals e benchmarks)", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LLM Evaluation & MMLU Benchmarks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/openai/evals", "doc_label": "📖 OpenAI Evals Framework", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-1": {"id": "ia-4-5-1", "title": "Alucinações e mitigação", "url": "https://www.youtube.com/watch?v=bZQun8Y4L2A", "label": "▶ Como Prevenir Alucinações de LLM", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/abs/2309.01219", "doc_label": "📄 Survey on Hallucination in LLMs", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-2": {"id": "ia-4-5-2", "title": "Prompt injection", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ OWASP Top 10 for LLMs & Jailbreaks", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://genai.owasp.org/llm-top-10/", "doc_label": "📖 OWASP GenAI Top 10", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-3": {"id": "ia-4-5-3", "title": "Custo e latência", "url": "https://www.youtube.com/watch?v=80bIUgg4How", "label": "▶ Otimização de Custo de Tokens & Cache", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://platform.openai.com/docs/guides/production-best-practices", "doc_label": "📖 Production Best Practices", "pt_guide": null, "yt_pt_url": ""}, "ia-4-5-4": {"id": "ia-4-5-4", "title": "Modelos locais (Ollama, llama.cpp)", "url": "https://www.youtube.com/watch?v=Gz3k4Z2hLgA", "label": "▶ Rodando LLMs Locais com Ollama", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://ollama.com/", "doc_label": "📖 Ollama Official Website", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-0": {"id": "ia-5-0-0", "title": "Docker", "url": "https://www.youtube.com/watch?v=fqMOX6JJhGo", "label": "▶ Docker para Iniciantes Completo", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.docker.com/get-started/", "doc_label": "📖 Docker Get Started", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-1": {"id": "ia-5-0-1", "title": "FastAPI e criação de APIs", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ FastAPI Tutorial Prático", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fastapi.tiangolo.com/tutorial/", "doc_label": "📖 FastAPI Tutorial Oficial", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-2": {"id": "ia-5-0-2", "title": "Deploy em nuvem (AWS, GCP ou Azure)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Deploy de Modelo de ML em Nuvem", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://aws.amazon.com/sagemaker/", "doc_label": "📖 AWS SageMaker Overview", "pt_guide": null, "yt_pt_url": ""}, "ia-5-0-3": {"id": "ia-5-0-3", "title": "Testes e boas práticas de código", "url": "https://www.youtube.com/watch?v=byax_Ej249o", "label": "▶ Testes Automatizados em ML", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.pytest.org/", "doc_label": "📖 Pytest Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-0": {"id": "ia-5-1-0", "title": "Versionamento de dados e modelos", "url": "https://www.youtube.com/watch?v=k_A3_w8E-Xg", "label": "▶ DVC (Data Version Control)", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://dvc.org/doc/start", "doc_label": "📖 DVC Get Started", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-1": {"id": "ia-5-1-1", "title": "MLflow ou Weights & Biases", "url": "https://www.youtube.com/watch?v=qdcKU_gZ5eM", "label": "▶ MLflow Tracking & Registry", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://mlflow.org/docs/latest/index.html", "doc_label": "📖 MLflow Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-1-2": {"id": "ia-5-1-2", "title": "Monitoramento de modelos", "url": "https://www.youtube.com/watch?v=5p8wTRk7pP8", "label": "▶ Data Drift e Model Monitoring", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.evidentlyai.com/", "doc_label": "📖 Evidently AI Model Monitoring", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-0": {"id": "ia-5-2-0", "title": "3 a 5 projetos documentados no GitHub", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Como Montar Portfólio no GitHub", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/topics/machine-learning", "doc_label": "💻 GitHub ML Topics", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-1": {"id": "ia-5-2-1", "title": "READMEs com problema, solução e resultados", "url": "https://www.youtube.com/watch?v=6Czd1Yetaac", "label": "▶ README Incrível para Projetos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes", "doc_label": "📖 Guia README GitHub", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-2": {"id": "ia-5-2-2", "title": "Perfil ativo no LinkedIn e Kaggle", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Estratégia de LinkedIn & Kaggle", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.kaggle.com/", "doc_label": "💻 Kaggle Official", "pt_guide": null, "yt_pt_url": ""}, "ia-5-2-3": {"id": "ia-5-2-3", "title": "Inglês técnico", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI", "label": "▶ Playlist Inglês EnglishBay", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://arxiv.org/archive/cs", "doc_label": "📄 arXiv Computer Science", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-0": {"id": "ia-5-3-0", "title": "Linux e shell avançado", "url": "https://www.youtube.com/watch?v=oxuRxtrO2Ag", "label": "▶ Linux Terminal do Básico ao Avançado", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://ubuntu.com/tutorials/command-line-for-beginners", "doc_label": "📖 Ubuntu Command Line", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-1": {"id": "ia-5-3-1", "title": "CI/CD com GitHub Actions", "url": "https://www.youtube.com/watch?v=R8_veQiYBjI", "label": "▶ GitHub Actions CI/CD Pipeline", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.github.com/pt/actions", "doc_label": "📖 GitHub Actions Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-2": {"id": "ia-5-3-2", "title": "Kubernetes (noção)", "url": "https://www.youtube.com/watch?v=X48VuDVv0do", "label": "▶ Kubernetes Explicado em 15 Minutos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://kubernetes.io/docs/home/", "doc_label": "📖 Kubernetes Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-3": {"id": "ia-5-3-3", "title": "Filas e processamento assíncrono", "url": "https://www.youtube.com/watch?v=THxCy_kL5pE", "label": "▶ Celery & Redis Task Queues", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.celeryq.dev/en/stable/", "doc_label": "📖 Celery Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-3-4": {"id": "ia-5-3-4", "title": "Redis, Postgres e pgvector", "url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw", "label": "▶ PostgreSQL com pgvector para IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://github.com/pgvector/pgvector", "doc_label": "📖 pgvector Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-0": {"id": "ia-5-4-0", "title": "Interfaces com Gradio e Streamlit", "url": "https://www.youtube.com/watch?v=D0D4Pa22VUo", "label": "▶ Gradio & Streamlit para Demos de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.gradio.app/docs", "doc_label": "📖 Gradio Documentation", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-1": {"id": "ia-5-4-1", "title": "Front-end básico (HTML e JS)", "url": "https://www.youtube.com/watch?v=Ejkb_YpuHWs", "label": "▶ Guanabara HTML5 e CSS3", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://developer.mozilla.org/pt-BR/docs/Learn", "doc_label": "📖 MDN Web Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-2": {"id": "ia-5-4-2", "title": "Autenticação e limites de uso", "url": "https://www.youtube.com/watch?v=tLKKmouUAMS", "label": "▶ OAuth2, JWT e Rate Limiting", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://fastapi.tiangolo.com/tutorial/security/", "doc_label": "📖 FastAPI Security Guide", "pt_guide": null, "yt_pt_url": ""}, "ia-5-4-3": {"id": "ia-5-4-3", "title": "Observabilidade de LLMs", "url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8", "label": "▶ LangSmith & Tracing de LLMs", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://docs.smith.langchain.com/", "doc_label": "📖 LangSmith Docs", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-0": {"id": "ia-5-5-0", "title": "Currículo e entrevistas técnicas", "url": "https://www.youtube.com/watch?v=3R_3r2a41mY", "label": "▶ Como Passar em Entrevistas de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://www.deeplearning.ai/the-batch/", "doc_label": "📖 The Batch by Andrew Ng", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-1": {"id": "ia-5-5-1", "title": "Contribuir com open source", "url": "https://www.youtube.com/watch?v=s_44T4oBf8w", "label": "▶ Primeiros Passos no Open Source", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://opensource.guide/pt/", "doc_label": "📖 Guia de Open Source", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-2": {"id": "ia-5-5-2", "title": "Escrever artigos e posts", "url": "https://www.youtube.com/watch?v=qBigTkBLU6g", "label": "▶ Criando Conteúdo Técnico e Artigos", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://medium.com/topic/machine-learning", "doc_label": "📖 Medium Towards Data Science", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-3": {"id": "ia-5-5-3", "title": "Comunidades e eventos", "url": "https://www.youtube.com/watch?v=tiZFewofSLM", "label": "▶ Redes e Comunidades de IA", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://huggingface.co/community", "doc_label": "💬 Hugging Face Community", "pt_guide": null, "yt_pt_url": ""}, "ia-5-5-4": {"id": "ia-5-5-4", "title": "Certificações (opcional)", "url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY", "label": "▶ Certificações AWS/GCP valem a pena?", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/", "doc_label": "📖 AWS ML Specialty", "pt_guide": null, "yt_pt_url": ""}};
 const KEY = "roteiro-ia-v1";
 let PR = {};
 let FILTER = "all";
@@ -7504,7 +7724,7 @@ let sessionSeconds = 0;
 const GUIDE_READ_TARGET_SECONDS = 45; // 45s de leitura ativa na Aula Visual + rolagem pelos 4 cards
 let autoProgressEnabled = true;
 
-// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual PT-BR
+// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual
 let ytCurrentTime = 0;
 let ytMaxTime = 0;
 let ytDuration = 0;
@@ -7592,33 +7812,38 @@ function copyPtGuideToNotebook(topicId) {
   const editor = document.getElementById("modal-note-editor");
   if (!editor) return;
 
-  const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const mdBlock = [
-    `## 📘 Resumo em Português: ${topicInfo.title || ""}`,
-    "",
-    `### 🎯 1. Intuição & Conceito`,
-    cleanIntuicao,
-    "",
-    `### 📐 2. Fórmula Matemática`,
-    g.formula || "",
-    "",
-    `### 🔢 3. Exemplo Prático Passo a Passo`,
-    cleanExemplo,
-    "",
-    `### 🐍 4. Aplicação em Python (IA)`,
-    "```python",
-    g.codigo || "",
-    "```",
-    ""
-  ].join("\n");
+  let mdBlock = "";
+  if (typeof isPtGuideV2 === "function" && isPtGuideV2(g)) {
+    mdBlock = lv2ToMarkdown(g, topicInfo.title);
+  } else {
+    const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
+    const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
+    mdBlock = [
+      `## 📘 Resumo: ${topicInfo.title || ""}`,
+      "",
+      `### 🎯 1. Intuição & Conceito`,
+      cleanIntuicao,
+      "",
+      `### 📐 2. Fórmula Matemática & Significado`,
+      g.formula || "",
+      "",
+      `### 🔢 3. Exemplo Prático com Cálculos Passo a Passo`,
+      cleanExemplo,
+      "",
+      `### 🐍 4. Como a IA calcula isso em Python / NumPy`,
+      "```python",
+      g.codigo || "",
+      "```",
+      ""
+    ].join("\n");
+  }
 
   const cur = editor.value.trim();
   editor.value = cur ? (cur + "\n\n" + mdBlock) : mdBlock;
   onNoteEditorInput();
   setNoteViewMode("split");
   markPtGuideReadNow(true);
-  showToast("📘 Apostila em Português copiada para o Caderno e Aula Visual validada (100%)!");
+  showToast("📘 Resumo da aula copiado para o Caderno!");
 }
 
 function showToast(msg) {
@@ -7640,12 +7865,23 @@ function showToast(msg) {
 // =========================================================================
 let CURRENT_MODAL_VIDEO_OPT = 1;
 
-function switchModalVideoOption(optNum, resetPlayerTimer = false) {
+function formatCleanVideoOptLabel(lbl, fallback) {
+  if (!lbl) return fallback;
+  let s = lbl.replace(/^[▶🎬\s]+/, "")
+             .replace(/^2ª\s*Opção:\s*/i, "")
+             .replace(/\s*\(PT-BR\)/i, "")
+             .replace(/\s*PT-BR/i, "")
+             .trim();
+  if (s.length > 20) s = s.substring(0, 18).trim() + "…";
+  return s || fallback;
+}
+
+function switchModalVideoOption(optNum, resetPlayerTimer = false, scrollUp = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
   const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
   const video1Url = topicInfo.url || "";
-  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy (PT-BR)";
+  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy";
   const video2Url = topicInfo.url2 || "";
   const video2Label = topicInfo.label2 || "🎬 Opção 2: 3B1B / StatQuest";
 
@@ -7660,23 +7896,36 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   const btnOpt1 = document.getElementById("modal-video-opt1-btn");
   const btnOpt2 = document.getElementById("modal-video-opt2-btn");
 
+  const cleanOpt1 = formatCleanVideoOptLabel(video1Label, "Principal");
+  const cleanOpt2 = formatCleanVideoOptLabel(video2Label, "Complementar");
+
   if (switcherWrap) {
     if (video1Url && video2Url) {
       switcherWrap.style.display = "inline-flex";
+      // Ocultar tag redundante para não poluir o cabeçalho ao lado dos botões
+      if (playerTag) playerTag.style.display = "none";
       if (btnOpt1) {
-        btnOpt1.textContent = video1Label;
-        btnOpt1.style.background = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--card)";
-        btnOpt1.style.color = CURRENT_MODAL_VIDEO_OPT === 1 ? "#fff" : "var(--tx)";
-        btnOpt1.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--bd)";
+        btnOpt1.textContent = "1. " + cleanOpt1;
+        btnOpt1.className = CURRENT_MODAL_VIDEO_OPT === 1 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt1.title = "Assistir: " + video1Label;
+        btnOpt1.style.background = "";
+        btnOpt1.style.color = "";
+        btnOpt1.style.borderColor = "";
       }
       if (btnOpt2) {
-        btnOpt2.textContent = video2Label;
-        btnOpt2.style.background = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--card)";
-        btnOpt2.style.color = CURRENT_MODAL_VIDEO_OPT === 2 ? "#fff" : "var(--tx)";
-        btnOpt2.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--bd)";
+        btnOpt2.textContent = "2. " + cleanOpt2;
+        btnOpt2.className = CURRENT_MODAL_VIDEO_OPT === 2 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt2.title = "Assistir: " + video2Label;
+        btnOpt2.style.background = "";
+        btnOpt2.style.color = "";
+        btnOpt2.style.borderColor = "";
       }
     } else {
       switcherWrap.style.display = "none";
+      if (playerTag) {
+        playerTag.style.display = "inline-flex";
+        playerTag.textContent = activeLabel;
+      }
     }
   }
 
@@ -7694,8 +7943,9 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
     if (extLink) {
       extLink.href = activeUrl;
       extLink.style.display = "inline-flex";
+      extLink.textContent = "↗ YouTube";
     }
-    if (playerTag) playerTag.textContent = activeLabel;
+    if (playerTag && (!video1Url || !video2Url)) playerTag.textContent = activeLabel;
   }
 
   const vWrap = document.getElementById("video-wrapper");
@@ -7703,6 +7953,11 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   if (vWrap && vWrap.classList.contains("collapsed")) {
     vWrap.classList.remove("collapsed");
     if (cBtn) cBtn.textContent = "▲ Ocultar Vídeo";
+  }
+
+  if (scrollUp) {
+    const p = document.getElementById("study-player-sect");
+    if (p) p.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (!resetPlayerTimer) {
@@ -7763,42 +8018,54 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
   if (docUrl && docLink) {
     docLink.href = docUrl;
-    docLink.textContent = ptGuide ? "🌐 Khan Academy / Fonte PT-BR ↗" : docLabel;
+    docLink.textContent = ptGuide ? "Fonte Oficial ↗" : (docLabel || "Fonte ↗");
     docLink.style.display = "inline-flex";
   } else if (docLink) {
     docLink.style.display = "none";
   }
 
-  // Renderizar Apostila Interativa em Português (quando disponível no tópico)
+  // Renderizar Apostila Interativa (quando disponível no tópico)
   const guideContainer = document.getElementById("modal-pt-guide-container");
   const defaultTipCard = document.getElementById("modal-default-tip-card");
   if (guideContainer) {
     if (ptGuide) {
       if (defaultTipCard) defaultTipCard.style.display = "none";
-      const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
-      const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
-      guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(155,168,171,.3);background:linear-gradient(160deg,rgba(37,55,69,.5),rgba(74,92,106,.2));padding:16px 18px;border-radius:14px;margin-bottom:10px">
+      if (typeof isPtGuideV2 === "function" && isPtGuideV2(ptGuide)) {
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
-            <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual Passo a Passo — Método Khan Academy (PT-BR)</span>
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
             </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button type="button" onclick="switchModalVideoOption(1)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
-                ${videoLabel} ↑
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${video2Url ? `<button type="button" onclick="switchModalVideoOption(2)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#f59e0b;cursor:pointer">${video2Label} ↑</button>` : ""}
-              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
-                📥 Copiar para Meu Caderno
+            </div>
+          </div>
+          ${renderPtGuideV2Body(ptGuide)}
+        </div>
+        `;
+      } else {
+        const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
+        const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
+            </div>
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🎓 Canal @khanacademyportugues ↗</a>` : ""}
             </div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
             <div id="pt-step-card-1" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica</div>
                 <span id="pt-step-badge-1" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">1/4</span>
               </div>
               <div>${ptGuide.intuicao || ""}</div>
@@ -7806,7 +8073,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-2" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b">📐 2. Fórmula Matemática & Significado</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">📐 2. Fórmula Matemática & Significado dos Termos</div>
                 <span id="pt-step-badge-2" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">2/4</span>
               </div>
               <div id="pt-guide-formula-render">${fmtFormula}</div>
@@ -7814,7 +8081,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-3" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981">🔢 3. Exemplo Prático Passo a Passo</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#253745">🔢 3. Exemplo Prático com Cálculos Passo a Passo</div>
                 <span id="pt-step-badge-3" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">3/4</span>
               </div>
               <div id="pt-guide-example-render">${fmtExemplo}</div>
@@ -7822,24 +8089,15 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-4" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">🐍 4. Como a IA calcula isso em Python / NumPy</div>
                 <span id="pt-step-badge-4" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">4/4</span>
               </div>
               <pre style="margin:6px 0 0;padding:10px 12px;background:#0d1017;color:#e5e7eb;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:.8rem;line-height:1.45"><code>${(ptGuide.codigo || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
             </div>
           </div>
-
-          <div id="pt-guide-validation-bar" style="margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed rgba(16,185,129,.45);background:rgba(16,185,129,.07);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
-            <div style="display:flex;flex-direction:column;gap:2px">
-              <span id="pt-guide-val-title" style="font-size:.82rem;font-weight:800;color:#10b981">📖 Validação de Leitura da Aula Visual (Vale 50% da Conclusão)</span>
-              <span id="pt-guide-val-sub" style="font-size:.75rem;color:var(--mu)">Role pelos 4 cards + ~45s de leitura na tela, ou clique ao lado para confirmar leitura imediata.</span>
-            </div>
-            <button type="button" id="pt-guide-complete-btn" onclick="markPtGuideReadNow()" style="font:inherit;font-size:.78rem;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid #10b981;background:#10b981;color:#fff;cursor:pointer;transition:.15s;white-space:nowrap">
-              ☑️ Marcar Aula Visual como Lida
-            </button>
-          </div>
         </div>
-      `;
+        `;
+      }
       if (typeof renderMathInElement === "function") {
         try {
           renderMathInElement(guideContainer, {
@@ -7968,22 +8226,28 @@ function toggleAutoProgress(enabled) {
 }
 
 // =========================================================================
-// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL PT-BR)
+// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL)
 // =========================================================================
 function resetSessionStudyProgress() {
   ytCurrentTime = 0;
   ytMaxTime = 0;
   ytVideoCompleted = false;
   guideReadSeconds = 0;
-  guideCardsSeen = { 1: false, 2: false, 3: false, 4: false };
+  guideCardsSeen = {};
   guideCompleted = false;
   notifiedVideoHalf = false;
   notifiedGuideHalf = false;
-  for (let i = 1; i <= 4; i++) {
+
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = false;
     const b = document.getElementById(`pt-step-badge-${i}`);
     const c = document.getElementById(`pt-step-card-${i}`);
     if (b) {
-      b.textContent = `${i}/4`;
+      b.textContent = `${i}/${totalCards}`;
       b.style.background = "var(--bg)";
       b.style.color = "var(--mu)";
       b.style.borderColor = "var(--bd)";
@@ -8012,8 +8276,9 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
     guideReadSeconds++;
   }
 
-  // Verifica quais dos 4 cards já entraram no campo de visão
-  for (let i = 1; i <= 4; i++) {
+  // Verifica quais cards já entraram no campo de visão
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+  for (let i = 1; i <= totalCards; i++) {
     const card = document.getElementById(`pt-step-card-${i}`);
     if (!card) continue;
     const r = card.getBoundingClientRect();
@@ -8022,7 +8287,7 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
         guideCardsSeen[i] = true;
         const badge = document.getElementById(`pt-step-badge-${i}`);
         if (badge) {
-          badge.textContent = `✓ ${i}/4 Lido`;
+          badge.textContent = `✓ ${i}/${totalCards} Lido`;
           badge.style.background = "rgba(16,185,129,.15)";
           badge.style.color = "#10b981";
           badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -8051,22 +8316,23 @@ function getComputedVideoAndGuideProgress(topicId) {
     if (videoPct >= 100) ytVideoCompleted = true;
   }
 
-  // 2. Cálculo do Progresso da Aula Visual PT-BR (0 a 100%)
+  // 2. Cálculo do Progresso da Aula Visual (0 a 100%)
   let guidePct = saved.gp || 0;
   if (saved.s === "e") guidePct = 100;
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   let seenCount = 0;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     if (guideCardsSeen[i]) seenCount++;
   }
   if (guideCompleted) {
     guidePct = 100;
-  } else if (hasGuide) {
-    // 50% pela visualização dos 4 cards na rolagem + 50% pelos 45s de leitura ativa na tela
-    const cardsScore = (seenCount / 4) * 50;
+  } else if (hasGuide && totalCards > 0) {
+    // 50% pela visualização dos cards na rolagem + 50% pelos 45s de leitura ativa na tela
+    const cardsScore = (seenCount / totalCards) * 50;
     const timeScore = Math.min(50, (guideReadSeconds / GUIDE_READ_TARGET_SECONDS) * 50);
     const calcGuide = Math.min(100, Math.round(cardsScore + timeScore));
     if (calcGuide > guidePct) guidePct = calcGuide;
-    if (seenCount === 4 && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
+    if (seenCount === totalCards && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
       guidePct = 100;
       guideCompleted = true;
     }
@@ -8095,6 +8361,8 @@ function syncSessionStudyProgressUI() {
   if (!topicId) return;
 
   const { hasVideo, hasGuide, videoPct, guidePct, seenCount, totalPct } = getComputedVideoAndGuideProgress(topicId);
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
 
   const timerTxt = document.getElementById("session-progress-text");
   const videoPill = document.getElementById("session-video-pill");
@@ -8112,19 +8380,19 @@ function syncSessionStudyProgressUI() {
     videoPill.style.display = hasVideo ? "inline-flex" : "none";
     if (videoPct >= 100) {
       videoPill.textContent = hasGuide ? `🎬 Vídeo: 100% ✓ (50/50%)` : `🎬 Vídeo: 100% ✓`;
-      videoPill.style.background = "rgba(16,185,129,.15)";
-      videoPill.style.borderColor = "rgba(16,185,129,.45)";
-      videoPill.style.color = "#10b981";
+      videoPill.style.background = "rgba(37,55,69,.12)";
+      videoPill.style.borderColor = "#4A5C6A";
+      videoPill.style.color = "var(--tx)";
     } else if (ytDuration > 0) {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     } else {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     }
   }
 
@@ -8132,37 +8400,41 @@ function syncSessionStudyProgressUI() {
     guidePill.style.display = hasGuide ? "inline-flex" : "none";
     if (guidePct >= 100) {
       guidePill.textContent = `📘 Aula Visual: 100% ✓ (50/50%)`;
-      guidePill.style.background = "rgba(16,185,129,.18)";
-      guidePill.style.borderColor = "rgba(16,185,129,.5)";
-      guidePill.style.color = "#10b981";
+      guidePill.style.background = "rgba(37,55,69,.12)";
+      guidePill.style.borderColor = "#4A5C6A";
+      guidePill.style.color = "var(--tx)";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/4 cards · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
-      guidePill.style.background = "rgba(16,185,129,.08)";
-      guidePill.style.borderColor = "rgba(16,185,129,.32)";
-      guidePill.style.color = "#10b981";
+      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      guidePill.style.background = "rgba(74,92,106,.15)";
+      guidePill.style.borderColor = "var(--bd)";
+      guidePill.style.color = "var(--tx)";
     }
   }
 
-  // Atualizar barra de validação no rodapé da Aula Visual PT-BR
+  // Atualizar barra de validação no rodapé da Aula Visual
   const valBtn = document.getElementById("pt-guide-complete-btn");
   const valTitle = document.getElementById("pt-guide-val-title");
   const valSub = document.getElementById("pt-guide-val-sub");
   if (valBtn && hasGuide) {
     if (guidePct >= 100) {
-      valBtn.textContent = "✅ Aula Visual Lida (100%)";
-      valBtn.style.background = "rgba(16,185,129,.2)";
-      valBtn.style.color = "#10b981";
-      if (valTitle) valTitle.textContent = "✅ Leitura da Aula Visual Concluída! (+50% garantidos)";
+      valBtn.textContent = "✓ Aula Visual Concluída";
+      valBtn.className = "pt-guide-btn pt-btn-secondary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = "✓ Leitura da Aula Visual Concluída (+50% garantidos)";
       if (valSub) valSub.textContent = videoPct >= 100
-        ? "🎉 Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
-        : "Agora conclua o vídeo acima para atingir 100% do estudo completo.";
+        ? "Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
+        : "Agora conclua o vídeo acima para atingir 100% do estudo.";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      valBtn.textContent = `☑️ Marcar Aula Visual como Lida (${guidePct}%)`;
-      valBtn.style.background = "#10b981";
-      valBtn.style.color = "#fff";
-      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/4 cards vistos · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      valBtn.textContent = `☑️ Marcar Leitura Concluída (${guidePct}%)`;
+      valBtn.className = "pt-guide-btn pt-btn-primary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas vistas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
     }
   }
 
@@ -8188,7 +8460,7 @@ function syncSessionStudyProgressUI() {
       if (videoPct >= 100 && guidePct < 100 && !notifiedVideoHalf) {
         notifiedVideoHalf = true;
         saveLocal();
-        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual PT-BR abaixo para completar 100%!");
+        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual abaixo para completar 100%!");
       }
       if (guidePct >= 100 && videoPct < 100 && !notifiedGuideHalf) {
         notifiedGuideHalf = true;
@@ -8215,13 +8487,15 @@ function syncSessionStudyProgressUI() {
 function markPtGuideReadNow(silent = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   guideCompleted = true;
   guideReadSeconds = GUIDE_READ_TARGET_SECONDS;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     guideCardsSeen[i] = true;
     const badge = document.getElementById(`pt-step-badge-${i}`);
     if (badge) {
-      badge.textContent = `✓ ${i}/4 Lido`;
+      badge.textContent = `✓ ${i}/${totalCards} Lido`;
       badge.style.background = "rgba(16,185,129,.15)";
       badge.style.color = "#10b981";
       badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -8232,7 +8506,7 @@ function markPtGuideReadNow(silent = false) {
   saveLocal();
   syncSessionStudyProgressUI();
   if (!silent) {
-    showToast("📘 Aula Visual PT-BR marcada como 100% Lida!");
+    showToast("📘 Aula Visual marcada como 100% Lida!");
   }
 }
 
@@ -8240,7 +8514,7 @@ function scrollOrValidatePtGuide() {
   const gBox = document.getElementById("pt-guide-box");
   if (gBox) {
     gBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    showToast("📘 Role pelos 4 cards da Aula Visual ou clique no botão verde ao final para validar!");
+    showToast("📘 Role pelas etapas da Aula Visual ou clique no botão verde ao final para validar!");
   }
 }
 
@@ -8269,16 +8543,17 @@ function initStudySessionTimer(topicId) {
   ytDuration = 0;
   ytPlayerState = -1;
 
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
   const saved = PR[topicId] || { s: "z", n: "", d: "" };
   ytVideoCompleted = (saved.s === "e" || (saved.vp || 0) >= 100);
   guideCompleted = (saved.s === "e" || (saved.gp || 0) >= 100);
   guideReadSeconds = guideCompleted ? GUIDE_READ_TARGET_SECONDS : 0;
-  guideCardsSeen = {
-    1: guideCompleted,
-    2: guideCompleted,
-    3: guideCompleted,
-    4: guideCompleted
-  };
+  guideCardsSeen = {};
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = guideCompleted;
+  }
   notifiedVideoHalf = ytVideoCompleted;
   notifiedGuideHalf = guideCompleted;
 
@@ -9410,6 +9685,168 @@ function exportBackupJson() {
   closeExportModal();
 }
 
+
+
+// =========================================================================
+// AULA VISUAL v2 — renderizador de blocos pedagógicos flexíveis
+// =========================================================================
+const LV2_META = {
+  texto:       { icon: "📖", label: "Explicação" },
+  notacao:     { icon: "🔤", label: "Como ler a notação" },
+  visual:      { icon: "👁️", label: "Visualize" },
+  icones:      { icon: "👥", label: "Visualize" },
+  passos:      { icon: "🧮", label: "Resolvido passo a passo" },
+  pense:       { icon: "🤔", label: "Pare e pense" },
+  laboratorio: { icon: "🧪", label: "Laboratório" },
+  desafio:     { icon: "🎯", label: "Sua vez" },
+  armadilhas:  { icon: "⚠️", label: "Armadilhas comuns" },
+  ponte:       { icon: "🔗", label: "Onde isso aparece na IA" },
+  tabela:      { icon: "📊", label: "Compare" }
+};
+
+function isPtGuideV2(g) { return Boolean(g && g.v === 2 && Array.isArray(g.blocos)); }
+function ptGuideCardCount(g) { return isPtGuideV2(g) ? g.blocos.length : 4; }
+
+function lv2Esc(s) {
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function lv2IconArray(b) {
+  const cols = b.colunas || 40, total = b.total || 1000, gap = 11, r = 4;
+  const rows = Math.ceil(total / cols);
+  const cls = [];
+  (b.grupos || []).forEach(g => { for (let k = 0; k < g.n; k++) cls.push(g.estilo || "s1"); });
+  while (cls.length < total) cls.push("s0");
+  let dots = "";
+  for (let k = 0; k < total; k++) {
+    const cx = 8 + (k % cols) * gap, cy = 8 + Math.floor(k / cols) * gap;
+    dots += `<circle cx="${cx}" cy="${cy}" r="${r}" class="lv2-dot-${cls[k]}"/>`;
+  }
+  const W = 16 + (cols - 1) * gap, H = 16 + (rows - 1) * gap;
+  const sw = st => `<svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" class="lv2-dot-${st}"/></svg>`;
+  let legend = (b.grupos || []).map(g => `<span class="lv2-leg">${sw(g.estilo || "s1")}${g.rotulo}</span>`).join("");
+  if (b.resto) legend += `<span class="lv2-leg">${sw("s0")}${b.resto}</span>`;
+  return `<figure class="lv2-fig"><svg viewBox="0 0 ${W} ${H}" class="lv2-svg" role="img">${dots}</svg>` +
+         `<div class="lv2-legend">${legend}</div>${b.legenda ? `<figcaption>${b.legenda}</figcaption>` : ""}</figure>`;
+}
+
+function lv2Block(b, i, n) {
+  const tipo = b.tipo || "texto";
+  const meta = LV2_META[tipo] || LV2_META.texto;
+  let inner = b.corpo ? `<div class="lv2-prose">${b.corpo}</div>` : "";
+  switch (tipo) {
+    case "notacao":
+      inner += `<div class="lv2-notation">` + (b.itens || []).map(it =>
+        `<div class="lv2-not-row"><div class="lv2-not-sym">${it.simbolo}</div><div>` +
+        `<div class="lv2-not-read">lê-se: <i>${it.leitura}</i></div><div>${it.significado}</div></div></div>`).join("") + `</div>`;
+      break;
+    case "visual":
+      inner += `<figure class="lv2-fig">${b.svg || ""}${b.legenda ? `<figcaption>${b.legenda}</figcaption>` : ""}</figure>`;
+      break;
+    case "icones":
+      inner += lv2IconArray(b);
+      break;
+    case "passos":
+      inner += `<ol class="lv2-steps">` + (b.passos || []).map(p =>
+        `<li><div>${p.faca}</div>${p.porque ? `<div class="lv2-step-why"><b>Por quê?</b> ${p.porque}</div>` : ""}</li>`).join("") + `</ol>` +
+        (b.conclusao ? `<div class="lv2-conclusion">${b.conclusao}</div>` : "");
+      break;
+    case "pense":
+      inner += `<div class="lv2-q">${b.pergunta || ""}</div>` +
+               `<details><summary>Pensou? Ver a resposta</summary><div>${b.resposta || ""}</div></details>`;
+      break;
+    case "laboratorio":
+      inner += `<pre class="lv2-code"><code>${lv2Esc(b.codigo)}</code></pre>`;
+      if (b.experimentos && b.experimentos.length) {
+        inner += `<div class="lv2-exp-title">🔬 Experimente e observe</div><ul>${b.experimentos.map(e => `<li>${e}</li>`).join("")}</ul>`;
+      }
+      break;
+    case "desafio":
+      inner += (b.exercicios || []).map((ex, k) =>
+        `<div class="lv2-ex"><div><span class="lv2-ex-n">${k + 1}</span>${ex.enunciado}</div>` +
+        (ex.dicas || []).map((d, j) => `<details><summary>💡 Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
+        `<details><summary>✅ Resposta comentada</summary><div>${ex.resposta || ""}</div></details></div>`).join("");
+      break;
+    case "armadilhas":
+      inner += `<div class="lv2-pitfalls">` + (b.itens || []).map(it =>
+        `<div class="lv2-pit"><div class="lv2-pit-wrong">✗ ${it.erro}</div><div class="lv2-pit-right">✓ ${it.correcao}</div></div>`).join("") + `</div>`;
+      break;
+    case "tabela":
+      inner += `<div class="lv2-table-wrap"><table class="lv2-table"><thead><tr>${(b.cabecalho || []).map(h => `<th>${h}</th>`).join("")}</tr></thead>` +
+               `<tbody>${(b.linhas || []).map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+      break;
+  }
+  if (b.depois) inner += `<div class="lv2-prose" style="margin-top:10px">${b.depois}</div>`;
+  return `<section class="lv2-block lv2-${tipo}" id="pt-step-card-${i}">` +
+         `<header class="lv2-head"><div class="lv2-kicker">${meta.icon} ${b.rotulo || meta.label}</div>` +
+         `<span class="lv2-badge" id="pt-step-badge-${i}">${i}/${n}</span></header>` +
+         (b.titulo ? `<h4 class="lv2-title">${b.titulo}</h4>` : "") + inner + `</section>`;
+}
+
+function renderPtGuideV2Body(g) {
+  const blocos = g.blocos || [];
+  const n = blocos.length;
+  const chips = [];
+  if (g.duracao) chips.push(`⏱️ ~${g.duracao} min`);
+  chips.push(`🧩 ${n} etapas`);
+  const exCount = blocos.filter(b => b.tipo === "desafio").reduce((s, b) => s + (b.exercicios || []).length, 0);
+  if (exCount) chips.push(`🎯 ${exCount} exercícios`);
+  if (blocos.some(b => b.tipo === "laboratorio")) chips.push("🧪 laboratório");
+
+  let html = `<div class="lv2"><div class="lv2-hero">` +
+    `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
+    `<div class="lv2-hook">${g.gancho || ""}</div><div class="lv2-meta">`;
+  if (g.objetivos && g.objetivos.length) {
+    html += `<div><div class="lv2-meta-title">Ao final desta aula você vai</div><ul>${g.objetivos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
+  }
+  if (g.prerequisitos && g.prerequisitos.length) {
+    html += `<div><div class="lv2-meta-title">Você vai reutilizar</div><ul>${g.prerequisitos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
+  }
+  html += `</div></div>`;
+  blocos.forEach((b, k) => { html += lv2Block(b, k + 1, n); });
+
+  html += `<div class="lv2-footer">`;
+  if (g.resumo && g.resumo.length) {
+    html += `<div class="lv2-meta-title">🧠 Para levar desta aula</div><ul>${g.resumo.map(r => `<li>${r}</li>`).join("")}</ul>`;
+  }
+  if (g.proxima) html += `<div class="lv2-meta-title" style="margin-top:10px">➡️ Próximo passo da jornada</div><div>${g.proxima}</div>`;
+  if (g.referencias && g.referencias.length) {
+    html += `<div class="lv2-refs"><div class="lv2-meta-title">📚 Referências usadas nesta aula</div><ul>` +
+      g.referencias.map(r => `<li><b>${r.obra}</b>${r.trecho ? ` — ${r.trecho}` : ""}${r.uso ? `. <i>${r.uso}</i>` : ""}</li>`).join("") + `</ul></div>`;
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+function lv2Strip(html) {
+  return String(html || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|li|div|h4|tr)>/gi, "\n")
+    .replace(/<li>/gi, "- ")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+    .replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function lv2ToMarkdown(g, title) {
+  const out = [`## 📘 ${title || ""}`, ""];
+  if (g.gancho) out.push(`> ${lv2Strip(g.gancho)}`, "");
+  if (g.resumo && g.resumo.length) { out.push("### 🧠 Ideias-chave"); g.resumo.forEach(r => out.push(`- ${lv2Strip(r)}`)); out.push(""); }
+  (g.blocos || []).forEach(b => {
+    if (b.tipo === "notacao") {
+      out.push(`### 🔤 ${lv2Strip(b.titulo) || "Notação"}`);
+      (b.itens || []).forEach(it => out.push(`- ${it.simbolo} — *${lv2Strip(it.leitura)}*: ${lv2Strip(it.significado)}`));
+      out.push("");
+    } else if (b.tipo === "laboratorio" && b.codigo) {
+      out.push(`### 🧪 ${lv2Strip(b.titulo) || "Laboratório"}`, "```python", b.codigo, "```", "");
+    } else if (b.tipo === "desafio") {
+      out.push(`### 🎯 ${lv2Strip(b.titulo) || "Exercícios"}`);
+      (b.exercicios || []).forEach((ex, k) => out.push(`${k + 1}. ${lv2Strip(ex.enunciado)}`));
+      out.push("");
+    }
+  });
+  return out.join("\n");
+}
 
 
 function toggleTheme() {

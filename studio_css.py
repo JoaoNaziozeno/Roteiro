@@ -78,11 +78,11 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 .study-player-topbar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 10px;
+  padding: 8px 14px;
   background: var(--bg);
   border-bottom: 1px solid var(--bd);
   flex-shrink: 0;
@@ -94,17 +94,22 @@ input:checked + .slider:before { transform: translateX(14px); }
   gap: 8px;
   font-size: .84rem;
   min-width: 0;
+  flex: 1;
 }
 
 .player-source-tag {
   font-size: .72rem;
-  font-weight: 800;
-  padding: 2px 8px;
+  font-weight: 750;
+  padding: 3px 8px;
   border-radius: 6px;
-  background: var(--ac);
-  color: #fff;
+  background: #253745;
+  color: #CCD0CF;
   letter-spacing: .02em;
   white-space: nowrap;
+}
+[data-theme="light"] .player-source-tag {
+  background: #253745;
+  color: #ffffff;
 }
 
 .player-source-title {
@@ -113,18 +118,19 @@ input:checked + .slider:before { transform: translateX(14px); }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 240px;
+  max-width: 360px;
 }
 
 .player-topbar-actions {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .player-ext-btn {
-  font-size: .76rem;
-  font-weight: 650;
+  font-size: .74rem;
+  font-weight: 700;
   padding: 4px 10px;
   border-radius: 6px;
   border: 1px solid var(--bd);
@@ -134,11 +140,34 @@ input:checked + .slider:before { transform: translateX(14px); }
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: .15s;
+  transition: all .16s ease;
   white-space: nowrap;
+  user-select: none;
 }
-.player-ext-btn:hover { border-color: var(--ac); color: var(--ac); }
-.player-ext-btn.doc-ext { background: rgba(74,92,106,.2); border-color: rgba(155,168,171,.3); color: var(--ac); }
+.player-ext-btn:hover {
+  border-color: #4A5C6A;
+  background: rgba(155, 168, 171, 0.15);
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext {
+  background: var(--card);
+  border-color: #9BA8AB;
+  color: var(--tx);
+}
+.player-ext-btn.doc-ext:hover {
+  background: rgba(155, 168, 171, 0.18);
+  border-color: #4A5C6A;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext {
+  background: #11212D;
+  border-color: #4A5C6A;
+  color: #CCD0CF;
+}
+[data-theme="dark"] .player-ext-btn.doc-ext:hover {
+  background: #253745;
+  border-color: #9BA8AB;
+  color: #ffffff;
+}
 
 .player-collapse-btn {
   font: inherit;
@@ -851,6 +880,137 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 /* =========================================================================
+   CONTROLE SEGMENTADO DE VÍDEOS (CLEAN & OBJETIVO - PALETA OFICIAL)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.video-segmented-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(37, 55, 69, 0.08);
+  border: 1px solid var(--bd);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 3px;
+}
+[data-theme="dark"] .video-segmented-switcher {
+  background: rgba(37, 55, 69, 0.35);
+  border-color: #253745;
+}
+.video-seg-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--mu);
+  cursor: pointer;
+  transition: all .16s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+.video-seg-btn:hover {
+  color: var(--tx);
+  background: rgba(155, 168, 171, 0.16);
+}
+.video-seg-btn.active {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.2);
+}
+[data-theme="light"] .video-seg-btn.active {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+
+/* =========================================================================
+   BOTÕES DA AULA VISUAL (MÉTODO KHAN ACADEMY - PALETA CLEAN & OBJETIVA)
+   Paleta: #06141B | #11212D | #253745 | #4A5C6A | #9BA8AB | #CCD0CF
+   ========================================================================= */
+.pt-guide-btn {
+  font-family: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid var(--bd);
+  background: var(--card);
+  color: var(--tx);
+  box-shadow: 0 1px 3px rgba(6, 20, 27, 0.06);
+  transition: all .16s cubic-bezier(.4, 0, .2, 1);
+  user-select: none;
+}
+.pt-guide-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(6, 20, 27, 0.14);
+}
+.pt-guide-btn:active {
+  transform: translateY(0);
+}
+
+/* Botão Primário (Ação Principal / Vídeo 1) */
+.pt-btn-primary {
+  background: #253745 !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+.pt-btn-primary:hover {
+  background: #4A5C6A !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+[data-theme="light"] .pt-btn-primary {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #11212D !important;
+}
+[data-theme="light"] .pt-btn-primary:hover {
+  background: #11212D !important;
+  color: #ffffff !important;
+}
+
+/* Botão Secundário / Outline Clean (Vídeo 2, Copiar, Links) */
+.pt-btn-secondary {
+  background: var(--card) !important;
+  color: var(--tx) !important;
+  border-color: #9BA8AB !important;
+}
+.pt-btn-secondary:hover {
+  background: rgba(155, 168, 171, 0.15) !important;
+  border-color: #4A5C6A !important;
+  color: var(--tx) !important;
+}
+[data-theme="dark"] .pt-btn-secondary {
+  background: #11212D !important;
+  color: #CCD0CF !important;
+  border-color: #4A5C6A !important;
+}
+[data-theme="dark"] .pt-btn-secondary:hover {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #9BA8AB !important;
+}
+
+/* Compatibilidade com classes anteriores */
+.pt-btn-red, .pt-btn-amber, .pt-btn-green, .pt-btn-slate {
+  background: #253745 !important;
+  color: #ffffff !important;
+  border-color: #4A5C6A !important;
+}
+
+/* =========================================================================
    TEMPORIZADOR POMODORO INTEGRADO
    ========================================================================= */
 .pomodoro-wrap {
@@ -1208,5 +1368,11 @@ input:checked + .slider:before { transform: translateX(14px); }
   color: var(--mu);
   line-height: 1.45;
 }
-
 """
+
+try:
+    from lesson_v2_assets import LESSON_V2_CSS
+    STUDIO_CSS = STUDIO_CSS + "\n" + LESSON_V2_CSS
+except ImportError:
+    pass
+

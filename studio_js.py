@@ -13,7 +13,7 @@ let sessionSeconds = 0;
 const GUIDE_READ_TARGET_SECONDS = 45; // 45s de leitura ativa na Aula Visual + rolagem pelos 4 cards
 let autoProgressEnabled = true;
 
-// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual PT-BR
+// Estado em tempo real do Vídeo (YouTube IFrame API) e da Aula Visual
 let ytCurrentTime = 0;
 let ytMaxTime = 0;
 let ytDuration = 0;
@@ -101,33 +101,38 @@ function copyPtGuideToNotebook(topicId) {
   const editor = document.getElementById("modal-note-editor");
   if (!editor) return;
 
-  const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
-  const mdBlock = [
-    `## 📘 Resumo em Português: ${topicInfo.title || ""}`,
-    "",
-    `### 🎯 1. Intuição & Conceito`,
-    cleanIntuicao,
-    "",
-    `### 📐 2. Fórmula Matemática`,
-    g.formula || "",
-    "",
-    `### 🔢 3. Exemplo Prático Passo a Passo`,
-    cleanExemplo,
-    "",
-    `### 🐍 4. Aplicação em Python (IA)`,
-    "```python",
-    g.codigo || "",
-    "```",
-    ""
-  ].join("\n");
+  let mdBlock = "";
+  if (typeof isPtGuideV2 === "function" && isPtGuideV2(g)) {
+    mdBlock = lv2ToMarkdown(g, topicInfo.title);
+  } else {
+    const cleanIntuicao = (g.intuicao || "").replace(/<\/?[^>]+(>|$)/g, "");
+    const cleanExemplo = (g.exemplo || "").replace(/<\/?[^>]+(>|$)/g, "");
+    mdBlock = [
+      `## 📘 Resumo: ${topicInfo.title || ""}`,
+      "",
+      `### 🎯 1. Intuição & Conceito`,
+      cleanIntuicao,
+      "",
+      `### 📐 2. Fórmula Matemática & Significado`,
+      g.formula || "",
+      "",
+      `### 🔢 3. Exemplo Prático com Cálculos Passo a Passo`,
+      cleanExemplo,
+      "",
+      `### 🐍 4. Como a IA calcula isso em Python / NumPy`,
+      "```python",
+      g.codigo || "",
+      "```",
+      ""
+    ].join("\n");
+  }
 
   const cur = editor.value.trim();
   editor.value = cur ? (cur + "\n\n" + mdBlock) : mdBlock;
   onNoteEditorInput();
   setNoteViewMode("split");
   markPtGuideReadNow(true);
-  showToast("📘 Apostila em Português copiada para o Caderno e Aula Visual validada (100%)!");
+  showToast("📘 Resumo da aula copiado para o Caderno!");
 }
 
 function showToast(msg) {
@@ -149,12 +154,23 @@ function showToast(msg) {
 // =========================================================================
 let CURRENT_MODAL_VIDEO_OPT = 1;
 
-function switchModalVideoOption(optNum, resetPlayerTimer = false) {
+function formatCleanVideoOptLabel(lbl, fallback) {
+  if (!lbl) return fallback;
+  let s = lbl.replace(/^[▶🎬\s]+/, "")
+             .replace(/^2ª\s*Opção:\s*/i, "")
+             .replace(/\s*\(PT-BR\)/i, "")
+             .replace(/\s*PT-BR/i, "")
+             .trim();
+  if (s.length > 20) s = s.substring(0, 18).trim() + "…";
+  return s || fallback;
+}
+
+function switchModalVideoOption(optNum, resetPlayerTimer = false, scrollUp = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
   const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
   const video1Url = topicInfo.url || "";
-  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy (PT-BR)";
+  const video1Label = topicInfo.label || "▶ Aula 1: Khan Academy";
   const video2Url = topicInfo.url2 || "";
   const video2Label = topicInfo.label2 || "🎬 Opção 2: 3B1B / StatQuest";
 
@@ -169,23 +185,36 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   const btnOpt1 = document.getElementById("modal-video-opt1-btn");
   const btnOpt2 = document.getElementById("modal-video-opt2-btn");
 
+  const cleanOpt1 = formatCleanVideoOptLabel(video1Label, "Principal");
+  const cleanOpt2 = formatCleanVideoOptLabel(video2Label, "Complementar");
+
   if (switcherWrap) {
     if (video1Url && video2Url) {
       switcherWrap.style.display = "inline-flex";
+      // Ocultar tag redundante para não poluir o cabeçalho ao lado dos botões
+      if (playerTag) playerTag.style.display = "none";
       if (btnOpt1) {
-        btnOpt1.textContent = video1Label;
-        btnOpt1.style.background = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--card)";
-        btnOpt1.style.color = CURRENT_MODAL_VIDEO_OPT === 1 ? "#fff" : "var(--tx)";
-        btnOpt1.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 1 ? "var(--ac)" : "var(--bd)";
+        btnOpt1.textContent = "1. " + cleanOpt1;
+        btnOpt1.className = CURRENT_MODAL_VIDEO_OPT === 1 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt1.title = "Assistir: " + video1Label;
+        btnOpt1.style.background = "";
+        btnOpt1.style.color = "";
+        btnOpt1.style.borderColor = "";
       }
       if (btnOpt2) {
-        btnOpt2.textContent = video2Label;
-        btnOpt2.style.background = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--card)";
-        btnOpt2.style.color = CURRENT_MODAL_VIDEO_OPT === 2 ? "#fff" : "var(--tx)";
-        btnOpt2.style.borderColor = CURRENT_MODAL_VIDEO_OPT === 2 ? "#f59e0b" : "var(--bd)";
+        btnOpt2.textContent = "2. " + cleanOpt2;
+        btnOpt2.className = CURRENT_MODAL_VIDEO_OPT === 2 ? "video-seg-btn active" : "video-seg-btn";
+        btnOpt2.title = "Assistir: " + video2Label;
+        btnOpt2.style.background = "";
+        btnOpt2.style.color = "";
+        btnOpt2.style.borderColor = "";
       }
     } else {
       switcherWrap.style.display = "none";
+      if (playerTag) {
+        playerTag.style.display = "inline-flex";
+        playerTag.textContent = activeLabel;
+      }
     }
   }
 
@@ -203,8 +232,9 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
     if (extLink) {
       extLink.href = activeUrl;
       extLink.style.display = "inline-flex";
+      extLink.textContent = "↗ YouTube";
     }
-    if (playerTag) playerTag.textContent = activeLabel;
+    if (playerTag && (!video1Url || !video2Url)) playerTag.textContent = activeLabel;
   }
 
   const vWrap = document.getElementById("video-wrapper");
@@ -212,6 +242,11 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false) {
   if (vWrap && vWrap.classList.contains("collapsed")) {
     vWrap.classList.remove("collapsed");
     if (cBtn) cBtn.textContent = "▲ Ocultar Vídeo";
+  }
+
+  if (scrollUp) {
+    const p = document.getElementById("study-player-sect");
+    if (p) p.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   if (!resetPlayerTimer) {
@@ -272,42 +307,54 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
   if (docUrl && docLink) {
     docLink.href = docUrl;
-    docLink.textContent = ptGuide ? "🌐 Khan Academy / Fonte PT-BR ↗" : docLabel;
+    docLink.textContent = ptGuide ? "Fonte Oficial ↗" : (docLabel || "Fonte ↗");
     docLink.style.display = "inline-flex";
   } else if (docLink) {
     docLink.style.display = "none";
   }
 
-  // Renderizar Apostila Interativa em Português (quando disponível no tópico)
+  // Renderizar Apostila Interativa (quando disponível no tópico)
   const guideContainer = document.getElementById("modal-pt-guide-container");
   const defaultTipCard = document.getElementById("modal-default-tip-card");
   if (guideContainer) {
     if (ptGuide) {
       if (defaultTipCard) defaultTipCard.style.display = "none";
-      const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
-      const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
-      guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1px solid rgba(155,168,171,.3);background:linear-gradient(160deg,rgba(37,55,69,.5),rgba(74,92,106,.2));padding:16px 18px;border-radius:14px;margin-bottom:10px">
+      if (typeof isPtGuideV2 === "function" && isPtGuideV2(ptGuide)) {
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
-            <div style="font-size:.95rem;font-weight:850;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual Passo a Passo — Método Khan Academy (PT-BR)</span>
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
             </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <button type="button" onclick="switchModalVideoOption(1)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(204,0,0,.45);background:rgba(204,0,0,.14);color:#ef4444;cursor:pointer">
-                ${videoLabel} ↑
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${video2Url ? `<button type="button" onclick="switchModalVideoOption(2)" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(245,158,11,.45);background:rgba(245,158,11,.14);color:#f59e0b;cursor:pointer">${video2Label} ↑</button>` : ""}
-              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" style="font:inherit;font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid var(--ac);background:var(--ac);color:#fff;cursor:pointer">
-                📥 Copiar para Meu Caderno
+            </div>
+          </div>
+          ${renderPtGuideV2Body(ptGuide)}
+        </div>
+        `;
+      } else {
+        const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
+        const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
+        guideContainer.innerHTML = `
+        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
+            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
+              <span>📘 Aula Visual Passo a Passo</span>
+            </div>
+            <div>
+              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
+                📋 Copiar Resumo
               </button>
-              ${ytPtUrl ? `<a href="${ytPtUrl}" target="_blank" rel="noopener" style="font-size:.74rem;font-weight:800;padding:5px 11px;border-radius:8px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:#10b981;text-decoration:none;display:inline-flex;align-items:center;gap:4px">🎓 Canal @khanacademyportugues ↗</a>` : ""}
             </div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
             <div id="pt-step-card-1" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica (Em Português)</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:var(--ac)">🎯 1. O que é & Intuição Geométrica</div>
                 <span id="pt-step-badge-1" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">1/4</span>
               </div>
               <div>${ptGuide.intuicao || ""}</div>
@@ -315,7 +362,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-2" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#f59e0b">📐 2. Fórmula Matemática & Significado</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">📐 2. Fórmula Matemática & Significado dos Termos</div>
                 <span id="pt-step-badge-2" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">2/4</span>
               </div>
               <div id="pt-guide-formula-render">${fmtFormula}</div>
@@ -323,7 +370,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-3" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#10b981">🔢 3. Exemplo Prático Passo a Passo</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#253745">🔢 3. Exemplo Prático com Cálculos Passo a Passo</div>
                 <span id="pt-step-badge-3" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">3/4</span>
               </div>
               <div id="pt-guide-example-render">${fmtExemplo}</div>
@@ -331,24 +378,15 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
             <div id="pt-step-card-4" style="background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:11px 14px;transition:border-color .2s">
               <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#06b6d4">🐍 4. Como a IA calcula isso em Python / NumPy</div>
+                <div style="font-size:.76rem;font-weight:800;text-transform:uppercase;color:#4A5C6A">🐍 4. Como a IA calcula isso em Python / NumPy</div>
                 <span id="pt-step-badge-4" style="font-size:.68rem;font-weight:750;padding:1px 7px;border-radius:99px;background:var(--bg);color:var(--mu);border:1px solid var(--bd)">4/4</span>
               </div>
               <pre style="margin:6px 0 0;padding:10px 12px;background:#0d1017;color:#e5e7eb;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:.8rem;line-height:1.45"><code>${(ptGuide.codigo || "").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
             </div>
           </div>
-
-          <div id="pt-guide-validation-bar" style="margin-top:14px;padding:12px 14px;border-radius:10px;border:1px dashed rgba(16,185,129,.45);background:rgba(16,185,129,.07);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
-            <div style="display:flex;flex-direction:column;gap:2px">
-              <span id="pt-guide-val-title" style="font-size:.82rem;font-weight:800;color:#10b981">📖 Validação de Leitura da Aula Visual (Vale 50% da Conclusão)</span>
-              <span id="pt-guide-val-sub" style="font-size:.75rem;color:var(--mu)">Role pelos 4 cards + ~45s de leitura na tela, ou clique ao lado para confirmar leitura imediata.</span>
-            </div>
-            <button type="button" id="pt-guide-complete-btn" onclick="markPtGuideReadNow()" style="font:inherit;font-size:.78rem;font-weight:800;padding:7px 14px;border-radius:8px;border:1px solid #10b981;background:#10b981;color:#fff;cursor:pointer;transition:.15s;white-space:nowrap">
-              ☑️ Marcar Aula Visual como Lida
-            </button>
-          </div>
         </div>
-      `;
+        `;
+      }
       if (typeof renderMathInElement === "function") {
         try {
           renderMathInElement(guideContainer, {
@@ -477,22 +515,28 @@ function toggleAutoProgress(enabled) {
 }
 
 // =========================================================================
-// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL PT-BR)
+// MOTOR DE VALIDAÇÃO REAL DE ESTUDO (50% VÍDEO YOUTUBE + 50% AULA VISUAL)
 // =========================================================================
 function resetSessionStudyProgress() {
   ytCurrentTime = 0;
   ytMaxTime = 0;
   ytVideoCompleted = false;
   guideReadSeconds = 0;
-  guideCardsSeen = { 1: false, 2: false, 3: false, 4: false };
+  guideCardsSeen = {};
   guideCompleted = false;
   notifiedVideoHalf = false;
   notifiedGuideHalf = false;
-  for (let i = 1; i <= 4; i++) {
+
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = false;
     const b = document.getElementById(`pt-step-badge-${i}`);
     const c = document.getElementById(`pt-step-card-${i}`);
     if (b) {
-      b.textContent = `${i}/4`;
+      b.textContent = `${i}/${totalCards}`;
       b.style.background = "var(--bg)";
       b.style.color = "var(--mu)";
       b.style.borderColor = "var(--bd)";
@@ -521,8 +565,9 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
     guideReadSeconds++;
   }
 
-  // Verifica quais dos 4 cards já entraram no campo de visão
-  for (let i = 1; i <= 4; i++) {
+  // Verifica quais cards já entraram no campo de visão
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+  for (let i = 1; i <= totalCards; i++) {
     const card = document.getElementById(`pt-step-card-${i}`);
     if (!card) continue;
     const r = card.getBoundingClientRect();
@@ -531,7 +576,7 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
         guideCardsSeen[i] = true;
         const badge = document.getElementById(`pt-step-badge-${i}`);
         if (badge) {
-          badge.textContent = `✓ ${i}/4 Lido`;
+          badge.textContent = `✓ ${i}/${totalCards} Lido`;
           badge.style.background = "rgba(16,185,129,.15)";
           badge.style.color = "#10b981";
           badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -560,22 +605,23 @@ function getComputedVideoAndGuideProgress(topicId) {
     if (videoPct >= 100) ytVideoCompleted = true;
   }
 
-  // 2. Cálculo do Progresso da Aula Visual PT-BR (0 a 100%)
+  // 2. Cálculo do Progresso da Aula Visual (0 a 100%)
   let guidePct = saved.gp || 0;
   if (saved.s === "e") guidePct = 100;
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   let seenCount = 0;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     if (guideCardsSeen[i]) seenCount++;
   }
   if (guideCompleted) {
     guidePct = 100;
-  } else if (hasGuide) {
-    // 50% pela visualização dos 4 cards na rolagem + 50% pelos 45s de leitura ativa na tela
-    const cardsScore = (seenCount / 4) * 50;
+  } else if (hasGuide && totalCards > 0) {
+    // 50% pela visualização dos cards na rolagem + 50% pelos 45s de leitura ativa na tela
+    const cardsScore = (seenCount / totalCards) * 50;
     const timeScore = Math.min(50, (guideReadSeconds / GUIDE_READ_TARGET_SECONDS) * 50);
     const calcGuide = Math.min(100, Math.round(cardsScore + timeScore));
     if (calcGuide > guidePct) guidePct = calcGuide;
-    if (seenCount === 4 && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
+    if (seenCount === totalCards && guideReadSeconds >= GUIDE_READ_TARGET_SECONDS) {
       guidePct = 100;
       guideCompleted = true;
     }
@@ -604,6 +650,8 @@ function syncSessionStudyProgressUI() {
   if (!topicId) return;
 
   const { hasVideo, hasGuide, videoPct, guidePct, seenCount, totalPct } = getComputedVideoAndGuideProgress(topicId);
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
 
   const timerTxt = document.getElementById("session-progress-text");
   const videoPill = document.getElementById("session-video-pill");
@@ -621,19 +669,19 @@ function syncSessionStudyProgressUI() {
     videoPill.style.display = hasVideo ? "inline-flex" : "none";
     if (videoPct >= 100) {
       videoPill.textContent = hasGuide ? `🎬 Vídeo: 100% ✓ (50/50%)` : `🎬 Vídeo: 100% ✓`;
-      videoPill.style.background = "rgba(16,185,129,.15)";
-      videoPill.style.borderColor = "rgba(16,185,129,.45)";
-      videoPill.style.color = "#10b981";
+      videoPill.style.background = "rgba(37,55,69,.12)";
+      videoPill.style.borderColor = "#4A5C6A";
+      videoPill.style.color = "var(--tx)";
     } else if (ytDuration > 0) {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     } else {
       videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
-      videoPill.style.background = "rgba(74,92,106,.2)";
-      videoPill.style.borderColor = "rgba(155,168,171,.35)";
-      videoPill.style.color = "var(--ac)";
+      videoPill.style.background = "rgba(74,92,106,.15)";
+      videoPill.style.borderColor = "var(--bd)";
+      videoPill.style.color = "var(--tx)";
     }
   }
 
@@ -641,37 +689,41 @@ function syncSessionStudyProgressUI() {
     guidePill.style.display = hasGuide ? "inline-flex" : "none";
     if (guidePct >= 100) {
       guidePill.textContent = `📘 Aula Visual: 100% ✓ (50/50%)`;
-      guidePill.style.background = "rgba(16,185,129,.18)";
-      guidePill.style.borderColor = "rgba(16,185,129,.5)";
-      guidePill.style.color = "#10b981";
+      guidePill.style.background = "rgba(37,55,69,.12)";
+      guidePill.style.borderColor = "#4A5C6A";
+      guidePill.style.color = "var(--tx)";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/4 cards · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
-      guidePill.style.background = "rgba(16,185,129,.08)";
-      guidePill.style.borderColor = "rgba(16,185,129,.32)";
-      guidePill.style.color = "#10b981";
+      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      guidePill.style.background = "rgba(74,92,106,.15)";
+      guidePill.style.borderColor = "var(--bd)";
+      guidePill.style.color = "var(--tx)";
     }
   }
 
-  // Atualizar barra de validação no rodapé da Aula Visual PT-BR
+  // Atualizar barra de validação no rodapé da Aula Visual
   const valBtn = document.getElementById("pt-guide-complete-btn");
   const valTitle = document.getElementById("pt-guide-val-title");
   const valSub = document.getElementById("pt-guide-val-sub");
   if (valBtn && hasGuide) {
     if (guidePct >= 100) {
-      valBtn.textContent = "✅ Aula Visual Lida (100%)";
-      valBtn.style.background = "rgba(16,185,129,.2)";
-      valBtn.style.color = "#10b981";
-      if (valTitle) valTitle.textContent = "✅ Leitura da Aula Visual Concluída! (+50% garantidos)";
+      valBtn.textContent = "✓ Aula Visual Concluída";
+      valBtn.className = "pt-guide-btn pt-btn-secondary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = "✓ Leitura da Aula Visual Concluída (+50% garantidos)";
       if (valSub) valSub.textContent = videoPct >= 100
-        ? "🎉 Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
-        : "Agora conclua o vídeo acima para atingir 100% do estudo completo.";
+        ? "Você completou tanto a Aula Visual quanto o Vídeo (100% do Tópico)!"
+        : "Agora conclua o vídeo acima para atingir 100% do estudo.";
     } else {
       const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      valBtn.textContent = `☑️ Marcar Aula Visual como Lida (${guidePct}%)`;
-      valBtn.style.background = "#10b981";
-      valBtn.style.color = "#fff";
-      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/4 cards vistos · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      valBtn.textContent = `☑️ Marcar Leitura Concluída (${guidePct}%)`;
+      valBtn.className = "pt-guide-btn pt-btn-primary";
+      valBtn.style.background = "";
+      valBtn.style.color = "";
+      valBtn.style.borderColor = "";
+      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas vistas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
     }
   }
 
@@ -697,7 +749,7 @@ function syncSessionStudyProgressUI() {
       if (videoPct >= 100 && guidePct < 100 && !notifiedVideoHalf) {
         notifiedVideoHalf = true;
         saveLocal();
-        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual PT-BR abaixo para completar 100%!");
+        showToast("🎬 Vídeo concluído (50%)! Agora leia a 📘 Aula Visual abaixo para completar 100%!");
       }
       if (guidePct >= 100 && videoPct < 100 && !notifiedGuideHalf) {
         notifiedGuideHalf = true;
@@ -724,13 +776,15 @@ function syncSessionStudyProgressUI() {
 function markPtGuideReadNow(silent = false) {
   const topicId = CURRENT_MODAL_TOPIC_ID;
   if (!topicId) return;
+  const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   guideCompleted = true;
   guideReadSeconds = GUIDE_READ_TARGET_SECONDS;
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= totalCards; i++) {
     guideCardsSeen[i] = true;
     const badge = document.getElementById(`pt-step-badge-${i}`);
     if (badge) {
-      badge.textContent = `✓ ${i}/4 Lido`;
+      badge.textContent = `✓ ${i}/${totalCards} Lido`;
       badge.style.background = "rgba(16,185,129,.15)";
       badge.style.color = "#10b981";
       badge.style.borderColor = "rgba(16,185,129,.4)";
@@ -741,7 +795,7 @@ function markPtGuideReadNow(silent = false) {
   saveLocal();
   syncSessionStudyProgressUI();
   if (!silent) {
-    showToast("📘 Aula Visual PT-BR marcada como 100% Lida!");
+    showToast("📘 Aula Visual marcada como 100% Lida!");
   }
 }
 
@@ -749,7 +803,7 @@ function scrollOrValidatePtGuide() {
   const gBox = document.getElementById("pt-guide-box");
   if (gBox) {
     gBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    showToast("📘 Role pelos 4 cards da Aula Visual ou clique no botão verde ao final para validar!");
+    showToast("📘 Role pelas etapas da Aula Visual ou clique no botão verde ao final para validar!");
   }
 }
 
@@ -778,16 +832,17 @@ function initStudySessionTimer(topicId) {
   ytDuration = 0;
   ytPlayerState = -1;
 
+  const topicInfo = (topicId && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
+
   const saved = PR[topicId] || { s: "z", n: "", d: "" };
   ytVideoCompleted = (saved.s === "e" || (saved.vp || 0) >= 100);
   guideCompleted = (saved.s === "e" || (saved.gp || 0) >= 100);
   guideReadSeconds = guideCompleted ? GUIDE_READ_TARGET_SECONDS : 0;
-  guideCardsSeen = {
-    1: guideCompleted,
-    2: guideCompleted,
-    3: guideCompleted,
-    4: guideCompleted
-  };
+  guideCardsSeen = {};
+  for (let i = 1; i <= totalCards; i++) {
+    guideCardsSeen[i] = guideCompleted;
+  }
   notifiedVideoHalf = ytVideoCompleted;
   notifiedGuideHalf = guideCompleted;
 
@@ -1920,3 +1975,10 @@ function exportBackupJson() {
 }
 
 """
+
+try:
+    from lesson_v2_assets import LESSON_V2_JS
+    STUDIO_JS = STUDIO_JS + "\n" + LESSON_V2_JS
+except ImportError:
+    pass
+

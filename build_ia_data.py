@@ -1062,7 +1062,7 @@ def get_enriched_ia_phases():
                             "video_url": "https://www.youtube.com/watch?v=jC4v5AS4RIM",
                             "video_label": "▶ Andrew Ng Prompt Engineering",
                             "doc_url": "https://www.promptingguide.ai/pt",
-                            "doc_label": "📖 Prompt Engineering Guide PT-BR"
+                            "doc_label": "📖 Prompt Engineering Guide"
                         },
                         {
                             "title": "Usar APIs de LLMs (chamadas, streaming, tool use)",
