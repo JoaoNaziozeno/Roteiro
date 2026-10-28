@@ -84,7 +84,7 @@ def lambda_handler(event, context):
     try:
         if method == "GET":
             params = event.get("queryStringParameters") or {}
-            user_id = (params.get("user_id") or "joao@roteiro.ia").strip().lower()
+            user_id = (params.get("user_id") or "estudante").strip().lower()
 
             def _get_item(tbl):
                 return tbl.get_item(Key={"user_id": user_id})
@@ -119,7 +119,7 @@ def lambda_handler(event, context):
 
             payload = json.loads(raw_body, parse_float=Decimal)
             action = payload.get("action")
-            user_id = str(payload.get("user_id") or "joao@roteiro.ia").strip().lower()
+            user_id = str(payload.get("user_id") or "estudante").strip().lower()
 
             # -----------------------------------------------------------------
             # AÇÃO 1: SOLICITAR CÓDIGO DE RECUPERAÇÃO (OTP 6 DÍGITOS)

@@ -226,7 +226,7 @@ __AUTH_AWS_CSS__
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
-            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+            <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
@@ -926,6 +926,12 @@ function saveLocal() {
 async function initSync() {
   loadLocal();
   paint();
+
+  // Em ambientes de nuvem/produção (ex: GitHub Pages ou HTTPS), a AWS é o backend oficial; não tenta conectar ao localhost
+  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
+  if (!isLocalHost) {
+    return;
+  }
 
   try {
     let res = await fetch(API_BASE + "/api/status", { cache: "no-store" }).catch(()=>null);

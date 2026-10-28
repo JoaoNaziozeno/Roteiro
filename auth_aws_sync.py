@@ -677,12 +677,48 @@ async function computeSha256(plainText) {
   return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-// Validar se uma senha/PIN confere com o Hash salvo
-async function validateLoginPassword(inputPass) {
+// Validar se uma senha/PIN confere com o Hash salvo ou na nuvem AWS DynamoDB
+async function validateLoginPassword(inputPass, email = "") {
   const inputHash = await computeSha256(inputPass);
   let savedHash = localStorage.getItem(PASSWORD_HASH_KEY);
 
-  // Se ainda não houver hash gravado, inicializar com "1234"
+  // 1. Se o hash local for idêntico, autenticado imediatamente!
+  if (savedHash && savedHash === inputHash) {
+    return true;
+  }
+
+  // 2. Se não bateu localmente ou não há hash local, verificar na AWS Cloud (DynamoDB)
+  const targetEmail = (email || localStorage.getItem("roteiro_saved_email") || "").trim().toLowerCase();
+  if (targetEmail && targetEmail !== "joao@roteiro.ia" && targetEmail.includes("@")) {
+    const endpoint = getAwsEndpointUrl();
+    if (endpoint) {
+      try {
+        const sep = endpoint.includes("?") ? "&" : "?";
+        const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(targetEmail)}`, { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.found && json.data) {
+            const cloudHash = json.data.pwd_hash;
+            if (cloudHash && cloudHash === inputHash) {
+              // Sincroniza o hash autenticado da nuvem com o localStorage local
+              localStorage.setItem(PASSWORD_HASH_KEY, inputHash);
+              if (json.data.user_name) {
+                const u = getLoggedInUser() || {};
+                u.name = json.data.user_name;
+                u.email = targetEmail;
+                localStorage.setItem(AUTH_USER_KEY, JSON.stringify(u));
+              }
+              return true;
+            }
+          }
+        }
+      } catch(e) {
+        console.warn("Falha ao consultar DynamoDB para validar login:", e);
+      }
+    }
+  }
+
+  // 3. Fallback para primeiro acesso em ambiente limpo (sem hash gravado)
   if (!savedHash) {
     const defaultHash = await computeSha256("1234");
     if (inputPass === "1234" || inputPass === "admin") {
@@ -697,7 +733,7 @@ async function validateLoginPassword(inputPass) {
     return false;
   }
 
-  return inputHash === savedHash;
+  return false;
 }
 
 function getLoggedInUser() {
@@ -719,15 +755,15 @@ function updateNavAuthUI() {
 
   if (user && user.authenticated) {
     const name = user.name || "João Naziozeno";
-    const email = user.email || "joao@roteiro.ia";
+    const email = (user.email && user.email !== "joao@roteiro.ia") ? user.email : "";
 
     if (userPill) {
       userPill.innerHTML = `👤 <span>${name}</span> <span style="font-size:.7rem;margin-left:2px">▾</span>`;
-      userPill.title = `Conectado como ${email} · Clique para opções`;
+      userPill.title = email ? `Conectado como ${email} · Clique para opções` : `Conectado · Clique para opções`;
     }
     if (emailDisplay) emailDisplay.textContent = name;
     if (dropName) dropName.textContent = name;
-    if (dropEmail) dropEmail.textContent = email;
+    if (dropEmail) dropEmail.textContent = email || "Conectado";
   }
 }
 
@@ -780,7 +816,7 @@ function openChangeCredentialsModal() {
   const user = getLoggedInUser();
   if (modal) {
     document.getElementById("change-user-name").value = user?.name || "João Naziozeno";
-    document.getElementById("change-user-email").value = user?.email || "joao@roteiro.ia";
+    document.getElementById("change-user-email").value = (user?.email && user.email !== "joao@roteiro.ia") ? user.email : "";
     document.getElementById("change-current-pass").value = "";
     document.getElementById("change-new-pass").value = "";
     document.getElementById("change-confirm-pass").value = "";
@@ -884,7 +920,8 @@ function openForgotPasswordModal() {
   const loginEmail = document.getElementById("login-input-email");
   const user = getLoggedInUser();
   if (emailInput) {
-    emailInput.value = (user && user.email) || (loginEmail ? loginEmail.value.trim() : "") || "joao@roteiro.ia";
+    const candidate = (user && user.email) || (loginEmail ? loginEmail.value.trim() : "") || (localStorage.getItem("roteiro_saved_email") || "");
+    emailInput.value = (candidate && candidate !== "joao@roteiro.ia") ? candidate : "";
   }
 
   selectForgotChannel("email");
@@ -1212,13 +1249,24 @@ async function awsRealtimePushToDynamoDB(silent = true) {
   }
 
   const user = getLoggedInUser() || {};
+  if (!user || !user.authenticated) {
+    if (syncInd) syncInd.textContent = "💾 Salvo localmente";
+    return false;
+  }
+
+  const userEmail = (user.email || "").trim().toLowerCase();
+  if (!userEmail || userEmail === "joao@roteiro.ia" || !userEmail.includes("@")) {
+    if (syncInd) syncInd.textContent = "💾 Salvo localmente";
+    return false;
+  }
+
   let progressObj = {};
   let projectsArr = [];
   try { progressObj = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"); } catch(e) {}
   try { projectsArr = JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]"); } catch(e) {}
 
   const payload = {
-    user_id: (user.email || "joao@roteiro.ia").toLowerCase(),
+    user_id: userEmail,
     user_name: user.name || "João Naziozeno",
     pwd_hash: localStorage.getItem(PASSWORD_HASH_KEY) || "",
     progress: progressObj,
@@ -1278,7 +1326,15 @@ async function awsRealtimePullFromDynamoDB() {
   if (!endpoint) return false;
 
   const user = getLoggedInUser() || {};
-  const userId = (user.email || "joao@roteiro.ia").toLowerCase();
+  const savedEmail = localStorage.getItem("roteiro_saved_email") || "";
+  const rawEmail = (user && user.email) || savedEmail || "";
+  const userId = rawEmail.trim().toLowerCase();
+
+  // NUNCA consultar com ID genérico ou email fictício joao@roteiro.ia
+  if (!userId || userId === "joao@roteiro.ia" || userId === "estudante" || !userId.includes("@")) {
+    return false;
+  }
+
   const sep = endpoint.includes("?") ? "&" : "?";
 
   try {
@@ -1295,7 +1351,8 @@ async function awsRealtimePullFromDynamoDB() {
 
     if (json && json.found && json.data) {
       const cloud = json.data;
-      if (cloud.pwd_hash) {
+      // Só atualiza o hash local da senha se o usuário atual autenticado for o dono da conta
+      if (cloud.pwd_hash && user && user.authenticated && user.email && user.email.toLowerCase() === userId) {
         localStorage.setItem(PASSWORD_HASH_KEY, cloud.pwd_hash);
       }
       if (cloud.progress && typeof cloud.progress === "object") {
@@ -1319,7 +1376,9 @@ async function awsRealtimePullFromDynamoDB() {
       return true;
     } else {
       // Primeiro acesso na nuvem: envia os dados locais atuais para inicializar a tabela no DynamoDB
-      await awsRealtimePushToDynamoDB(true);
+      if (user && user.authenticated) {
+        await awsRealtimePushToDynamoDB(true);
+      }
       return true;
     }
   } catch(e) {
@@ -1452,7 +1511,7 @@ async function testAwsLambdaConnection() {
   }
 
   const user = getLoggedInUser() || {};
-  const userId = (user.email || "joao@roteiro.ia").toLowerCase();
+  const userId = ((user && user.email) || localStorage.getItem("roteiro_saved_email") || "estudante").toLowerCase();
   const sep = endpoint.includes("?") ? "&" : "?";
 
   try {

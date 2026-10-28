@@ -164,7 +164,18 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
   text-decoration:none;
 }
 .nav-brand span{
+  font-weight:850;
+  letter-spacing:-.01em;
+  color:var(--tx);
+  transition:all .2s;
+}
+:root[data-theme="dark"] .nav-brand span{
   background:linear-gradient(135deg,#CCD0CF,#9BA8AB);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+:root[data-theme="light"] .nav-brand span{
+  background:linear-gradient(135deg,#06141B,#253745);
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 }
@@ -680,12 +691,23 @@ def generate_hub_page(out_path):
   border: 1px solid rgba(155,168,171,.3);
   color: #CCD0CF;
   font-size: .8rem;
-  font-weight: 800;
+  font-weight: 850;
   text-transform: uppercase;
-  letter-spacing: .05em;
-  padding: 6px 14px;
+  letter-spacing: .06em;
+  padding: 6px 16px;
   border-radius: 99px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  transition: all .2s;
+}
+:root[data-theme="light"] .portal-badge {
+  background: rgba(37,55,69,.08);
+  border: 1.5px solid rgba(37,55,69,.3);
+  color: #06141B;
+}
+:root[data-theme="dark"] .portal-badge {
+  background: rgba(74,92,106,.25);
+  border: 1px solid rgba(155,168,171,.35);
+  color: #CCD0CF;
 }
 .portal-title {
   font-size: 2.1rem;
@@ -1788,7 +1810,7 @@ __HUB_CSS__
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
-            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+            <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
@@ -1823,7 +1845,7 @@ __HUB_CSS__
         <form id="portal-login-form" onsubmit="handlePortalLogin(event)" class="portal-form">
           <div class="portal-input-group">
             <label class="portal-label">E-mail Cadastrado</label>
-            <input type="email" id="login-input-email" class="portal-input" value="joao@roteiro.ia" required placeholder="seu-email@dominio.com">
+            <input type="email" id="login-input-email" class="portal-input" value="" required placeholder="seu-email@dominio.com" autocomplete="email">
           </div>
 
           <div class="portal-input-group">
@@ -2016,6 +2038,22 @@ __FORGOT_PASSWORD_MODAL__
 __AUTH_AWS_SYNC_JS__
 
 function checkHubAuth() {
+  // Limpeza preventiva: se houver qualquer legado do email fictício joao@roteiro.ia no storage, remove
+  try {
+    const raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    if (raw && raw.includes("joao@roteiro.ia")) {
+      const u = JSON.parse(raw);
+      if (u.email === "joao@roteiro.ia") {
+        u.email = "";
+        if (localStorage.getItem("roteiro_auth_user")) localStorage.setItem("roteiro_auth_user", JSON.stringify(u));
+        if (sessionStorage.getItem("roteiro_auth_user")) sessionStorage.setItem("roteiro_auth_user", JSON.stringify(u));
+      }
+    }
+    if (localStorage.getItem("roteiro_saved_email") === "joao@roteiro.ia") {
+      localStorage.removeItem("roteiro_saved_email");
+    }
+  } catch(e) {}
+
   const user = getLoggedInUser();
   const loginView = document.getElementById("hub-login-view");
   const authView = document.getElementById("hub-authenticated-view");
@@ -2042,6 +2080,12 @@ function checkHubAuth() {
     if (navUserWrap) navUserWrap.style.display = "none";
     if (navLinks) navLinks.style.display = "none";
     if (dbStatus) dbStatus.style.display = "none";
+
+    const emailInput = document.getElementById("login-input-email");
+    if (emailInput) {
+      const savedEmail = localStorage.getItem("roteiro_saved_email");
+      emailInput.value = (savedEmail && savedEmail !== "joao@roteiro.ia") ? savedEmail : "";
+    }
   }
 }
 
@@ -2051,44 +2095,69 @@ async function handlePortalLogin(e) {
   const pass = document.getElementById("login-input-pass").value.trim();
   const remember = document.getElementById("login-remember-me").checked;
   const errorEl = document.getElementById("login-error-msg");
+  const submitBtn = document.querySelector("#portal-login-form button[type='submit']");
 
-  // Validação criptográfica com HASH SHA-256 e Salt
-  const isValid = await validateLoginPassword(pass);
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<span>⏳ Validando acesso...</span>`;
+  }
 
-  if (isValid) {
-    let userName = "João Naziozeno";
-    const existing = getLoggedInUser();
-    if (existing && existing.name) userName = existing.name;
+  try {
+    // Validação criptográfica com HASH SHA-256 e sincronização AWS
+    const isValid = await validateLoginPassword(pass, email);
 
-    const userObj = {
-      authenticated: true,
-      name: userName,
-      email: email || "joao@roteiro.ia",
-      loginTime: Date.now(),
-      provider: "aws-cognito-ready"
-    };
+    if (isValid) {
+      let userName = "João Naziozeno";
+      const existing = getLoggedInUser();
+      if (existing && existing.name) userName = existing.name;
 
-    if (remember) {
-      localStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
+      const userObj = {
+        authenticated: true,
+        name: userName,
+        email: email,
+        loginTime: Date.now(),
+        provider: "aws-dynamodb-verified"
+      };
+
+      if (remember) {
+        localStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
+        if (email && email !== "joao@roteiro.ia") {
+          localStorage.setItem("roteiro_saved_email", email);
+        }
+      } else {
+        sessionStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
+        localStorage.removeItem("roteiro_saved_email");
+      }
+
+      if (errorEl) errorEl.style.display = "none";
+
+      const redirectUrl = sessionStorage.getItem("roteiro_redirect_after_login");
+      if (redirectUrl) {
+        sessionStorage.removeItem("roteiro_redirect_after_login");
+        window.location.href = redirectUrl;
+        return;
+      }
+
+      checkHubAuth();
+      updateNavAuthUI();
+      if (typeof awsRealtimePullFromDynamoDB === "function") {
+        awsRealtimePullFromDynamoDB();
+      }
     } else {
-      sessionStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
+      if (errorEl) {
+        errorEl.textContent = "Senha incorreta. Verifique suas credenciais e tente novamente.";
+        errorEl.style.display = "block";
+      }
     }
-
-    if (errorEl) errorEl.style.display = "none";
-
-    const redirectUrl = sessionStorage.getItem("roteiro_redirect_after_login");
-    if (redirectUrl) {
-      sessionStorage.removeItem("roteiro_redirect_after_login");
-      window.location.href = redirectUrl;
-      return;
-    }
-
-    checkHubAuth();
-    updateNavAuthUI();
-  } else {
+  } catch(err) {
     if (errorEl) {
-      errorEl.textContent = "Senha incorreta. Verifique suas credenciais e tente novamente.";
+      errorEl.textContent = "Erro ao validar credenciais: " + (err.message || err);
       errorEl.style.display = "block";
+    }
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<span>🚀 Entrar no Ecossistema de IA &rarr;</span>`;
     }
   }
 }
@@ -2124,6 +2193,12 @@ async function initSync(){
   loadData();
   loadPaceSettings();
   calcAndPaint();
+
+  // Em ambientes de nuvem/produção (ex: GitHub Pages ou HTTPS), a AWS é o backend oficial; não tenta conectar ao localhost
+  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
+  if (!isLocalHost) {
+    return;
+  }
 
   try{
     let res = await fetch(API_BASE + "/api/status", { cache: "no-store" }).catch(()=>null);

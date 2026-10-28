@@ -321,7 +321,7 @@ def generate_projects_page(out_path, shared_css):
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
             <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
-            <div class="dropdown-user-email" id="dropdown-user-email">joao@roteiro.ia</div>
+            <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
