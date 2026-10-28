@@ -101,6 +101,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-app
 }
 .nav-link:hover{color:var(--tx);background:var(--bg)}
 .nav-link.active{color:#CCD0CF;background:rgba(155,168,171,.15);border:1px solid rgba(155,168,171,.25);font-weight:700}
+:root[data-theme="light"] .nav-link.active{color:#06141B;background:rgba(37,55,69,.08);border:1px solid rgba(37,55,69,.22);font-weight:750}
 
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-status-pill{
@@ -2459,8 +2460,32 @@ input:checked + .slider:before { transform: translateX(14px); }
 /* Hub Cards e Seções Específicas */
 .hub-main{max-width:1260px;margin:0 auto;padding:32px 24px 100px}
 .hub-hero{text-align:center;margin-bottom:34px}
-.hub-hero h1{font-size:2.2rem;font-weight:850;letter-spacing:-.03em;margin:0 0 10px;background:linear-gradient(135deg,#CCD0CF 40%,#9BA8AB);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hub-hero h1{
+  font-size:2.2rem;
+  font-weight:850;
+  letter-spacing:-.03em;
+  margin:0 0 10px;
+  color:var(--tx);
+  transition:all .2s ease;
+}
+:root[data-theme="dark"] .hub-hero h1,
+:root:not([data-theme="light"]) .hub-hero h1{
+  background:linear-gradient(135deg,#CCD0CF 40%,#9BA8AB 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+:root[data-theme="light"] .hub-hero h1{
+  background:linear-gradient(135deg,#06141B 25%,#253745 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hub-hero h1 .hero-rocket{
+  -webkit-text-fill-color:initial;
+  display:inline-block;
+  margin-left:4px;
+}
 .hub-hero p{font-size:1.08rem;color:var(--mu);max-width:760px;margin:0 auto}
+:root[data-theme="light"] .hub-hero p{color:#253745}
 
 /* Card de Esclarecimento sobre Metas & Inglês */
 .clarification-card{
@@ -2473,6 +2498,8 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 .clarification-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .clarification-badge{background:#253745;color:#CCD0CF;border:1px solid rgba(155,168,171,.3);font-size:.76rem;font-weight:750;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+:root[data-theme="light"] .clarification-card{background:linear-gradient(135deg,rgba(255,255,255,.9),rgba(237,241,242,.7));box-shadow:0 4px 18px rgba(6,20,27,.06)}
+:root[data-theme="light"] .clarification-badge{background:#e2e8ea;color:#06141B;border-color:rgba(37,55,69,.2)}
 .clarification-title{font-size:1.25rem;font-weight:800;color:var(--tx)}
 .clarification-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
 .clarification-col{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
@@ -5063,7 +5090,7 @@ function checkHubAuth() {
     if (dbStatus) dbStatus.style.display = "inline-flex";
     
     const heroH1 = document.querySelector(".hub-hero h1");
-    if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA 🚀`;
+    if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA <span class="hero-rocket">🚀</span>`;
     const heroP = document.querySelector(".hub-hero p");
     if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Suas anotações estão sincronizadas e protegidas na nuvem AWS. Escolha uma das 4 páginas abaixo:`;
 
