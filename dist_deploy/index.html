@@ -1011,6 +1011,102 @@ input:checked + .slider:before { transform: translateX(14px); }
   }
 }
 
+/* =========================================================================
+   ESTÚDIO AMPLIADO + AULA VISUAL À DIREITA + PRÓXIMA AULA
+   ========================================================================= */
+#note-modal { padding: 1vh 1vw; }
+.unified-study-box {
+  max-width: 1920px !important;
+  width: 98vw !important;
+  height: 98vh !important;
+  height: 98dvh !important;
+  max-height: none !important;
+}
+.study-notes-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+
+/* Com Aula Visual: [vídeo + caderno] | [Aula Visual]. O vídeo ganha mais espaço por padrão. */
+.layout-guide-right .study-player-col { flex: 0 0 58%; width: 58%; max-width: 58%; }
+.layout-guide-right .study-notes-col { overflow-y: auto; overflow-x: hidden; }
+.layout-guide-right .study-notes-col .study-left-extra-info { padding: 14px 16px 24px; }
+.layout-guide-right .study-player-col .study-notes-panel { flex: 0 0 auto; border-top: 1px solid var(--bd); }
+.layout-guide-right .study-player-col .note-workspace { flex: 0 0 auto; height: 420px; min-height: 260px; resize: vertical; overflow: auto; }
+
+.note-next-btn {
+  font: inherit; font-size: .8rem; font-weight: 750; padding: 6px 14px; border-radius: 99px; cursor: pointer;
+  border: 1px solid rgba(16,185,129,.45); background: rgba(16,185,129,.14); color: #10b981; white-space: nowrap;
+}
+.note-next-btn:hover:not(:disabled) { background: #10b981; color: #fff; }
+.note-next-btn:disabled { opacity: .55; cursor: default; }
+.note-header-right { flex-wrap: wrap; justify-content: flex-end; }
+.note-modal-header { position: relative; }
+
+/* Telas estreitas: tudo empilhado, na ordem vídeo -> Aula Visual -> caderno */
+@media (max-width: 1040px) {
+  .layout-guide-right .study-player-col { display: contents !important; }
+  .layout-guide-right #study-notes-col { order: 4; min-height: 0 !important; flex: 0 0 auto !important; overflow: visible !important; }
+  .layout-guide-right #study-notes-panel { order: 5; border-top: 1px solid var(--bd); }
+  .layout-guide-right .note-workspace { height: 360px; }
+  .study-split-resizer { display: none !important; }
+}
+
+/* Celular: modal em tela cheia e cabeçalho que quebra linha sem estourar */
+@media (max-width: 760px) {
+  #note-modal { padding: 0; }
+  .unified-study-box { width: 100vw !important; height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
+  .note-modal-header { padding: 10px 12px; gap: 8px; }
+  .note-header-left { flex: 1 1 100%; min-width: 0; padding-right: 40px; }
+  .note-topic-title { font-size: .95rem; line-height: 1.3; }
+  .note-header-right { width: 100%; justify-content: flex-start; gap: 6px; }
+  .note-header-right .note-close-btn { position: absolute; top: 6px; right: 6px; font-size: 1.25rem; }
+  .auto-prog-wrap { padding: 3px 9px; font-size: .72rem; }
+  .note-status-pill, .note-next-btn { font-size: .72rem; padding: 4px 10px; }
+  .note-date-wrap { font-size: .72rem; }
+  .note-date-wrap input { max-width: 132px; min-width: 0; }
+  .note-next-btn { margin-left: auto; }
+  .study-player-topbar { flex-wrap: wrap; gap: 6px; }
+  .player-topbar-info { flex-wrap: wrap; min-width: 0; }
+  .player-source-title { display: none; }
+  .player-topbar-info { flex: 1 1 0; }
+  .video-segmented-switcher { min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .video-seg-btn { white-space: nowrap; }
+  .player-topbar-actions { flex-shrink: 0; }
+  .note-toolbar { padding: 6px 10px; }
+  .notes-section-head { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
+  .note-modal-footer { flex-wrap: wrap; gap: 8px; }
+}
+
+/* =========================================================================
+   RESPONSIVIDADE GLOBAL (todas as páginas compartilham este CSS)
+   ========================================================================= */
+@media (max-width: 760px) {
+  html { scroll-padding-top: 112px; }
+  /* Barra superior: marca + usuário na 1ª linha, links das páginas roláveis na 2ª (antes espremidos em 5px) */
+  body .top-nav-inner { flex-wrap: wrap; height: auto; padding: 8px 14px 0; gap: 6px 10px; }
+  body .nav-brand { white-space: nowrap; font-size: .98rem; }
+  body .nav-right { margin-left: auto; gap: 6px; }
+  body .nav-links { order: 3; flex: 1 1 100%; min-width: 0; padding-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  body .nav-link { padding: 6px 10px; font-size: .8rem; }
+  body .nav-user-dropdown-wrap { max-width: 116px; }
+  body .nav-user-pill { white-space: nowrap; max-width: 116px; overflow: hidden; text-overflow: ellipsis; padding-left: 9px; padding-right: 9px; }
+  body .nav-status-pill { font-size: .64rem; padding: 3px 6px; gap: 3px; }
+  body .nav-theme-btn { width: 34px; height: 34px; padding: 0; }
+  /* Gaveta lateral das trilhas: cobre a altura toda, acima da barra (que agora tem 2 linhas) */
+  body .sidebar { top: 0 !important; z-index: 120; }
+  body .sb-backdrop { z-index: 115; }
+
+  /* Linhas de tópico: botões quebram linha em vez de vazar para fora da tela */
+  body .topic-row { padding: 10px 12px; }
+  body .topic-left { flex: 1 1 100%; }
+  body .topic-actions { flex: 1 1 100%; min-width: 0; justify-content: flex-start; margin-left: 0; }
+
+  /* Hub */
+  body .hub-hero h1 { font-size: clamp(1.45rem, 7vw, 1.9rem); line-height: 1.2; }
+  body .hub-hero p { font-size: .92rem; }
+  body .speed-presets-wrap { border-radius: 14px; }
+  body .jr-sect { padding: 16px 14px; border-radius: 16px; }
+  body .hero-head h1 { font-size: 1.4rem; }
+}
+
 /* Submodais: Estúdio 3D e Lousa de Desenho */
 .modal-sub-overlay {
   position: fixed;
@@ -1965,6 +2061,60 @@ input:checked + .slider:before { transform: translateX(14px); }
 .lv2-footer{border:1px solid var(--bd);border-radius:12px;padding:12px 15px;background:linear-gradient(135deg,rgba(37,55,69,.06),rgba(74,92,106,.18))}
 .lv2-refs{font-size:.78rem;color:var(--mu);margin-top:10px}
 .lv2-refs li{margin:.25em 0}
+/* ===== Piloto: blocos ativos ===== */
+.lv2{--lv2-ok:#10b981;--lv2-warn:#e8a100;--lv2-bad:#ef4444}
+.lv2-concreto{border-left:4px solid var(--lv2-warn)}
+.lv2-crianca{background:linear-gradient(135deg,rgba(232,161,0,.10),rgba(16,185,129,.06))}
+.lv2-palpite,.lv2-quiz{border-left:4px solid var(--mu)}
+.lv2-opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.lv2-opt{font:inherit;font-size:.85rem;text-align:left;padding:8px 12px;border-radius:9px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;transition:.15s}
+.lv2-opt:hover:not(:disabled){border-color:var(--mu)}
+.lv2-opt:disabled{cursor:default}
+.lv2-opt.is-right{border-color:var(--lv2-ok);background:rgba(16,185,129,.12)}
+.lv2-opt.is-wrong{border-color:var(--lv2-bad);background:rgba(239,68,68,.10)}
+.lv2-fb{margin-top:10px;padding:10px 12px;border-radius:9px;background:var(--bg);border:1px dashed var(--mu)}
+.lv2-fb-msg{font-weight:800;margin-bottom:4px}
+.lv2-btn{font:inherit;font-size:.8rem;font-weight:700;padding:6px 13px;border-radius:99px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer}
+.lv2-btn:hover{border-color:var(--mu)}
+.lv2-btn-main{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.lv2-video-meta{font-size:.78rem;color:var(--mu);margin-bottom:6px}
+.lv2-mission{padding:8px 12px;border-radius:9px;background:rgba(74,92,106,.12);margin-bottom:8px}
+.lv2-mission ol{margin:.3em 0 0;padding-left:1.3em}
+.lv2-video-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#06141B;display:flex;align-items:center;justify-content:center}
+.lv2-video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.lv2-video-play{font:inherit;font-weight:800;font-size:.9rem;padding:10px 18px;border-radius:99px;border:1px solid #4A5C6A;background:#253745;color:#CCD0CF;cursor:pointer}
+.lv2-ext{display:inline-block;margin-top:6px;font-size:.76rem;color:var(--mu)}
+.lv2-wbox{margin-top:8px;border:1px solid var(--bd);border-radius:10px;padding:10px;background:var(--bg)}
+.lv2-wsvg{width:100%;height:auto;display:block;max-width:420px;margin:0 auto;touch-action:manipulation}
+.lv2-wctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 14px;margin-top:8px}
+.lv2-wctl label{display:flex;flex-direction:column;font-size:.74rem;font-weight:700;color:var(--mu)}
+.lv2-wctl input[type=range]{width:100%;accent-color:var(--lv2-ok)}
+.lv2-wout{margin-top:8px;font-size:.84rem;padding:8px 10px;border-radius:8px;background:var(--card);border:1px solid var(--bd)}
+.lv2-wbtns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lv2-wtable{width:100%;border-collapse:collapse;font-size:.76rem;margin-top:6px;font-variant-numeric:tabular-nums}
+.lv2-wtable td,.lv2-wtable th{padding:3px 6px;border-bottom:1px solid var(--bd);text-align:right}
+.lv2-tag-ok{color:var(--lv2-ok);font-weight:800}.lv2-tag-warn{color:var(--lv2-warn);font-weight:800}.lv2-tag-bad{color:var(--lv2-bad);font-weight:800}
+.lv2-lvl-tag{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.lv2-lvl-1 .lv2-lvl-tag{color:var(--lv2-ok)}.lv2-lvl-2 .lv2-lvl-tag{color:var(--lv2-warn)}.lv2-lvl-3 .lv2-lvl-tag{color:var(--lv2-bad)}
+.lv2-check{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.lv2-check input{font:inherit;font-size:.82rem;padding:5px 9px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);width:170px;max-width:100%}
+.lv2-check-msg{font-size:.8rem;font-weight:700}
+.lv2-qz{padding:8px 0;border-top:1px solid var(--bd)}.lv2-qz:first-child{border-top:none}
+.lv2-qopt{display:flex;gap:8px;align-items:flex-start;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:.84rem}
+.lv2-qopt:hover{background:rgba(74,92,106,.12)}
+.lv2-qz.is-right .lv2-q::after{content:" ✓";color:var(--lv2-ok)}
+.lv2-qz.is-wrong .lv2-q::after{content:" ✗";color:var(--lv2-bad)}
+.lv2-qz-exp{margin-top:6px;font-size:.82rem;padding:7px 10px;border-radius:8px;background:var(--bg)}
+.lv2-quiz-res{margin-top:10px;font-size:.85rem}
+.lv2-layers[data-locked="1"] .lv2-layer-body{display:none}
+.lv2-layers[data-locked="0"] .lv2-lock{display:none}
+.lv2-lock{padding:10px 12px;border-radius:9px;border:1px dashed var(--mu);font-size:.84rem;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.lv2-layer{margin-top:10px}
+.lv2-layer-tag{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--mu);margin-bottom:6px}
+.lv2-src{padding:8px 11px;border-radius:9px;background:rgba(74,92,106,.11);margin-bottom:6px}
+.lv2-src a{font-weight:750;color:var(--tx)}
+.lv2-src-meta{font-size:.74rem;color:var(--mu);margin:2px 0 4px}
+.lv2-review{font-size:.8rem;padding:6px 10px;border-radius:8px;background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);margin-top:8px}
 
 
 /* =========================================================================
@@ -3404,7 +3554,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 }
 
 /* Grade dos 3 Cards Principais de Trilha */
-.track-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-bottom:40px}
+.track-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:22px;margin-bottom:40px}
 .track-card{
   background:var(--card);
   border:1px solid var(--bd);
@@ -3498,9 +3648,6 @@ input:checked + .slider:before { transform: translateX(14px); }
 .speed-diagnosis-card.pace-attn{background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);color:#b77f00}
 .speed-diagnosis-card.pace-late{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.35);color:#c2410c}
 .speed-diagnosis-card.pace-nodata{background:var(--bg);border:1px solid var(--bd);color:var(--mu)}
-.jr-weights input{width:62px;font:inherit;font-size:.8rem;padding:4px 6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
-.jr-weights{margin-bottom:14px;font-size:.8rem;color:var(--mu)}
-.jr-weights summary{cursor:pointer;font-weight:750;color:var(--tx)}
 
 </style>
 </head>
@@ -3621,16 +3768,6 @@ input:checked + .slider:before { transform: translateX(14px); }
         <input type="date" id="hub-start-date" class="speed-date-input" onchange="onStartDateChange(this.value)">
         <button class="speed-reset-btn" onclick="resetStartDateToday()">Hoje</button>
       </div>
-      <details class="jr-weights">
-        <summary>⚖️ Pesos de esforço por trilha</summary>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-          <label>IA <input type="number" id="w-ia" min="0.5" max="10" step="0.5" value="1"></label>
-          <label>Matemática <input type="number" id="w-mat" min="0.5" max="10" step="0.5" value="1"></label>
-          <label>Inglês <input type="number" id="w-ing" min="0.5" max="10" step="0.5" value="1"></label>
-          <button class="speed-reset-btn" onclick="saveWeights()">Aplicar</button>
-        </div>
-        <div style="margin-top:6px">Peso 1 = um tópico "padrão". Um tópico de peso 3 conta como 3 tópicos de esforço. Valores definidos por você, não verdades absolutas.</div>
-      </details>
     </div>
 
     <div class="speed-diagnosis-card pace-nodata" id="jr-banner">
@@ -4663,6 +4800,77 @@ function updateAwsStorageSizeDisplay() {
   } catch(e) {}
 }
 
+// -------------------------------------------------------------------------
+// Dados de estudo além do progresso: revisões espaçadas, histórico de eventos
+// (ritmo/previsão), sessões cronometradas e início do registro.
+// Vão no campo "extra" do item do DynamoDB (limite do item: 400 KB), por isso
+// eventos e sessões são compactados em arrays e limitados aos mais recentes.
+// -------------------------------------------------------------------------
+const AWS_EXTRA_MAX_EVENTS = 2500, AWS_EXTRA_MAX_SESSIONS = 1500;
+function awsReadJson(k, d) { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : d; } catch (e) { return d; } }
+
+function awsCollectExtra() {
+  const ev = awsReadJson("roteiro-events-v1", []).slice(-AWS_EXTRA_MAX_EVENTS);
+  const ses = awsReadJson("roteiro-sessions-v1", []).slice(-AWS_EXTRA_MAX_SESSIONS);
+  const ls = parseInt(localStorage.getItem("roteiro-log-start") || "", 10);
+  return {
+    v: 1,
+    reviews: awsReadJson("roteiro-review-v1", {}),
+    events: ev.map(e => [e.t, e.id, e.f, e.to, e.src || "ui"]),
+    sessions: ses.map(s => [s.t, s.id || "", s.sec || 0]),
+    log_start: ls > 0 ? ls : null
+  };
+}
+
+// Junta o que veio da nuvem com o que está neste dispositivo, sem perder nada de nenhum lado.
+// Retorna true se este dispositivo tinha algo que a nuvem ainda não tinha.
+function awsMergeExtra(x) {
+  if (!x || typeof x !== "object") return false;
+  let localHasMore = false;
+  const num = v => (typeof v === "number" ? v : parseFloat(v)) || 0;
+
+  // revisões: por tópico, fica o registro mais recente
+  const locR = awsReadJson("roteiro-review-v1", {}), cloudR = x.reviews || {};
+  const mergedR = Object.assign({}, locR);
+  for (const k in cloudR) {
+    const c = cloudR[k] || {}, l = locR[k];
+    if (!l || num(c.last) >= num(l.last)) {
+      mergedR[k] = Object.assign({}, c, {
+        score: num(c.score), total: num(c.total), last: num(c.last),
+        passedAt: c.passedAt ? num(c.passedAt) : undefined, done: c.done ? num(c.done) : undefined,
+        next: Array.isArray(c.next) ? c.next.map(num) : undefined
+      });
+    }
+  }
+  for (const k in locR) if (!cloudR[k] || num(locR[k].last) > num(cloudR[k].last)) localHasMore = true;
+  try { localStorage.setItem("roteiro-review-v1", JSON.stringify(mergedR)); } catch (e) {}
+
+  // eventos: união sem duplicar (mesmo instante + tópico + novo estado)
+  const locE = awsReadJson("roteiro-events-v1", []);
+  const seen = new Set(locE.map(e => e.t + "|" + e.id + "|" + e.to));
+  const cloudE = (x.events || []).map(a => ({ t: num(a[0]), id: a[1], f: a[2], to: a[3], src: a[4] || "ui" }));
+  const cloudSeen = new Set(cloudE.map(e => e.t + "|" + e.id + "|" + e.to));
+  const evAll = locE.concat(cloudE.filter(e => !seen.has(e.t + "|" + e.id + "|" + e.to))).sort((a, b) => a.t - b.t).slice(-5000);
+  if (locE.some(e => !cloudSeen.has(e.t + "|" + e.id + "|" + e.to))) localHasMore = true;
+  try { localStorage.setItem("roteiro-events-v1", JSON.stringify(evAll)); } catch (e) {}
+
+  // sessões de estudo: união por instante + tópico
+  const locS = awsReadJson("roteiro-sessions-v1", []);
+  const sSeen = new Set(locS.map(s => s.t + "|" + (s.id || "")));
+  const cloudS = (x.sessions || []).map(a => ({ t: num(a[0]), id: a[1] || undefined, sec: num(a[2]) }));
+  const cSeen = new Set(cloudS.map(s => s.t + "|" + (s.id || "")));
+  const sAll = locS.concat(cloudS.filter(s => !sSeen.has(s.t + "|" + (s.id || "")))).sort((a, b) => a.t - b.t).slice(-2000);
+  if (locS.some(s => !cSeen.has(s.t + "|" + (s.id || "")))) localHasMore = true;
+  try { localStorage.setItem("roteiro-sessions-v1", JSON.stringify(sAll)); } catch (e) {}
+
+  // início do registro: o mais antigo dos dois
+  const lLs = parseInt(localStorage.getItem("roteiro-log-start") || "", 10) || 0, cLs = num(x.log_start);
+  const ls = lLs && cLs ? Math.min(lLs, cLs) : (lLs || cLs);
+  if (ls) try { localStorage.setItem("roteiro-log-start", String(ls)); } catch (e) {}
+  if (lLs && (!cLs || lLs < cLs)) localHasMore = true;
+  return localHasMore;
+}
+
 function scheduleAwsRealtimeSync() {
   clearTimeout(_awsRealtimeTimer);
   _awsRealtimeTimer = setTimeout(() => {
@@ -4712,8 +4920,9 @@ async function awsRealtimePushToDynamoDB(silent = true) {
     pwd_hash: localStorage.getItem(PASSWORD_HASH_KEY) || "",
     progress: progressObj,
     projects: projectsArr,
-    start_date: localStorage.getItem("roteiro-hub-start") || "",
+    start_date: localStorage.getItem("roteiro-start-date") || "",
     pace: localStorage.getItem("roteiro-hub-pace") || "std",
+    extra: awsCollectExtra(),
     updated_at: Date.now()
   };
 
@@ -4808,10 +5017,20 @@ async function awsRealtimePullFromDynamoDB() {
       if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
         localStorage.setItem("roteiro_portfolio_projects", JSON.stringify(cloud.projects));
       }
-      if (cloud.start_date) localStorage.setItem("roteiro-hub-start", cloud.start_date);
-      if (cloud.pace) localStorage.setItem("roteiro-hub-pace", cloud.pace);
+      if (cloud.start_date && /^\d{4}-\d{2}-\d{2}$/.test(cloud.start_date)) {
+        localStorage.setItem("roteiro-start-date", cloud.start_date);
+        if (typeof currentStartDate !== "undefined") currentStartDate = cloud.start_date;
+      }
+      if (cloud.pace) {
+        localStorage.setItem("roteiro-hub-pace", cloud.pace);
+        if (typeof currentPace !== "undefined" && typeof HUB_PRESETS !== "undefined" && HUB_PRESETS[cloud.pace]) currentPace = cloud.pace;
+      }
+      const extraChanged = awsMergeExtra(cloud.extra);
 
       if (typeof paint === "function") paint();
+      if (typeof calcAndPaint === "function") calcAndPaint();
+      // Se o dispositivo tinha registros que a nuvem ainda não tinha, devolve a união para a nuvem
+      if (extraChanged && user && user.authenticated) scheduleAwsRealtimeSync();
       if (typeof renderHubDashboard === "function") renderHubDashboard();
       if (typeof renderProjects === "function") renderProjects();
       return true;
@@ -5092,7 +5311,7 @@ function checkHubAuth() {
     const heroH1 = document.querySelector(".hub-hero h1");
     if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA <span class="hero-rocket">🚀</span>`;
     const heroP = document.querySelector(".hub-hero p");
-    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Vamos estudar?`;
+    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Suas anotações estão sincronizadas e protegidas na nuvem AWS. Escolha uma das 4 páginas abaixo:`;
 
     calcAndPaint();
   } else {
@@ -5359,13 +5578,16 @@ function setHubPace(k) {
 }
 function onStartDateChange(v) { if (!v) return; currentStartDate = v; try { localStorage.setItem(START_KEY, v); } catch (e) {} triggerPulse(); calcAndPaint(); }
 function resetStartDateToday() { onStartDateChange(new Date().toISOString().slice(0, 10)); const i = jrEl("hub-start-date"); if (i) i.value = currentStartDate; }
-function saveWeights() {
-  const g = id => { const v = parseFloat(String(jrEl(id).value).replace(",", ".")); return v > 0 ? Math.min(10, v) : 1; };
-  const e = jrRead(EFFORT_KEY, {});
-  e.tracks = { ia: g("w-ia"), mat: g("w-mat"), ing: g("w-ing") };
-  try { localStorage.setItem(EFFORT_KEY, JSON.stringify(e)); } catch (x) {}
-  triggerPulse(); calcAndPaint();
-}
+// Pesos de esforço calibrados internamente (1 ponto ≈ 1h de estudo efetivo de um tópico "padrão").
+//  - Inglês (1): cada tópico é uma videoaula de ~15-25 min de gramática/vocabulário básico-intermediário
+//    + prática curta ≈ 1h. É a referência.
+//  - IA & Código (4): 173 tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
+//    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
+//  - Matemática (6): 43 tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
+//    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.
+// Resultado: IA ≈ 68% do esforço total, Matemática ≈ 25%, Inglês ≈ 7%.
+// Não há UI para alterar: valores antigos salvos no navegador (EFFORT_KEY.tracks) são ignorados.
+const JR_TRACK_WEIGHTS = Object.freeze({ ia: 4, mat: 6, ing: 1 });
 function updateWhatIf() {
   const sl = jrEl("hub-whatif-slider"); if (!sl) return;
   const boost = parseInt(sl.value, 10) || 0, { remaining, fc, hpp } = window.__jr, now = window.__jr.now;
@@ -5466,9 +5688,7 @@ function drawJourney(o) {
 function calcAndPaint() {
   const DAY = 86400000, now = Date.now();
   const raw = jrRead(EFFORT_KEY, {});
-  const eff = { tracks: Object.assign({ ia: 1, mat: 1, ing: 1 }, raw.tracks || {}), topics: raw.topics || {} };
-  const customW = Object.values(eff.tracks).some(v => v !== 1) || Object.keys(eff.topics).length > 0;
-  ["ia", "mat", "ing"].forEach(t => { const i = jrEl("w-" + t); if (i && document.activeElement !== i) i.value = eff.tracks[t]; });
+  const eff = { tracks: Object.assign({}, JR_TRACK_WEIGHTS), topics: raw.topics || {} };
   const ev = jrRead(EVENTS_KEY, []), ses = jrRead(SESS_KEY, []);
   const logStart = parseInt(localStorage.getItem(LOGSTART_KEY) || "", 10) || null;
 
@@ -5524,9 +5744,7 @@ function calcAndPaint() {
   // progresso
   jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
   jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
-  jrSet("jr-explain", customW
-    ? "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. A diferença vem dos pesos que você definiu."
-    : "Os pesos ainda são iguais (1 por tópico), então os dois percentuais só diferem pelo que está em andamento. Defina pesos acima para o ponderado refletir a complexidade.");
+  jrSet("jr-explain", "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. Tópicos de trilhas mais difíceis valem mais esforço.");
 
   // previsão
   const fmt = d => formatDateBR(new Date(now + d * DAY));

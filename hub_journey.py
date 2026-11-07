@@ -27,9 +27,6 @@ JOURNEY_CSS = r"""
 .speed-diagnosis-card.pace-attn{background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);color:#b77f00}
 .speed-diagnosis-card.pace-late{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.35);color:#c2410c}
 .speed-diagnosis-card.pace-nodata{background:var(--bg);border:1px solid var(--bd);color:var(--mu)}
-.jr-weights input{width:62px;font:inherit;font-size:.8rem;padding:4px 6px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
-.jr-weights{margin-bottom:14px;font-size:.8rem;color:var(--mu)}
-.jr-weights summary{cursor:pointer;font-weight:750;color:var(--tx)}
 """
 
 JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
@@ -56,16 +53,6 @@ JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
         <input type="date" id="hub-start-date" class="speed-date-input" onchange="onStartDateChange(this.value)">
         <button class="speed-reset-btn" onclick="resetStartDateToday()">Hoje</button>
       </div>
-      <details class="jr-weights">
-        <summary>⚖️ Pesos de esforço por trilha</summary>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-          <label>IA <input type="number" id="w-ia" min="0.5" max="10" step="0.5" value="1"></label>
-          <label>Matemática <input type="number" id="w-mat" min="0.5" max="10" step="0.5" value="1"></label>
-          <label>Inglês <input type="number" id="w-ing" min="0.5" max="10" step="0.5" value="1"></label>
-          <button class="speed-reset-btn" onclick="saveWeights()">Aplicar</button>
-        </div>
-        <div style="margin-top:6px">Peso 1 = um tópico "padrão". Um tópico de peso 3 conta como 3 tópicos de esforço. Valores definidos por você, não verdades absolutas.</div>
-      </details>
     </div>
 
     <div class="speed-diagnosis-card pace-nodata" id="jr-banner">
@@ -166,13 +153,16 @@ function setHubPace(k) {
 }
 function onStartDateChange(v) { if (!v) return; currentStartDate = v; try { localStorage.setItem(START_KEY, v); } catch (e) {} triggerPulse(); calcAndPaint(); }
 function resetStartDateToday() { onStartDateChange(new Date().toISOString().slice(0, 10)); const i = jrEl("hub-start-date"); if (i) i.value = currentStartDate; }
-function saveWeights() {
-  const g = id => { const v = parseFloat(String(jrEl(id).value).replace(",", ".")); return v > 0 ? Math.min(10, v) : 1; };
-  const e = jrRead(EFFORT_KEY, {});
-  e.tracks = { ia: g("w-ia"), mat: g("w-mat"), ing: g("w-ing") };
-  try { localStorage.setItem(EFFORT_KEY, JSON.stringify(e)); } catch (x) {}
-  triggerPulse(); calcAndPaint();
-}
+// Pesos de esforço calibrados internamente (1 ponto ≈ 1h de estudo efetivo de um tópico "padrão").
+//  - Inglês (1): cada tópico é uma videoaula de ~15-25 min de gramática/vocabulário básico-intermediário
+//    + prática curta ≈ 1h. É a referência.
+//  - IA & Código (4): 173 tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
+//    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
+//  - Matemática (6): 43 tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
+//    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.
+// Resultado: IA ≈ 68% do esforço total, Matemática ≈ 25%, Inglês ≈ 7%.
+// Não há UI para alterar: valores antigos salvos no navegador (EFFORT_KEY.tracks) são ignorados.
+const JR_TRACK_WEIGHTS = Object.freeze({ ia: 4, mat: 6, ing: 1 });
 function updateWhatIf() {
   const sl = jrEl("hub-whatif-slider"); if (!sl) return;
   const boost = parseInt(sl.value, 10) || 0, { remaining, fc, hpp } = window.__jr, now = window.__jr.now;
@@ -222,9 +212,7 @@ function drawJourney(o) {
 function calcAndPaint() {
   const DAY = 86400000, now = Date.now();
   const raw = jrRead(EFFORT_KEY, {});
-  const eff = { tracks: Object.assign({ ia: 1, mat: 1, ing: 1 }, raw.tracks || {}), topics: raw.topics || {} };
-  const customW = Object.values(eff.tracks).some(v => v !== 1) || Object.keys(eff.topics).length > 0;
-  ["ia", "mat", "ing"].forEach(t => { const i = jrEl("w-" + t); if (i && document.activeElement !== i) i.value = eff.tracks[t]; });
+  const eff = { tracks: Object.assign({}, JR_TRACK_WEIGHTS), topics: raw.topics || {} };
   const ev = jrRead(EVENTS_KEY, []), ses = jrRead(SESS_KEY, []);
   const logStart = parseInt(localStorage.getItem(LOGSTART_KEY) || "", 10) || null;
 
@@ -280,9 +268,7 @@ function calcAndPaint() {
   // progresso
   jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
   jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
-  jrSet("jr-explain", customW
-    ? "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. A diferença vem dos pesos que você definiu."
-    : "Os pesos ainda são iguais (1 por tópico), então os dois percentuais só diferem pelo que está em andamento. Defina pesos acima para o ponderado refletir a complexidade.");
+  jrSet("jr-explain", "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. Tópicos de trilhas mais difíceis valem mais esforço.");
 
   // previsão
   const fmt = d => formatDateBR(new Date(now + d * DAY));

@@ -1222,6 +1222,77 @@ function updateAwsStorageSizeDisplay() {
   } catch(e) {}
 }
 
+// -------------------------------------------------------------------------
+// Dados de estudo além do progresso: revisões espaçadas, histórico de eventos
+// (ritmo/previsão), sessões cronometradas e início do registro.
+// Vão no campo "extra" do item do DynamoDB (limite do item: 400 KB), por isso
+// eventos e sessões são compactados em arrays e limitados aos mais recentes.
+// -------------------------------------------------------------------------
+const AWS_EXTRA_MAX_EVENTS = 2500, AWS_EXTRA_MAX_SESSIONS = 1500;
+function awsReadJson(k, d) { try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : d; } catch (e) { return d; } }
+
+function awsCollectExtra() {
+  const ev = awsReadJson("roteiro-events-v1", []).slice(-AWS_EXTRA_MAX_EVENTS);
+  const ses = awsReadJson("roteiro-sessions-v1", []).slice(-AWS_EXTRA_MAX_SESSIONS);
+  const ls = parseInt(localStorage.getItem("roteiro-log-start") || "", 10);
+  return {
+    v: 1,
+    reviews: awsReadJson("roteiro-review-v1", {}),
+    events: ev.map(e => [e.t, e.id, e.f, e.to, e.src || "ui"]),
+    sessions: ses.map(s => [s.t, s.id || "", s.sec || 0]),
+    log_start: ls > 0 ? ls : null
+  };
+}
+
+// Junta o que veio da nuvem com o que está neste dispositivo, sem perder nada de nenhum lado.
+// Retorna true se este dispositivo tinha algo que a nuvem ainda não tinha.
+function awsMergeExtra(x) {
+  if (!x || typeof x !== "object") return false;
+  let localHasMore = false;
+  const num = v => (typeof v === "number" ? v : parseFloat(v)) || 0;
+
+  // revisões: por tópico, fica o registro mais recente
+  const locR = awsReadJson("roteiro-review-v1", {}), cloudR = x.reviews || {};
+  const mergedR = Object.assign({}, locR);
+  for (const k in cloudR) {
+    const c = cloudR[k] || {}, l = locR[k];
+    if (!l || num(c.last) >= num(l.last)) {
+      mergedR[k] = Object.assign({}, c, {
+        score: num(c.score), total: num(c.total), last: num(c.last),
+        passedAt: c.passedAt ? num(c.passedAt) : undefined, done: c.done ? num(c.done) : undefined,
+        next: Array.isArray(c.next) ? c.next.map(num) : undefined
+      });
+    }
+  }
+  for (const k in locR) if (!cloudR[k] || num(locR[k].last) > num(cloudR[k].last)) localHasMore = true;
+  try { localStorage.setItem("roteiro-review-v1", JSON.stringify(mergedR)); } catch (e) {}
+
+  // eventos: união sem duplicar (mesmo instante + tópico + novo estado)
+  const locE = awsReadJson("roteiro-events-v1", []);
+  const seen = new Set(locE.map(e => e.t + "|" + e.id + "|" + e.to));
+  const cloudE = (x.events || []).map(a => ({ t: num(a[0]), id: a[1], f: a[2], to: a[3], src: a[4] || "ui" }));
+  const cloudSeen = new Set(cloudE.map(e => e.t + "|" + e.id + "|" + e.to));
+  const evAll = locE.concat(cloudE.filter(e => !seen.has(e.t + "|" + e.id + "|" + e.to))).sort((a, b) => a.t - b.t).slice(-5000);
+  if (locE.some(e => !cloudSeen.has(e.t + "|" + e.id + "|" + e.to))) localHasMore = true;
+  try { localStorage.setItem("roteiro-events-v1", JSON.stringify(evAll)); } catch (e) {}
+
+  // sessões de estudo: união por instante + tópico
+  const locS = awsReadJson("roteiro-sessions-v1", []);
+  const sSeen = new Set(locS.map(s => s.t + "|" + (s.id || "")));
+  const cloudS = (x.sessions || []).map(a => ({ t: num(a[0]), id: a[1] || undefined, sec: num(a[2]) }));
+  const cSeen = new Set(cloudS.map(s => s.t + "|" + (s.id || "")));
+  const sAll = locS.concat(cloudS.filter(s => !sSeen.has(s.t + "|" + (s.id || "")))).sort((a, b) => a.t - b.t).slice(-2000);
+  if (locS.some(s => !cSeen.has(s.t + "|" + (s.id || "")))) localHasMore = true;
+  try { localStorage.setItem("roteiro-sessions-v1", JSON.stringify(sAll)); } catch (e) {}
+
+  // início do registro: o mais antigo dos dois
+  const lLs = parseInt(localStorage.getItem("roteiro-log-start") || "", 10) || 0, cLs = num(x.log_start);
+  const ls = lLs && cLs ? Math.min(lLs, cLs) : (lLs || cLs);
+  if (ls) try { localStorage.setItem("roteiro-log-start", String(ls)); } catch (e) {}
+  if (lLs && (!cLs || lLs < cLs)) localHasMore = true;
+  return localHasMore;
+}
+
 function scheduleAwsRealtimeSync() {
   clearTimeout(_awsRealtimeTimer);
   _awsRealtimeTimer = setTimeout(() => {
@@ -1271,8 +1342,9 @@ async function awsRealtimePushToDynamoDB(silent = true) {
     pwd_hash: localStorage.getItem(PASSWORD_HASH_KEY) || "",
     progress: progressObj,
     projects: projectsArr,
-    start_date: localStorage.getItem("roteiro-hub-start") || "",
+    start_date: localStorage.getItem("roteiro-start-date") || "",
     pace: localStorage.getItem("roteiro-hub-pace") || "std",
+    extra: awsCollectExtra(),
     updated_at: Date.now()
   };
 
@@ -1367,10 +1439,20 @@ async function awsRealtimePullFromDynamoDB() {
       if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
         localStorage.setItem("roteiro_portfolio_projects", JSON.stringify(cloud.projects));
       }
-      if (cloud.start_date) localStorage.setItem("roteiro-hub-start", cloud.start_date);
-      if (cloud.pace) localStorage.setItem("roteiro-hub-pace", cloud.pace);
+      if (cloud.start_date && /^\d{4}-\d{2}-\d{2}$/.test(cloud.start_date)) {
+        localStorage.setItem("roteiro-start-date", cloud.start_date);
+        if (typeof currentStartDate !== "undefined") currentStartDate = cloud.start_date;
+      }
+      if (cloud.pace) {
+        localStorage.setItem("roteiro-hub-pace", cloud.pace);
+        if (typeof currentPace !== "undefined" && typeof HUB_PRESETS !== "undefined" && HUB_PRESETS[cloud.pace]) currentPace = cloud.pace;
+      }
+      const extraChanged = awsMergeExtra(cloud.extra);
 
       if (typeof paint === "function") paint();
+      if (typeof calcAndPaint === "function") calcAndPaint();
+      // Se o dispositivo tinha registros que a nuvem ainda não tinha, devolve a união para a nuvem
+      if (extraChanged && user && user.authenticated) scheduleAwsRealtimeSync();
       if (typeof renderHubDashboard === "function") renderHubDashboard();
       if (typeof renderProjects === "function") renderProjects();
       return true;

@@ -256,12 +256,74 @@ function switchModalVideoOption(optNum, resetPlayerTimer = false, scrollUp = fal
   }
 }
 
+// -------------------------------------------------------------------------
+// Layout do estúdio: com Aula Visual -> [vídeo + caderno] | [Aula Visual]
+//                    sem Aula Visual -> [vídeo]           | [caderno]
+// Os painéis são movidos (não recriados), então ids e eventos continuam valendo.
+// -------------------------------------------------------------------------
+function arrangeStudyColumns(hasGuide) {
+  const layout = document.getElementById("study-columns-layout");
+  const left = document.getElementById("study-player-sect");
+  const right = document.getElementById("study-notes-col");
+  const notes = document.getElementById("study-notes-panel");
+  const guide = document.getElementById("study-left-extra-info");
+  if (!layout || !left || !right || !notes || !guide) return;
+  if (hasGuide) {
+    if (notes.parentElement !== left) left.appendChild(notes);
+    if (guide.parentElement !== right) right.appendChild(guide);
+  } else {
+    if (guide.parentElement !== left) left.appendChild(guide);
+    if (notes.parentElement !== right) right.appendChild(notes);
+  }
+  layout.classList.toggle("layout-guide-right", Boolean(hasGuide));
+}
+
+// Coluna que rola e contém a Aula Visual (para medir leitura e rolar até ela)
+function getGuideScrollContainer() {
+  const g = document.getElementById("study-left-extra-info");
+  const layout = document.getElementById("study-columns-layout");
+  // Em telas estreitas as colunas empilham e quem rola é o próprio layout
+  if (layout && window.innerWidth <= 1040) return layout;
+  return (g && g.closest("#study-player-sect, #study-notes-col")) || document.getElementById("study-player-sect");
+}
+
+function getOrderedTopicIds() {
+  const rows = Array.from(document.querySelectorAll(".topic-row[data-id]")).map(r => r.dataset.id).filter(id => TOPICS_MAP[id]);
+  return rows.length ? rows : Object.keys(TOPICS_MAP || {});
+}
+
+function updateNextLessonBtn(topicId) {
+  const btn = document.getElementById("modal-next-btn");
+  if (!btn) return;
+  const ids = getOrderedTopicIds(), i = ids.indexOf(topicId), next = i >= 0 ? ids[i + 1] : null;
+  btn.disabled = !next;
+  btn.textContent = next ? "Próxima aula ➔" : "Última aula ✓";
+  btn.title = next ? "Salvar e abrir: " + ((TOPICS_MAP[next] || {}).title || "próxima aula") : "Você chegou ao fim desta trilha";
+}
+
+function goToNextLesson() {
+  const cur = CURRENT_MODAL_TOPIC_ID;
+  if (!cur) return;
+  const ids = getOrderedTopicIds(), next = ids[ids.indexOf(cur) + 1];
+  if (!next) return;
+  const hasGuide = Boolean((TOPICS_MAP[next] || {}).pt_guide);
+  closeNoteModal(); // salva anotações, data, sessão e sincroniza
+  openStudyModal(next, false, 1);
+  const layout = document.getElementById("study-columns-layout");
+  if (layout) layout.scrollTop = 0;
+  const right = document.getElementById("study-notes-col");
+  if (right) right.scrollTop = 0;
+  if (typeof showToast === "function") showToast("➡️ " + ((TOPICS_MAP[next] || {}).title || "Próxima aula"));
+}
+
 function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
   CURRENT_MODAL_TOPIC_ID = topicId;
   const modal = document.getElementById("note-modal");
   if (!modal) return;
 
   const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
+  arrangeStudyColumns(Boolean(topicInfo.pt_guide));
+  updateNextLessonBtn(topicId);
   const row = document.getElementById("top-" + topicId);
   const title = topicInfo.title || (row ? row.querySelector(".topic-title-text").textContent : "Tópico de Estudo");
   
@@ -332,7 +394,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
               </button>
             </div>
           </div>
-          ${renderPtGuideV2Body(ptGuide)}
+          ${renderPtGuideV2Body(ptGuide, topicId)}
         </div>
         `;
       } else {
@@ -398,19 +460,19 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
           });
         } catch(e) {}
       }
+      if (typeof lv2Init === "function") { try { lv2Init(guideContainer); } catch (e) { console.warn("lv2Init", e); } }
     } else {
       guideContainer.innerHTML = "";
       if (defaultTipCard) defaultTipCard.style.display = "block";
     }
   }
 
-  // Vincular evento de rolagem da coluna esquerda para rastrear leitura dos 4 cards
-  if (playerSect) {
-    playerSect.onscroll = () => {
-      checkPtGuideScrollAndVisibility(false);
-      syncSessionStudyProgressUI();
-    };
-  }
+  // Vincular evento de rolagem das colunas para rastrear a leitura das etapas da Aula Visual
+  const onStudyScroll = () => { checkPtGuideScrollAndVisibility(false); syncSessionStudyProgressUI(); };
+  ["study-player-sect", "study-notes-col", "study-columns-layout"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.onscroll = onStudyScroll;
+  });
 
   // Iniciar Cronômetro da Sessão e Validador Duplo
   initStudySessionTimer(topicId);
@@ -447,6 +509,8 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
     }, 120);
   } else {
     if (playerSect) playerSect.scrollTop = 0;
+    const rc = document.getElementById("study-notes-col");
+    if (rc) rc.scrollTop = 0;
   }
 }
 
@@ -468,6 +532,7 @@ function closeNoteModal() {
       const l = JSON.parse(localStorage.getItem("roteiro-sessions-v1") || "[]");
       l.push({ t: Date.now(), id: CURRENT_MODAL_TOPIC_ID, sec: sessionSeconds });
       localStorage.setItem("roteiro-sessions-v1", JSON.stringify(l.slice(-2000)));
+      if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
     }
   } catch(e) {}
 
@@ -552,7 +617,7 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
   const topicInfo = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[topicId]) || {};
   if (!topicInfo.pt_guide) return;
 
-  const container = document.getElementById("study-player-sect");
+  const container = getGuideScrollContainer();
   const gBox = document.getElementById("pt-guide-box");
   if (!container || !gBox) return;
 
