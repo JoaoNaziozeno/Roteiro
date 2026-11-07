@@ -409,7 +409,10 @@ __AUTH_AWS_CSS__
           <input type="date" id="modal-date-input" onchange="onModalDateChange()">
         </div>
 
-        <button class="note-close-btn" onclick="closeNoteModal()" title="Fechar estúdio">✕</button>
+        <!-- PRÓXIMA AULA -->
+        <button type="button" class="note-next-btn" id="modal-next-btn" onclick="goToNextLesson()" title="Salvar e abrir a próxima aula da trilha">Próxima aula ➔</button>
+
+        <button class="note-close-btn" onclick="closeNoteModal()" title="Fechar estúdio" aria-label="Fechar estúdio">✕</button>
       </div>
     </div>
 
@@ -474,8 +477,10 @@ __AUTH_AWS_CSS__
         <div class="resizer-handle"></div>
       </div>
 
-      <!-- COLUNA DA DIREITA: CADERNO DE ANOTAÇÕES & ESQUEMAS -->
+      <!-- COLUNA DA DIREITA: AULA VISUAL (quando o tópico tem) ou CADERNO DE ANOTAÇÕES.
+           arrangeStudyColumns() move os painéis: com Aula Visual, o caderno desce para baixo do vídeo. -->
       <div class="study-notes-col" id="study-notes-col">
+       <div class="study-notes-panel" id="study-notes-panel">
         <div class="notes-section-head">
           <div class="notes-head-title">
             <span>📝 Caderno de Anotações & Esquemas</span>
@@ -577,7 +582,7 @@ __AUTH_AWS_CSS__
         <div class="note-workspace mode-editor" id="note-workspace">
           <div class="note-editor-pane">
             <textarea id="modal-note-editor" placeholder="Digite suas anotações, fórmulas matemáticas ($...$ ou $$...$$), códigos e insights da aula aqui...
-Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direita!" oninput="onNoteEditorInput()"></textarea>
+Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput="onNoteEditorInput()"></textarea>
           </div>
           <div class="note-preview-pane">
             <div class="preview-header">👁️ Pré-visualização Formatada (Markdown / KaTeX / Tabelas / Imagens)</div>
@@ -594,6 +599,7 @@ Assista ao vídeo na esquerda e faça suas anotações diretamente aqui na direi
             <button class="note-save-btn" onclick="closeNoteModal()">💾 Salvar & Fechar</button>
           </div>
         </div>
+       </div><!-- /study-notes-panel -->
       </div>
 
     </div><!-- /study-columns-layout -->

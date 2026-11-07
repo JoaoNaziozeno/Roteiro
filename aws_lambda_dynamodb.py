@@ -355,6 +355,17 @@ def lambda_handler(event, context):
             # -----------------------------------------------------------------
             # AÇÃO PADRÃO: SINCRONIZAÇÃO EM TEMPO REAL COM DYNAMODB (PUT ITEM)
             # -----------------------------------------------------------------
+            # "extra" = revisões espaçadas, eventos, sessões e início do registro.
+            # Um cliente antigo (página em cache) não envia "extra": nesse caso preservamos o que já estava salvo,
+            # porque put_item substitui o item inteiro.
+            extra = payload.get("extra")
+            if not isinstance(extra, dict):
+                try:
+                    prev_resp, _ = _execute_dynamo_op(lambda tbl: tbl.get_item(Key={"user_id": user_id}))
+                    extra = (prev_resp.get("Item") or {}).get("extra") or {}
+                except Exception:
+                    extra = {}
+
             item = {
                 "user_id": user_id,
                 "user_name": payload.get("user_name") or "João Naziozeno",
@@ -363,6 +374,8 @@ def lambda_handler(event, context):
                 "projects": payload.get("projects") or [],
                 "start_date": payload.get("start_date") or "",
                 "pace": payload.get("pace") or "std",
+                # Revisões espaçadas, histórico de eventos, sessões e início do registro (ver awsCollectExtra no front)
+                "extra": extra,
                 "updated_at": int(payload.get("updated_at") or int(time.time() * 1000))
             }
 

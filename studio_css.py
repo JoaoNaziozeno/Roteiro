@@ -477,6 +477,102 @@ input:checked + .slider:before { transform: translateX(14px); }
   }
 }
 
+/* =========================================================================
+   ESTÚDIO AMPLIADO + AULA VISUAL À DIREITA + PRÓXIMA AULA
+   ========================================================================= */
+#note-modal { padding: 1vh 1vw; }
+.unified-study-box {
+  max-width: 1920px !important;
+  width: 98vw !important;
+  height: 98vh !important;
+  height: 98dvh !important;
+  max-height: none !important;
+}
+.study-notes-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; min-width: 0; }
+
+/* Com Aula Visual: [vídeo + caderno] | [Aula Visual]. O vídeo ganha mais espaço por padrão. */
+.layout-guide-right .study-player-col { flex: 0 0 58%; width: 58%; max-width: 58%; }
+.layout-guide-right .study-notes-col { overflow-y: auto; overflow-x: hidden; }
+.layout-guide-right .study-notes-col .study-left-extra-info { padding: 14px 16px 24px; }
+.layout-guide-right .study-player-col .study-notes-panel { flex: 0 0 auto; border-top: 1px solid var(--bd); }
+.layout-guide-right .study-player-col .note-workspace { flex: 0 0 auto; height: 420px; min-height: 260px; resize: vertical; overflow: auto; }
+
+.note-next-btn {
+  font: inherit; font-size: .8rem; font-weight: 750; padding: 6px 14px; border-radius: 99px; cursor: pointer;
+  border: 1px solid rgba(16,185,129,.45); background: rgba(16,185,129,.14); color: #10b981; white-space: nowrap;
+}
+.note-next-btn:hover:not(:disabled) { background: #10b981; color: #fff; }
+.note-next-btn:disabled { opacity: .55; cursor: default; }
+.note-header-right { flex-wrap: wrap; justify-content: flex-end; }
+.note-modal-header { position: relative; }
+
+/* Telas estreitas: tudo empilhado, na ordem vídeo -> Aula Visual -> caderno */
+@media (max-width: 1040px) {
+  .layout-guide-right .study-player-col { display: contents !important; }
+  .layout-guide-right #study-notes-col { order: 4; min-height: 0 !important; flex: 0 0 auto !important; overflow: visible !important; }
+  .layout-guide-right #study-notes-panel { order: 5; border-top: 1px solid var(--bd); }
+  .layout-guide-right .note-workspace { height: 360px; }
+  .study-split-resizer { display: none !important; }
+}
+
+/* Celular: modal em tela cheia e cabeçalho que quebra linha sem estourar */
+@media (max-width: 760px) {
+  #note-modal { padding: 0; }
+  .unified-study-box { width: 100vw !important; height: 100vh !important; height: 100dvh !important; border-radius: 0 !important; }
+  .note-modal-header { padding: 10px 12px; gap: 8px; }
+  .note-header-left { flex: 1 1 100%; min-width: 0; padding-right: 40px; }
+  .note-topic-title { font-size: .95rem; line-height: 1.3; }
+  .note-header-right { width: 100%; justify-content: flex-start; gap: 6px; }
+  .note-header-right .note-close-btn { position: absolute; top: 6px; right: 6px; font-size: 1.25rem; }
+  .auto-prog-wrap { padding: 3px 9px; font-size: .72rem; }
+  .note-status-pill, .note-next-btn { font-size: .72rem; padding: 4px 10px; }
+  .note-date-wrap { font-size: .72rem; }
+  .note-date-wrap input { max-width: 132px; min-width: 0; }
+  .note-next-btn { margin-left: auto; }
+  .study-player-topbar { flex-wrap: wrap; gap: 6px; }
+  .player-topbar-info { flex-wrap: wrap; min-width: 0; }
+  .player-source-title { display: none; }
+  .player-topbar-info { flex: 1 1 0; }
+  .video-segmented-switcher { min-width: 0; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .video-seg-btn { white-space: nowrap; }
+  .player-topbar-actions { flex-shrink: 0; }
+  .note-toolbar { padding: 6px 10px; }
+  .notes-section-head { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
+  .note-modal-footer { flex-wrap: wrap; gap: 8px; }
+}
+
+/* =========================================================================
+   RESPONSIVIDADE GLOBAL (todas as páginas compartilham este CSS)
+   ========================================================================= */
+@media (max-width: 760px) {
+  html { scroll-padding-top: 112px; }
+  /* Barra superior: marca + usuário na 1ª linha, links das páginas roláveis na 2ª (antes espremidos em 5px) */
+  body .top-nav-inner { flex-wrap: wrap; height: auto; padding: 8px 14px 0; gap: 6px 10px; }
+  body .nav-brand { white-space: nowrap; font-size: .98rem; }
+  body .nav-right { margin-left: auto; gap: 6px; }
+  body .nav-links { order: 3; flex: 1 1 100%; min-width: 0; padding-bottom: 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  body .nav-link { padding: 6px 10px; font-size: .8rem; }
+  body .nav-user-dropdown-wrap { max-width: 116px; }
+  body .nav-user-pill { white-space: nowrap; max-width: 116px; overflow: hidden; text-overflow: ellipsis; padding-left: 9px; padding-right: 9px; }
+  body .nav-status-pill { font-size: .64rem; padding: 3px 6px; gap: 3px; }
+  body .nav-theme-btn { width: 34px; height: 34px; padding: 0; }
+  /* Gaveta lateral das trilhas: cobre a altura toda, acima da barra (que agora tem 2 linhas) */
+  body .sidebar { top: 0 !important; z-index: 120; }
+  body .sb-backdrop { z-index: 115; }
+
+  /* Linhas de tópico: botões quebram linha em vez de vazar para fora da tela */
+  body .topic-row { padding: 10px 12px; }
+  body .topic-left { flex: 1 1 100%; }
+  body .topic-actions { flex: 1 1 100%; min-width: 0; justify-content: flex-start; margin-left: 0; }
+
+  /* Hub */
+  body .hub-hero h1 { font-size: clamp(1.45rem, 7vw, 1.9rem); line-height: 1.2; }
+  body .hub-hero p { font-size: .92rem; }
+  body .speed-presets-wrap { border-radius: 14px; }
+  body .jr-sect { padding: 16px 14px; border-radius: 16px; }
+  body .hero-head h1 { font-size: 1.4rem; }
+}
+
 /* Submodais: Estúdio 3D e Lousa de Desenho */
 .modal-sub-overlay {
   position: fixed;

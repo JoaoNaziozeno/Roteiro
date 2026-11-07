@@ -1,7 +1,9 @@
 import json, os, re
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Carregar playlist de inglês limpa
-with open('/mnt/c/Users/joao1/Desktop/Roteiro/english_playlist.json', 'r', encoding='utf-8') as f:
+with open(os.path.join(BASE_DIR, 'english_playlist.json'), 'r', encoding='utf-8') as f:
     english_playlist = json.load(f)
 
 # ---------------------------------------------------------------------------
@@ -1735,7 +1737,7 @@ def generate_hub_page(out_path):
 }
 
 /* Grade dos 3 Cards Principais de Trilha */
-.track-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px;margin-bottom:40px}
+.track-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:22px;margin-bottom:40px}
 .track-card{
   background:var(--card);
   border:1px solid var(--bd);
@@ -2301,12 +2303,12 @@ window.addEventListener("DOMContentLoaded", () => {
 # ---------------------------------------------------------------------------
 # Executar a Geração de Todos os Arquivos do Ecossistema
 # ---------------------------------------------------------------------------
-out_ia = "/mnt/c/Users/joao1/Desktop/Roteiro/ia.html"
-out_mat = "/mnt/c/Users/joao1/Desktop/Roteiro/matematica.html"
-out_ing = "/mnt/c/Users/joao1/Desktop/Roteiro/ingles.html"
-out_proj = "/mnt/c/Users/joao1/Desktop/Roteiro/projetos.html"
-out_hub = "/mnt/c/Users/joao1/Desktop/Roteiro/index.html"
-out_mirror = "/mnt/c/Users/joao1/Desktop/Roteiro/Roteiro de Estudo_ do zero à IA.html"
+out_ia = os.path.join(BASE_DIR, "ia.html")
+out_mat = os.path.join(BASE_DIR, "matematica.html")
+out_ing = os.path.join(BASE_DIR, "ingles.html")
+out_proj = os.path.join(BASE_DIR, "projetos.html")
+out_hub = os.path.join(BASE_DIR, "index.html")
+out_mirror = os.path.join(BASE_DIR, "Roteiro de Estudo_ do zero à IA.html")
 
 generate_listing_page(
     track_id="ia",
