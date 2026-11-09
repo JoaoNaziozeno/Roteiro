@@ -6,6 +6,7 @@ Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 
 import json
 from studio_js import STUDIO_JS
+from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
@@ -195,6 +196,7 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>__PAGE_TITLE__ - Roteiro de IA</title>
+__FAVICON__
 __AUTH_GUARD__
 <!-- KaTeX Math Typesetting -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
@@ -1580,6 +1582,7 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__TRACK_ID__", track_id)
         .replace("__TOTAL_TOPICS__", str(total_topics))
         .replace("__SHARED_CSS__", shared_css)
+        .replace("__FAVICON__", FAVICON_LINK)
         .replace("__ACTIVE_HUB__", active_hub)
         .replace("__ACTIVE_IA__", active_ia)
         .replace("__ACTIVE_MAT__", active_mat)

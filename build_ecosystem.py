@@ -646,6 +646,7 @@ SHARED_CSS = BASE_SHARED_CSS + "\n" + STUDIO_CSS
 
 from auth_aws_sync import AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, FORGOT_PASSWORD_MODAL_HTML, AUTH_AWS_SYNC_JS
 from projects_generator import generate_projects_page
+from favicon import FAVICON_LINK
 from hub_journey import JOURNEY_CSS, JOURNEY_HTML, JOURNEY_JS_A, JOURNEY_JS_B
 
 print("SHARED_CSS pronto.")
@@ -1814,6 +1815,7 @@ def generate_hub_page(out_path):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hub Central - Roteiro de Estudo do zero à IA</title>
+__FAVICON__
 <style>
 __HUB_CSS__
 </style>
@@ -1904,8 +1906,8 @@ __HUB_CSS__
   <div id="hub-authenticated-view" style="display:none">
     <!-- HERO HEAD -->
     <section class="hub-hero">
-      <h1>Hub Central de Aprendizado</h1>
-      <p>Do zero absoluto até o desenvolvimento e engenharia de Inteligência Artificial moderna. Escolha uma das 4 páginas estruturadas abaixo para gerenciar seus estudos, anotações e progresso.</p>
+      <h1>Do zero à Inteligência Artificial</h1>
+      <p>Programação, matemática e inglês caminhando juntos até você construir seus próprios projetos de IA.</p>
     </section>
 
   <!-- =======================================================================
@@ -2098,9 +2100,9 @@ function checkHubAuth() {
     if (dbStatus) dbStatus.style.display = "inline-flex";
     
     const heroH1 = document.querySelector(".hub-hero h1");
-    if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA <span class="hero-rocket">🚀</span>`;
+    if (heroH1) heroH1.innerHTML = `Do zero à Inteligência Artificial <span class="hero-rocket">🚀</span>`;
     const heroP = document.querySelector(".hub-hero p");
-    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Suas anotações estão sincronizadas e protegidas na nuvem AWS. Escolha uma das 4 páginas abaixo:`;
+    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Programação, matemática e inglês caminham juntos até você construir seus próprios projetos de IA. Continue de onde parou:`;
 
     calcAndPaint();
   } else {
@@ -2288,6 +2290,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     html = (html_template
         .replace("__HUB_CSS__", hub_css + JOURNEY_CSS)
+        .replace("__FAVICON__", FAVICON_LINK)
         .replace("__JOURNEY_HTML__", JOURNEY_HTML)
         .replace("__JOURNEY_JS_A__", JOURNEY_JS_A)
         .replace("__JOURNEY_JS_B__", JOURNEY_JS_B)
