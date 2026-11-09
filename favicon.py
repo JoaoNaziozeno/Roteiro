@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*-
+"""
+Favicon do Roteiro IA: uma trilha que sobe do ponto de partida até o destino (verde),
+a ideia de "do zero à IA". Embutido como data URI em todas as páginas geradas,
+então funciona igual no servidor local, no GitHub Pages e no pacote da AWS.
+"""
+from urllib.parse import quote
+
+FAVICON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'
+    '<stop offset="0" stop-color="#5B6F7D"/><stop offset="1" stop-color="#1B2E3B"/>'
+    '</linearGradient></defs>'
+    '<rect width="64" height="64" rx="14" fill="url(#g)"/>'
+    '<path d="M15 49C26 49 22 32 32 32S39 15 49 15" fill="none" stroke="#E6EAEB" stroke-width="6" stroke-linecap="round"/>'
+    '<circle cx="15" cy="49" r="6" fill="#FFFFFF"/>'
+    '<circle cx="32" cy="32" r="5.5" fill="#FFFFFF"/>'
+    '<circle cx="49" cy="15" r="9" fill="#10b981"/>'
+    '</svg>'
+)
+
+FAVICON_LINK = (
+    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' + quote(FAVICON_SVG) + '">\n'
+    '<meta name="theme-color" content="#06141B">'
+)
+
+if __name__ == "__main__":
+    with open("favicon.svg", "w", encoding="utf-8") as f:
+        f.write(FAVICON_SVG)
+    print("favicon.svg gerado.")

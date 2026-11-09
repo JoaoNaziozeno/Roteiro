@@ -34,8 +34,8 @@ JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
       <div class="speed-title-wrap">
         <div class="speed-title-icon" id="global-icon">🧭</div>
         <div>
-          <div class="speed-title">A Jornada <span class="nav-status-pill" id="global-badge">Esforço real, não só contagem</span></div>
-          <div class="speed-subtitle">De onde você começou, onde está e o que falta, medido em esforço.</div>
+          <div class="speed-title">A Jornada <span class="nav-status-pill" id="global-badge">Do primeiro tópico ao último projeto</span></div>
+          <div class="speed-subtitle">Quanto você já avançou, em que ritmo e quando deve chegar à meta.</div>
         </div>
       </div>
       <div class="speed-presets-wrap">
@@ -72,9 +72,9 @@ JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
       <div class="jr-col">
         <div class="jr-card">
           <div class="jr-h"><span>🎯 Progresso</span></div>
-          <div class="jr-row"><span>Ponderado (esforço)</span><span id="jr-wpct">0%</span></div>
+          <div class="jr-row"><span>Considerando a dificuldade</span><span id="jr-wpct">0%</span></div>
           <div class="jr-bar"><i class="w" id="jr-wbar" style="width:0%"></i></div>
-          <div class="jr-row"><span>Estrutural (tópicos)</span><span id="jr-spct">0%</span></div>
+          <div class="jr-row"><span>Tópicos concluídos</span><span id="jr-spct">0%</span></div>
           <div class="jr-bar"><i class="s" id="jr-sbar" style="width:0%"></i></div>
           <div class="jr-sub" id="jr-explain"></div>
         </div>
@@ -169,7 +169,7 @@ function updateWhatIf() {
   jrSet("whatif-lbl", "+" + boost + "%");
   if (!fc || (fc.level !== "ok" && fc.level !== "preliminary") || !fc.dMed) {
     jrSet("whatif-res", "Disponível após 2 semanas de registro");
-    jrSet("whatif-sub", "Sem histórico de ritmo não há base honesta para simular.");
+    jrSet("whatif-sub", "A simulação usa o seu ritmo das últimas semanas. Continue estudando e ela fica disponível.");
     return;
   }
   const newPace = fc.med * (1 + boost / 100), nd = Math.ceil(remaining / (newPace / 7)), saved = fc.dMed - nd;
@@ -268,7 +268,7 @@ function calcAndPaint() {
   // progresso
   jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
   jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
-  jrSet("jr-explain", "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. Tópicos de trilhas mais difíceis valem mais esforço.");
+  jrSet("jr-explain", "Você concluiu " + P.structDone + " de " + T.topics + " tópicos. Considerando a dificuldade de cada trilha (um tópico de Matemática exige mais estudo que uma aula de Inglês), já percorreu " + jrF(P.pts) + " de " + jrF(T.points) + " pontos, contando o que está em andamento.");
 
   // previsão
   const fmt = d => formatDateBR(new Date(now + d * DAY));
@@ -276,7 +276,7 @@ function calcAndPaint() {
   if (fc.level === "done") { jrSet("jr-fc-main", "Roteiro concluído 🎓"); jrSet("jr-fc-sub", ""); }
   else if (fc.level === "insufficient") {
     jrSet("jr-fc-main", "Ainda sem data");
-    jrSet("jr-fc-sub", "Faltam dados para prever sem inventar precisão: preciso de " + fc.need + " semanas completas de registro (você tem " + fc.n + ")." +
+    jrSet("jr-fc-sub", "A previsão aparece depois de " + fc.need + " semanas completas de estudo registradas (até agora: " + fc.n + ")." +
       (logStart ? " Registro iniciado em " + formatDateBR(new Date(logStart)) + "." : " O registro começa quando você marcar o próximo tópico.") +
       (req ? " Para a meta, o ritmo necessário é ~" + jrF(req) + " pontos/semana." : ""));
   } else if (!fc.dMed) { jrSet("jr-fc-main", "Sem ritmo recente"); jrSet("jr-fc-sub", "Nas últimas semanas não houve conclusões, então não há projeção."); }
@@ -293,7 +293,7 @@ function calcAndPaint() {
   if (series.length >= 8) { const a = series.slice(0, 4).reduce((x, y) => x + y, 0), b = series.slice(4, 8).reduce((x, y) => x + y, 0); ps += b > 0 ? " Vs. 4 semanas anteriores: " + (a >= b ? "+" : "") + Math.round((a - b) / b * 100) + "%." : ""; }
   jrSet("jr-pace-sub", ps);
   const secAll = ses.reduce((a, s) => a + (s.sec || 0), 0), sec7 = ses.filter(s => s.t >= now - 7 * DAY).reduce((a, s) => a + (s.sec || 0), 0);
-  jrSet("jr-time", ses.length ? "⏱️ " + jrF(secAll / 3600) + " h registradas (" + jrF(sec7 / 3600) + " h nos últimos 7 dias). Tempo não é progresso: só ajuda a estimar ritmo." : "⏱️ Tempo de estudo ainda não registrado (veja o patch de sessões).");
+  jrSet("jr-time", ses.length ? "⏱️ " + jrF(secAll / 3600) + " h registradas (" + jrF(sec7 / 3600) + " h nos últimos 7 dias)." : "⏱️ Seu tempo de estudo aparece aqui depois da primeira sessão no estúdio de aulas.");
 
   // trilhas
   const nm = { ia: ["🤖 IA & Código", "ia.html"], mat: ["📐 Matemática", "matematica.html"], ing: ["🇺🇸 Inglês", "ingles.html"] };

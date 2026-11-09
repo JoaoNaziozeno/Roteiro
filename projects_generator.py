@@ -6,6 +6,7 @@ gestão interativa de status, links de repositórios/demos, anotações de engen
 e exportador para LinkedIn / README.
 """
 
+from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 PROJECTS_CSS = """
@@ -295,6 +296,7 @@ def generate_projects_page(out_path, shared_css):
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Laboratório de Projetos & Portfólio de IA</title>
+{FAVICON_LINK}
 {AUTH_GUARD_HEAD_SCRIPT}
 <style>
 {full_css}

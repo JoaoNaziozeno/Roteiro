@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hub Central - Roteiro de Estudo do zero à IA</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235B6F7D%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231B2E3B%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22url%28%23g%29%22/%3E%3Cpath%20d%3D%22M15%2049C26%2049%2022%2032%2032%2032S39%2015%2049%2015%22%20fill%3D%22none%22%20stroke%3D%22%23E6EAEB%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2249%22%20r%3D%226%22%20fill%3D%22%23FFFFFF%22/%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%225.5%22%20fill%3D%22%23FFFFFF%22/%3E%3Ccircle%20cx%3D%2249%22%20cy%3D%2215%22%20r%3D%229%22%20fill%3D%22%2310b981%22/%3E%3C/svg%3E">
+<meta name="theme-color" content="#06141B">
 <style>
 
 :root{
@@ -3737,8 +3739,8 @@ input:checked + .slider:before { transform: translateX(14px); }
   <div id="hub-authenticated-view" style="display:none">
     <!-- HERO HEAD -->
     <section class="hub-hero">
-      <h1>Hub Central de Aprendizado</h1>
-      <p>Do zero absoluto até o desenvolvimento e engenharia de Inteligência Artificial moderna. Escolha uma das 4 páginas estruturadas abaixo para gerenciar seus estudos, anotações e progresso.</p>
+      <h1>Do zero à Inteligência Artificial</h1>
+      <p>Programação, matemática e inglês caminhando juntos até você construir seus próprios projetos de IA.</p>
     </section>
 
   <!-- =======================================================================
@@ -3749,8 +3751,8 @@ input:checked + .slider:before { transform: translateX(14px); }
       <div class="speed-title-wrap">
         <div class="speed-title-icon" id="global-icon">🧭</div>
         <div>
-          <div class="speed-title">A Jornada <span class="nav-status-pill" id="global-badge">Esforço real, não só contagem</span></div>
-          <div class="speed-subtitle">De onde você começou, onde está e o que falta, medido em esforço.</div>
+          <div class="speed-title">A Jornada <span class="nav-status-pill" id="global-badge">Do primeiro tópico ao último projeto</span></div>
+          <div class="speed-subtitle">Quanto você já avançou, em que ritmo e quando deve chegar à meta.</div>
         </div>
       </div>
       <div class="speed-presets-wrap">
@@ -3787,9 +3789,9 @@ input:checked + .slider:before { transform: translateX(14px); }
       <div class="jr-col">
         <div class="jr-card">
           <div class="jr-h"><span>🎯 Progresso</span></div>
-          <div class="jr-row"><span>Ponderado (esforço)</span><span id="jr-wpct">0%</span></div>
+          <div class="jr-row"><span>Considerando a dificuldade</span><span id="jr-wpct">0%</span></div>
           <div class="jr-bar"><i class="w" id="jr-wbar" style="width:0%"></i></div>
-          <div class="jr-row"><span>Estrutural (tópicos)</span><span id="jr-spct">0%</span></div>
+          <div class="jr-row"><span>Tópicos concluídos</span><span id="jr-spct">0%</span></div>
           <div class="jr-bar"><i class="s" id="jr-sbar" style="width:0%"></i></div>
           <div class="jr-sub" id="jr-explain"></div>
         </div>
@@ -5309,9 +5311,9 @@ function checkHubAuth() {
     if (dbStatus) dbStatus.style.display = "inline-flex";
     
     const heroH1 = document.querySelector(".hub-hero h1");
-    if (heroH1) heroH1.innerHTML = `Painel do Estudante: Rumo à IA <span class="hero-rocket">🚀</span>`;
+    if (heroH1) heroH1.innerHTML = `Do zero à Inteligência Artificial <span class="hero-rocket">🚀</span>`;
     const heroP = document.querySelector(".hub-hero p");
-    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Suas anotações estão sincronizadas e protegidas na nuvem AWS. Escolha uma das 4 páginas abaixo:`;
+    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Programação, matemática e inglês caminham juntos até você construir seus próprios projetos de IA. Continue de onde parou:`;
 
     calcAndPaint();
   } else {
@@ -5594,7 +5596,7 @@ function updateWhatIf() {
   jrSet("whatif-lbl", "+" + boost + "%");
   if (!fc || (fc.level !== "ok" && fc.level !== "preliminary") || !fc.dMed) {
     jrSet("whatif-res", "Disponível após 2 semanas de registro");
-    jrSet("whatif-sub", "Sem histórico de ritmo não há base honesta para simular.");
+    jrSet("whatif-sub", "A simulação usa o seu ritmo das últimas semanas. Continue estudando e ela fica disponível.");
     return;
   }
   const newPace = fc.med * (1 + boost / 100), nd = Math.ceil(remaining / (newPace / 7)), saved = fc.dMed - nd;
@@ -5744,7 +5746,7 @@ function calcAndPaint() {
   // progresso
   jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
   jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
-  jrSet("jr-explain", "Estrutural conta tópicos concluídos (" + P.structDone + "/" + T.topics + "). Ponderado conta esforço (" + jrF(P.pts) + " de " + jrF(T.points) + " pontos), incluindo parte do que está em andamento. Tópicos de trilhas mais difíceis valem mais esforço.");
+  jrSet("jr-explain", "Você concluiu " + P.structDone + " de " + T.topics + " tópicos. Considerando a dificuldade de cada trilha (um tópico de Matemática exige mais estudo que uma aula de Inglês), já percorreu " + jrF(P.pts) + " de " + jrF(T.points) + " pontos, contando o que está em andamento.");
 
   // previsão
   const fmt = d => formatDateBR(new Date(now + d * DAY));
@@ -5752,7 +5754,7 @@ function calcAndPaint() {
   if (fc.level === "done") { jrSet("jr-fc-main", "Roteiro concluído 🎓"); jrSet("jr-fc-sub", ""); }
   else if (fc.level === "insufficient") {
     jrSet("jr-fc-main", "Ainda sem data");
-    jrSet("jr-fc-sub", "Faltam dados para prever sem inventar precisão: preciso de " + fc.need + " semanas completas de registro (você tem " + fc.n + ")." +
+    jrSet("jr-fc-sub", "A previsão aparece depois de " + fc.need + " semanas completas de estudo registradas (até agora: " + fc.n + ")." +
       (logStart ? " Registro iniciado em " + formatDateBR(new Date(logStart)) + "." : " O registro começa quando você marcar o próximo tópico.") +
       (req ? " Para a meta, o ritmo necessário é ~" + jrF(req) + " pontos/semana." : ""));
   } else if (!fc.dMed) { jrSet("jr-fc-main", "Sem ritmo recente"); jrSet("jr-fc-sub", "Nas últimas semanas não houve conclusões, então não há projeção."); }
@@ -5769,7 +5771,7 @@ function calcAndPaint() {
   if (series.length >= 8) { const a = series.slice(0, 4).reduce((x, y) => x + y, 0), b = series.slice(4, 8).reduce((x, y) => x + y, 0); ps += b > 0 ? " Vs. 4 semanas anteriores: " + (a >= b ? "+" : "") + Math.round((a - b) / b * 100) + "%." : ""; }
   jrSet("jr-pace-sub", ps);
   const secAll = ses.reduce((a, s) => a + (s.sec || 0), 0), sec7 = ses.filter(s => s.t >= now - 7 * DAY).reduce((a, s) => a + (s.sec || 0), 0);
-  jrSet("jr-time", ses.length ? "⏱️ " + jrF(secAll / 3600) + " h registradas (" + jrF(sec7 / 3600) + " h nos últimos 7 dias). Tempo não é progresso: só ajuda a estimar ritmo." : "⏱️ Tempo de estudo ainda não registrado (veja o patch de sessões).");
+  jrSet("jr-time", ses.length ? "⏱️ " + jrF(secAll / 3600) + " h registradas (" + jrF(sec7 / 3600) + " h nos últimos 7 dias)." : "⏱️ Seu tempo de estudo aparece aqui depois da primeira sessão no estúdio de aulas.");
 
   // trilhas
   const nm = { ia: ["🤖 IA & Código", "ia.html"], mat: ["📐 Matemática", "matematica.html"], ing: ["🇺🇸 Inglês", "ingles.html"] };
