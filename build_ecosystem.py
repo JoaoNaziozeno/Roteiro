@@ -1905,9 +1905,17 @@ __HUB_CSS__
   <!-- ESTADO 2: CONTEÚDO AUTENTICADO DO HUB (QUANDO CONECTADO) -->
   <div id="hub-authenticated-view" style="display:none">
     <!-- HERO HEAD -->
-    <section class="hub-hero">
-      <h1>Do zero à Inteligência Artificial</h1>
-      <p>Programação, matemática e inglês caminhando juntos até você construir seus próprios projetos de IA.</p>
+    <section class="hub-hero ds-hero">
+      <div class="ds-hero-copy">
+        <span class="ds-eyebrow"><i aria-hidden="true"></i>Sua trilha de estudos</span>
+        <h1>Do zero à <span class="ds-grad">Inteligência Artificial</span></h1>
+        <p>Programação, matemática e inglês caminhando juntos até você construir seus próprios projetos de IA.</p>
+        <div class="ds-hero-actions">
+          <a class="ds-btn ds-btn-primary" id="ds-continue" href="ia.html">Continuar de onde parei <span class="ds-arrow" aria-hidden="true">→</span></a>
+          <button type="button" class="ds-btn ds-btn-ghost" onclick="dsOpenPalette && dsOpenPalette()">🔎 Buscar um tópico</button>
+        </div>
+      </div>
+      <div class="ds-route" id="ds-route" aria-label="Mapa da sua trilha: clique em uma estação para abrir a trilha"></div>
     </section>
 
   <!-- =======================================================================
@@ -1916,8 +1924,9 @@ __HUB_CSS__
   __JOURNEY_HTML__
 
   <!-- OS 4 CARDS GRANDES DE REDIRECIONAMENTO -->
-  <div style="font-size:1.15rem;font-weight:800;color:var(--tx);margin-bottom:16px;display:flex;align-items:center;gap:8px">
-    🎯 Suas 4 Páginas de Aprendizado & Portfólio:
+  <div class="ds-section-title">
+    <h2>Suas trilhas</h2>
+    <span>Quatro frentes que se completam</span>
   </div>
 
   <section class="track-cards-grid">
@@ -2099,8 +2108,6 @@ function checkHubAuth() {
     if (navLinks) navLinks.style.display = "flex";
     if (dbStatus) dbStatus.style.display = "inline-flex";
     
-    const heroH1 = document.querySelector(".hub-hero h1");
-    if (heroH1) heroH1.innerHTML = `Do zero à Inteligência Artificial <span class="hero-rocket">🚀</span>`;
     const heroP = document.querySelector(".hub-hero p");
     if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Programação, matemática e inglês caminham juntos até você construir seus próprios projetos de IA. Continue de onde parou:`;
 
@@ -2299,6 +2306,8 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__FORGOT_PASSWORD_MODAL__", FORGOT_PASSWORD_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
     )
+    from design_v2 import apply_design
+    html = apply_design(html, "hub")
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"Gerado: {out_path} (Hub Central)")
@@ -2312,6 +2321,11 @@ out_ing = os.path.join(BASE_DIR, "ingles.html")
 out_proj = os.path.join(BASE_DIR, "projetos.html")
 out_hub = os.path.join(BASE_DIR, "index.html")
 out_mirror = os.path.join(BASE_DIR, "Roteiro de Estudo_ do zero à IA.html")
+
+
+# Índice de todos os tópicos para a busca global (Ctrl/⌘ + K) do design v2
+from design_v2 import set_topic_index
+set_topic_index({"ia": ia_phases, "mat": mat_phases, "ing": ing_phases})
 
 generate_listing_page(
     track_id="ia",

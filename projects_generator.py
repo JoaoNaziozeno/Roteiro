@@ -803,5 +803,6 @@ window.addEventListener("DOMContentLoaded", () => {{
 </html>"""
 
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(html_content)
+        from design_v2 import apply_design
+        f.write(apply_design(html_content, "proj"))
     print(f"Gerado: {out_path} (Laboratório de Projetos & Portfólio)")

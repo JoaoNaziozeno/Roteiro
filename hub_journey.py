@@ -313,6 +313,16 @@ function calcAndPaint() {
   jrSet("hub-next-step-title", nt);
   const nb = jrEl("hub-next-step-btn"); if (nb) { nb.href = nm[least][1]; nb.textContent = "Ir para " + nm[least][0] + " ➔"; }
 
+  // Mapa da trilha no topo do Hub (design v2): mesmos números do painel, sem cálculo próprio
+  if (typeof window.dsRoute === "function") {
+    window.dsRoute({
+      overall: wPct,
+      per: { ia: P.per.ia.pts / P.per.ia.ptsTotal * 100, mat: P.per.mat.pts / P.per.mat.ptsTotal * 100,
+             ing: P.per.ing.pts / P.per.ing.ptsTotal * 100, proj: projDone / totalProj * 100 },
+      nextHref: nm[least][1], nextLabel: nm[least][0].replace(/^\S+\s/, "")
+    });
+  }
+
   // marcos reais (derivados do log de eventos, nunca inventados)
   const cv = RM.curve(ev, eff, logStart, now, P.pts);
   const ms = RM.milestones(cv, T.points), nx = RM.nextStep(wPct);

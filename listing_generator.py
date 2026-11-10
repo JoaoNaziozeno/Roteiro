@@ -1593,6 +1593,8 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__STUDIO_JS__", STUDIO_JS)
     )
 
+    from design_v2 import apply_design
+    rendered = apply_design(rendered, track_id)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(rendered)
     print(f"Gerado: {out_path} ({total_topics} tópicos enriquecidos)")
