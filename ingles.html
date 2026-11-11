@@ -2148,6 +2148,97 @@ input:checked + .slider:before { transform: translateX(14px); }
 .lv2-review{font-size:.8rem;padding:6px 10px;border-radius:8px;background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);margin-top:8px}
 
 
+/* ===== Blocos novos: código, ordem, diálogo, escuta, fala, vocabulário ===== */
+.lv2-muted{color:var(--mu);font-size:.85em}
+.lv2-note{padding:8px 12px;border-radius:8px;background:rgba(232,161,0,.12);font-size:.82rem;margin-bottom:8px}
+.lv2-btn-ghost{background:transparent;border-color:transparent;color:var(--mu)}
+.lv2-say{font:inherit;font-size:.8rem;padding:3px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;white-space:nowrap}
+.lv2-say:hover{border-color:var(--mu)}
+
+/* Python */
+/* Sem ligaduras: "<=" e "!=" aparecem como o aluno digita, não como ≤ e ≠ */
+.lv2-py-ed,.lv2-py-out,.lv2-ps-txt,.lv2-code,.lv2 pre,.lv2 code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+.lv2-py{margin-top:10px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bg)}
+.lv2-py-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;font-size:.72rem;color:var(--mu);border-bottom:1px solid var(--bd)}
+.lv2-py-lang{font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.lv2-py-status{font-style:italic}
+.lv2-py-ed{display:block;width:100%;box-sizing:border-box;resize:vertical;border:0;outline:none;padding:12px 14px;font:13px/1.65 ui-monospace,"JetBrains Mono","Cascadia Code",Consolas,monospace;background:transparent;color:var(--tx);tab-size:4;white-space:pre;overflow:auto}
+.lv2-py-actions{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--bd)}
+.lv2-py-out{margin:0;padding:10px 14px;border-top:1px solid var(--bd);font:12.5px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:260px;overflow:auto;background:transparent;color:var(--tx)}
+.lv2-py-out.is-err{color:#ef4444}
+.lv2-py-tests{padding:0 14px}
+.lv2-py-tests:not(:empty){padding:8px 14px 10px;border-top:1px solid var(--bd)}
+.lv2-py-test{font-size:.84rem;padding:2px 0}
+.lv2-py-test.ok{color:#10b981}.lv2-py-test.bad{color:#ef4444}
+
+/* Montar na ordem */
+.lv2-ps{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lv2-ps-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px 6px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg)}
+.lv2-ps.is-code .lv2-ps-txt{font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre}
+.lv2-ps-line.is-bad{border-color:#ef4444}
+.lv2-ps-btns{display:flex;gap:4px;flex:none}
+.lv2-ps-btns button{font:inherit;width:28px;height:28px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
+.lv2-ps-btns button:hover{color:var(--tx);border-color:var(--mu)}
+.lv2-ps-msg{margin-top:8px;font-size:.85rem}
+
+/* Diálogo */
+.lv2-dlg{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.lv2-dlg-row{display:flex;flex-direction:column;gap:3px;max-width:88%}
+.lv2-dlg-row[data-side="b"]{align-self:flex-end;align-items:flex-end}
+.lv2-dlg-who{font-size:.7rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+.lv2-dlg-bubble{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--bd)}
+.lv2-dlg-en{font-weight:600}
+.lv2-dlg-pt{font-size:.84rem;color:var(--mu);margin-top:2px}
+
+/* Escuta */
+.lv2-listen{display:flex;flex-direction:column;gap:16px;margin-top:10px}
+.lv2-lis-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.lv2-lis-hint{font-size:.82rem;color:var(--mu)}
+.lv2-lis-reveal{margin-top:8px;font-size:.88rem}
+.lv2-lis-res{margin-top:6px;font-size:.88rem}
+.lv2-dictbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.lv2-dict{font:inherit;font-size:.9rem;padding:6px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);width:min(420px,100%)}
+.lv2-w-ok{color:#10b981;font-weight:600}
+.lv2-w-miss{color:var(--mu);text-decoration:underline dotted}
+
+/* Fala */
+.lv2-speak{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+.lv2-spk{padding:12px 14px;border:1px solid var(--bd);border-radius:10px}
+.lv2-spk-en{font-size:1.05rem;font-weight:600}
+.lv2-spk-pt{font-size:.84rem;color:var(--mu)}
+.lv2-spk-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lv2-spk-res{margin-top:8px;font-size:.88rem}
+.lv2-spk-diff{display:block;margin:4px 0}
+
+/* Vocabulário */
+.lv2-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:10px;margin-top:10px}
+.lv2-card{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--bg)}
+.lv2-card[data-know="1"]{border-color:rgba(16,185,129,.55)}
+.lv2-card[data-know="0"]{border-color:rgba(232,161,0,.55)}
+.lv2-card-face{font:inherit;flex:1;display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:14px;border:0;background:transparent;color:var(--tx);cursor:pointer;min-height:84px}
+.lv2-card-en{font-weight:700;font-size:1rem}
+.lv2-card-back{display:flex;flex-direction:column;gap:4px}
+.lv2-card-back[hidden]{display:none}
+.lv2-card-pt{color:var(--mu)}
+.lv2-card-ex{font-size:.84rem;font-style:italic}
+.lv2-card-foot{display:flex;gap:6px;align-items:center;padding:8px 10px;border-top:1px solid var(--bd)}
+.lv2-card-mark{font:inherit;font-size:.74rem;padding:3px 8px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
+.lv2-card[data-know="1"] .lv2-card-mark[data-v="1"]{color:#10b981;border-color:#10b981}
+.lv2-card[data-know="0"] .lv2-card-mark[data-v="0"]{color:#e8a100;border-color:#e8a100}
+.lv2-vc-sum{margin-top:10px;font-size:.86rem}
+
+/* Atenção */
+.lv2-att-toks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.lv2-att-tok{font:inherit;font-size:.9rem;padding:5px 10px;border-radius:8px;border:1px solid var(--bd);cursor:pointer;color:var(--tx);background:color-mix(in srgb,#10b981 calc(var(--a,0)*100%),transparent)}
+.lv2-att-tok.is-q{border-color:#e8a100;box-shadow:0 0 0 2px rgba(232,161,0,.35)}
+.lv2-att-mask{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--mu);margin-top:8px}
+.lv2-att-bars{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.lv2-att-row{display:grid;grid-template-columns:76px 1fr 44px;align-items:center;gap:8px;font-size:.8rem}
+.lv2-att-row i{display:block;height:10px;border-radius:5px;background:#10b981;min-width:1px;transition:width .25s}
+.lv2-att-row b{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.lv2-att-row.is-off{opacity:.35}
+
+
 /* =========================================================================
    ESTILOS DE AUTENTICAÇÃO, DROPDOWN DO USUÁRIO & AWS CLOUD SYNC
    ========================================================================= */
@@ -3040,6 +3131,25 @@ main,.hub-main{view-transition-name:ds-page}
 #note-modal .lv2-clip-note{border:0;background:var(--m-sunk);font-weight:500;font-size:var(--m-fs-sm);border-radius:10px;padding:8px 8px 8px 14px;justify-content:space-between}
 #note-modal .lv2-clip-replay{height:28px;padding:0 12px;border-radius:8px;border:1px solid var(--m-line-2);background:transparent;color:var(--m-tx);font-weight:500;font-size:var(--m-fs-xs)}
 
+/* Blocos de IA e Inglês no mesmo ritmo visual */
+#note-modal .lv2-py{border:1px solid var(--code-line);border-radius:12px;background:var(--code-bg);margin-top:16px}
+#note-modal .lv2-py-bar,#note-modal .lv2-py-actions,#note-modal .lv2-py-out,#note-modal .lv2-py-tests:not(:empty){border-color:var(--code-line)}
+#note-modal .lv2-py-ed{color:var(--code-tx);font-size:.8125rem;line-height:1.7;padding:14px 18px}
+#note-modal .lv2-py-out{color:var(--code-tx)}
+#note-modal .lv2-py-actions .lv2-btn:not(.lv2-btn-main){background:transparent}
+#note-modal .lv2-ps-line{border-color:var(--m-line-2);background:transparent;border-radius:10px;padding:8px 8px 8px 14px}
+#note-modal .lv2-ps.is-code .lv2-ps-line{background:var(--code-bg);border-color:var(--code-line);color:var(--code-tx)}
+#note-modal .lv2-ps-btns button{border-color:var(--m-line);border-radius:8px}
+#note-modal .lv2-dlg-bubble{background:var(--m-sunk);border:0;border-radius:14px}
+#note-modal .lv2-dlg-row[data-side="b"] .lv2-dlg-bubble{background:color-mix(in srgb,var(--m-acc) 12%,var(--m-bg))}
+#note-modal .lv2-say{border-color:var(--m-line-2);background:transparent;border-radius:8px}
+#note-modal .lv2-say:hover{background:var(--m-hover)}
+#note-modal .lv2-spk{border-color:var(--m-line);border-radius:12px;padding:14px 16px}
+#note-modal .lv2-card{border-color:var(--m-line);background:var(--m-bg);border-radius:12px}
+#note-modal .lv2-card-foot{border-color:var(--m-line)}
+#note-modal .lv2-dict{border-color:var(--m-line-2);background:transparent;height:34px}
+#note-modal .lv2-note{border-radius:10px}
+
 /* Laboratórios interativos: aqui o contêiner se justifica (é uma área de manipulação) */
 #note-modal .lv2-wbox{margin-top:16px;border:1px solid var(--m-line);border-radius:14px;padding:18px;background:var(--m-sunk)}
 #note-modal .lv2-wctl{gap:10px 18px;margin-top:14px}
@@ -3527,7 +3637,7 @@ main,.hub-main{view-transition-name:ds-page}
                   <div class="topic-actions">
                     <button class="yt-btn" onclick="openStudyModal('ing-0-0-1', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">▶ YouTube</button>
                     
-                    
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('ing-0-0-1', true, 1)" title="Abrir Aula Visual & Apostila Interativa + Fórmulas + Exemplos + Código Python">📘 Aula Visual</button>
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-0-0-1')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
                     <button class="note-btn" onclick="openStudyModal('ing-0-0-1', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
@@ -3863,7 +3973,7 @@ main,.hub-main{view-transition-name:ds-page}
                   <div class="topic-actions">
                     <button class="yt-btn" onclick="openStudyModal('ing-1-2-2', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">▶ YouTube</button>
                     
-                    
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('ing-1-2-2', true, 1)" title="Abrir Aula Visual & Apostila Interativa + Fórmulas + Exemplos + Código Python">📘 Aula Visual</button>
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-1-2-2')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
                     <button class="note-btn" onclick="openStudyModal('ing-1-2-2', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
@@ -4206,7 +4316,7 @@ main,.hub-main{view-transition-name:ds-page}
                   <div class="topic-actions">
                     <button class="yt-btn" onclick="openStudyModal('ing-3-1-0', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">▶ YouTube</button>
                     
-                    
+                    <button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal('ing-3-1-0', true, 1)" title="Abrir Aula Visual & Apostila Interativa + Fórmulas + Exemplos + Código Python">📘 Aula Visual</button>
                     
                     <button class="status-btn status-btn-z" onclick="cycleStatus('ing-3-1-0')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
                     <button class="note-btn" onclick="openStudyModal('ing-3-1-0', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
@@ -6460,7 +6570,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 const TRACK_ID = "ing";
 const TOTAL_TRACK_TOPICS = 73;
-const TOPICS_MAP = {"ing-0-0-0": {"id": "ing-0-0-0", "title": "Curso de Inglês GRÁTIS - Aula Zero", "url": "https://www.youtube.com/watch?v=f9tmKAvJAAQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=1", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-0-1": {"id": "ing-0-0-1", "title": "Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=2", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-0-2": {"id": "ing-0-0-2", "title": "Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação", "url": "https://www.youtube.com/watch?v=Fx1H0rMv7Tc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=3", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-0-3": {"id": "ing-0-0-3", "title": "Curso de Inglês - Módulo 01 Aula 03 - Aula Prática", "url": "https://www.youtube.com/watch?v=Ld5fCpTBPaA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=4", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-0": {"id": "ing-0-1-0", "title": "Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa", "url": "https://www.youtube.com/watch?v=DgYgwqkGWbM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=5", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-1": {"id": "ing-0-1-1", "title": "Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100", "url": "https://www.youtube.com/watch?v=Yfysh7_TSLQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=6", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-2": {"id": "ing-0-1-2", "title": "Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)", "url": "https://www.youtube.com/watch?v=vcGoFMhPf8s&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=7", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-0": {"id": "ing-0-2-0", "title": "Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos", "url": "https://www.youtube.com/watch?v=Jepam2PotJA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=8", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-1": {"id": "ing-0-2-1", "title": "Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto", "url": "https://www.youtube.com/watch?v=CPfBy3XS3rw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=9", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-2": {"id": "ing-0-2-2", "title": "Curso de Inglês - Módulo 01 Aula 09 - Small Talk", "url": "https://www.youtube.com/watch?v=vn6_8Qi6mrY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=10", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-0": {"id": "ing-0-3-0", "title": "Curso de Inglês - Módulo 01 Aula 10 - Family Tree", "url": "https://www.youtube.com/watch?v=IawUWrFj2NU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=11", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-1": {"id": "ing-0-3-1", "title": "Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02", "url": "https://www.youtube.com/watch?v=E-9dr7XSFa0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=12", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-2": {"id": "ing-0-3-2", "title": "Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês", "url": "https://www.youtube.com/watch?v=wtwVXnmm-SU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=13", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-0": {"id": "ing-1-0-0", "title": "Curso de Inglês - Módulo 02 Aula 01 - Falando da Família", "url": "https://www.youtube.com/watch?v=DaOSZIaRX7Y&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=14", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-1": {"id": "ing-1-0-1", "title": "Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An", "url": "https://www.youtube.com/watch?v=kWJk63P_yZQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=15", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-2": {"id": "ing-1-0-2", "title": "Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária", "url": "https://www.youtube.com/watch?v=O2_WVL3A5ss&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=16", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-0": {"id": "ing-1-1-0", "title": "Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos", "url": "https://www.youtube.com/watch?v=avj_pHu-iC4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=17", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-1": {"id": "ing-1-1-1", "title": "Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT", "url": "https://www.youtube.com/watch?v=eFpF6vaC4Lg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=18", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-2": {"id": "ing-1-1-2", "title": "Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês", "url": "https://www.youtube.com/watch?v=BS1-b4ye7XM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=19", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-0": {"id": "ing-1-2-0", "title": "Curso de Inglês - Módulo 02 Aula 07 - Com que frequência", "url": "https://www.youtube.com/watch?v=alfqsc1heU0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=20", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-1": {"id": "ing-1-2-1", "title": "Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas", "url": "https://www.youtube.com/watch?v=1fFaahobZz4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=21", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-2": {"id": "ing-1-2-2", "title": "Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?", "url": "https://www.youtube.com/watch?v=Y-M_0XQxNqs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=22", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-3-0": {"id": "ing-1-3-0", "title": "Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas", "url": "https://www.youtube.com/watch?v=Wmz0G34-XrU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=23", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-3-1": {"id": "ing-1-3-1", "title": "Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver", "url": "https://www.youtube.com/watch?v=pamLZ5yBo38&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=24", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-3-2": {"id": "ing-1-3-2", "title": "Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês", "url": "https://www.youtube.com/watch?v=idWXEhKaeDM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=25", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-0-0": {"id": "ing-2-0-0", "title": "Curso de Inglês - Módulo 03 Aula 01 - Eu posso!", "url": "https://www.youtube.com/watch?v=FEKwE-Qv3vs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=26", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-0-1": {"id": "ing-2-0-1", "title": "Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns", "url": "https://www.youtube.com/watch?v=u5dfaEGYFNU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=27", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-0": {"id": "ing-2-1-0", "title": "Curso de Inglês - Módulo 03 Aula 03 - Eu deveria", "url": "https://www.youtube.com/watch?v=A2ltxVTt848&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=28", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-1": {"id": "ing-2-1-1", "title": "Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos", "url": "https://www.youtube.com/watch?v=Y7gdrj-Ybic&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=29", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-2": {"id": "ing-2-1-2", "title": "Curso de Inglês - Módulo 03 Aula 05 - Eu devo", "url": "https://www.youtube.com/watch?v=64cZmvI6Vgc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=30", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-0": {"id": "ing-2-2-0", "title": "Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas", "url": "https://www.youtube.com/watch?v=9zNciQ1cEDw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=31", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-1": {"id": "ing-2-2-1", "title": "Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will", "url": "https://www.youtube.com/watch?v=NyB6UD2AONQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=32", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-2": {"id": "ing-2-2-2", "title": "Curso de Inglês - Módulo 03 Aula 08 - Advérbios", "url": "https://www.youtube.com/watch?v=hIpbIoHMDhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=33", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-0": {"id": "ing-2-3-0", "title": "Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To", "url": "https://www.youtube.com/watch?v=UbdEe-ZxNYQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=34", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-1": {"id": "ing-2-3-1", "title": "Curso de Inglês - Módulo 03 Aula 10 - Do or Make?", "url": "https://www.youtube.com/watch?v=WngjcLm7-5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=35", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-2": {"id": "ing-2-3-2", "title": "Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades", "url": "https://www.youtube.com/watch?v=xqcp7yjjG_U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=36", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-3": {"id": "ing-2-3-3", "title": "Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos", "url": "https://www.youtube.com/watch?v=aW02r1E_3LE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=37", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-0": {"id": "ing-3-0-0", "title": "Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria", "url": "https://www.youtube.com/watch?v=l50m33RpkUE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=38", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-1": {"id": "ing-3-0-1", "title": "Curso de Inglês - Módulo 04 Aula 02 - Comparativos", "url": "https://www.youtube.com/watch?v=emDuyhYqlXw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=39", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-2": {"id": "ing-3-0-2", "title": "Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que", "url": "https://www.youtube.com/watch?v=WdVqhS24iVQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=40", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-1-0": {"id": "ing-3-1-0", "title": "Curso de Inglês - Módulo 04 Aula 04 - Superlativos", "url": "https://www.youtube.com/watch?v=HeGr10ZcxoQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=41", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-1-1": {"id": "ing-3-1-1", "title": "Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be", "url": "https://www.youtube.com/watch?v=FvenFX_x-tE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=42", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-1-2": {"id": "ing-3-1-2", "title": "Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade", "url": "https://www.youtube.com/watch?v=jmURr5xmZj4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=43", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-0": {"id": "ing-3-2-0", "title": "Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)", "url": "https://www.youtube.com/watch?v=dw5bMTE8KLo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=44", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-1": {"id": "ing-3-2-1", "title": "Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados", "url": "https://www.youtube.com/watch?v=pcumLY323g0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=45", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-2": {"id": "ing-3-2-2", "title": "Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia", "url": "https://www.youtube.com/watch?v=_5GZqUvGT4g&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=46", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-0": {"id": "ing-3-3-0", "title": "Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns", "url": "https://www.youtube.com/watch?v=-_unckJkFIc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=47", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-1": {"id": "ing-3-3-1", "title": "Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados", "url": "https://www.youtube.com/watch?v=rj5baJSLzVY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=48", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-2": {"id": "ing-3-3-2", "title": "Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria", "url": "https://www.youtube.com/watch?v=mC2yXY81mbw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=49", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-0-0": {"id": "ing-4-0-0", "title": "Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva", "url": "https://www.youtube.com/watch?v=NwfOgDuhLmE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=50", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-0-1": {"id": "ing-4-0-1", "title": "Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares", "url": "https://www.youtube.com/watch?v=EkQFgzgBIJM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=51", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-0": {"id": "ing-4-1-0", "title": "Curso de Inglês - Módulo 05 Aula 03 - E se...", "url": "https://www.youtube.com/watch?v=H8zfpyT6-Fg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=52", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-1": {"id": "ing-4-1-1", "title": "Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares", "url": "https://www.youtube.com/watch?v=RUEtguBgQ5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=53", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-2": {"id": "ing-4-1-2", "title": "Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse", "url": "https://www.youtube.com/watch?v=2dm7AWaqlv0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=54", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-0": {"id": "ing-4-2-0", "title": "Curso de Inglês - Módulo 05 Aula 06 - Prefixes", "url": "https://www.youtube.com/watch?v=-XezYg-1jgE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=55", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-1": {"id": "ing-4-2-1", "title": "Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando", "url": "https://www.youtube.com/watch?v=DrYGemNVFE0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=56", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-2": {"id": "ing-4-2-2", "title": "Curso de Inglês - Módulo 05 Aula 08 - Suffixes", "url": "https://www.youtube.com/watch?v=wvonlpPjSjk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=57", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-0": {"id": "ing-4-3-0", "title": "Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos", "url": "https://www.youtube.com/watch?v=lv7V0Y4gBjA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=58", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-1": {"id": "ing-4-3-1", "title": "Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas", "url": "https://www.youtube.com/watch?v=HkSkVauaqsg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=59", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-2": {"id": "ing-4-3-2", "title": "Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se", "url": "https://www.youtube.com/watch?v=4-rfUL-_u7U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=60", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-3": {"id": "ing-4-3-3", "title": "Curso de Inglês - Módulo 05 Aula 12 - Quantificadores", "url": "https://www.youtube.com/watch?v=-G7fCbIAJiw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=61", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-0-0": {"id": "ing-5-0-0", "title": "Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês", "url": "https://www.youtube.com/watch?v=jvzzJk-JYi0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=62", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-0-1": {"id": "ing-5-0-1", "title": "Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio", "url": "https://www.youtube.com/watch?v=nxIyHmTR380&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=63", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-0": {"id": "ing-5-1-0", "title": "Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca", "url": "https://www.youtube.com/watch?v=kNfVkkFjLks&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=64", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-1": {"id": "ing-5-1-1", "title": "Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo", "url": "https://www.youtube.com/watch?v=R7LE9GpY0Xk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=65", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-2": {"id": "ing-5-1-2", "title": "Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando", "url": "https://www.youtube.com/watch?v=qhV0VSyLi-M&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=66", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-0": {"id": "ing-5-2-0", "title": "Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio", "url": "https://www.youtube.com/watch?v=noeoRb1TmHo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=67", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-1": {"id": "ing-5-2-1", "title": "Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado", "url": "https://www.youtube.com/watch?v=P1SEKoLjDIE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=68", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-2": {"id": "ing-5-2-2", "title": "Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva", "url": "https://www.youtube.com/watch?v=5oiNmAkmkak&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=69", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-0": {"id": "ing-5-3-0", "title": "Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes", "url": "https://www.youtube.com/watch?v=zNnOZfTAS7E&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=70", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-1": {"id": "ing-5-3-1", "title": "Curso de Inglês - Módulo 06 Aula 10 - Reported Speech", "url": "https://www.youtube.com/watch?v=rKHmZvjEHvc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=71", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-2": {"id": "ing-5-3-2", "title": "Curso de Inglês - Módulo 06 Aula 11 - Três Desejos", "url": "https://www.youtube.com/watch?v=4bL5nYlIWqc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=72", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-3": {"id": "ing-5-3-3", "title": "Curso de Inglês - Módulo 06 Aula 12 - Tag Questions", "url": "https://www.youtube.com/watch?v=JrdKbC1zOhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=73", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}};
+const TOPICS_MAP = {"ing-0-0-0": {"id": "ing-0-0-0", "title": "Curso de Inglês GRÁTIS - Aula Zero", "url": "https://www.youtube.com/watch?v=f9tmKAvJAAQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=1", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-0-1": {"id": "ing-0-0-1", "title": "Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas", "url": "https://www.youtube.com/watch?v=0HHnezXSKnI&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=2", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": {"v": 2, "duracao": 40, "gancho": "Primeira reunião com um time de fora. A câmera liga e alguém diz: “<i>Hi! I'm Sarah. Nice to meet you!</i>”. Os primeiros 10 segundos de qualquer conversa em inglês são sempre os mesmos: cumprimentar, dizer o nome, perguntar como a pessoa está e se despedir. Quem domina esse roteiro começa a conversa tranquilo.", "objetivos": ["cumprimentar no horário certo (e não errar o <i>good night</i>);", "dizer seu nome e perguntar o da outra pessoa;", "responder e devolver o <i>How are you?</i>;", "se despedir de forma natural, inclusive num e-mail ou chat de trabalho."], "prerequisitos": ["Nenhum: esta é a primeira aula do curso."], "blocos": [{"tipo": "palpite", "rotulo": "Chute antes de ver", "pergunta": "São 20h e você entra numa reunião on-line com o time americano. Como cumprimenta?", "opcoes": ["Good night, everyone!", "Good evening, everyone!", "Good afternoon, everyone!"], "correta": 1, "porques": ["Esse é o erro mais comum de brasileiro! <i>Good night</i> é só para <b>despedida</b> (ou na hora de dormir). Chegar dizendo isso soa como “tchau, boa noite”.", "Isso! <i>Good evening</i> é o “boa noite” de quem está <b>chegando</b>.", "<i>Good afternoon</i> vai do meio-dia até o fim da tarde. Às 20h, já é <i>evening</i>."], "explicacao": "Em português, “boa noite” serve para chegar e para sair. Em inglês são duas expressões diferentes."}, {"tipo": "dialogo", "titulo": "Primeiro dia no time", "corpo": "<p>Ouça a conversa inteira, depois frase por frase (🔊). Tente entender antes de mostrar a tradução.</p>", "falas": [{"quem": "Sarah", "en": "Hi! I'm Sarah. What's your name?", "pt": "Oi! Eu sou a Sarah. Qual é o seu nome?"}, {"quem": "João", "en": "Hello, Sarah. My name's João. Nice to meet you.", "pt": "Olá, Sarah. Meu nome é João. Prazer em conhecer você."}, {"quem": "Sarah", "en": "Nice to meet you too. How are you?", "pt": "Prazer em conhecer você também. Como você está?"}, {"quem": "João", "en": "I'm very well, thanks. And you?", "pt": "Estou muito bem, obrigado. E você?"}, {"quem": "Sarah", "en": "I'm fine. Welcome to the team!", "pt": "Estou bem. Bem-vindo ao time!"}, {"quem": "João", "en": "Thank you! See you soon.", "pt": "Obrigado! Até breve."}, {"quem": "Sarah", "en": "Take care!", "pt": "Se cuida!"}]}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · parte 1", "id": "0HHnezXSKnI", "inicio": 122, "fim": 545, "canal": "EnglishBay", "titulo_video": "Módulo 01 Aula 01 · Cumprimentos, apresentações e despedidas", "corpo": "<p>Cumprimentos e formas de tratamento (2:02 a 9:05). Repita em voz alta sempre que ele pedir: <i>repeat</i>.</p>", "missao": ["Qual é a diferença entre <i>good evening</i> e <i>good night</i>?", "Quando você usa <i>Mr., Mrs.</i> e <i>Miss</i>, e quando usa <i>sir</i> e <i>ma'am</i>?", "Que dica de pronúncia ele dá para não confundir <i>ma'am</i> com <i>man</i>?"], "respostas": "<p><b>1.</b> <i>Good evening</i> é o boa-noite de chegada; <i>good night</i> é o de despedida.</p>\n<p><b>2.</b> <i>Mr.</i> (senhor), <i>Mrs.</i> (senhora casada) e <i>Miss</i> (senhorita) vêm <b>com o sobrenome</b>: <i>Hello, Mr. Ford</i>. Quando você não sabe o nome, usa <i>sir</i> e <i>ma'am</i> sozinhos: <i>Good morning, sir</i>.</p>\n<p><b>3.</b> Palavra que termina em som de M: <b>feche a boca</b> (<i>ma'am</i>). Terminou em N: língua no céu da boca (<i>man</i>). Trocar uma pela outra é chamar uma senhora de “homem”.</p>"}, {"tipo": "tabela", "rotulo": "Organize na cabeça", "titulo": "Cumprimentos por horário e formalidade", "cabecalho": ["Quando", "Informal", "Formal"], "linhas": [["Qualquer hora", "Hi! / Hey!", "Hello."], ["Manhã (até 12h)", "Morning!", "Good morning."], ["Tarde (12h–18h)", "Afternoon!", "Good afternoon."], ["Noite, chegando", "Hi there!", "Good evening."], ["Noite, saindo", "Night!", "Good night."]]}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · parte 2", "id": "0HHnezXSKnI", "inicio": 913, "fim": 1471, "canal": "EnglishBay", "titulo_video": "Módulo 01 Aula 01 · Cumprimentos, apresentações e despedidas", "corpo": "<p>“Prazer em conhecer” e “como você está” (15:13 a 24:31). Faça o pingue-pongue com ele em voz alta.</p>", "missao": ["Como se responde a <i>Nice to meet you</i>?", "Que duas alternativas a <i>nice</i> ele mostra?", "Além de <i>And you?</i>, que outras duas formas ele ensina para devolver uma pergunta?"], "respostas": "<p><b>1.</b> <i>Nice to meet you <b>too</b></i>: a mesma frase com “também” no final.</p>\n<p><b>2.</b> <i>Pleased to meet you</i> e <i>Glad to meet you</i>. Ele recomenda que o iniciante foque só no <i>nice</i> primeiro.</p>\n<p><b>3.</b> <i>How about you?</i> e <i>What about you?</i>, as duas significando “e quanto a você?”.</p>"}, {"tipo": "vocab", "titulo": "Frases para ter na ponta da língua", "corpo": "<p>Clique no cartão para ver a tradução. Marque <b>Já sei</b> ou <b>Rever</b>: fica salvo.</p>", "cartoes": [{"en": "Nice to meet you.", "pt": "Prazer em conhecer você.", "ex": "Hi, I'm Ana. Nice to meet you."}, {"en": "Nice to meet you too.", "pt": "Prazer em conhecer você também.", "ex": "Nice to meet you too, Ana."}, {"en": "What's your name?", "pt": "Qual é o seu nome?", "ex": "Hello! What's your name?"}, {"en": "How are you?", "pt": "Como você está?", "ex": "Hi, Tom! How are you?"}, {"en": "I'm fine, thanks. And you?", "pt": "Estou bem, obrigado. E você?", "ex": "I'm fine, thanks. And you?"}, {"en": "See you soon.", "pt": "Até breve.", "ex": "Bye, Sarah! See you soon."}, {"en": "Take care.", "pt": "Se cuida.", "ex": "Have a good weekend. Take care!"}, {"en": "I look forward to seeing you again.", "pt": "Estou ansioso para te ver de novo.", "ex": "It was great talking to you. I look forward to seeing you again."}]}, {"tipo": "ouvir", "titulo": "Escute e responda", "corpo": "<p>Clique em 🔊 (ou 🐢 para ouvir devagar). Nas três primeiras, escolha; nas duas últimas, escreva exatamente o que ouviu.</p>", "itens": [{"frase": "Good evening, Mrs. Lane.", "opcoes": ["Está chegando à noite", "Está indo dormir", "Está cumprimentando de manhã"], "correta": 0, "pt": "Boa noite, senhora Lane."}, {"frase": "Nice to meet you too.", "opcoes": ["É a primeira frase da conversa", "É uma resposta a “Nice to meet you”", "É uma despedida"], "correta": 1, "pt": "Prazer em conhecer você também."}, {"frase": "I'm not feeling well.", "opcoes": ["A pessoa está muito bem", "A pessoa não está se sentindo bem", "A pessoa está com pressa"], "correta": 1, "pt": "Não estou me sentindo bem."}, {"frase": "What's your name?", "dica": "4 palavras (contando a contração)"}, {"frase": "See you next time.", "dica": "4 palavras"}]}, {"tipo": "falar", "titulo": "Agora é a sua vez de falar", "corpo": "<p>Ouça o modelo, clique em 🎙 <b>Falar</b> e diga a frase. O navegador transcreve e mostra em verde as palavras que reconheceu. Na primeira vez ele pede permissão para usar o microfone.</p>", "frases": [{"en": "Hi, my name's João. Nice to meet you.", "pt": "Troque João pelo seu nome se quiser (o sistema vai marcar só essa palavra)."}, {"en": "I'm very well, thanks. How about you?", "pt": "Estou muito bem, obrigado. E você?"}, {"en": "Good evening, everyone.", "pt": "Boa noite (chegando), pessoal."}, {"en": "I look forward to seeing you again.", "pt": "Estou ansioso para te ver de novo."}]}, {"tipo": "armadilhas", "itens": [{"erro": "Chegar dizendo <i>Good night</i>.", "correcao": "Chegando é <i>Good evening</i>. <i>Good night</i> é despedida."}, {"erro": "Pronunciar “<i>nêimi</i>” (name) e “<i>náici</i>” (nice).", "correcao": "Sem o “i” no final: <i>name</i> termina em M (boca fechada) e <i>nice</i> em S."}, {"erro": "<i>I'm fine, and you?</i> sempre, para tudo.", "correcao": "Está certo, mas varie: <i>I'm good, thanks. How about you?</i> soa mais natural no dia a dia."}, {"erro": "Usar <i>Mr.</i> com o primeiro nome: <i>Mr. João</i>.", "correcao": "O mais comum é com o sobrenome: <i>Mr. Silva</i>. Com o primeiro nome, basta o nome."}]}, {"tipo": "ponte", "titulo": "No trabalho com tecnologia", "corpo": "<p>Os mesmos cumprimentos aparecem por escrito, em e-mails, Slack e GitHub:</p>\n<ul><li><b>Hi team,</b> / <b>Hi everyone,</b>: abertura de mensagem para um grupo.</li>\n<li><b>Nice to e-meet you!</b>: quando você conhece alguém por e-mail.</li>\n<li><b>Looking forward to working with you.</b>: o “ansioso para trabalhar com você” do primeiro contato.</li>\n<li><b>Thanks, and have a great day!</b> / <b>Best,</b>: fechamentos comuns de e-mail.</li></ul>"}, {"tipo": "quiz", "corpo": "<p>3 perguntas. Acertando 2, a camada “Vá mais fundo” é liberada e as revisões são agendadas.</p>", "perguntas": [{"pergunta": "Alguém diz “<i>Nice to meet you!</i>”. A resposta mais natural é:", "opcoes": ["Nice to meet you too!", "I'm fine, thanks.", "Good night!"], "correta": 0, "explicacao": "Repete-se a frase com <i>too</i> no final."}, {"pergunta": "Você não sabe o nome de uma cliente. Como cumprimenta formalmente de manhã?", "opcoes": ["Good morning, Mrs.!", "Good morning, ma'am.", "Good night, ma'am."], "correta": 1, "explicacao": "<i>Mrs.</i> precisa do sobrenome. Sem saber o nome, use <i>ma'am</i> (ou <i>sir</i>)."}, {"pergunta": "Qual frase NÃO serve para devolver a pergunta “How are you?”", "opcoes": ["And you?", "How about you?", "What's your name?"], "correta": 2, "explicacao": "<i>What's your name?</i> pergunta o nome. As outras duas devolvem o “e você?”."}]}, {"tipo": "camadas", "ponte": [{"nome": "YouGlish: “nice to meet you” na boca de nativos", "url": "https://youglish.com/pronounce/nice%20to%20meet%20you/english", "trecho": "ouça 5 exemplos diferentes", "tempo": 5, "foco": "Ouvir a frase em vídeos reais, com sotaques diferentes, treina o ouvido melhor do que repetir um só modelo."}], "revisao": [{"nome": "YouGlish: “good evening” na boca de nativos", "url": "https://youglish.com/pronounce/good%20evening/english", "trecho": "ouça 5 exemplos", "tempo": 5, "foco": "No dia da revisão, confira se você ainda diz <i>good evening</i> (e não <i>good night</i>) ao chegar."}]}], "resumo": ["<i>Good evening</i> ao chegar; <i>good night</i> ao sair.", "<i>My name's ...</i> / <i>What's your name?</i> / <i>Nice to meet you (too)</i>.", "<i>How are you?</i> → <i>I'm fine/very well, thanks. And you?</i>", "Despedidas: <i>See you soon</i>, <i>Take care</i>, <i>I look forward to seeing you again</i>."], "proxima": "Aula 02: idade, nacionalidade e ocupação, para completar a apresentação.", "referencias": [{"obra": "EnglishBay, Curso de Inglês, Módulo 01 Aula 01 (Teacher Júlio)", "uso": "Estrutura da aula, exemplos e dicas de pronúncia."}]}, "yt_pt_url": ""}, "ing-0-0-2": {"id": "ing-0-0-2", "title": "Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação", "url": "https://www.youtube.com/watch?v=Fx1H0rMv7Tc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=3", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-0-3": {"id": "ing-0-0-3", "title": "Curso de Inglês - Módulo 01 Aula 03 - Aula Prática", "url": "https://www.youtube.com/watch?v=Ld5fCpTBPaA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=4", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-0": {"id": "ing-0-1-0", "title": "Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa", "url": "https://www.youtube.com/watch?v=DgYgwqkGWbM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=5", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-1": {"id": "ing-0-1-1", "title": "Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100", "url": "https://www.youtube.com/watch?v=Yfysh7_TSLQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=6", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-1-2": {"id": "ing-0-1-2", "title": "Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)", "url": "https://www.youtube.com/watch?v=vcGoFMhPf8s&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=7", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-0": {"id": "ing-0-2-0", "title": "Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos", "url": "https://www.youtube.com/watch?v=Jepam2PotJA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=8", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-1": {"id": "ing-0-2-1", "title": "Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto", "url": "https://www.youtube.com/watch?v=CPfBy3XS3rw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=9", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-2-2": {"id": "ing-0-2-2", "title": "Curso de Inglês - Módulo 01 Aula 09 - Small Talk", "url": "https://www.youtube.com/watch?v=vn6_8Qi6mrY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=10", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-0": {"id": "ing-0-3-0", "title": "Curso de Inglês - Módulo 01 Aula 10 - Family Tree", "url": "https://www.youtube.com/watch?v=IawUWrFj2NU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=11", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-1": {"id": "ing-0-3-1", "title": "Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02", "url": "https://www.youtube.com/watch?v=E-9dr7XSFa0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=12", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-0-3-2": {"id": "ing-0-3-2", "title": "Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês", "url": "https://www.youtube.com/watch?v=wtwVXnmm-SU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=13", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-0": {"id": "ing-1-0-0", "title": "Curso de Inglês - Módulo 02 Aula 01 - Falando da Família", "url": "https://www.youtube.com/watch?v=DaOSZIaRX7Y&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=14", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-1": {"id": "ing-1-0-1", "title": "Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An", "url": "https://www.youtube.com/watch?v=kWJk63P_yZQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=15", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-0-2": {"id": "ing-1-0-2", "title": "Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária", "url": "https://www.youtube.com/watch?v=O2_WVL3A5ss&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=16", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-0": {"id": "ing-1-1-0", "title": "Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos", "url": "https://www.youtube.com/watch?v=avj_pHu-iC4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=17", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-1": {"id": "ing-1-1-1", "title": "Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT", "url": "https://www.youtube.com/watch?v=eFpF6vaC4Lg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=18", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-1-2": {"id": "ing-1-1-2", "title": "Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês", "url": "https://www.youtube.com/watch?v=BS1-b4ye7XM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=19", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-0": {"id": "ing-1-2-0", "title": "Curso de Inglês - Módulo 02 Aula 07 - Com que frequência", "url": "https://www.youtube.com/watch?v=alfqsc1heU0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=20", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-1": {"id": "ing-1-2-1", "title": "Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas", "url": "https://www.youtube.com/watch?v=1fFaahobZz4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=21", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-2-2": {"id": "ing-1-2-2", "title": "Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?", "url": "https://www.youtube.com/watch?v=Y-M_0XQxNqs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=22", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": {"v": 2, "duracao": 45, "gancho": "Numa chamada de vídeo, alguém pergunta: “<i>What are you doing?</i>”. Você está programando, o modelo está treinando e o café está esfriando. Para falar do que está acontecendo <b>agora</b>, o inglês usa uma estrutura quase igual à nossa: “estou fazendo” vira <i>I am doing</i>.", "objetivos": ["montar frases afirmativas, negativas e perguntas no present continuous;", "dar respostas curtas (<i>Yes, I am. / No, she isn't.</i>);", "acertar a grafia do <i>-ing</i> (dancing, putting, lying);", "perguntar e responder “o que você está fazendo?”."], "prerequisitos": ["Verbo <i>to be</i> (am, is, are) do Módulo 1."], "blocos": [{"tipo": "palpite", "rotulo": "Chute antes de ver", "pergunta": "Como dizer “Estou estudando inglês agora”?", "opcoes": ["I study English now.", "I am studying English now.", "I studying English now."], "correta": 1, "porques": ["<i>I study</i> é o presente simples: fala de hábito (“eu estudo”, toda semana), não do que está acontecendo neste momento.", "Isso! <i>am</i> (estou) + <i>studying</i> (estudando). Igualzinho ao português.", "Faltou o verbo <i>to be</i>. Sem o <i>am</i>, a frase fica como “eu estudando”."], "explicacao": "A receita é sempre: sujeito + <b>am/is/are</b> + verbo com <b>-ing</b>."}, {"tipo": "dialogo", "titulo": "Uma chamada no meio do trabalho", "falas": [{"quem": "Lucas", "en": "Hey, what are you doing?", "pt": "E aí, o que você está fazendo?"}, {"quem": "Bia", "en": "I'm debugging a script. It isn't working!", "pt": "Estou depurando um script. Ele não está funcionando!"}, {"quem": "Lucas", "en": "Are you using Python?", "pt": "Você está usando Python?"}, {"quem": "Bia", "en": "Yes, I am. I'm training a small model.", "pt": "Sim, estou. Estou treinando um modelo pequeno."}, {"quem": "Lucas", "en": "Is it learning?", "pt": "Ele está aprendendo?"}, {"quem": "Bia", "en": "No, it isn't. The loss is going up!", "pt": "Não, não está. A perda está subindo!"}, {"quem": "Lucas", "en": "Maybe the learning rate is too high.", "pt": "Talvez a taxa de aprendizado esteja alta demais."}]}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · a estrutura", "id": "Y-M_0XQxNqs", "inicio": 90, "fim": 640, "canal": "EnglishBay", "titulo_video": "Módulo 02 Aula 09 · O que você está fazendo?", "corpo": "<p>Estrutura, negativa e perguntas (1:30 a 10:40).</p>", "missao": ["Quais são as duas peças que nunca podem faltar no present continuous?", "Como ele faz a frase negativa sobre o Scott, que está no banho?", "Como se faz a pergunta? E como é a resposta curta?"], "respostas": "<p><b>1.</b> O verbo <i>to be</i> (am/is/are), entendido como “estar”, e o verbo principal com <b>-ing</b>.</p>\n<p><b>2.</b> Colocando <i>not</i> depois do <i>to be</i>: <i>Scott is not taking a bath</i> (ele está no chuveiro, <i>taking a shower</i>).</p>\n<p><b>3.</b> Invertendo o <i>to be</i> com o sujeito: <i>Is Scott taking a shower?</i> A resposta curta repete só o sujeito e o <i>to be</i>: <i>Yes, he is.</i> / <i>No, he isn't.</i></p>"}, {"tipo": "tabela", "rotulo": "Organize na cabeça", "titulo": "As três formas", "cabecalho": ["Afirmativa", "Negativa", "Pergunta", "Resposta curta"], "linhas": [["I'm working.", "I'm not working.", "Am I working?", "Yes, you are."], ["You're working.", "You aren't working.", "Are you working?", "No, I'm not."], ["She's working.", "She isn't working.", "Is she working?", "Yes, she is."], ["They're working.", "They aren't working.", "Are they working?", "No, they aren't."]]}, {"tipo": "pense", "rotulo": "Descubra a regra", "titulo": "O que acontece com a grafia?", "corpo": "<p>Observe: <i>dance → dancing</i>, <i>close → closing</i>, <i>put → putting</i>, <i>stop → stopping</i>, <i>lie → lying</i>, <i>work → working</i>.</p>", "pergunta": "Tente formular as três regras antes de abrir.", "resposta": "<p><b>1.</b> Verbo terminado em <b>-e</b> mudo: tira o <i>e</i> (<i>dance → dancing</i>).</p>\n<p><b>2.</b> Uma sílaba (ou tônica na última) terminando em <b>consoante + vogal + consoante</b>: dobra a última consoante (<i>put → putting</i>, <i>stop → stopping</i>).</p>\n<p><b>3.</b> Terminado em <b>-ie</b>: troca por <i>y</i> (<i>lie → lying</i>, <i>die → dying</i>).</p>\n<p>Fora isso, só acrescente <i>-ing</i> (<i>work → working</i>).</p>"}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · a grafia do -ing", "id": "Y-M_0XQxNqs", "inicio": 1745, "fim": 1925, "canal": "EnglishBay", "titulo_video": "Módulo 02 Aula 09 · O que você está fazendo?", "corpo": "<p>Confira as regras que você acabou de descobrir (29:05 a 32:05).</p>", "missao": ["Que curiosidade ele conta sobre o verbo <i>lie</i>?", "Na regra do CVC (consoante, vogal, consoante), a pronúncia muda quando se dobra a letra?"], "respostas": "<p><b>1.</b> <i>Lie</i> tem dois sentidos, “mentir” e “deitar”, com a mesma grafia e pronúncia. <i>He is lying</i> pode ser “ele está mentindo” ou “ele está deitando”: o contexto decide.</p>\n<p><b>2.</b> Não. Dobrar a consoante muda só a escrita (<i>putting</i>); o som é o mesmo de <i>put</i> + <i>ing</i>.</p>"}, {"tipo": "parsons", "modo": "frase", "titulo": "Monte a pergunta", "corpo": "<p>Coloque as palavras na ordem de uma pergunta em inglês.</p>", "linhas": ["What", "are", "you", "doing", "now?"], "explicacao": "<p>Palavra de pergunta (<i>What</i>) + <i>to be</i> (<i>are</i>) + sujeito (<i>you</i>) + verbo com -ing (<i>doing</i>). É a pergunta que você mais vai ouvir e fazer.</p>"}, {"tipo": "ouvir", "titulo": "Escute e responda", "itens": [{"frase": "She is brushing her hair.", "opcoes": ["Ela está escovando o cabelo", "Ela está escovando os dentes", "Ela está lavando o cabelo"], "correta": 0, "pt": "Ela está escovando o cabelo."}, {"frase": "They aren't sleeping. They're watching TV.", "opcoes": ["Eles estão dormindo", "Eles não estão dormindo, estão vendo TV", "Eles estão desligando a TV"], "correta": 1, "pt": "Eles não estão dormindo. Estão vendo TV."}, {"frase": "Who is she calling?", "opcoes": ["Para quem ela está ligando?", "Por que ela está chorando?", "Onde ela está indo?"], "correta": 0, "pt": "Para quem ela está ligando?"}, {"frase": "I'm watching a video lesson.", "dica": "5 palavras (contando I'm)"}, {"frase": "Where are you going?", "dica": "4 palavras"}]}, {"tipo": "falar", "titulo": "Agora é a sua vez de falar", "frases": [{"en": "What are you doing now?", "pt": "O que você está fazendo agora?"}, {"en": "I'm studying English.", "pt": "Estou estudando inglês."}, {"en": "We're training a new model.", "pt": "Estamos treinando um novo modelo."}, {"en": "No, it isn't working.", "pt": "Não, não está funcionando."}]}, {"tipo": "vocab", "titulo": "Verbos do dia a dia (com -ing)", "cartoes": [{"en": "working", "pt": "trabalhando", "ex": "I'm working from home today."}, {"en": "studying", "pt": "estudando", "ex": "She's studying for a test."}, {"en": "waiting", "pt": "esperando", "ex": "We're waiting for the build."}, {"en": "running", "pt": "correndo / rodando", "ex": "The script is running."}, {"en": "taking a shower", "pt": "tomando banho (de chuveiro)", "ex": "He's taking a shower."}, {"en": "going", "pt": "indo", "ex": "Where are you going?"}]}, {"tipo": "armadilhas", "itens": [{"erro": "<i>I studying now.</i>", "correcao": "Falta o <i>to be</i>: <i>I <b>am</b> studying now.</i>"}, {"erro": "<i>Are you work now?</i>", "correcao": "Falta o <i>-ing</i>: <i>Are you work<b>ing</b> now?</i>"}, {"erro": "<i>I'm knowing the answer.</i> / <i>I'm wanting coffee.</i>", "correcao": "Verbos de estado (<i>know, want, like, need, believe</i>) quase nunca vão para o -ing: <i>I know the answer. I want coffee.</i>"}, {"erro": "<i>She is calling to the police.</i>", "correcao": "<i>Call</i> não leva <i>to</i>: <i>She is calling the police.</i> (como o professor alerta no vídeo)."}]}, {"tipo": "ponte", "titulo": "No trabalho com tecnologia", "corpo": "<p>O present continuous está em toda tela de programa e em toda reunião de status:</p>\n<ul><li><b>Loading model...</b> / <b>Downloading...</b> / <b>Training is running.</b>: mensagens de progresso.</li>\n<li><b>I'm working on the login bug.</b>: “estou trabalhando no bug do login”, a frase número 1 da daily.</li>\n<li><b>The tests are failing.</b> / <b>The server isn't responding.</b>: relatar um problema que está acontecendo.</li>\n<li>No GitHub: <b>Currently working on...</b> no seu perfil.</li></ul>"}, {"tipo": "quiz", "corpo": "<p>3 perguntas. Acertando 2, a camada “Vá mais fundo” é liberada e as revisões são agendadas.</p>", "perguntas": [{"pergunta": "“<i>Is the model learning?</i>” Resposta curta negativa:", "opcoes": ["No, it isn't.", "No, it doesn't.", "No, it not learning."], "correta": 0, "explicacao": "A resposta curta usa o mesmo <i>to be</i> da pergunta: <i>is → isn't</i>."}, {"pergunta": "Qual grafia está correta?", "opcoes": ["stoping", "stopping", "stopeing"], "correta": 1, "explicacao": "<i>Stop</i> termina em consoante-vogal-consoante e tem uma sílaba: dobra o <i>p</i>."}, {"pergunta": "Qual frase está certa?", "opcoes": ["I'm needing help.", "I need help.", "I needing help."], "correta": 1, "explicacao": "<i>Need</i> é verbo de estado: fica no presente simples."}]}, {"tipo": "camadas", "ponte": [{"nome": "Teacher Elza, “Present Continuous no inglês: como usar o ING”", "url": "https://www.youtube.com/watch?v=su5NeDlSJjI", "trecho": "vídeo completo, em português", "tempo": 12, "foco": "Outra professora, outros exemplos: ótimo para fixar a estrutura por outro ângulo."}], "revisao": [{"nome": "YouGlish: “what are you doing” na boca de nativos", "url": "https://youglish.com/pronounce/what%20are%20you%20doing/english", "trecho": "ouça 5 exemplos", "tempo": 5, "foco": "Repare como os nativos juntam as palavras: “whaddaya doing?”."}]}], "resumo": ["Present continuous = <i>am/is/are</i> + verbo com <i>-ing</i>, para o que está acontecendo agora.", "Negativa: <i>not</i> depois do <i>to be</i>. Pergunta: inverta o <i>to be</i> e o sujeito.", "Grafia: tira o <i>e</i> mudo, dobra a consoante no CVC, <i>-ie</i> vira <i>y</i>.", "Verbos de estado (<i>know, want, need, like</i>) ficam no presente simples."], "proxima": "Aula 10: as horas em inglês, para dizer quando as coisas acontecem.", "referencias": [{"obra": "EnglishBay, Curso de Inglês, Módulo 02 Aula 09 (Teacher Júlio)", "uso": "Estrutura, exemplos (Scott, Marcy and Frank, Jean) e regras de grafia."}]}, "yt_pt_url": ""}, "ing-1-3-0": {"id": "ing-1-3-0", "title": "Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas", "url": "https://www.youtube.com/watch?v=Wmz0G34-XrU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=23", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-3-1": {"id": "ing-1-3-1", "title": "Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver", "url": "https://www.youtube.com/watch?v=pamLZ5yBo38&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=24", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-1-3-2": {"id": "ing-1-3-2", "title": "Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês", "url": "https://www.youtube.com/watch?v=idWXEhKaeDM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=25", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-0-0": {"id": "ing-2-0-0", "title": "Curso de Inglês - Módulo 03 Aula 01 - Eu posso!", "url": "https://www.youtube.com/watch?v=FEKwE-Qv3vs&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=26", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-0-1": {"id": "ing-2-0-1", "title": "Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns", "url": "https://www.youtube.com/watch?v=u5dfaEGYFNU&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=27", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-0": {"id": "ing-2-1-0", "title": "Curso de Inglês - Módulo 03 Aula 03 - Eu deveria", "url": "https://www.youtube.com/watch?v=A2ltxVTt848&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=28", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-1": {"id": "ing-2-1-1", "title": "Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos", "url": "https://www.youtube.com/watch?v=Y7gdrj-Ybic&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=29", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-1-2": {"id": "ing-2-1-2", "title": "Curso de Inglês - Módulo 03 Aula 05 - Eu devo", "url": "https://www.youtube.com/watch?v=64cZmvI6Vgc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=30", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-0": {"id": "ing-2-2-0", "title": "Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas", "url": "https://www.youtube.com/watch?v=9zNciQ1cEDw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=31", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-1": {"id": "ing-2-2-1", "title": "Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will", "url": "https://www.youtube.com/watch?v=NyB6UD2AONQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=32", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-2-2": {"id": "ing-2-2-2", "title": "Curso de Inglês - Módulo 03 Aula 08 - Advérbios", "url": "https://www.youtube.com/watch?v=hIpbIoHMDhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=33", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-0": {"id": "ing-2-3-0", "title": "Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To", "url": "https://www.youtube.com/watch?v=UbdEe-ZxNYQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=34", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-1": {"id": "ing-2-3-1", "title": "Curso de Inglês - Módulo 03 Aula 10 - Do or Make?", "url": "https://www.youtube.com/watch?v=WngjcLm7-5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=35", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-2": {"id": "ing-2-3-2", "title": "Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades", "url": "https://www.youtube.com/watch?v=xqcp7yjjG_U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=36", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-2-3-3": {"id": "ing-2-3-3", "title": "Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos", "url": "https://www.youtube.com/watch?v=aW02r1E_3LE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=37", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-0": {"id": "ing-3-0-0", "title": "Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria", "url": "https://www.youtube.com/watch?v=l50m33RpkUE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=38", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-1": {"id": "ing-3-0-1", "title": "Curso de Inglês - Módulo 04 Aula 02 - Comparativos", "url": "https://www.youtube.com/watch?v=emDuyhYqlXw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=39", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-0-2": {"id": "ing-3-0-2", "title": "Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que", "url": "https://www.youtube.com/watch?v=WdVqhS24iVQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=40", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-1-0": {"id": "ing-3-1-0", "title": "Curso de Inglês - Módulo 04 Aula 04 - Superlativos", "url": "https://www.youtube.com/watch?v=HeGr10ZcxoQ&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=41", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": {"v": 2, "duracao": 45, "gancho": "“O modelo <b>mais rápido</b>”, “o notebook <b>mais barato</b>”, “a <b>melhor</b> opção”. Toda comparação de ferramentas, preços e benchmarks termina num superlativo, aquele que é o número 1 do grupo. Em inglês há duas receitas e alguns rebeldes, e você vai dominar os três.", "objetivos": ["formar o superlativo de adjetivos curtos (<i>the tallest</i>) e longos (<i>the most expensive</i>);", "aplicar as regras de grafia (<i>biggest, easiest</i>);", "usar os irregulares <i>best, worst, farthest</i> e o oposto <i>the least</i>;", "saber quando o <i>the</i> sai (com possessivos)."], "prerequisitos": ["Comparativos (Módulo 4, Aula 02): <i>cheaper than, more interesting than</i>."], "blocos": [{"tipo": "palpite", "rotulo": "Chute antes de ver", "pergunta": "Como dizer “o modelo mais barato”?", "opcoes": ["the most cheap model", "the cheapest model", "the more cheap model"], "correta": 1, "porques": ["<i>Cheap</i> tem uma sílaba só: adjetivo curto não usa <i>most</i>, ganha <i>-est</i>.", "Isso! Adjetivo curto: <i>the</i> + adjetivo + <i>-est</i>.", "<i>More</i> é do comparativo, e mesmo assim adjetivo curto usaria <i>cheaper</i>."], "explicacao": "O tamanho do adjetivo decide a receita, exatamente como no comparativo."}, {"tipo": "dialogo", "titulo": "Escolhendo um modelo", "falas": [{"quem": "Rafa", "en": "Which model is the best for our chatbot?", "pt": "Qual modelo é o melhor para o nosso chatbot?"}, {"quem": "Nina", "en": "The large one is the most accurate, but it's the most expensive.", "pt": "O grande é o mais preciso, mas é o mais caro."}, {"quem": "Rafa", "en": "And which one is the fastest?", "pt": "E qual é o mais rápido?"}, {"quem": "Nina", "en": "The small one. It's the cheapest and the fastest.", "pt": "O pequeno. É o mais barato e o mais rápido."}, {"quem": "Rafa", "en": "Is it the worst option, then?", "pt": "Então é a pior opção?"}, {"quem": "Nina", "en": "No! For simple questions, it's the easiest choice.", "pt": "Não! Para perguntas simples, é a escolha mais fácil."}]}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · as duas receitas", "id": "HeGr10ZcxoQ", "inicio": 90, "fim": 643, "canal": "EnglishBay", "titulo_video": "Módulo 04 Aula 04 · Superlativos", "corpo": "<p>A estrutura e as regras dos adjetivos curtos (1:30 a 10:43).</p>", "missao": ["Como ele diz que o Everest é a montanha mais alta e a mais perigosa de escalar?", "Que palavrinha é essencial na estrutura do superlativo?", "Por que ele completa a frase com <i>in the world</i>?"], "respostas": "<p><b>1.</b> <i>Mount Everest is <b>the highest</b> mountain in the world. It's <b>the most dangerous</b> to climb, too.</i> <i>High</i> é curto (ganha <i>-est</i>); <i>dangerous</i> tem três sílabas (usa <i>the most</i>).</p>\n<p><b>2.</b> O <b>the</b>: superlativo é “o número 1”, e o <i>the</i> marca isso.</p>\n<p><b>3.</b> Porque o superlativo costuma vir com o <b>lugar ou grupo</b> de comparação, com <i>in</i>: <i>in the world, in Brazil, in my family</i>. Em conversa, quando o contexto já está claro, dá para omitir.</p>"}, {"tipo": "tabela", "rotulo": "Organize na cabeça", "titulo": "As receitas", "cabecalho": ["Tipo de adjetivo", "Regra", "Exemplos"], "linhas": [["1 sílaba", "the + adjetivo + -est", "tall → the tallest · cheap → the cheapest"], ["Termina em -e", "só + -st", "late → the latest · close → the closest"], ["Consoante-vogal-consoante", "dobra a última letra", "big → the biggest · sad → the saddest"], ["2 sílabas em -y", "y vira i + -est", "easy → the easiest · happy → the happiest"], ["2 sílabas ou mais (outros)", "the most + adjetivo", "expensive → the most expensive"], ["Irregulares", "decore", "good → the best · bad → the worst · far → the farthest"], ["O oposto (menos)", "the least + qualquer adjetivo", "the least expensive"]]}, {"tipo": "pense", "rotulo": "Descubra a regra", "titulo": "Cadê o “the”?", "corpo": "<p>Compare: <i>Larry is <b>the</b> closest friend I have.</i> e <i>Larry is <b>my</b> closest friend.</i> E também: <i>The president is <b>a country's</b> most important politician.</i></p>", "pergunta": "Em que situação o <i>the</i> desaparece?", "resposta": "<p>Quando entra um <b>possessivo</b>: <i>my, your, his, her, our, their</i> ou o <b>'s</b> (<i>a country's, Monica's</i>). O possessivo ocupa o lugar do <i>the</i>. Nunca use os dois juntos: ✗ <i>the my best friend</i>.</p>"}, {"tipo": "video", "rotulo": "Com o Teacher Júlio · os rebeldes", "id": "HeGr10ZcxoQ", "inicio": 1570, "fim": 1830, "canal": "EnglishBay", "titulo_video": "Módulo 04 Aula 04 · Superlativos", "corpo": "<p>Irregulares e o oposto, “o menos” (26:10 a 30:30).</p>", "missao": ["Quais são os superlativos de <i>good</i>, <i>bad</i> e <i>far</i>?", "Como dizer “o menos caro”? A regra muda com o tamanho do adjetivo?", "Qual dos anéis é o menos caro no exemplo dele?"], "respostas": "<p><b>1.</b> <i>Good → the best</i>, <i>bad → the worst</i>, <i>far → the farthest</i> (ou <i>the furthest</i>).</p>\n<p><b>2.</b> <i>The least expensive</i>. Não muda: <i>the least</i> serve para adjetivos de qualquer tamanho.</p>\n<p><b>3.</b> O de prata: <i>The silver ring is the least expensive.</i></p>"}, {"tipo": "parsons", "modo": "frase", "titulo": "Monte a frase", "corpo": "<p>Ordene as palavras para dizer “Este é o maior modelo aberto”.</p>", "linhas": ["This", "is", "the", "largest", "open", "model."], "explicacao": "<p><i>Large</i> termina em <i>-e</i>: só ganha <i>-st</i> (<i>largest</i>). O superlativo vem antes do substantivo, depois do <i>the</i>.</p>"}, {"tipo": "ouvir", "titulo": "Escute e responda", "itens": [{"frase": "It's the most expensive ring.", "opcoes": ["É o anel mais caro", "É o anel menos caro", "É um anel caro"], "correta": 0, "pt": "É o anel mais caro."}, {"frase": "This is the worst restaurant in my city.", "opcoes": ["O melhor restaurante da cidade", "O pior restaurante da minha cidade", "Um restaurante novo na cidade"], "correta": 1, "pt": "Este é o pior restaurante da minha cidade."}, {"frase": "Larry is my closest friend.", "opcoes": ["Larry é meu amigo mais próximo", "Larry mora mais perto de mim", "Larry é meu amigo mais antigo"], "correta": 0, "pt": "Larry é meu amigo mais próximo."}, {"frase": "It's the saddest movie ever.", "dica": "5 palavras (contando It's)"}, {"frase": "What is the easiest way to learn English?", "dica": "8 palavras"}]}, {"tipo": "falar", "titulo": "Agora é a sua vez de falar", "frases": [{"en": "Mount Everest is the highest mountain in the world.", "pt": "O Everest é a montanha mais alta do mundo."}, {"en": "This is the best day ever.", "pt": "Este é o melhor dia de todos."}, {"en": "It's the most important part of the project.", "pt": "É a parte mais importante do projeto."}, {"en": "The small model is the cheapest.", "pt": "O modelo pequeno é o mais barato."}]}, {"tipo": "armadilhas", "itens": [{"erro": "<i>the most big</i> / <i>the most cheap</i>", "correcao": "Adjetivo curto ganha <i>-est</i>: <i>the biggest</i>, <i>the cheapest</i>."}, {"erro": "<i>the best of the world</i>", "correcao": "Lugar vem com <i>in</i>: <i>the best <b>in</b> the world</i>."}, {"erro": "Esquecer o <i>the</i>: <i>She is best student.</i>", "correcao": "<i>She is <b>the</b> best student.</i> (a menos que haja possessivo: <i>my best student</i>)."}, {"erro": "<i>the most good</i> / <i>the baddest</i>", "correcao": "Irregulares: <i>the best</i> e <i>the worst</i>."}]}, {"tipo": "ponte", "titulo": "No mundo de IA", "corpo": "<p>Anúncios de modelos e tabelas de benchmark vivem de superlativos:</p>\n<ul><li><b>state-of-the-art</b> (SOTA): o melhor resultado conhecido até agora.</li>\n<li><b>our most capable model</b> / <b>our fastest model</b>: como as empresas apresentam modelos novos.</li>\n<li><b>the largest open-weight model</b>: o maior modelo com pesos abertos.</li>\n<li><b>the lowest latency</b> / <b>the highest accuracy</b>: a menor latência, a maior precisão.</li></ul>"}, {"tipo": "quiz", "corpo": "<p>3 perguntas. Acertando 2, a camada “Vá mais fundo” é liberada e as revisões são agendadas.</p>", "perguntas": [{"pergunta": "Qual está correta?", "opcoes": ["the easyest", "the easiest", "the most easy"], "correta": 1, "explicacao": "Duas sílabas terminando em <i>-y</i>: troca por <i>i</i> e acrescenta <i>-est</i>."}, {"pergunta": "“O pior bug do projeto” é:", "opcoes": ["the baddest bug in the project", "the worst bug in the project", "the most bad bug of the project"], "correta": 1, "explicacao": "<i>Bad</i> é irregular: <i>the worst</i>. E o grupo vem com <i>in</i>."}, {"pergunta": "Qual frase está certa?", "opcoes": ["She is the my best friend.", "She is my best friend.", "She is my the best friend."], "correta": 1, "explicacao": "O possessivo substitui o <i>the</i>."}]}, {"tipo": "camadas", "ponte": [{"nome": "YouGlish: “the most important” na boca de nativos", "url": "https://youglish.com/pronounce/the%20most%20important/english", "trecho": "ouça 5 exemplos", "tempo": 5, "foco": "Repare que o <i>t</i> de <i>most</i> quase some antes de consoante: “the mos' important”."}], "revisao": [{"nome": "Teacher Elza, “Os comparativos e superlativos em inglês”", "url": "https://www.youtube.com/watch?v=UcQeFtrAVis", "trecho": "vídeo completo, em português", "tempo": 9, "foco": "Outra explicação curta, juntando comparativo e superlativo: ótima para o dia da revisão."}]}], "resumo": ["Curto: <i>the</i> + adjetivo + <i>-est</i>. Longo: <i>the most</i> + adjetivo.", "Grafia: <i>-e</i> só + <i>st</i>; CVC dobra a consoante; <i>-y</i> vira <i>-iest</i>.", "Irregulares: <i>the best, the worst, the farthest</i>. Oposto: <i>the least</i> + qualquer adjetivo.", "Possessivo (<i>my, Monica's</i>) substitui o <i>the</i>; o grupo de comparação vem com <i>in</i>."], "proxima": "Aula 05: o passado do verbo <i>to be</i> (<i>was, were</i>).", "referencias": [{"obra": "EnglishBay, Curso de Inglês, Módulo 04 Aula 04 (Teacher Júlio)", "uso": "Estrutura, exemplos (Everest, Amazon River, Larry, anéis) e irregulares."}]}, "yt_pt_url": ""}, "ing-3-1-1": {"id": "ing-3-1-1", "title": "Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be", "url": "https://www.youtube.com/watch?v=FvenFX_x-tE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=42", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-1-2": {"id": "ing-3-1-2", "title": "Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade", "url": "https://www.youtube.com/watch?v=jmURr5xmZj4&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=43", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-0": {"id": "ing-3-2-0", "title": "Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)", "url": "https://www.youtube.com/watch?v=dw5bMTE8KLo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=44", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-1": {"id": "ing-3-2-1", "title": "Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados", "url": "https://www.youtube.com/watch?v=pcumLY323g0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=45", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-2-2": {"id": "ing-3-2-2", "title": "Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia", "url": "https://www.youtube.com/watch?v=_5GZqUvGT4g&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=46", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-0": {"id": "ing-3-3-0", "title": "Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns", "url": "https://www.youtube.com/watch?v=-_unckJkFIc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=47", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-1": {"id": "ing-3-3-1", "title": "Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados", "url": "https://www.youtube.com/watch?v=rj5baJSLzVY&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=48", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-3-3-2": {"id": "ing-3-3-2", "title": "Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria", "url": "https://www.youtube.com/watch?v=mC2yXY81mbw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=49", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-0-0": {"id": "ing-4-0-0", "title": "Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva", "url": "https://www.youtube.com/watch?v=NwfOgDuhLmE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=50", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-0-1": {"id": "ing-4-0-1", "title": "Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares", "url": "https://www.youtube.com/watch?v=EkQFgzgBIJM&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=51", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-0": {"id": "ing-4-1-0", "title": "Curso de Inglês - Módulo 05 Aula 03 - E se...", "url": "https://www.youtube.com/watch?v=H8zfpyT6-Fg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=52", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-1": {"id": "ing-4-1-1", "title": "Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares", "url": "https://www.youtube.com/watch?v=RUEtguBgQ5w&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=53", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-1-2": {"id": "ing-4-1-2", "title": "Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse", "url": "https://www.youtube.com/watch?v=2dm7AWaqlv0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=54", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-0": {"id": "ing-4-2-0", "title": "Curso de Inglês - Módulo 05 Aula 06 - Prefixes", "url": "https://www.youtube.com/watch?v=-XezYg-1jgE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=55", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-1": {"id": "ing-4-2-1", "title": "Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando", "url": "https://www.youtube.com/watch?v=DrYGemNVFE0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=56", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-2-2": {"id": "ing-4-2-2", "title": "Curso de Inglês - Módulo 05 Aula 08 - Suffixes", "url": "https://www.youtube.com/watch?v=wvonlpPjSjk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=57", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-0": {"id": "ing-4-3-0", "title": "Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos", "url": "https://www.youtube.com/watch?v=lv7V0Y4gBjA&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=58", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-1": {"id": "ing-4-3-1", "title": "Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas", "url": "https://www.youtube.com/watch?v=HkSkVauaqsg&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=59", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-2": {"id": "ing-4-3-2", "title": "Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se", "url": "https://www.youtube.com/watch?v=4-rfUL-_u7U&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=60", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-4-3-3": {"id": "ing-4-3-3", "title": "Curso de Inglês - Módulo 05 Aula 12 - Quantificadores", "url": "https://www.youtube.com/watch?v=-G7fCbIAJiw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=61", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-0-0": {"id": "ing-5-0-0", "title": "Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês", "url": "https://www.youtube.com/watch?v=jvzzJk-JYi0&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=62", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-0-1": {"id": "ing-5-0-1", "title": "Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio", "url": "https://www.youtube.com/watch?v=nxIyHmTR380&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=63", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-0": {"id": "ing-5-1-0", "title": "Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca", "url": "https://www.youtube.com/watch?v=kNfVkkFjLks&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=64", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-1": {"id": "ing-5-1-1", "title": "Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo", "url": "https://www.youtube.com/watch?v=R7LE9GpY0Xk&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=65", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-1-2": {"id": "ing-5-1-2", "title": "Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando", "url": "https://www.youtube.com/watch?v=qhV0VSyLi-M&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=66", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-0": {"id": "ing-5-2-0", "title": "Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio", "url": "https://www.youtube.com/watch?v=noeoRb1TmHo&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=67", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-1": {"id": "ing-5-2-1", "title": "Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado", "url": "https://www.youtube.com/watch?v=P1SEKoLjDIE&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=68", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-2-2": {"id": "ing-5-2-2", "title": "Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva", "url": "https://www.youtube.com/watch?v=5oiNmAkmkak&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=69", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-0": {"id": "ing-5-3-0", "title": "Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes", "url": "https://www.youtube.com/watch?v=zNnOZfTAS7E&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=70", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-1": {"id": "ing-5-3-1", "title": "Curso de Inglês - Módulo 06 Aula 10 - Reported Speech", "url": "https://www.youtube.com/watch?v=rKHmZvjEHvc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=71", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-2": {"id": "ing-5-3-2", "title": "Curso de Inglês - Módulo 06 Aula 11 - Três Desejos", "url": "https://www.youtube.com/watch?v=4bL5nYlIWqc&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=72", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}, "ing-5-3-3": {"id": "ing-5-3-3", "title": "Curso de Inglês - Módulo 06 Aula 12 - Tag Questions", "url": "https://www.youtube.com/watch?v=JrdKbC1zOhw&list=PLZ65xj2SRHQB0T2GGk-R7bYxorKUkcyoj&index=73", "label": "▶ YouTube", "url2": "", "label2": "🎬 2ª Opção de Vídeo", "doc_url": "", "doc_label": "📖 Material", "pt_guide": null, "yt_pt_url": ""}};
 const KEY = "roteiro-ia-v1";
 let PR = {};
 let FILTER = "all";
@@ -9243,7 +9353,9 @@ function lv2Block(b, i, n) {
   const tipo = b.tipo || "texto";
   const meta = LV2_META[tipo] || LV2_META.texto;
   let inner = b.corpo ? `<div class="lv2-prose">${b.corpo}</div>` : "";
-  switch (tipo) {
+  // Blocos de IA e Inglês (código executável, diálogo, escuta, fala, vocabulário...) vêm de lesson_blocks_v3.py
+  if (typeof LV2_EXTRA !== "undefined" && LV2_EXTRA[tipo]) inner += LV2_EXTRA[tipo](b, i, n);
+  else switch (tipo) {
     case "notacao":
       inner += `<div class="lv2-notation">` + (b.itens || []).map(it =>
         `<div class="lv2-not-row"><div class="lv2-not-sym">${it.simbolo}</div><div>` +
@@ -9285,6 +9397,8 @@ function lv2Block(b, i, n) {
                `<tbody>${(b.linhas || []).map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
       break;
     case "palpite":
+      // Com "codigo", vira o exercício "preveja a saída" (o código aparece antes das alternativas)
+      if (b.codigo) inner += `<pre class="lv2-code"><code>${lv2HighlightPy(b.codigo)}</code></pre>`;
       inner += `<div class="lv2-q">${b.pergunta || ""}</div><div class="lv2-opts">` +
         (b.opcoes || []).map((o, k) => `<button type="button" class="lv2-opt" data-lv2="palpite" data-k="${k}" data-ok="${k === b.correta ? 1 : 0}">${o}</button>`).join("") +
         `</div><div class="lv2-fb" hidden><div class="lv2-fb-msg"></div>` +
@@ -9696,6 +9810,7 @@ function lv2Init(container) {
     if (res) { res.innerHTML = `Você já passou neste quiz (${rec.score}/${rec.total}). Refaça quando chegar o dia da revisão.`; lv2ShowReview(root, rec); }
   }
   lv2RestoreAnswers(root, topicId);
+  if (typeof lv2InitExtra === "function") lv2InitExtra(root, topicId);
 
   const checks = [...root.querySelectorAll(".lv2-check")];
   const checkKey = box => String(checks.indexOf(box));
@@ -9741,6 +9856,463 @@ function lv2Init(container) {
       lv2SaveAnswer(topicId, a => { a.u = 1; });
     }
   });
+}
+
+
+// =========================================================================
+// BLOCOS NOVOS: IA (código executável) e Inglês (ouvir, falar, vocabulário)
+// =========================================================================
+Object.assign(LV2_META, {
+  codigo:  { icon: "", label: "Mão no código" },
+  parsons: { icon: "", label: "Monte na ordem certa" },
+  dialogo: { icon: "", label: "Situação real" },
+  ouvir:   { icon: "", label: "Ouça e responda" },
+  falar:   { icon: "", label: "Fale e compare" },
+  vocab:   { icon: "", label: "Vocabulário da aula" }
+});
+
+const lv2Attr = s => lv2Esc(s).replace(/"/g, "&quot;");
+const LV2_SPECS = {};      // dados de cada bloco interativo, por id (evita JSON em atributos)
+
+// ---------------------------------------------------------------- voz (TTS)
+let lv2Voice = null;
+function lv2PickVoice() {
+  if (!("speechSynthesis" in window)) return null;
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v => /^en[-_]US/i.test(v.lang) && /Google|Natural|Aria|Jenny|Samantha|Guy/i.test(v.name)) ||
+         vs.find(v => /^en[-_]US/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null;
+}
+if ("speechSynthesis" in window) { lv2Voice = lv2PickVoice(); speechSynthesis.onvoiceschanged = () => { lv2Voice = lv2PickVoice(); }; }
+function lv2Speak(texts, rate) {
+  if (!("speechSynthesis" in window)) { if (typeof showToast === "function") showToast("Seu navegador não tem voz sintetizada."); return; }
+  speechSynthesis.cancel();
+  if (!lv2Voice) lv2Voice = lv2PickVoice();
+  // Sem voz em inglês instalada, o navegador leria com sotaque de português: avisa o aluno uma vez
+  if (!lv2Voice && speechSynthesis.getVoices().length && !lv2Speak.warned) {
+    lv2Speak.warned = true;
+    if (typeof showToast === "function") showToast("Seu navegador não tem voz em inglês. Use o Chrome ou o Edge, ou instale a fala em inglês no Windows (Configurações › Hora e idioma › Fala).");
+  }
+  (Array.isArray(texts) ? texts : [texts]).forEach(t => {
+    const u = new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g, ""));
+    u.lang = "en-US"; u.rate = rate || 0.95;
+    if (lv2Voice) u.voice = lv2Voice;
+    speechSynthesis.speak(u);
+  });
+}
+const lv2SayBtn = (text, label) => `<button type="button" class="lv2-say" data-lv2x="say" data-text="${lv2Attr(text)}" aria-label="Ouvir em inglês" title="Ouvir">${label || "🔊"}</button>`;
+// apóstrofo é ignorado: "what's" e "whats" contam como a mesma palavra
+const lv2Norm = s => String(s).toLowerCase().replace(/[’']/g, "").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+
+// Compara palavras: quais da frase esperada apareceram no que foi dito/escrito
+function lv2WordDiff(expected, got) {
+  const exp = lv2Norm(expected).split(" ").filter(Boolean), have = lv2Norm(got).split(" ").filter(Boolean);
+  const pool = have.slice();
+  let hits = 0;
+  const html = exp.map(w => { const k = pool.indexOf(w); if (k >= 0) { pool.splice(k, 1); hits++; return `<span class="lv2-w-ok">${w}</span>`; } return `<span class="lv2-w-miss">${w}</span>`; }).join(" ");
+  return { pct: exp.length ? Math.round(100 * hits / exp.length) : 0, html, exact: lv2Norm(expected) === lv2Norm(got) };
+}
+
+// ---------------------------------------------------------------- Python no navegador (Pyodide em Web Worker)
+const LV2_PYODIDE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
+const LV2_PY_WORKER = [
+  'importScripts("' + LV2_PYODIDE + '");',
+  "let py = null;",
+  "const last = e => { const t = String(e && e.message || e).trim().split('\\n').filter(Boolean); return t.slice(-1)[0] || 'Erro'; };",
+  "const tb = e => { const t = String(e && e.message || e).trim().split('\\n').filter(Boolean); const k = t.findIndex(l => l.includes('File \"<exec>\"')); return (k >= 0 ? t.slice(k) : t.slice(-3)).join('\\n'); };",
+  "self.onmessage = async (ev) => {",
+  "  const m = ev.data;",
+  "  try {",
+  "    if (!py) py = await loadPyodide();",
+  "    if (m.boot) { self.postMessage({ id: m.id, ok: true }); return; }",
+  "    let out = '';",
+  "    py.setStdout({ batched: s => { out += s + '\\n'; } });",
+  "    py.setStderr({ batched: s => { out += s + '\\n'; } });",
+  "    try { await py.loadPackagesFromImports(m.code); } catch (_) {}",
+  "    const ns = py.globals.get('dict')();",
+  "    let err = null;",
+  "    try { await py.runPythonAsync(m.code, { globals: ns, filename: '<exec>' }); } catch (e) { err = tb(e); }",
+  "    const results = [];",
+  "    if (!err) for (const t of (m.tests || [])) {",
+  "      try { ns.set('saida', out); await py.runPythonAsync(t.codigo, { globals: ns }); results.push({ nome: t.nome, ok: true }); }",
+  "      catch (e) { results.push({ nome: t.nome, ok: false, msg: last(e).replace(/^AssertionError:?\\s*/, '') }); }",
+  "    }",
+  "    ns.destroy();",
+  "    self.postMessage({ id: m.id, ok: true, out, err, results });",
+  "  } catch (e) { self.postMessage({ id: m.id, ok: false, err: String(e && e.message || e) }); }",
+  "};"
+].join("\n");
+let lv2PyW = null, lv2PyReady = false, lv2PySeq = 0;
+const lv2PyPend = {};
+function lv2PyWorker() {
+  if (lv2PyW) return lv2PyW;
+  lv2PyW = new Worker(URL.createObjectURL(new Blob([LV2_PY_WORKER], { type: "text/javascript" })));
+  lv2PyW.onmessage = e => { const cb = lv2PyPend[e.data.id]; if (cb) { delete lv2PyPend[e.data.id]; cb(e.data); } };
+  lv2PyW.onerror = e => { Object.keys(lv2PyPend).forEach(k => { lv2PyPend[k]({ ok: false, err: "Não foi possível carregar o Python (" + (e.message || "sem internet?") + ")." }); delete lv2PyPend[k]; }); lv2PyW = null; lv2PyReady = false; };
+  return lv2PyW;
+}
+function lv2PyCall(msg, timeoutMs) {
+  return new Promise(res => {
+    const id = ++lv2PySeq, w = lv2PyWorker();
+    let done = false;
+    const t = setTimeout(() => {
+      if (done) return; done = true; delete lv2PyPend[id];
+      try { w.terminate(); } catch (_) {}
+      lv2PyW = null; lv2PyReady = false;
+      res({ ok: false, timeout: true });
+    }, timeoutMs);
+    lv2PyPend[id] = d => { if (done) return; done = true; clearTimeout(t); res(d); };
+    w.postMessage(Object.assign({ id }, msg));
+  });
+}
+async function lv2PyRun(code, tests, status) {
+  if (!lv2PyReady) {
+    status("Carregando o Python no navegador (só na primeira vez, ~10 MB)...");
+    const b = await lv2PyCall({ boot: true }, 120000);
+    if (!b.ok) return b.timeout ? { ok: false, err: "O Python demorou demais para carregar. Verifique a internet e tente de novo." } : b;
+    lv2PyReady = true;
+  }
+  status("Rodando...");
+  return lv2PyCall({ code, tests }, 8000);
+}
+
+// ---------------------------------------------------------------- renderizadores
+const LV2_EXTRA = {
+  codigo(b, i) {
+    const id = `py-${i}`;
+    LV2_SPECS[id] = { inicial: b.inicial || "", testes: b.testes || [] };
+    const rows = Math.min(18, Math.max(5, (b.inicial || "").split("\n").length + 2));
+    let h = b.enunciado ? `<div class="lv2-q">${b.enunciado}</div>` : "";
+    h += `<div class="lv2-py" data-py="${id}">` +
+      `<div class="lv2-py-bar"><span class="lv2-py-lang">Python</span><span class="lv2-py-status"></span></div>` +
+      `<textarea class="lv2-py-ed" spellcheck="false" autocapitalize="off" autocomplete="off" rows="${rows}" aria-label="Editor de código Python">${lv2Esc(b.inicial || "")}</textarea>` +
+      `<div class="lv2-py-actions"><button type="button" class="lv2-btn" data-lv2x="py-run">▶ Rodar</button>` +
+      ((b.testes || []).length ? `<button type="button" class="lv2-btn lv2-btn-main" data-lv2x="py-check">✓ Verificar</button>` : "") +
+      `<button type="button" class="lv2-btn lv2-btn-ghost" data-lv2x="py-reset" title="Voltar ao código inicial">↺ Recomeçar</button></div>` +
+      `<pre class="lv2-py-out" hidden></pre><div class="lv2-py-tests"></div></div>`;
+    (b.dicas || []).forEach((d, j) => { h += `<details><summary>Dica ${j + 1}</summary><div>${d}</div></details>`; });
+    if (b.solucao) h += `<details><summary>Ver uma solução</summary><div><pre class="lv2-code"><code>${lv2HighlightPy(b.solucao)}</code></pre>${b.explicacao || ""}</div></details>`;
+    return h;
+  },
+
+  parsons(b, i) {
+    const id = `ps-${i}`, lines = b.linhas || [];
+    LV2_SPECS[id] = { linhas: lines };
+    // embaralha de forma estável (sempre na mesma ordem para a mesma aula), nunca na ordem certa
+    let order = lines.map((_, k) => k), seed = 7 + i * 13;
+    for (let k = order.length - 1; k > 0; k--) { seed = (seed * 9301 + 49297) % 233280; const j = Math.floor(seed / 233280 * (k + 1)); [order[k], order[j]] = [order[j], order[k]]; }
+    if (order.every((v, k) => v === k) && order.length > 1) order.push(order.shift());
+    const isCode = b.modo !== "frase";
+    return `<ol class="lv2-ps ${isCode ? "is-code" : "is-words"}" data-ps="${id}">` + order.map(k =>
+      `<li class="lv2-ps-line" data-k="${k}"><span class="lv2-ps-txt">${isCode ? lv2HighlightPy(lines[k]) : lv2Esc(lines[k])}</span>` +
+      `<span class="lv2-ps-btns"><button type="button" data-lv2x="ps-up" aria-label="Subir">↑</button><button type="button" data-lv2x="ps-down" aria-label="Descer">↓</button></span></li>`).join("") +
+      `</ol><div class="lv2-wbtns"><button type="button" class="lv2-btn lv2-btn-main" data-lv2x="ps-check">Conferir a ordem</button></div><div class="lv2-ps-msg"></div>` +
+      (b.explicacao ? `<details><summary>Ver a explicação</summary><div>${b.explicacao}</div></details>` : "");
+  },
+
+  dialogo(b, i) {
+    const falas = b.falas || [], a = falas.length ? falas[0].quem : "";
+    LV2_SPECS[`dl-${i}`] = falas.map(f => f.en);
+    return `<div class="lv2-dlg" data-dl="dl-${i}">` + falas.map(f =>
+      `<div class="lv2-dlg-row" data-side="${f.quem === a ? "a" : "b"}"><div class="lv2-dlg-who">${f.quem}</div>` +
+      `<div class="lv2-dlg-bubble">${lv2SayBtn(f.en)}<div><div class="lv2-dlg-en">${f.en}</div><div class="lv2-dlg-pt" hidden>${f.pt || ""}</div></div></div></div>`).join("") +
+      `</div><div class="lv2-wbtns"><button type="button" class="lv2-btn lv2-btn-main" data-lv2x="dlg-all">▶ Ouvir a conversa</button>` +
+      `<button type="button" class="lv2-btn" data-lv2x="dlg-slow">🐢 Mais devagar</button><button type="button" class="lv2-btn" data-lv2x="dlg-pt">Mostrar tradução</button></div>`;
+  },
+
+  ouvir(b, i) {
+    return `<div class="lv2-listen">` + (b.itens || []).map((it, k) => {
+      const head = `<div class="lv2-lis-head"><span class="lv2-ex-n">${k + 1}</span>${lv2SayBtn(it.frase, "🔊 Ouvir")}${lv2SayBtn(it.frase, "🐢")}` +
+        (it.dica ? `<span class="lv2-lis-hint">${it.dica}</span>` : "") + `</div>`;
+      if (it.opcoes) {
+        return `<div class="lv2-lis" data-lis="${k}">${head}<div class="lv2-opts">` + it.opcoes.map((o, j) =>
+          `<button type="button" class="lv2-opt" data-lv2x="lis-opt" data-j="${j}" data-ok="${j === it.correta ? 1 : 0}">${o}</button>`).join("") +
+          `</div><div class="lv2-lis-reveal" hidden>Áudio: <b>${it.frase}</b>${it.pt ? ` <span class="lv2-muted">(${it.pt})</span>` : ""}</div></div>`;
+      }
+      return `<div class="lv2-lis" data-lis="${k}" data-frase="${lv2Attr(it.frase)}">${head}<div class="lv2-dictbox"><input type="text" class="lv2-dict" aria-label="Escreva o que ouviu" placeholder="escreva o que ouviu" autocapitalize="off" spellcheck="false">` +
+        `<button type="button" class="lv2-btn" data-lv2x="lis-dict">Conferir</button></div><div class="lv2-lis-res"></div></div>`;
+    }).join("") + `</div>`;
+  },
+
+  falar(b, i) {
+    const ok = "webkitSpeechRecognition" in window || "SpeechRecognition" in window;
+    return (ok ? "" : `<div class="lv2-note">Seu navegador não reconhece fala (funciona no Chrome e no Edge). Você ainda pode ouvir o modelo e repetir em voz alta.</div>`) +
+      `<div class="lv2-speak">` + (b.frases || []).map((f, k) =>
+        `<div class="lv2-spk" data-spk="${k}" data-frase="${lv2Attr(f.en)}"><div class="lv2-spk-en">${f.en}</div>` +
+        (f.pt ? `<div class="lv2-spk-pt">${f.pt}</div>` : "") +
+        `<div class="lv2-spk-btns">${lv2SayBtn(f.en, "🔊 Modelo")}${lv2SayBtn(f.en, "🐢")}` +
+        (ok ? `<button type="button" class="lv2-btn lv2-btn-main" data-lv2x="spk">🎙 Falar</button>` : "") +
+        `</div><div class="lv2-spk-res"></div></div>`).join("") + `</div>`;
+  },
+
+  vocab(b, i) {
+    const cards = b.cartoes || [];
+    return `<div class="lv2-vocab" data-vc="${i}">` + cards.map((c, k) =>
+      `<div class="lv2-card" data-k="${k}"><button type="button" class="lv2-card-face" data-lv2x="vc-flip" aria-label="Virar cartão">` +
+      `<span class="lv2-card-en">${c.en}</span><span class="lv2-card-back" hidden><span class="lv2-card-pt">${c.pt}</span>${c.ex ? `<span class="lv2-card-ex">${c.ex}</span>` : ""}</span></button>` +
+      `<div class="lv2-card-foot">${lv2SayBtn(c.ex || c.en)}<button type="button" class="lv2-card-mark" data-lv2x="vc-know" data-v="1">Já sei</button><button type="button" class="lv2-card-mark" data-lv2x="vc-know" data-v="0">Rever</button></div></div>`).join("") +
+      `</div><div class="lv2-vc-sum"></div>`;
+  }
+};
+
+// ---------------------------------------------------------------- laboratórios novos
+Object.assign(LV2_WIDGETS, {
+  // Regressão logística: horas de estudo -> chance de passar. Ajuste w e b ou deixe o gradiente ajustar.
+  logistica(el) {
+    const D = [[0.5,0],[1,0],[1.5,0],[2,0],[2.5,1],[3,0],[3.5,0],[4,1],[4.5,0],[5,1],[5.5,1],[6,0],[6.5,1],[7,1],[8,1],[9,1]];
+    const W = 340, H = 220, P = 26, X = x => P + x / 10 * (W - 2 * P), Y = y => H - P - y * (H - 2 * P);
+    const sig = z => 1 / (1 + Math.exp(-z));
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="lv2-wsvg" role="img" aria-label="Curva logística sobre os dados"></svg>` +
+      `<div class="lv2-wctl">${lv2Slider("w", "w (inclinação)", -3, 3, 0.5, 0.1)}${lv2Slider("b", "b (deslocamento)", -10, 10, -1, 0.1)}${lv2Slider("t", "limiar de decisão", 0.1, 0.9, 0.5, 0.05)}</div>` +
+      `<div class="lv2-wbtns"><button type="button" class="lv2-btn" data-lg="fit">Deixar o gradiente ajustar</button></div><div class="lv2-wout"></div>`;
+    const svg = el.querySelector("svg"), out = el.querySelector(".lv2-wout");
+    let cur = null;
+    const draw = o => {
+      cur = o;
+      let g = "";
+      for (let y = 0; y <= 1.0001; y += 0.25) g += `<line x1="${P}" y1="${Y(y)}" x2="${W - P}" y2="${Y(y)}" class="sv-ax"/><text x="4" y="${Y(y) + 4}" class="sv-tm">${Math.round(y * 100)}%</text>`;
+      for (let x = 0; x <= 10; x += 2) g += `<text x="${X(x) - 4}" y="${H - 8}" class="sv-tm">${x}h</text>`;
+      g += `<line x1="${P}" y1="${Y(o.t)}" x2="${W - P}" y2="${Y(o.t)}" stroke="#e8a100" stroke-dasharray="5 4" stroke-width="1.3"/>`;
+      let path = "";
+      for (let k = 0; k <= 100; k++) { const x = k / 10; path += (k ? "L" : "M") + X(x).toFixed(1) + " " + Y(sig(o.w * x + o.b)).toFixed(1); }
+      g += `<path d="${path}" fill="none" stroke="#10b981" stroke-width="2.6"/>`;
+      let hit = 0, loss = 0;
+      D.forEach(([x, y]) => {
+        const p = sig(o.w * x + o.b), pred = p >= o.t ? 1 : 0, ok = pred === y;
+        hit += ok; loss += -(y ? Math.log(Math.max(p, 1e-9)) : Math.log(Math.max(1 - p, 1e-9)));
+        g += `<circle cx="${X(x)}" cy="${Y(y)}" r="5" fill="${y ? "var(--tx)" : "none"}" stroke="${ok ? "var(--tx)" : "#ef4444"}" stroke-width="${ok ? 1.5 : 2.5}"/>`;
+      });
+      if (Math.abs(o.w) > 1e-6) {
+        const xb = (Math.log(o.t / (1 - o.t)) - o.b) / o.w;
+        if (xb > 0 && xb < 10) g += `<line x1="${X(xb)}" y1="${P}" x2="${X(xb)}" y2="${H - P}" stroke="#e8a100" stroke-width="1"/><text x="${X(xb) + 4}" y="${Y(0.62)}" class="sv-tm">fronteira ≈ ${lv2Num(xb)}h</text>`;
+      }
+      svg.innerHTML = g;
+      out.innerHTML = `Acertos: <b>${hit}/${D.length}</b> (${Math.round(100 * hit / D.length)}%) · perda logarítmica média: <b>${lv2Num(loss / D.length)}</b>` +
+        `<div style="font-size:.76rem;color:var(--mu);margin-top:4px">Bolinha cheia = passou, vazia = não passou. Contorno vermelho = o modelo errou essa pessoa. p = σ(w·horas + b)</div>`;
+    };
+    lv2Bind(el, draw);
+    el.addEventListener("click", ev => {
+      if (!ev.target.closest("[data-lg]")) return;
+      let w = cur.w, b = cur.b;
+      for (let s = 0; s < 4000; s++) {
+        let gw = 0, gb = 0;
+        D.forEach(([x, y]) => { const e = sig(w * x + b) - y; gw += e * x; gb += e; });
+        w -= 0.05 * gw / D.length; b -= 0.05 * gb / D.length;
+      }
+      const set = (k, v) => { const inp = el.querySelector(`input[data-in="${k}"]`); if (inp) { inp.value = Math.max(+inp.min, Math.min(+inp.max, v)); inp.dispatchEvent(new Event("input", { bubbles: true })); } };
+      set("w", Math.round(w * 10) / 10); set("b", Math.round(b * 10) / 10);
+    });
+  },
+
+  // Atenção: cada palavra (consulta) distribui 100% da atenção pelas palavras anteriores (chaves).
+  atencao(el) {
+    const T = ["a", "fluffy", "blue", "creature", "roamed", "the", "verdant", "forest"];
+    // pontuações q·k ilustrativas (linha = quem pergunta, coluna = quem responde)
+    const S = [
+      [2, 0, 0, 0, 0, 0, 0, 0],
+      [1, 2, 0, 0, 0, 0, 0, 0],
+      [0.5, 1, 2, 0, 0, 0, 0, 0],
+      [0.5, 3.2, 3, 1.5, 0, 0, 0, 0],
+      [0, 0.5, 0.3, 3.5, 1.5, 0, 0, 0],
+      [0.5, 0, 0, 0.3, 0.5, 1.5, 0, 0],
+      [0, 0, 0.3, 0, 0, 0.5, 1.5, 0],
+      [0, 0, 0, 0.5, 1.2, 0.8, 3.4, 1.4]
+    ];
+    el.innerHTML = `<div class="lv2-att-toks"></div><div class="lv2-wctl">${lv2Slider("tau", "temperatura (divide as pontuações antes do softmax)", 0.3, 3, 1, 0.1)}</div>` +
+      `<label class="lv2-att-mask"><input type="checkbox" data-mask checked> máscara causal (não olhar para palavras futuras)</label>` +
+      `<div class="lv2-att-bars"></div><div class="lv2-wout"></div>`;
+    const toks = el.querySelector(".lv2-att-toks"), bars = el.querySelector(".lv2-att-bars"), out = el.querySelector(".lv2-wout");
+    let q = 3, tau = 1;
+    const draw = () => {
+      const mask = el.querySelector("[data-mask]").checked;
+      const row = S[q].map((s, k) => (mask && k > q) ? -Infinity : (k > q ? 1.2 : s) / tau);
+      const m = Math.max(...row), ex = row.map(v => v === -Infinity ? 0 : Math.exp(v - m)), z = ex.reduce((a, b) => a + b, 0), w = ex.map(v => v / z);
+      toks.innerHTML = T.map((t, k) => `<button type="button" class="lv2-att-tok${k === q ? " is-q" : ""}" data-q="${k}" style="--a:${k === q ? 0 : w[k]}">${t}</button>`).join("");
+      bars.innerHTML = T.map((t, k) => `<div class="lv2-att-row${mask && k > q ? " is-off" : ""}"><span>${t}</span><i style="width:${(w[k] * 100).toFixed(1)}%"></i><b>${Math.round(w[k] * 100)}%</b></div>`).join("");
+      const top = w.map((v, k) => [v, k]).filter(([, k]) => k !== q).sort((a, b) => b[0] - a[0])[0];
+      out.innerHTML = `Consulta: <b>“${T[q]}”</b>. Os pesos somam 100%. Quem mais recebe atenção (fora ela mesma): <b>“${T[top[1]]}”</b> com ${Math.round(top[0] * 100)}%.` +
+        (tau < 0.7 ? ` <span class="lv2-tag-warn">Temperatura baixa: o softmax fica “decidido” e quase toda a atenção vai para uma palavra só.</span>` : tau > 2 ? ` <span class="lv2-tag-warn">Temperatura alta: a atenção se espalha por igual e o contexto perde foco.</span>` : "");
+    };
+    el.addEventListener("click", ev => { const b = ev.target.closest("[data-q]"); if (b) { q = +b.dataset.q; draw(); } });
+    el.addEventListener("change", ev => { if (ev.target.matches("[data-mask]")) draw(); });
+    lv2Bind(el, o => { tau = o.tau; draw(); });
+  }
+});
+
+// ---------------------------------------------------------------- interações + salvar/restaurar
+function lv2InitExtra(root, topicId) {
+  const saved = (topicId && lv2ReadAnswers()[topicId]) || {};
+  const X = saved.x || {};
+  const saveX = (key, val) => lv2SaveAnswer(topicId, a => { a.x = a.x || {}; a.x[key] = val; });
+
+  // --- Python: restaura o código salvo e o resultado dos testes
+  root.querySelectorAll(".lv2-py").forEach(box => {
+    const id = box.dataset.py, st = X[id], ed = box.querySelector(".lv2-py-ed");
+    if (st && typeof st.c === "string") ed.value = st.c;
+    if (st && +st.ok) box.querySelector(".lv2-py-tests").innerHTML = `<div class="lv2-tag-ok">✓ Você já passou em todos os testes deste exercício.</div>`;
+    // Tab = 4 espaços; Enter mantém o recuo (e aumenta depois de ":")
+    ed.addEventListener("keydown", ev => {
+      if (ev.key === "Tab") { ev.preventDefault(); const s = ed.selectionStart; ed.setRangeText("    ", s, ed.selectionEnd, "end"); }
+      else if (ev.key === "Enter") {
+        const s = ed.selectionStart, line = ed.value.slice(0, s).split("\n").pop(), ind = (line.match(/^\s*/) || [""])[0];
+        ev.preventDefault(); ed.setRangeText("\n" + ind + (/:\s*$/.test(line) ? "    " : ""), s, ed.selectionEnd, "end");
+      }
+    });
+    let typing;
+    ed.addEventListener("input", () => { clearTimeout(typing); typing = setTimeout(() => saveX(id, { c: ed.value, ok: (X[id] && X[id].ok && X[id].c === ed.value) ? 1 : 0 }), 600); });
+  });
+
+  // --- Montar na ordem: restaura a ordem
+  root.querySelectorAll(".lv2-ps").forEach(ol => {
+    const st = X[ol.dataset.ps];
+    if (st && Array.isArray(st.o)) st.o.forEach(k => { const li = ol.querySelector(`[data-k="${k}"]`); if (li) ol.appendChild(li); });
+    if (st && +st.ok) ol.parentElement.querySelector(".lv2-ps-msg").innerHTML = `<span class="lv2-tag-ok">✓ Ordem certa!</span>`;
+  });
+
+  // --- Escuta: restaura respostas
+  root.querySelectorAll(".lv2-listen").forEach((wrap, w) => {
+    wrap.querySelectorAll(".lv2-lis").forEach(it => {
+      const key = `ls-${lv2BlockIdx(wrap)}-${it.dataset.lis}`, st = X[key];
+      if (!st) return;
+      if (st.j != null) { const btn = it.querySelector(`[data-j="${st.j}"]`); if (btn) lv2ListenPick(it, btn); }
+      if (st.t != null) { it.querySelector(".lv2-dict").value = st.t; lv2ListenDict(it); }
+    });
+  });
+
+  // --- Fala: melhor pontuação de cada frase
+  root.querySelectorAll(".lv2-spk").forEach(it => {
+    const st = X[`sp-${lv2BlockIdx(it)}-${it.dataset.spk}`];
+    if (st && st.best != null) it.querySelector(".lv2-spk-res").innerHTML = `<span class="lv2-muted">Sua melhor tentativa: ${st.best}% das palavras reconhecidas.</span>`;
+  });
+
+  // --- Vocabulário: o que já sabe
+  root.querySelectorAll(".lv2-vocab").forEach(v => {
+    const st = X[`vc-${lv2BlockIdx(v)}`] || {};
+    v.querySelectorAll(".lv2-card").forEach(c => { if (st[c.dataset.k] != null) c.dataset.know = st[c.dataset.k]; });
+    lv2VocabSum(v);
+  });
+
+  root.addEventListener("click", async ev => {
+    const t = ev.target.closest("[data-lv2x]"); if (!t) return;
+    const kind = t.dataset.lv2x;
+    if (kind === "say") { lv2Speak(t.dataset.text, t.textContent.includes("🐢") ? 0.65 : 0.95); return; }
+
+    if (kind === "py-run" || kind === "py-check" || kind === "py-reset") {
+      const box = t.closest(".lv2-py"), id = box.dataset.py, spec = LV2_SPECS[id] || {}, ed = box.querySelector(".lv2-py-ed");
+      const out = box.querySelector(".lv2-py-out"), res = box.querySelector(".lv2-py-tests"), status = box.querySelector(".lv2-py-status");
+      if (kind === "py-reset") { ed.value = spec.inicial || ""; out.hidden = true; res.innerHTML = ""; saveX(id, { c: ed.value, ok: 0 }); return; }
+      box.querySelectorAll("button").forEach(b => b.disabled = true);
+      const r = await lv2PyRun(ed.value, kind === "py-check" ? spec.testes : [], s => { status.textContent = s; });
+      box.querySelectorAll("button").forEach(b => b.disabled = false);
+      status.textContent = "";
+      out.hidden = false;
+      if (r.timeout) {
+        out.className = "lv2-py-out is-err";
+        out.textContent = "⏱ O código rodou por mais de 8 segundos e foi interrompido.\nQuase sempre isso é um laço infinito: a condição do while nunca fica falsa.\nConfira se a variável da condição muda dentro do laço.";
+        res.innerHTML = "";
+        return;
+      }
+      out.className = "lv2-py-out" + (r.err ? " is-err" : "");
+      out.textContent = (r.out || "") + (r.err ? (r.out ? "\n" : "") + r.err : "") || "(o código rodou e não imprimiu nada)";
+      if (kind === "py-check") {
+        const list = r.results || [], pass = !r.err && list.length && list.every(x => x.ok);
+        res.innerHTML = r.err ? `<div class="lv2-tag-bad">O código deu erro antes dos testes. Leia a última linha da mensagem acima.</div>` :
+          list.map(x => `<div class="lv2-py-test ${x.ok ? "ok" : "bad"}">${x.ok ? "✓" : "✗"} ${x.nome}${!x.ok && x.msg ? ` <span class="lv2-muted">— ${lv2Esc(x.msg)}</span>` : ""}</div>`).join("") +
+          (pass ? `<div class="lv2-tag-ok" style="margin-top:6px">Todos os testes passaram!</div>` : "");
+        saveX(id, { c: ed.value, ok: pass ? 1 : 0 });
+      } else {
+        saveX(id, { c: ed.value, ok: (X[id] && X[id].ok && X[id].c === ed.value) ? 1 : 0 });
+      }
+      return;
+    }
+
+    if (kind === "ps-up" || kind === "ps-down") {
+      const li = t.closest("li"), ol = li.parentElement;
+      if (kind === "ps-up" && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if (kind === "ps-down" && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      ol.parentElement.querySelector(".lv2-ps-msg").innerHTML = "";
+      saveX(ol.dataset.ps, { o: [...ol.children].map(x => +x.dataset.k), ok: 0 });
+      return;
+    }
+    if (kind === "ps-check") {
+      const blk = t.closest(".lv2-block"), ol = blk.querySelector(".lv2-ps"), spec = LV2_SPECS[ol.dataset.ps];
+      const got = [...ol.children].map(x => spec.linhas[+x.dataset.k]);
+      const right = got.every((l, k) => l === spec.linhas[k]);
+      const firstBad = got.findIndex((l, k) => l !== spec.linhas[k]);
+      [...ol.children].forEach((li, k) => li.classList.toggle("is-bad", !right && k === firstBad));
+      blk.querySelector(".lv2-ps-msg").innerHTML = right ? `<span class="lv2-tag-ok">✓ Ordem certa!</span>` : `<span class="lv2-tag-bad">Ainda não. A linha ${firstBad + 1} (marcada) está fora do lugar.</span>`;
+      saveX(ol.dataset.ps, { o: [...ol.children].map(x => +x.dataset.k), ok: right ? 1 : 0 });
+      return;
+    }
+
+    if (kind === "dlg-all" || kind === "dlg-slow") { const d = t.closest(".lv2-block").querySelector(".lv2-dlg"); lv2Speak(LV2_SPECS[d.dataset.dl] || [], kind === "dlg-slow" ? 0.7 : 0.95); return; }
+    if (kind === "dlg-pt") {
+      const blk = t.closest(".lv2-block"), show = blk.querySelector(".lv2-dlg-pt").hidden;
+      blk.querySelectorAll(".lv2-dlg-pt").forEach(p => p.hidden = !show);
+      t.textContent = show ? "Esconder tradução" : "Mostrar tradução";
+      return;
+    }
+
+    if (kind === "lis-opt") {
+      const it = t.closest(".lv2-lis"); lv2ListenPick(it, t);
+      saveX(`ls-${lv2BlockIdx(it)}-${it.dataset.lis}`, { j: +t.dataset.j });
+      return;
+    }
+    if (kind === "lis-dict") {
+      const it = t.closest(".lv2-lis"); lv2ListenDict(it);
+      saveX(`ls-${lv2BlockIdx(it)}-${it.dataset.lis}`, { t: it.querySelector(".lv2-dict").value });
+      return;
+    }
+
+    if (kind === "spk") {
+      const it = t.closest(".lv2-spk"), resEl = it.querySelector(".lv2-spk-res");
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) return;
+      const rec = new SR();
+      rec.lang = "en-US"; rec.interimResults = false; rec.maxAlternatives = 3;
+      t.disabled = true; t.textContent = "🎙 Ouvindo...";
+      resEl.innerHTML = `<span class="lv2-muted">Fale agora...</span>`;
+      const end = () => { t.disabled = false; t.textContent = "🎙 Falar"; };
+      rec.onresult = e => {
+        const alts = [...e.results[0]].map(a => a.transcript);
+        const best = alts.map(a => ({ a, d: lv2WordDiff(it.dataset.frase, a) })).sort((x, y) => y.d.pct - x.d.pct)[0];
+        const key = `sp-${lv2BlockIdx(it)}-${it.dataset.spk}`, prev = (X[key] && X[key].best) || 0;
+        const msg = best.d.pct === 100 ? `<span class="lv2-tag-ok">Perfeito! Todas as palavras foram reconhecidas.</span>` :
+          best.d.pct >= 70 ? `<span class="lv2-tag-warn">Quase! Treine as palavras em cinza e tente de novo.</span>` :
+          `<span class="lv2-tag-bad">Ouça o modelo devagar (🐢), repita e tente de novo.</span>`;
+        resEl.innerHTML = `${msg}<div class="lv2-spk-diff">${best.d.html}</div><div class="lv2-muted">O navegador entendeu: “${lv2Esc(best.a)}” · ${best.d.pct}%</div>`;
+        if (best.d.pct > prev) { X[key] = { best: best.d.pct }; saveX(key, { best: best.d.pct }); }
+      };
+      rec.onerror = e => { resEl.innerHTML = `<span class="lv2-tag-bad">${e.error === "not-allowed" ? "O microfone foi bloqueado. Libere o acesso no ícone de cadeado da barra de endereço." : e.error === "no-speech" ? "Não ouvi nada. Tente de novo, mais perto do microfone." : "Não deu para reconhecer agora (" + e.error + ")."}</span>`; end(); };
+      rec.onend = end;
+      try { rec.start(); } catch (_) { end(); }
+      return;
+    }
+
+    if (kind === "vc-flip") { const c = t.closest(".lv2-card"), back = c.querySelector(".lv2-card-back"); back.hidden = !back.hidden; c.classList.toggle("is-flipped", !back.hidden); return; }
+    if (kind === "vc-know") {
+      const c = t.closest(".lv2-card"), v = c.closest(".lv2-vocab");
+      c.dataset.know = t.dataset.v;
+      const key = `vc-${lv2BlockIdx(v)}`, st = {};
+      v.querySelectorAll(".lv2-card").forEach(x => { if (x.dataset.know != null) st[x.dataset.k] = +x.dataset.know; });
+      saveX(key, st); lv2VocabSum(v);
+    }
+  });
+}
+
+function lv2ListenPick(it, btn) {
+  it.querySelectorAll(".lv2-opt").forEach(o => { o.disabled = true; if (o.dataset.ok === "1") o.classList.add("is-right"); });
+  if (btn.dataset.ok !== "1") btn.classList.add("is-wrong");
+  it.querySelector(".lv2-lis-reveal").hidden = false;
+}
+function lv2ListenDict(it) {
+  const d = lv2WordDiff(it.dataset.frase, it.querySelector(".lv2-dict").value), res = it.querySelector(".lv2-lis-res");
+  res.innerHTML = d.exact ? `<span class="lv2-tag-ok">✓ Exatamente!</span>` :
+    `<span class="${d.pct >= 70 ? "lv2-tag-warn" : "lv2-tag-bad"}">${d.pct}% das palavras.</span> <span class="lv2-spk-diff">${d.html}</span>`;
+}
+function lv2VocabSum(v) {
+  const all = v.querySelectorAll(".lv2-card"), know = [...all].filter(c => c.dataset.know === "1").length;
+  const sum = v.parentElement.querySelector(".lv2-vc-sum");
+  if (sum) sum.innerHTML = `Você marcou <b>${know} de ${all.length}</b> como “já sei”.` + (know === all.length ? ` <span class="lv2-tag-ok">Vocabulário da aula dominado!</span>` : " Volte nas marcadas como “Rever” amanhã.");
 }
 
 

@@ -6,11 +6,25 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(BASE_DIR, 'english_playlist.json'), 'r', encoding='utf-8') as f:
     english_playlist = json.load(f)
 
+# Aulas Visuais do piloto de Inglês, ligadas pelo videoId da playlist
+from english_lessons_pilot import ENGLISH_PILOT_GUIDES
+for _aula in english_playlist:
+    if _aula.get('videoId') in ENGLISH_PILOT_GUIDES:
+        _aula['pt_guide'] = ENGLISH_PILOT_GUIDES[_aula['videoId']]
+
 # ---------------------------------------------------------------------------
 # 1. Dados de IA (6 Fases Técnicas - 173 Tópicos)
 # ---------------------------------------------------------------------------
 from build_ia_data import get_enriched_ia_phases
 ia_phases = get_enriched_ia_phases()
+
+# Aulas Visuais do piloto de IA, ligadas pelo título do tópico
+from ia_lessons_pilot import IA_PILOT_GUIDES
+for _fase in ia_phases:
+    for _grupo in _fase['g']:
+        for _t in _grupo[1]:
+            if isinstance(_t, dict) and _t.get('title') in IA_PILOT_GUIDES:
+                _t['pt_guide'] = IA_PILOT_GUIDES[_t['title']]
 
 # ---------------------------------------------------------------------------
 # 2. Dados de Matemática (5 Módulos - 43 Tópicos de Matemática Essencial para IA)
