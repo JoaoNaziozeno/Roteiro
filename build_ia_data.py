@@ -46,8 +46,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Laços (for, while)",
-                            "video_url": "https://www.youtube.com/watch?v=cL4hDlCYlNU",
-                            "video_label": "▶ Guanabara Python #13/14",
+                            "video_url": "https://www.youtube.com/watch?v=cL4YDtFnCt4",
+                            "video_label": "▶ Guanabara Python #13 · for",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#for-statements",
                             "doc_label": "📖 Docs Laços for/while"
                         },
@@ -65,8 +65,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Listas e fatiamento",
-                            "video_url": "https://www.youtube.com/watch?v=N1hTsv4456A",
-                            "video_label": "▶ Guanabara Python #17/18",
+                            "video_url": "https://www.youtube.com/watch?v=N1hTsbW50eM",
+                            "video_label": "▶ Guanabara Python #17 · Listas",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists",
                             "doc_label": "📖 Docs Listas e Métodos"
                         },
@@ -86,8 +86,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "List comprehension",
-                            "video_url": "https://www.youtube.com/watch?v=1b_rQoTf1m0",
-                            "video_label": "▶ List Comprehension Prático",
+                            "video_url": "https://www.youtube.com/watch?v=M2zL6LnQwkw",
+                            "video_label": "▶ Hashtag · List Comprehension",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/datastructures.html#list-comprehensions",
                             "doc_label": "📖 Docs List Comprehensions"
                         }
@@ -105,29 +105,29 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Módulos e pacotes",
-                            "video_url": "https://www.youtube.com/watch?v=5k9wO7y8_H4",
-                            "video_label": "▶ Guanabara Python #22",
+                            "video_url": "https://www.youtube.com/watch?v=s3r8_Aug4y8",
+                            "video_label": "▶ Guanabara Python #22 · Módulos e Pacotes",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/modules.html",
                             "doc_label": "📖 Docs Módulos & Pacotes"
                         },
                         {
                             "title": "Arquivos (ler e escrever)",
-                            "video_url": "https://www.youtube.com/watch?v=kYqg4K-p8Fw",
-                            "video_label": "▶ Guanabara Arquivos #115",
+                            "video_url": "https://www.youtube.com/watch?v=bfTFe6bKLXk",
+                            "video_label": "▶ Guanabara Exercício #115b · Arquivos",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html#reading-and-writing-files",
                             "doc_label": "📖 Docs Arquivos I/O"
                         },
                         {
                             "title": "Tratamento de erros (try/except)",
-                            "video_url": "https://www.youtube.com/watch?v=F5_5bK8iP3M",
-                            "video_label": "▶ Guanabara Python #23",
+                            "video_url": "https://www.youtube.com/watch?v=xz2B3bfNjEk",
+                            "video_label": "▶ Guanabara Python #23 · Erros e Exceções",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/errors.html",
                             "doc_label": "📖 Docs Try/Except"
                         },
                         {
                             "title": "Ambientes virtuais e pip",
-                            "video_url": "https://www.youtube.com/watch?v=mK5C_w3Lh1Y",
-                            "video_label": "▶ Guanabara: venv & pip",
+                            "video_url": "https://www.youtube.com/watch?v=m1TYpvIYm74",
+                            "video_label": "▶ Otávio Miranda · venv e pip",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/venv.html",
                             "doc_label": "📖 Docs Ambientes Virtuais"
                         }
@@ -145,15 +145,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "GitHub: repositórios e README",
-                            "video_url": "https://www.youtube.com/watch?v=s_44T4oBf8w",
-                            "video_label": "▶ Guanabara Git #07/#08",
+                            "video_url": "https://www.youtube.com/watch?v=5BYm7UdCrX0",
+                            "video_label": "▶ Guanabara Git · Primeiro repositório",
                             "doc_url": "https://docs.github.com/pt/get-started",
                             "doc_label": "📖 Docs GitHub Começando"
                         },
                         {
                             "title": "Consumir APIs com requests e JSON",
-                            "video_url": "https://www.youtube.com/watch?v=0257gqJ0aXU",
-                            "video_label": "▶ Consumo de APIs & Requests",
+                            "video_url": "https://www.youtube.com/watch?v=IdviYZIQLlA",
+                            "video_label": "▶ Hashtag · Biblioteca Requests",
                             "doc_url": "https://requests.readthedocs.io/en/latest/",
                             "doc_label": "📖 Docs Requests Oficial"
                         }
@@ -164,15 +164,15 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Estilo de código PEP 8",
-                            "video_url": "https://www.youtube.com/watch?v=Xdf7Z2uWJmY",
-                            "video_label": "▶ PEP 8 & Código Limpo",
+                            "video_url": "https://www.youtube.com/watch?v=wDl1f4uLlHo",
+                            "video_label": "▶ Hashtag · PEP 8",
                             "doc_url": "https://peps.python.org/pep-0008/",
                             "doc_label": "📖 Guia Oficial PEP 8"
                         },
                         {
                             "title": "Docstrings e comentários",
-                            "video_url": "https://www.youtube.com/watch?v=etjJExVdAa8",
-                            "video_label": "▶ Funções & Docstrings",
+                            "video_url": "https://www.youtube.com/watch?v=XgPLNNy3qgI",
+                            "video_label": "▶ Universo Discreto · Comentários e Docstrings",
                             "doc_url": "https://peps.python.org/pep-0257/",
                             "doc_label": "📖 Docs PEP 257 Docstrings"
                         },
@@ -185,15 +185,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Testes simples com pytest",
-                            "video_url": "https://www.youtube.com/watch?v=byax_Ej249o",
-                            "video_label": "▶ Introdução ao Pytest",
+                            "video_url": "https://www.youtube.com/watch?v=pZvhZ-Lr-PE",
+                            "video_label": "▶ Eduardo Mendes · Testes unitários",
                             "doc_url": "https://docs.pytest.org/en/latest/",
                             "doc_label": "📖 Docs Pytest Oficial"
                         },
                         {
                             "title": "Lambda, map e filter",
-                            "video_url": "https://www.youtube.com/watch?v=9g04i4VwRz8",
-                            "video_label": "▶ Funções Lambda & Map/Filter",
+                            "video_url": "https://www.youtube.com/watch?v=xmMXULd0dxc",
+                            "video_label": "▶ Hashtag · Funções Lambda",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#lambda-expressions",
                             "doc_label": "📖 Docs Expressões Lambda"
                         },
@@ -218,15 +218,15 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "datetime",
-                            "video_url": "https://www.youtube.com/watch?v=r0b06l16qBs",
-                            "video_label": "▶ Módulo Datetime Completo",
+                            "video_url": "https://www.youtube.com/watch?v=A7S_RwWcrK0",
+                            "video_label": "▶ Hashtag · Biblioteca datetime",
                             "doc_url": "https://docs.python.org/pt-br/3/library/datetime.html",
                             "doc_label": "📖 Docs datetime Oficial"
                         },
                         {
                             "title": "os e pathlib",
-                            "video_url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y",
-                            "video_label": "▶ Manipulando Arquivos com Pathlib",
+                            "video_url": "https://www.youtube.com/watch?v=T17BTNKBeJY",
+                            "video_label": "▶ Otávio Miranda · pathlib",
                             "doc_url": "https://docs.python.org/pt-br/3/library/pathlib.html",
                             "doc_label": "📖 Docs pathlib Oficial"
                         },
@@ -246,8 +246,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Web scraping com BeautifulSoup",
-                            "video_url": "https://www.youtube.com/watch?v=QhD0133To3s",
-                            "video_label": "▶ Web Scraping com BeautifulSoup",
+                            "video_url": "https://www.youtube.com/watch?v=WzUPnQwSQyk",
+                            "video_label": "▶ Hashtag · BeautifulSoup",
                             "doc_url": "https://crummy.com/software/BeautifulSoup/bs4/doc/",
                             "doc_label": "📖 Docs BeautifulSoup4"
                         }
@@ -265,8 +265,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Algoritmos de busca e ordenação",
-                            "video_url": "https://www.youtube.com/watch?v=4UqT_bW5BJE",
-                            "video_label": "▶ Busca Binária e Bubble/Merge",
+                            "video_url": "https://www.youtube.com/watch?v=EgLE5HwRy_M",
+                            "video_label": "▶ Programação Dinâmica · Busca Binária",
                             "doc_url": "https://runestone.academy/ns/books/published/pythonds/SortSearch/sorting.html",
                             "doc_label": "📖 Guia Busca e Ordenação"
                         },
@@ -279,8 +279,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Projeto de linha de comando completo",
-                            "video_url": "https://www.youtube.com/watch?v=b0TpPn9g11I",
-                            "video_label": "▶ Guanabara Projeto Final Mundo 3",
+                            "video_url": "https://www.youtube.com/watch?v=pog8YmHkGMs",
+                            "video_label": "▶ Guanabara Exercício #115a · Projeto com menu",
                             "doc_url": "https://click.palletsprojects.com/",
                             "doc_label": "📖 Click CLI Python"
                         }
@@ -300,8 +300,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "NumPy: arrays e operações vetorizadas",
-                            "video_url": "https://www.youtube.com/watch?v=gbSCYq3rNLs",
-                            "video_label": "▶ NumPy Tutorial Completo",
+                            "video_url": "https://www.youtube.com/watch?v=LZDZ0AZmWHI",
+                            "video_label": "▶ Hashtag · NumPy do zero",
                             "doc_url": "https://numpy.org/doc/stable/user/quickstart.html",
                             "doc_label": "📖 NumPy Quickstart"
                         },
@@ -366,15 +366,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "SQL: SELECT, WHERE, JOIN, GROUP BY",
-                            "video_url": "https://www.youtube.com/watch?v=HXV3zeRR3h4",
-                            "video_label": "▶ Curso SQL Completo",
+                            "video_url": "https://www.youtube.com/watch?v=G7bMwefn8RQ",
+                            "video_label": "▶ Dev Aprender · Curso SQL Completo",
                             "doc_url": "https://www.w3schools.com/sql/",
                             "doc_label": "📖 W3Schools SQL Tutorial"
                         },
                         {
                             "title": "Ler CSV, Excel e JSON",
-                            "video_url": "https://www.youtube.com/watch?v=1F_4bW4Bf-Y",
-                            "video_label": "▶ Importação de Dados em Python",
+                            "video_url": "https://www.youtube.com/watch?v=AnJPtKLtc7o",
+                            "video_label": "▶ Hashtag · Arquivos CSV no Python",
                             "doc_url": "https://pandas.pydata.org/docs/user_guide/io.html",
                             "doc_label": "📖 Pandas IO Tools Guide"
                         }
@@ -385,15 +385,15 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Broadcasting",
-                            "video_url": "https://www.youtube.com/watch?v=0mffXPTtkVU",
-                            "video_label": "▶ NumPy Broadcasting Explicado",
+                            "video_url": "https://www.youtube.com/watch?v=oG1t3qlzq14",
+                            "video_label": "▶ mCoding · NumPy Broadcasting",
                             "doc_url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
                             "doc_label": "📖 NumPy Broadcasting Guide"
                         },
                         {
                             "title": "Máscaras booleanas e indexação",
-                            "video_url": "https://www.youtube.com/watch?v=gbSCYq3rNLs",
-                            "video_label": "▶ Boolean Indexing com NumPy",
+                            "video_url": "https://www.youtube.com/watch?v=_d_Ka-ks2a0",
+                            "video_label": "▶ codebasics · Indexação booleana no NumPy",
                             "doc_url": "https://numpy.org/doc/stable/user/basics.indexing.html",
                             "doc_label": "📖 NumPy Indexing Guide"
                         },
@@ -420,15 +420,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Outliers e duplicados",
-                            "video_url": "https://www.youtube.com/watch?v=A3gJi3g3w8g",
-                            "video_label": "▶ Tratamento de Outliers e Duplicatas",
+                            "video_url": "https://www.youtube.com/watch?v=EdlUaBMlEzE",
+                            "video_label": "▶ Asimov · Limpeza de dados com Pandas",
                             "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
                             "doc_label": "📖 Scikit-learn Outliers"
                         },
                         {
                             "title": "Encoding de variáveis categóricas",
-                            "video_url": "https://www.youtube.com/watch?v=0h3jO_6eF28",
-                            "video_label": "▶ One-Hot vs Label Encoding",
+                            "video_url": "https://www.youtube.com/watch?v=RWaMw02_MQQ",
+                            "video_label": "▶ LabelEncoder vs One-Hot",
                             "doc_url": "https://scikit-learn.org/stable/modules/preprocessing.html#encoding-categorical-features",
                             "doc_label": "📖 Sklearn Categorical Encoding"
                         }
@@ -439,8 +439,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Web scraping e APIs",
-                            "video_url": "https://www.youtube.com/watch?v=QhD0133To3s",
-                            "video_label": "▶ Web Scraping & Ingestão de Dados",
+                            "video_url": "https://www.youtube.com/watch?v=kqvWOcPog4s",
+                            "video_label": "▶ Programação Dinâmica · Raspagem de dados",
                             "doc_url": "https://realpython.com/beautiful-soup-web-scraper-python/",
                             "doc_label": "📖 RealPython Scraping Guide"
                         },
@@ -460,8 +460,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Formato Parquet",
-                            "video_url": "https://www.youtube.com/watch?v=4tB8K2N2k0w",
-                            "video_label": "▶ Apache Parquet vs CSV na Prática",
+                            "video_url": "https://www.youtube.com/watch?v=pTwDOKfB9QA",
+                            "video_label": "▶ Hashtag · CSV x Parquet x Feather",
                             "doc_url": "https://parquet.apache.org/docs/",
                             "doc_label": "📖 Apache Parquet Docs"
                         },
@@ -479,8 +479,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Notebooks reprodutíveis",
-                            "video_url": "https://www.youtube.com/watch?v=7jiPeIFKA98",
-                            "video_label": "▶ Melhores Práticas em Jupyter",
+                            "video_url": "https://www.youtube.com/watch?v=szP9IRbwO9o",
+                            "video_label": "▶ Let's Data · Dominando o Jupyter",
                             "doc_url": "https://docs.jupyter.org/en/latest/",
                             "doc_label": "📖 Jupyter Documentation"
                         },
@@ -493,8 +493,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Dashboards com Streamlit",
-                            "video_url": "https://www.youtube.com/watch?v=D0D4Pa22VUo",
-                            "video_label": "▶ Streamlit Dashboard em 15 Minutos",
+                            "video_url": "https://www.youtube.com/watch?v=zxA97KcUm1Q",
+                            "video_label": "▶ Asimov · Streamlit em 10 minutos",
                             "doc_url": "https://docs.streamlit.io/",
                             "doc_label": "📖 Streamlit Docs Oficial"
                         }
@@ -542,8 +542,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Engenharia de atributos (feature engineering)",
-                            "video_url": "https://www.youtube.com/watch?v=A3gJi3g3w8g",
-                            "video_label": "▶ Feature Engineering na Prática",
+                            "video_url": "https://www.youtube.com/watch?v=pYVScuY-GPk",
+                            "video_label": "▶ codebasics · Feature Engineering",
                             "doc_url": "https://www.kaggle.com/learn/feature-engineering",
                             "doc_label": "💻 Kaggle Feature Engineering"
                         }
@@ -561,8 +561,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Regressão logística",
-                            "video_url": "https://www.youtube.com/watch?v=yIYKR4gXd5U",
-                            "video_label": "▶ StatQuest Logistic Regression",
+                            "video_url": "https://www.youtube.com/watch?v=yIYKR4sgzI8",
+                            "video_label": "▶ StatQuest · Logistic Regression",
                             "doc_url": "https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression",
                             "doc_label": "📖 Sklearn Logistic Regression"
                         },
@@ -608,8 +608,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Métricas: acurácia, precisão, recall, F1",
-                            "video_url": "https://www.youtube.com/watch?v=wpNl-HIch9g",
-                            "video_label": "▶ StatQuest Precision, Recall & F1",
+                            "video_url": "https://www.youtube.com/watch?v=qWfzIYCvBqo",
+                            "video_label": "▶ Kimberly Fessel · Precision vs Recall",
                             "doc_url": "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics",
                             "doc_label": "📖 Sklearn Classification Metrics"
                         },
@@ -622,15 +622,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Scikit-learn e pipelines",
-                            "video_url": "https://www.youtube.com/watch?v=irHhDMb3n88",
-                            "video_label": "▶ Scikit-Learn Pipelines Práticos",
+                            "video_url": "https://www.youtube.com/watch?v=xIqX1dqcNbY",
+                            "video_label": "▶ Greg Hogg · Scikit-Learn Pipelines",
                             "doc_url": "https://scikit-learn.org/stable/modules/compose.html#pipeline",
                             "doc_label": "📖 Sklearn Pipeline Guide"
                         },
                         {
                             "title": "Ajuste de hiperparâmetros",
-                            "video_url": "https://www.youtube.com/watch?v=Gol_qOfhft4",
-                            "video_label": "▶ GridSearchCV & RandomizedSearchCV",
+                            "video_url": "https://www.youtube.com/watch?v=HdlDYng8g9s",
+                            "video_label": "▶ codebasics · GridSearchCV",
                             "doc_url": "https://scikit-learn.org/stable/modules/grid_search.html",
                             "doc_label": "📖 Sklearn Hyperparameter Tuning"
                         }
@@ -676,8 +676,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Detecção de anomalias",
-                            "video_url": "https://www.youtube.com/watch?v=5p8wTRk7pP8",
-                            "video_label": "▶ Isolation Forest & Anomaly Detection",
+                            "video_url": "https://www.youtube.com/watch?v=Y1x51i1936M",
+                            "video_label": "▶ Isolation Forest",
                             "doc_url": "https://scikit-learn.org/stable/modules/outlier_detection.html",
                             "doc_label": "📖 Sklearn Anomaly Detection"
                         }
@@ -695,8 +695,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Dados desbalanceados (SMOTE)",
-                            "video_url": "https://www.youtube.com/watch?v=YMPMQgzBgPE",
-                            "video_label": "▶ Imbalanced Data & SMOTE",
+                            "video_url": "https://www.youtube.com/watch?v=JnlM4yLFNuo",
+                            "video_label": "▶ codebasics · Dados desbalanceados",
                             "doc_url": "https://imbalanced-learn.org/stable/references/generated/imblearn.over_sampling.SMOTE.html",
                             "doc_label": "📖 Imbalanced-Learn SMOTE"
                         },
@@ -735,15 +735,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "SHAP e LIME",
-                            "video_url": "https://www.youtube.com/watch?v=9haIO8uEBrA",
-                            "video_label": "▶ Explainable AI: SHAP & LIME",
+                            "video_url": "https://www.youtube.com/watch?v=MQ6fFDwjuco",
+                            "video_label": "▶ A Data Odyssey · SHAP",
                             "doc_url": "https://shap.readthedocs.io/en/latest/",
                             "doc_label": "📖 SHAP Documentation"
                         },
                         {
                             "title": "Viés e ética em ML",
-                            "video_url": "https://www.youtube.com/watch?v=ugff3a89e4I",
-                            "video_label": "▶ Fairness & Bias in Machine Learning",
+                            "video_url": "https://www.youtube.com/watch?v=gV0_raKR2UQ",
+                            "video_label": "▶ CrashCourse AI · Viés algorítmico",
                             "doc_url": "https://fairlearn.org/",
                             "doc_label": "📖 Fairlearn Project"
                         },
@@ -798,15 +798,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Gradiente descendente e otimizadores (SGD, Adam)",
-                            "video_url": "https://www.youtube.com/watch?v=mdKjMPmcWsc",
-                            "video_label": "▶ StatQuest Gradient Descent & Adam",
+                            "video_url": "https://www.youtube.com/watch?v=MD2fYip6QsQ",
+                            "video_label": "▶ Otimizadores: SGD, Momentum e Adam",
                             "doc_url": "https://pytorch.org/docs/stable/optim.html",
                             "doc_label": "📖 PyTorch Optimizers Guide"
                         },
                         {
                             "title": "Regularização (dropout, weight decay)",
-                            "video_url": "https://www.youtube.com/watch?v=D8PJAL-Zkm8",
-                            "video_label": "▶ Dropout Regularization Explicado",
+                            "video_url": "https://www.youtube.com/watch?v=D8PJAL-MZv8",
+                            "video_label": "▶ Andrew Ng · Dropout",
                             "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html",
                             "doc_label": "📖 PyTorch Dropout Docs"
                         }
@@ -897,8 +897,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Redes de grafos (noção)",
-                            "video_url": "https://www.youtube.com/watch?v=fOctJB4kWlI",
-                            "video_label": "▶ Graph Neural Networks (GNNs)",
+                            "video_url": "https://www.youtube.com/watch?v=GXhBEj1ZtE8",
+                            "video_label": "▶ Alex Foo · Redes Neurais em Grafos",
                             "doc_url": "https://distill.pub/2021/gnn-intro/",
                             "doc_label": "📖 Distill GNN Gentle Introduction"
                         },
@@ -911,8 +911,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Segmentação de imagens",
-                            "video_url": "https://www.youtube.com/watch?v=u1loyCU4smQ",
-                            "video_label": "▶ Image Segmentation com U-Net",
+                            "video_url": "https://www.youtube.com/watch?v=NhdzGfB1q74",
+                            "video_label": "▶ U-Net explicada",
                             "doc_url": "https://pytorch.org/hub/mateuszbuda_brain-segmentation-pytorch_unet/",
                             "doc_label": "📖 PyTorch U-Net Hub"
                         }
@@ -923,15 +923,15 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Batch normalization",
-                            "video_url": "https://www.youtube.com/watch?v=tNIpEZLv_l8",
-                            "video_label": "▶ StatQuest Batch Normalization",
+                            "video_url": "https://www.youtube.com/watch?v=DtEq44FTPM4",
+                            "video_label": "▶ CodeEmporium · Batch Normalization",
                             "doc_url": "https://pytorch.org/docs/stable/generated/torch.nn.BatchNorm2d.html",
                             "doc_label": "📖 PyTorch BatchNorm2d"
                         },
                         {
                             "title": "Learning rate schedulers",
-                            "video_url": "https://www.youtube.com/watch?v=kpvIcx16i58",
-                            "video_label": "▶ Learning Rate Decay & Schedulers",
+                            "video_url": "https://www.youtube.com/watch?v=QzulmoOg2JE",
+                            "video_label": "▶ Andrew Ng · Learning Rate Decay",
                             "doc_url": "https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate",
                             "doc_label": "📖 PyTorch LR Schedulers"
                         },
@@ -944,15 +944,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Early stopping e checkpoints",
-                            "video_url": "https://www.youtube.com/watch?v=k4J8nEaX0Xg",
-                            "video_label": "▶ Checkpoints e Salvamento de Modelos",
+                            "video_url": "https://www.youtube.com/watch?v=Ygvskt5HadI",
+                            "video_label": "▶ CampusX · Early Stopping",
                             "doc_url": "https://pytorch.org/tutorials/beginner/saving_loading_models.html",
                             "doc_label": "📖 PyTorch Saving & Loading"
                         },
                         {
                             "title": "Depurar rede que não aprende",
-                            "video_url": "https://www.youtube.com/watch?v=P6sfmUtP_vY",
-                            "video_label": "▶ Andrej Karpathy: A Recipe for Training NNs",
+                            "video_url": "https://www.youtube.com/watch?v=P6sfmUTpUmc",
+                            "video_label": "▶ Andrej Karpathy · Ativações, gradientes e BatchNorm",
                             "doc_url": "http://karpathy.github.io/2019/04/25/recipe/",
                             "doc_label": "📖 Karpathy NN Training Recipe"
                         },
@@ -977,15 +977,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "TensorBoard e logs",
-                            "video_url": "https://www.youtube.com/watch?v=VJW92p3n5D8",
-                            "video_label": "▶ Monitorando com TensorBoard",
+                            "video_url": "https://www.youtube.com/watch?v=VJW9wU-1n18",
+                            "video_label": "▶ Patrick Loeber · TensorBoard no PyTorch",
                             "doc_url": "https://pytorch.org/tutorials/intermediate/tensorboard_tutorial.html",
                             "doc_label": "📖 PyTorch with TensorBoard"
                         },
                         {
                             "title": "Exportar modelos com ONNX",
-                            "video_url": "https://www.youtube.com/watch?v=P_V5qD1n7Hk",
-                            "video_label": "▶ Exportando PyTorch para ONNX Runtime",
+                            "video_url": "https://www.youtube.com/watch?v=0t2jOBZSd6s",
+                            "video_label": "▶ DigitalSreeni · ONNX",
                             "doc_url": "https://pytorch.org/tutorials/advanced/super_resolution_with_onnxruntime.html",
                             "doc_label": "📖 PyTorch ONNX Export"
                         },
@@ -1066,8 +1066,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Usar APIs de LLMs (chamadas, streaming, tool use)",
-                            "video_url": "https://www.youtube.com/watch?v=0h3jO_6eF28",
-                            "video_label": "▶ Consumindo OpenAI, Gemini & Claude",
+                            "video_url": "https://www.youtube.com/watch?v=gMeTK6zzaO4",
+                            "video_label": "▶ Adam Lucek · Function Calling",
                             "doc_url": "https://platform.openai.com/docs/api-reference",
                             "doc_label": "📖 OpenAI / Gemini API Docs"
                         }
@@ -1092,15 +1092,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Agentes e uso de ferramentas",
-                            "video_url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA",
-                            "video_label": "▶ Construindo Agentes Autônomos",
+                            "video_url": "https://www.youtube.com/watch?v=HzGOWq5UyjY",
+                            "video_label": "▶ Tech With Tim · Como agentes funcionam",
                             "doc_url": "https://python.langchain.com/docs/tutorials/agents/",
                             "doc_label": "📖 LangChain Agents Guide"
                         },
                         {
                             "title": "Avaliação e segurança de sistemas com LLM",
-                            "video_url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8",
-                            "video_label": "▶ Evals, Ragas e LLM Testing",
+                            "video_url": "https://www.youtube.com/watch?v=MltkRz94SWA",
+                            "video_label": "▶ Evals para engenheiros de IA",
                             "doc_url": "https://docs.ragas.io/",
                             "doc_label": "📖 Ragas Evaluation Framework"
                         }
@@ -1118,8 +1118,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Positional encoding",
-                            "video_url": "https://www.youtube.com/watch?v=dichIC6np5g",
-                            "video_label": "▶ Positional Encoding Explicado",
+                            "video_url": "https://www.youtube.com/watch?v=1biZfFLPRSY",
+                            "video_label": "▶ AI Coffee Break · Positional Embeddings",
                             "doc_url": "https://kazemnejad.com/blog/transformer_architecture_positional_encoding/",
                             "doc_label": "📖 Kazemnejad Positional Encoding"
                         },
@@ -1132,22 +1132,22 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Janela de contexto e KV cache",
-                            "video_url": "https://www.youtube.com/watch?v=80bIUgg4How",
-                            "video_label": "▶ Como Funciona o KV Cache em LLMs",
+                            "video_url": "https://www.youtube.com/watch?v=80bIUggRJf4",
+                            "video_label": "▶ Efficient NLP · KV Cache",
                             "doc_url": "https://kipp.ly/transformer-inference-optimizations/",
                             "doc_label": "📖 KV Cache Optimization Guide"
                         },
                         {
                             "title": "Quantização (4-bit, 8-bit)",
-                            "video_url": "https://www.youtube.com/watch?v=TPcUXJvfO20",
-                            "video_label": "▶ Quantização GGUF & AWQ",
+                            "video_url": "https://www.youtube.com/watch?v=mNE_d-C82lI",
+                            "video_label": "▶ Maarten Grootendorst · GPTQ vs GGUF vs AWQ",
                             "doc_url": "https://huggingface.co/blog/hf-bitsandbytes-integration",
                             "doc_label": "📖 Hugging Face Bitsandbytes"
                         },
                         {
                             "title": "Scaling laws",
-                            "video_url": "https://www.youtube.com/watch?v=H3pkn1iKx4A",
-                            "video_label": "▶ Chinchilla & Neural Scaling Laws",
+                            "video_url": "https://www.youtube.com/watch?v=PZXN7jm9IC0",
+                            "video_label": "▶ Edan Meyer · Chinchilla",
                             "doc_url": "https://arxiv.org/abs/2001.08361",
                             "doc_label": "📄 OpenAI Scaling Laws Paper"
                         }
@@ -1165,36 +1165,36 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Reranking",
-                            "video_url": "https://www.youtube.com/watch?v=7h3oP9xP_98",
-                            "video_label": "▶ Cohere Rerank para Melhor RAG",
+                            "video_url": "https://www.youtube.com/watch?v=aVgZE746OXw",
+                            "video_label": "▶ Bi-Encoder vs Cross-Encoder",
                             "doc_url": "https://docs.cohere.com/docs/reranking",
                             "doc_label": "📖 Cohere Rerank Documentation"
                         },
                         {
                             "title": "Saída estruturada (JSON)",
-                            "video_url": "https://www.youtube.com/watch?v=0h3jO_6eF28",
-                            "video_label": "▶ Structured Outputs com Pydantic",
+                            "video_url": "https://www.youtube.com/watch?v=xpvFinvqRCA",
+                            "video_label": "▶ Efficient NLP · Saída estruturada",
                             "doc_url": "https://platform.openai.com/docs/guides/structured-outputs",
                             "doc_label": "📖 OpenAI Structured Outputs"
                         },
                         {
                             "title": "Memória e orquestração de agentes",
-                            "video_url": "https://www.youtube.com/watch?v=b3A_oZ1L2aA",
-                            "video_label": "▶ LangGraph & CrewAI Orquestração",
+                            "video_url": "https://www.youtube.com/watch?v=3Yp-hIEcWXk",
+                            "video_label": "▶ LangChain · Memória de agentes",
                             "doc_url": "https://langchain-ai.github.io/langgraph/",
                             "doc_label": "📖 LangGraph Documentation"
                         },
                         {
                             "title": "Protocolo MCP",
-                            "video_url": "https://www.youtube.com/watch?v=r0b06l16qBs",
-                            "video_label": "▶ Model Context Protocol (MCP) Anthropic",
+                            "video_url": "https://www.youtube.com/watch?v=deprLB_y6Ho",
+                            "video_label": "▶ Código Fonte TV · MCP",
                             "doc_url": "https://modelcontextprotocol.io/",
                             "doc_label": "📖 Model Context Protocol Docs"
                         },
                         {
                             "title": "Multimodalidade: visão e áudio",
-                            "video_url": "https://www.youtube.com/watch?v=7h3oP9xP_98",
-                            "video_label": "▶ Vision Models: GPT-4o & Gemini Vision",
+                            "video_url": "https://www.youtube.com/watch?v=lOD_EE96jhM",
+                            "video_label": "▶ IBM · Vision Language Models",
                             "doc_url": "https://platform.openai.com/docs/guides/vision",
                             "doc_label": "📖 OpenAI Vision Guide"
                         }
@@ -1205,8 +1205,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Avaliação de LLMs (evals e benchmarks)",
-                            "video_url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8",
-                            "video_label": "▶ LLM Evaluation & MMLU Benchmarks",
+                            "video_url": "https://www.youtube.com/watch?v=EN8jVkv0kiw",
+                            "video_label": "▶ ByteByteGo · Fundamentos de evals",
                             "doc_url": "https://github.com/openai/evals",
                             "doc_label": "📖 OpenAI Evals Framework"
                         },
@@ -1219,22 +1219,22 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Prompt injection",
-                            "video_url": "https://www.youtube.com/watch?v=s_44T4oBf8w",
-                            "video_label": "▶ OWASP Top 10 for LLMs & Jailbreaks",
+                            "video_url": "https://www.youtube.com/watch?v=jrHRe9lSqqA",
+                            "video_label": "▶ IBM · Prompt Injection",
                             "doc_url": "https://genai.owasp.org/llm-top-10/",
                             "doc_label": "📖 OWASP GenAI Top 10"
                         },
                         {
                             "title": "Custo e latência",
-                            "video_url": "https://www.youtube.com/watch?v=80bIUgg4How",
-                            "video_label": "▶ Otimização de Custo de Tokens & Cache",
+                            "video_url": "https://www.youtube.com/watch?v=u57EnkQaUTY",
+                            "video_label": "▶ IBM · Prompt Caching",
                             "doc_url": "https://platform.openai.com/docs/guides/production-best-practices",
                             "doc_label": "📖 Production Best Practices"
                         },
                         {
                             "title": "Modelos locais (Ollama, llama.cpp)",
-                            "video_url": "https://www.youtube.com/watch?v=Gz3k4Z2hLgA",
-                            "video_label": "▶ Rodando LLMs Locais com Ollama",
+                            "video_url": "https://www.youtube.com/watch?v=UtSSMs6ObqY",
+                            "video_label": "▶ Tech With Tim · Ollama em 15 min",
                             "doc_url": "https://ollama.com/",
                             "doc_label": "📖 Ollama Official Website"
                         }
@@ -1261,22 +1261,22 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "FastAPI e criação de APIs",
-                            "video_url": "https://www.youtube.com/watch?v=tLKKmouUAMS",
-                            "video_label": "▶ FastAPI Tutorial Prático",
+                            "video_url": "https://www.youtube.com/watch?v=R26iojTwUv8",
+                            "video_label": "▶ Hashtag · API com FastAPI",
                             "doc_url": "https://fastapi.tiangolo.com/tutorial/",
                             "doc_label": "📖 FastAPI Tutorial Oficial"
                         },
                         {
                             "title": "Deploy em nuvem (AWS, GCP ou Azure)",
-                            "video_url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY",
-                            "video_label": "▶ Deploy de Modelo de ML em Nuvem",
+                            "video_url": "https://www.youtube.com/watch?v=pJ_nCklQ65w",
+                            "video_label": "▶ Shaw Talebi · FastAPI, Docker e AWS",
                             "doc_url": "https://aws.amazon.com/sagemaker/",
                             "doc_label": "📖 AWS SageMaker Overview"
                         },
                         {
                             "title": "Testes e boas práticas de código",
-                            "video_url": "https://www.youtube.com/watch?v=byax_Ej249o",
-                            "video_label": "▶ Testes Automatizados em ML",
+                            "video_url": "https://www.youtube.com/watch?v=FW-mYXr2M8w",
+                            "video_label": "▶ Hashtag · PyTest",
                             "doc_url": "https://docs.pytest.org/",
                             "doc_label": "📖 Pytest Documentation"
                         }
@@ -1287,22 +1287,22 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Versionamento de dados e modelos",
-                            "video_url": "https://www.youtube.com/watch?v=k_A3_w8E-Xg",
-                            "video_label": "▶ DVC (Data Version Control)",
+                            "video_url": "https://www.youtube.com/watch?v=kLKBcPonMYw",
+                            "video_label": "▶ DVC · Versionando dados",
                             "doc_url": "https://dvc.org/doc/start",
                             "doc_label": "📖 DVC Get Started"
                         },
                         {
                             "title": "MLflow ou Weights & Biases",
-                            "video_url": "https://www.youtube.com/watch?v=qdcKU_gZ5eM",
-                            "video_label": "▶ MLflow Tracking & Registry",
+                            "video_url": "https://www.youtube.com/watch?v=6ngxBkx05Fs",
+                            "video_label": "▶ codebasics · MLflow",
                             "doc_url": "https://mlflow.org/docs/latest/index.html",
                             "doc_label": "📖 MLflow Documentation"
                         },
                         {
                             "title": "Monitoramento de modelos",
-                            "video_url": "https://www.youtube.com/watch?v=5p8wTRk7pP8",
-                            "video_label": "▶ Data Drift e Model Monitoring",
+                            "video_url": "https://www.youtube.com/watch?v=uOG685WFO00",
+                            "video_label": "▶ Fiddler AI · ML Drift",
                             "doc_url": "https://docs.evidentlyai.com/",
                             "doc_label": "📖 Evidently AI Model Monitoring"
                         }
@@ -1313,8 +1313,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "3 a 5 projetos documentados no GitHub",
-                            "video_url": "https://www.youtube.com/watch?v=s_44T4oBf8w",
-                            "video_label": "▶ Como Montar Portfólio no GitHub",
+                            "video_url": "https://www.youtube.com/watch?v=fCXBaEnPzgo",
+                            "video_label": "▶ Data Professor · Portfólio no GitHub",
                             "doc_url": "https://github.com/topics/machine-learning",
                             "doc_label": "💻 GitHub ML Topics"
                         },
@@ -1327,8 +1327,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Perfil ativo no LinkedIn e Kaggle",
-                            "video_url": "https://www.youtube.com/watch?v=3R_3r2a41mY",
-                            "video_label": "▶ Estratégia de LinkedIn & Kaggle",
+                            "video_url": "https://www.youtube.com/watch?v=cBbYhhH399c",
+                            "video_label": "▶ Kaggle CareerCon · Análise de portfólio e currículo",
                             "doc_url": "https://www.kaggle.com/",
                             "doc_label": "💻 Kaggle Official"
                         },
@@ -1367,8 +1367,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Filas e processamento assíncrono",
-                            "video_url": "https://www.youtube.com/watch?v=THxCy_kL5pE",
-                            "video_label": "▶ Celery & Redis Task Queues",
+                            "video_url": "https://www.youtube.com/watch?v=VRHVEporra0",
+                            "video_label": "▶ Pretty Printed · Celery",
                             "doc_url": "https://docs.celeryq.dev/en/stable/",
                             "doc_label": "📖 Celery Documentation"
                         },
@@ -1386,8 +1386,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Interfaces com Gradio e Streamlit",
-                            "video_url": "https://www.youtube.com/watch?v=D0D4Pa22VUo",
-                            "video_label": "▶ Gradio & Streamlit para Demos de IA",
+                            "video_url": "https://www.youtube.com/watch?v=eE7CamOE-PA",
+                            "video_label": "▶ AssemblyAI · Gradio Crash Course",
                             "doc_url": "https://www.gradio.app/docs",
                             "doc_label": "📖 Gradio Documentation"
                         },
@@ -1400,15 +1400,15 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Autenticação e limites de uso",
-                            "video_url": "https://www.youtube.com/watch?v=tLKKmouUAMS",
-                            "video_label": "▶ OAuth2, JWT e Rate Limiting",
+                            "video_url": "https://www.youtube.com/watch?v=qqGkshRzw_g",
+                            "video_label": "▶ Hashtag · FastAPI: OAuth2 e JWT",
                             "doc_url": "https://fastapi.tiangolo.com/tutorial/security/",
                             "doc_label": "📖 FastAPI Security Guide"
                         },
                         {
                             "title": "Observabilidade de LLMs",
-                            "video_url": "https://www.youtube.com/watch?v=q6P8v0zJ0w8",
-                            "video_label": "▶ LangSmith & Tracing de LLMs",
+                            "video_url": "https://www.youtube.com/watch?v=THfB4p2xCFY",
+                            "video_label": "▶ Langfuse · Tracing de agentes",
                             "doc_url": "https://docs.smith.langchain.com/",
                             "doc_label": "📖 LangSmith Docs"
                         }
@@ -1419,15 +1419,15 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Currículo e entrevistas técnicas",
-                            "video_url": "https://www.youtube.com/watch?v=3R_3r2a41mY",
-                            "video_label": "▶ Como Passar em Entrevistas de IA",
+                            "video_url": "https://www.youtube.com/watch?v=s-MaQ6S9_DA",
+                            "video_label": "▶ Entrevistas de ML Engineer",
                             "doc_url": "https://www.deeplearning.ai/the-batch/",
                             "doc_label": "📖 The Batch by Andrew Ng"
                         },
                         {
                             "title": "Contribuir com open source",
-                            "video_url": "https://www.youtube.com/watch?v=s_44T4oBf8w",
-                            "video_label": "▶ Primeiros Passos no Open Source",
+                            "video_url": "https://www.youtube.com/watch?v=WldXhauP024",
+                            "video_label": "▶ GitHub · Primeiras contribuições",
                             "doc_url": "https://opensource.guide/pt/",
                             "doc_label": "📖 Guia de Open Source"
                         },
@@ -1447,8 +1447,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Certificações (opcional)",
-                            "video_url": "https://www.youtube.com/watch?v=r8A_Z_2p1kY",
-                            "video_label": "▶ Certificações AWS/GCP valem a pena?",
+                            "video_url": "https://www.youtube.com/watch?v=TGjq6u8VqK8",
+                            "video_label": "▶ AWS · ML Engineer Associate",
                             "doc_url": "https://aws.amazon.com/certification/certified-machine-learning-specialty/",
                             "doc_label": "📖 AWS ML Specialty"
                         }

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Verifica se os vídeos do YouTube usados nas trilhas de Matemática e Inglês ainda existem.
+Verifica se os vídeos do YouTube usados nas trilhas de IA, Matemática e Inglês ainda existem
+e se podem ser tocados dentro do site (incorporação permitida).
 
 Uso (na pasta do projeto):
     python check_links.py              -> lista os vídeos fora do ar (código de saída 1 se houver algum)
@@ -17,7 +18,7 @@ import urllib.request
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
-SOURCES = ["build_math_data.py", "math_lessons_pilot.py", "english_playlist.json"]
+SOURCES = ["build_ia_data.py", "build_math_data.py", "math_lessons_pilot.py", "english_playlist.json"]
 ID_RE = re.compile(r"(?:youtube\.com/watch\?v=|youtu\.be/|\"id\":\s*\"|'id':\s*'|\"videoId\":\s*\")([\w-]{11})")
 PILOT_ID_RE = re.compile(r"\"id\":\s*\"([\w-]{11})\"")
 
@@ -43,8 +44,9 @@ def check(vid):
             d = json.load(r)
         return vid, True, f"{d.get('author_name', '')} | {d.get('title', '')}"
     except urllib.error.HTTPError as e:
-        # 401/403 = existe mas não permite incorporação; 404/400 = não existe
-        return vid, e.code in (401, 403), f"HTTP {e.code}" + (" (incorporação desativada)" if e.code in (401, 403) else "")
+        # 401/403 = existe mas o dono desativou a incorporação: no site aparece "Vídeo indisponível".
+        # 404/400 = não existe (apagado, privado ou ID corrompido).
+        return vid, False, f"HTTP {e.code}" + (" (incorporação desativada: não toca no site)" if e.code in (401, 403) else " (removido ou privado)")
     except Exception as e:  # rede fora, timeout...
         return vid, None, f"não verificado: {e}"
 
