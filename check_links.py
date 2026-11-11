@@ -18,7 +18,8 @@ import urllib.request
 from pathlib import Path
 
 BASE = Path(__file__).resolve().parent
-SOURCES = ["build_ia_data.py", "build_math_data.py", "math_lessons_pilot.py", "english_playlist.json"]
+SOURCES = ["build_ia_data.py", "build_math_data.py", "math_lessons_pilot.py", "ia_lessons_pilot.py",
+           "english_lessons_pilot.py", "english_playlist.json"]
 ID_RE = re.compile(r"(?:youtube\.com/watch\?v=|youtu\.be/|\"id\":\s*\"|'id':\s*'|\"videoId\":\s*\")([\w-]{11})")
 PILOT_ID_RE = re.compile(r"\"id\":\s*\"([\w-]{11})\"")
 

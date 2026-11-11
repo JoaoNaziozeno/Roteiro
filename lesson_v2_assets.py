@@ -295,7 +295,9 @@ function lv2Block(b, i, n) {
   const tipo = b.tipo || "texto";
   const meta = LV2_META[tipo] || LV2_META.texto;
   let inner = b.corpo ? `<div class="lv2-prose">${b.corpo}</div>` : "";
-  switch (tipo) {
+  // Blocos de IA e Inglês (código executável, diálogo, escuta, fala, vocabulário...) vêm de lesson_blocks_v3.py
+  if (typeof LV2_EXTRA !== "undefined" && LV2_EXTRA[tipo]) inner += LV2_EXTRA[tipo](b, i, n);
+  else switch (tipo) {
     case "notacao":
       inner += `<div class="lv2-notation">` + (b.itens || []).map(it =>
         `<div class="lv2-not-row"><div class="lv2-not-sym">${it.simbolo}</div><div>` +
@@ -337,6 +339,8 @@ function lv2Block(b, i, n) {
                `<tbody>${(b.linhas || []).map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
       break;
     case "palpite":
+      // Com "codigo", vira o exercício "preveja a saída" (o código aparece antes das alternativas)
+      if (b.codigo) inner += `<pre class="lv2-code"><code>${lv2HighlightPy(b.codigo)}</code></pre>`;
       inner += `<div class="lv2-q">${b.pergunta || ""}</div><div class="lv2-opts">` +
         (b.opcoes || []).map((o, k) => `<button type="button" class="lv2-opt" data-lv2="palpite" data-k="${k}" data-ok="${k === b.correta ? 1 : 0}">${o}</button>`).join("") +
         `</div><div class="lv2-fb" hidden><div class="lv2-fb-msg"></div>` +
@@ -748,6 +752,7 @@ function lv2Init(container) {
     if (res) { res.innerHTML = `Você já passou neste quiz (${rec.score}/${rec.total}). Refaça quando chegar o dia da revisão.`; lv2ShowReview(root, rec); }
   }
   lv2RestoreAnswers(root, topicId);
+  if (typeof lv2InitExtra === "function") lv2InitExtra(root, topicId);
 
   const checks = [...root.querySelectorAll(".lv2-check")];
   const checkKey = box => String(checks.indexOf(box));
@@ -795,3 +800,9 @@ function lv2Init(container) {
   });
 }
 """
+
+# Blocos novos (IA e Inglês): código Python executável, montar código, diálogo com áudio,
+# escuta/ditado, fala com reconhecimento de voz, vocabulário e os laboratórios de logística e atenção.
+from lesson_blocks_v3 import EXTRA_JS as _EXTRA_JS, EXTRA_CSS as _EXTRA_CSS
+LESSON_V2_JS = LESSON_V2_JS + "\n" + _EXTRA_JS
+LESSON_V2_CSS = LESSON_V2_CSS + "\n" + _EXTRA_CSS

@@ -2144,6 +2144,97 @@ input:checked + .slider:before { transform: translateX(14px); }
 .lv2-review{font-size:.8rem;padding:6px 10px;border-radius:8px;background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);margin-top:8px}
 
 
+/* ===== Blocos novos: código, ordem, diálogo, escuta, fala, vocabulário ===== */
+.lv2-muted{color:var(--mu);font-size:.85em}
+.lv2-note{padding:8px 12px;border-radius:8px;background:rgba(232,161,0,.12);font-size:.82rem;margin-bottom:8px}
+.lv2-btn-ghost{background:transparent;border-color:transparent;color:var(--mu)}
+.lv2-say{font:inherit;font-size:.8rem;padding:3px 8px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer;white-space:nowrap}
+.lv2-say:hover{border-color:var(--mu)}
+
+/* Python */
+/* Sem ligaduras: "<=" e "!=" aparecem como o aluno digita, não como ≤ e ≠ */
+.lv2-py-ed,.lv2-py-out,.lv2-ps-txt,.lv2-code,.lv2 pre,.lv2 code{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+.lv2-py{margin-top:10px;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bg)}
+.lv2-py-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 12px;font-size:.72rem;color:var(--mu);border-bottom:1px solid var(--bd)}
+.lv2-py-lang{font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.lv2-py-status{font-style:italic}
+.lv2-py-ed{display:block;width:100%;box-sizing:border-box;resize:vertical;border:0;outline:none;padding:12px 14px;font:13px/1.65 ui-monospace,"JetBrains Mono","Cascadia Code",Consolas,monospace;background:transparent;color:var(--tx);tab-size:4;white-space:pre;overflow:auto}
+.lv2-py-actions{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--bd)}
+.lv2-py-out{margin:0;padding:10px 14px;border-top:1px solid var(--bd);font:12.5px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:260px;overflow:auto;background:transparent;color:var(--tx)}
+.lv2-py-out.is-err{color:#ef4444}
+.lv2-py-tests{padding:0 14px}
+.lv2-py-tests:not(:empty){padding:8px 14px 10px;border-top:1px solid var(--bd)}
+.lv2-py-test{font-size:.84rem;padding:2px 0}
+.lv2-py-test.ok{color:#10b981}.lv2-py-test.bad{color:#ef4444}
+
+/* Montar na ordem */
+.lv2-ps{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lv2-ps-line{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px 6px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg)}
+.lv2-ps.is-code .lv2-ps-txt{font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre}
+.lv2-ps-line.is-bad{border-color:#ef4444}
+.lv2-ps-btns{display:flex;gap:4px;flex:none}
+.lv2-ps-btns button{font:inherit;width:28px;height:28px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
+.lv2-ps-btns button:hover{color:var(--tx);border-color:var(--mu)}
+.lv2-ps-msg{margin-top:8px;font-size:.85rem}
+
+/* Diálogo */
+.lv2-dlg{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.lv2-dlg-row{display:flex;flex-direction:column;gap:3px;max-width:88%}
+.lv2-dlg-row[data-side="b"]{align-self:flex-end;align-items:flex-end}
+.lv2-dlg-who{font-size:.7rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}
+.lv2-dlg-bubble{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--bd)}
+.lv2-dlg-en{font-weight:600}
+.lv2-dlg-pt{font-size:.84rem;color:var(--mu);margin-top:2px}
+
+/* Escuta */
+.lv2-listen{display:flex;flex-direction:column;gap:16px;margin-top:10px}
+.lv2-lis-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.lv2-lis-hint{font-size:.82rem;color:var(--mu)}
+.lv2-lis-reveal{margin-top:8px;font-size:.88rem}
+.lv2-lis-res{margin-top:6px;font-size:.88rem}
+.lv2-dictbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.lv2-dict{font:inherit;font-size:.9rem;padding:6px 10px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);width:min(420px,100%)}
+.lv2-w-ok{color:#10b981;font-weight:600}
+.lv2-w-miss{color:var(--mu);text-decoration:underline dotted}
+
+/* Fala */
+.lv2-speak{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+.lv2-spk{padding:12px 14px;border:1px solid var(--bd);border-radius:10px}
+.lv2-spk-en{font-size:1.05rem;font-weight:600}
+.lv2-spk-pt{font-size:.84rem;color:var(--mu)}
+.lv2-spk-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.lv2-spk-res{margin-top:8px;font-size:.88rem}
+.lv2-spk-diff{display:block;margin:4px 0}
+
+/* Vocabulário */
+.lv2-vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(200px,100%),1fr));gap:10px;margin-top:10px}
+.lv2-card{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--bg)}
+.lv2-card[data-know="1"]{border-color:rgba(16,185,129,.55)}
+.lv2-card[data-know="0"]{border-color:rgba(232,161,0,.55)}
+.lv2-card-face{font:inherit;flex:1;display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:14px;border:0;background:transparent;color:var(--tx);cursor:pointer;min-height:84px}
+.lv2-card-en{font-weight:700;font-size:1rem}
+.lv2-card-back{display:flex;flex-direction:column;gap:4px}
+.lv2-card-back[hidden]{display:none}
+.lv2-card-pt{color:var(--mu)}
+.lv2-card-ex{font-size:.84rem;font-style:italic}
+.lv2-card-foot{display:flex;gap:6px;align-items:center;padding:8px 10px;border-top:1px solid var(--bd)}
+.lv2-card-mark{font:inherit;font-size:.74rem;padding:3px 8px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer}
+.lv2-card[data-know="1"] .lv2-card-mark[data-v="1"]{color:#10b981;border-color:#10b981}
+.lv2-card[data-know="0"] .lv2-card-mark[data-v="0"]{color:#e8a100;border-color:#e8a100}
+.lv2-vc-sum{margin-top:10px;font-size:.86rem}
+
+/* Atenção */
+.lv2-att-toks{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.lv2-att-tok{font:inherit;font-size:.9rem;padding:5px 10px;border-radius:8px;border:1px solid var(--bd);cursor:pointer;color:var(--tx);background:color-mix(in srgb,#10b981 calc(var(--a,0)*100%),transparent)}
+.lv2-att-tok.is-q{border-color:#e8a100;box-shadow:0 0 0 2px rgba(232,161,0,.35)}
+.lv2-att-mask{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--mu);margin-top:8px}
+.lv2-att-bars{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.lv2-att-row{display:grid;grid-template-columns:76px 1fr 44px;align-items:center;gap:8px;font-size:.8rem}
+.lv2-att-row i{display:block;height:10px;border-radius:5px;background:#10b981;min-width:1px;transition:width .25s}
+.lv2-att-row b{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.lv2-att-row.is-off{opacity:.35}
+
+
 /* =========================================================================
    ESTILOS DE AUTENTICAÇÃO, DROPDOWN DO USUÁRIO & AWS CLOUD SYNC
    ========================================================================= */
@@ -3312,6 +3403,25 @@ main,.hub-main{view-transition-name:ds-page}
 #note-modal .lv2-ext:hover{color:var(--m-tx);text-decoration:underline}
 #note-modal .lv2-clip-note{border:0;background:var(--m-sunk);font-weight:500;font-size:var(--m-fs-sm);border-radius:10px;padding:8px 8px 8px 14px;justify-content:space-between}
 #note-modal .lv2-clip-replay{height:28px;padding:0 12px;border-radius:8px;border:1px solid var(--m-line-2);background:transparent;color:var(--m-tx);font-weight:500;font-size:var(--m-fs-xs)}
+
+/* Blocos de IA e Inglês no mesmo ritmo visual */
+#note-modal .lv2-py{border:1px solid var(--code-line);border-radius:12px;background:var(--code-bg);margin-top:16px}
+#note-modal .lv2-py-bar,#note-modal .lv2-py-actions,#note-modal .lv2-py-out,#note-modal .lv2-py-tests:not(:empty){border-color:var(--code-line)}
+#note-modal .lv2-py-ed{color:var(--code-tx);font-size:.8125rem;line-height:1.7;padding:14px 18px}
+#note-modal .lv2-py-out{color:var(--code-tx)}
+#note-modal .lv2-py-actions .lv2-btn:not(.lv2-btn-main){background:transparent}
+#note-modal .lv2-ps-line{border-color:var(--m-line-2);background:transparent;border-radius:10px;padding:8px 8px 8px 14px}
+#note-modal .lv2-ps.is-code .lv2-ps-line{background:var(--code-bg);border-color:var(--code-line);color:var(--code-tx)}
+#note-modal .lv2-ps-btns button{border-color:var(--m-line);border-radius:8px}
+#note-modal .lv2-dlg-bubble{background:var(--m-sunk);border:0;border-radius:14px}
+#note-modal .lv2-dlg-row[data-side="b"] .lv2-dlg-bubble{background:color-mix(in srgb,var(--m-acc) 12%,var(--m-bg))}
+#note-modal .lv2-say{border-color:var(--m-line-2);background:transparent;border-radius:8px}
+#note-modal .lv2-say:hover{background:var(--m-hover)}
+#note-modal .lv2-spk{border-color:var(--m-line);border-radius:12px;padding:14px 16px}
+#note-modal .lv2-card{border-color:var(--m-line);background:var(--m-bg);border-radius:12px}
+#note-modal .lv2-card-foot{border-color:var(--m-line)}
+#note-modal .lv2-dict{border-color:var(--m-line-2);background:transparent;height:34px}
+#note-modal .lv2-note{border-radius:10px}
 
 /* Laboratórios interativos: aqui o contêiner se justifica (é uma área de manipulação) */
 #note-modal .lv2-wbox{margin-top:16px;border:1px solid var(--m-line);border-radius:14px;padding:18px;background:var(--m-sunk)}

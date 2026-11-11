@@ -292,6 +292,25 @@ MODAL_UI_CSS = r"""
 #note-modal .lv2-clip-note{border:0;background:var(--m-sunk);font-weight:500;font-size:var(--m-fs-sm);border-radius:10px;padding:8px 8px 8px 14px;justify-content:space-between}
 #note-modal .lv2-clip-replay{height:28px;padding:0 12px;border-radius:8px;border:1px solid var(--m-line-2);background:transparent;color:var(--m-tx);font-weight:500;font-size:var(--m-fs-xs)}
 
+/* Blocos de IA e Inglês no mesmo ritmo visual */
+#note-modal .lv2-py{border:1px solid var(--code-line);border-radius:12px;background:var(--code-bg);margin-top:16px}
+#note-modal .lv2-py-bar,#note-modal .lv2-py-actions,#note-modal .lv2-py-out,#note-modal .lv2-py-tests:not(:empty){border-color:var(--code-line)}
+#note-modal .lv2-py-ed{color:var(--code-tx);font-size:.8125rem;line-height:1.7;padding:14px 18px}
+#note-modal .lv2-py-out{color:var(--code-tx)}
+#note-modal .lv2-py-actions .lv2-btn:not(.lv2-btn-main){background:transparent}
+#note-modal .lv2-ps-line{border-color:var(--m-line-2);background:transparent;border-radius:10px;padding:8px 8px 8px 14px}
+#note-modal .lv2-ps.is-code .lv2-ps-line{background:var(--code-bg);border-color:var(--code-line);color:var(--code-tx)}
+#note-modal .lv2-ps-btns button{border-color:var(--m-line);border-radius:8px}
+#note-modal .lv2-dlg-bubble{background:var(--m-sunk);border:0;border-radius:14px}
+#note-modal .lv2-dlg-row[data-side="b"] .lv2-dlg-bubble{background:color-mix(in srgb,var(--m-acc) 12%,var(--m-bg))}
+#note-modal .lv2-say{border-color:var(--m-line-2);background:transparent;border-radius:8px}
+#note-modal .lv2-say:hover{background:var(--m-hover)}
+#note-modal .lv2-spk{border-color:var(--m-line);border-radius:12px;padding:14px 16px}
+#note-modal .lv2-card{border-color:var(--m-line);background:var(--m-bg);border-radius:12px}
+#note-modal .lv2-card-foot{border-color:var(--m-line)}
+#note-modal .lv2-dict{border-color:var(--m-line-2);background:transparent;height:34px}
+#note-modal .lv2-note{border-radius:10px}
+
 /* Laboratórios interativos: aqui o contêiner se justifica (é uma área de manipulação) */
 #note-modal .lv2-wbox{margin-top:16px;border:1px solid var(--m-line);border-radius:14px;padding:18px;background:var(--m-sunk)}
 #note-modal .lv2-wctl{gap:10px 18px;margin-top:14px}
