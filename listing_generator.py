@@ -391,30 +391,37 @@ __AUTH_AWS_CSS__
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
       <div class="note-header-right">
-        <!-- TOGGLE DE PROGRESSO AUTOMÁTICO -->
-        <div class="auto-prog-wrap" title="Quando ativado, atualiza o progresso para 'Falta terminar' e 'Concluído' conforme seu tempo de estudo no vídeo/leitura">
-          <label class="switch">
-            <input type="checkbox" id="modal-auto-prog-check" onchange="toggleAutoProgress(this.checked)">
-            <span class="slider"></span>
-          </label>
-          <span style="display:flex;align-items:center;gap:4px">⚡ Progresso Auto</span>
-        </div>
-
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
-          <button class="note-status-pill" id="modal-status-btn" onclick="toggleModalTopicStatus()" title="Clique para alternar manualmente: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
+          <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Falta terminar → Concluído">Do zero</button>
         </div>
 
-        <!-- META DE DATA -->
-        <div class="note-date-wrap">
-          <label>🎯 Meta:</label>
-          <input type="date" id="modal-date-input" onchange="onModalDateChange()">
-        </div>
+        <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
+        <details class="m-opts" id="modal-opts">
+          <summary class="m-icon-btn" title="Opções da aula" aria-label="Opções da aula">
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="13" cy="8" r="1.4"/></svg>
+          </summary>
+          <div class="m-opts-menu">
+            <label class="auto-prog-wrap" title="Atualiza o status para 'Falta terminar' e 'Concluído' conforme seu tempo de estudo no vídeo e na leitura">
+              <span class="m-opts-text"><b>Progresso automático</b><small>Atualiza o status pelo tempo de estudo</small></span>
+              <span class="switch">
+                <input type="checkbox" id="modal-auto-prog-check" onchange="toggleAutoProgress(this.checked)">
+                <span class="slider"></span>
+              </span>
+            </label>
+            <div class="note-date-wrap">
+              <label for="modal-date-input" class="m-opts-text"><b>Meta de conclusão</b><small>Data em que quer terminar esta aula</small></label>
+              <input type="date" id="modal-date-input" onchange="onModalDateChange()">
+            </div>
+          </div>
+        </details>
 
         <!-- PRÓXIMA AULA -->
-        <button type="button" class="note-next-btn" id="modal-next-btn" onclick="goToNextLesson()" title="Salvar e abrir a próxima aula da trilha">Próxima aula ➔</button>
+        <button type="button" class="note-next-btn" id="modal-next-btn" onclick="goToNextLesson()" title="Salvar e abrir a próxima aula da trilha">Próxima aula <span aria-hidden="true">→</span></button>
 
-        <button class="note-close-btn" onclick="closeNoteModal()" title="Fechar estúdio" aria-label="Fechar estúdio">✕</button>
+        <button class="note-close-btn m-icon-btn" onclick="closeNoteModal()" title="Fechar (Esc)" aria-label="Fechar estúdio">
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+        </button>
       </div>
     </div>
 
@@ -425,7 +432,7 @@ __AUTH_AWS_CSS__
       <div class="study-player-col" id="study-player-sect">
         <div class="study-player-topbar">
           <div class="player-topbar-info">
-            <span class="player-source-tag" id="modal-player-tag">▶ Vídeo Aula</span>
+            <span class="player-source-tag" id="modal-player-tag">Vídeo</span>
             <div id="modal-video-switcher-wrap" class="video-segmented-switcher" style="display:none">
               <button type="button" id="modal-video-opt1-btn" class="video-seg-btn active" onclick="switchModalVideoOption(1)" title="Opção 1: Aula Principal">1. Principal</button>
               <button type="button" id="modal-video-opt2-btn" class="video-seg-btn" onclick="switchModalVideoOption(2)" title="Opção 2: Vídeo Complementar">2. Complementar</button>
@@ -444,19 +451,15 @@ __AUTH_AWS_CSS__
 
         <!-- BARRA DE PROGRESSO DA SESSÃO / VALIDAÇÃO REAL DE ESTUDO -->
         <div class="session-progress-bar-wrap" id="session-progress-wrap">
-          <div class="session-progress-info" style="flex-wrap:wrap;gap:8px">
-            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px">
-              <span id="session-progress-text" style="font-weight:650">⏱️ Sessão: 00:00</span>
-              <button type="button" id="session-video-pill" onclick="toggleManualVideoValidated()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.1);color:var(--ac);cursor:pointer;display:inline-flex;align-items:center;gap:4px" title="Progresso real do vídeo no YouTube (Clique aqui se você assistiu pelo YouTube externo para validar o vídeo)">
-                🎬 Vídeo: 0%
-              </button>
-              <button type="button" id="session-guide-pill" onclick="scrollOrValidatePtGuide()" style="font:inherit;font-size:.73rem;font-weight:750;padding:2px 9px;border-radius:99px;border:1px solid rgba(16,185,129,.35);background:rgba(16,185,129,.1);color:#10b981;cursor:pointer;display:none;align-items:center;gap:4px" title="Progresso da Aula Visual (Role pelos 4 cards + ~45s de leitura na tela)">
-                📘 Aula Visual: 0%
-              </button>
+          <div class="session-progress-info">
+            <div class="session-meta">
+              <span id="session-progress-text" class="session-time">Sessão 00:00</span>
+              <button type="button" id="session-video-pill" class="session-chip" onclick="toggleManualVideoValidated()" title="Progresso do vídeo. Assistiu pelo YouTube? Clique para validar.">Vídeo 0%</button>
+              <button type="button" id="session-guide-pill" class="session-chip" onclick="scrollOrValidatePtGuide()" style="display:none" title="Progresso da aula visual: etapas vistas e tempo de leitura">Aula 0%</button>
             </div>
-            <div style="display:flex;align-items:center;gap:10px">
-              <span id="session-progress-pct" style="font-weight:800;color:var(--ac)">0%</span>
-              <button class="session-finish-btn" onclick="markTopicCompleteNow()" title="Marcar este tópico como Concluído imediatamente">✅ Concluir Tópico</button>
+            <div class="session-end">
+              <span id="session-progress-pct" class="session-pct">0%</span>
+              <button class="session-finish-btn" onclick="markTopicCompleteNow()" title="Marcar este tópico como concluído agora">Concluir</button>
             </div>
           </div>
           <div class="session-bar-track">
@@ -468,8 +471,8 @@ __AUTH_AWS_CSS__
         <div class="study-left-extra-info" id="study-left-extra-info">
           <div id="modal-pt-guide-container"></div>
           <div class="study-left-card" id="modal-default-tip-card">
-            <div class="study-left-card-title">💡 Aprendizado Ativo & Imersivo:</div>
-            <p>Assista aos conceitos no vídeo à esquerda, pause nos momentos-chave e registre seus códigos e insights no caderno à direita. Use a <b>Paleta Matemática</b> para fórmulas e o <b>Estúdio 3D</b> para visualizar tensores e vetores geometricamente.</p>
+            <div class="study-left-card-title">Como estudar esta aula</div>
+            <p>Assista ao vídeo, pause nos momentos-chave e registre no caderno o que entendeu com suas palavras. Use <b>Fórmulas</b> para escrever matemática e <b>3D</b> para enxergar vetores no espaço.</p>
           </div>
         </div>
       </div>
@@ -485,12 +488,12 @@ __AUTH_AWS_CSS__
        <div class="study-notes-panel" id="study-notes-panel">
         <div class="notes-section-head">
           <div class="notes-head-title">
-            <span>📝 Caderno de Anotações & Esquemas</span>
+            <span>Caderno</span>
           </div>
           <div class="toolbar-modes">
-            <button class="tb-mode-btn" data-mode="split" onclick="setNoteViewMode('split')">◫ Lado a Lado</button>
-            <button class="tb-mode-btn active" data-mode="editor" onclick="setNoteViewMode('editor')">✍️ Editor</button>
-            <button class="tb-mode-btn" data-mode="preview" onclick="setNoteViewMode('preview')">👁️ Prévia</button>
+            <button class="tb-mode-btn" data-mode="split" onclick="setNoteViewMode('split')">Lado a lado</button>
+            <button class="tb-mode-btn active" data-mode="editor" onclick="setNoteViewMode('editor')">Editor</button>
+            <button class="tb-mode-btn" data-mode="preview" onclick="setNoteViewMode('preview')">Prévia</button>
           </div>
         </div>
 
@@ -501,33 +504,33 @@ __AUTH_AWS_CSS__
             <button class="tb-btn tb-btn-redo" id="tb-btn-redo" onclick="redoNote()" title="Refazer (Ctrl + Y ou Ctrl + Shift + Z)">↪</button>
             <span class="tb-sep"></span>
 
-            <button class="tb-btn" onclick="insertNoteFormat('bold') title="Negrito"><b>B</b></button>
+            <button class="tb-btn" onclick="insertNoteFormat('bold')" title="Negrito"><b>B</b></button>
             <button class="tb-btn" onclick="insertNoteFormat('italic')" title="Itálico"><i>I</i></button>
             <button class="tb-btn" onclick="insertNoteFormat('heading')" title="Título"><b>H</b></button>
-            <button class="tb-btn" onclick="insertNoteFormat('quote')" title="Dica">💡 Dica</button>
+            <button class="tb-btn" onclick="insertNoteFormat('quote')" title="Dica">Dica</button>
             <span class="tb-sep"></span>
-            <button class="tb-btn" onclick="insertNoteFormat('list')" title="Lista">📋 Lista</button>
-            <button class="tb-btn" onclick="insertNoteFormat('checklist')" title="Checklist">☑️ Check</button>
-            <button class="tb-btn" onclick="insertNoteFormat('table')" title="Tabela">📊 Tabela</button>
-            <button class="tb-btn" onclick="insertNoteFormat('code')" title="Código Python">💻 Código</button>
+            <button class="tb-btn" onclick="insertNoteFormat('list')" title="Lista">Lista</button>
+            <button class="tb-btn" onclick="insertNoteFormat('checklist')" title="Checklist">Check</button>
+            <button class="tb-btn" onclick="insertNoteFormat('table')" title="Tabela">Tabela</button>
+            <button class="tb-btn" onclick="insertNoteFormat('code')" title="Código Python">Código</button>
             <span class="tb-sep"></span>
             
             <!-- MARCADOR DE VÍDEO & PRONÚNCIA EM INGLÊS -->
-            <button class="tb-btn" onclick="insertTimestampToNotes()" title="Inserir marcador de tempo atual do vídeo [mm:ss]">⏱️ Minuto</button>
-            <button class="tb-btn tb-audio-btn" onclick="speakSelectedText()" title="Ouvir pronúncia em inglês nativo do texto selecionado">🔊 Pronúncia</button>
+            <button class="tb-btn" onclick="insertTimestampToNotes()" title="Inserir marcador de tempo atual do vídeo [mm:ss]">Minuto</button>
+            <button class="tb-btn tb-audio-btn" onclick="speakSelectedText()" title="Ouvir pronúncia em inglês nativo do texto selecionado">Pronúncia</button>
             <span class="tb-sep"></span>
 
             <!-- FERRAMENTAS CIENTÍFICAS: MATEMÁTICA, 3D, DESENHO, MATRIZES E EXPORTAÇÃO -->
-            <button class="tb-btn tb-highlight-math" onclick="toggleMathPalette()" title="Inserir Fórmulas e Símbolos Matemáticos">∑ Matemática</button>
-            <button class="tb-btn tb-highlight-3d" onclick="open3DVectorStudio()" title="Abrir Estúdio de Vetores e Gráfico 3D (Eixos X, Y, Z)">🌐 Vetores & 3D</button>
-            <button class="tb-btn tb-highlight-draw" onclick="openWhiteboardDrawer()" title="Abrir Lousa para Desenhar Formas Geométricas 2D">✏️ Desenhar</button>
-            <button class="tb-btn" onclick="openMatrixCalculator()" title="Abrir Calculadora de Matrizes e Vetores">🧮 Matrizes</button>
-            <button class="tb-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown, PDF ou JSON">📥 Exportar</button>
+            <button class="tb-btn tb-highlight-math" onclick="toggleMathPalette()" title="Inserir Fórmulas e Símbolos Matemáticos">∑ Fórmulas</button>
+            <button class="tb-btn tb-highlight-3d" onclick="open3DVectorStudio()" title="Abrir Estúdio de Vetores e Gráfico 3D (Eixos X, Y, Z)">3D</button>
+            <button class="tb-btn tb-highlight-draw" onclick="openWhiteboardDrawer()" title="Abrir Lousa para Desenhar Formas Geométricas 2D">Desenhar</button>
+            <button class="tb-btn" onclick="openMatrixCalculator()" title="Abrir Calculadora de Matrizes e Vetores">Matrizes</button>
+            <button class="tb-btn" onclick="openExportModal()" title="Exportar Caderno em Markdown, PDF ou JSON">Exportar</button>
           </div>
 
           <div class="toolbar-templates">
             <select class="tb-select" onchange="insertNoteTemplate(this.value); this.value='';">
-              <option value="" disabled selected>+ Inserir Modelo...</option>
+              <option value="" disabled selected>Modelos</option>
               <option value="summary">📝 Resumo de Aula</option>
               <option value="table">📊 Tabela de Comparação</option>
               <option value="code">💻 Exemplo Prático Python</option>
@@ -587,7 +590,7 @@ __AUTH_AWS_CSS__
 Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput="onNoteEditorInput()"></textarea>
           </div>
           <div class="note-preview-pane">
-            <div class="preview-header">👁️ Pré-visualização Formatada (Markdown / KaTeX / Tabelas / Imagens)</div>
+            <div class="preview-header">Prévia</div>
             <div class="preview-body" id="modal-preview-body"></div>
           </div>
         </div>
@@ -598,7 +601,7 @@ Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput=
           <div class="footer-sync" id="modal-sync-indicator" style="display:none"></div>
           <div class="footer-actions">
             <button class="note-clear-btn" onclick="clearModalNote()">Limpar</button>
-            <button class="note-save-btn" onclick="closeNoteModal()">💾 Salvar & Fechar</button>
+            <button class="note-save-btn" onclick="closeNoteModal()">Salvar e fechar</button>
           </div>
         </div>
        </div><!-- /study-notes-panel -->
@@ -1153,16 +1156,9 @@ function cycleStatus(topicId) {
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
   if (!btn) return;
-  if (status === "e") {
-    btn.textContent = "🟢 Concluído";
-    btn.style.color = "var(--e)";
-  } else if (status === "r") {
-    btn.textContent = "🟡 Falta terminar";
-    btn.style.color = "var(--r)";
-  } else {
-    btn.textContent = "🔴 Do zero";
-    btn.style.color = "var(--z)";
-  }
+  const s = status === "e" || status === "r" ? status : "z";
+  btn.dataset.s = s;
+  btn.textContent = s === "e" ? "Concluído" : s === "r" ? "Falta terminar" : "Do zero";
 }
 
 function toggleModalTopicStatus() {
