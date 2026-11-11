@@ -4294,6 +4294,7 @@ function awsCollectExtra() {
   return {
     v: 1,
     reviews: awsReadJson("roteiro-review-v1", {}),
+    answers: awsReadJson("roteiro-answers-v1", {}),
     events: ev.map(e => [e.t, e.id, e.f, e.to, e.src || "ui"]),
     sessions: ses.map(s => [s.t, s.id || "", s.sec || 0]),
     log_start: ls > 0 ? ls : null
@@ -4322,6 +4323,16 @@ function awsMergeExtra(x) {
   }
   for (const k in locR) if (!cloudR[k] || num(locR[k].last) > num(cloudR[k].last)) localHasMore = true;
   try { localStorage.setItem("roteiro-review-v1", JSON.stringify(mergedR)); } catch (e) {}
+
+  // respostas das atividades das aulas: por tópico, fica a versão mais recente
+  const locA = awsReadJson("roteiro-answers-v1", {}), cloudA = x.answers || {};
+  const mergedA = Object.assign({}, locA);
+  for (const k in cloudA) {
+    const c = cloudA[k], l = locA[k];
+    if (c && typeof c === "object" && (!l || num(c.t) >= num(l.t))) mergedA[k] = c;
+  }
+  for (const k in locA) if (!cloudA[k] || num(locA[k].t) > num(cloudA[k].t)) localHasMore = true;
+  try { localStorage.setItem("roteiro-answers-v1", JSON.stringify(mergedA)); } catch (e) {}
 
   // eventos: união sem duplicar (mesmo instante + tópico + novo estado)
   const locE = awsReadJson("roteiro-events-v1", []);

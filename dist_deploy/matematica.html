@@ -5373,6 +5373,7 @@ function awsCollectExtra() {
   return {
     v: 1,
     reviews: awsReadJson("roteiro-review-v1", {}),
+    answers: awsReadJson("roteiro-answers-v1", {}),
     events: ev.map(e => [e.t, e.id, e.f, e.to, e.src || "ui"]),
     sessions: ses.map(s => [s.t, s.id || "", s.sec || 0]),
     log_start: ls > 0 ? ls : null
@@ -5401,6 +5402,16 @@ function awsMergeExtra(x) {
   }
   for (const k in locR) if (!cloudR[k] || num(locR[k].last) > num(cloudR[k].last)) localHasMore = true;
   try { localStorage.setItem("roteiro-review-v1", JSON.stringify(mergedR)); } catch (e) {}
+
+  // respostas das atividades das aulas: por tópico, fica a versão mais recente
+  const locA = awsReadJson("roteiro-answers-v1", {}), cloudA = x.answers || {};
+  const mergedA = Object.assign({}, locA);
+  for (const k in cloudA) {
+    const c = cloudA[k], l = locA[k];
+    if (c && typeof c === "object" && (!l || num(c.t) >= num(l.t))) mergedA[k] = c;
+  }
+  for (const k in locA) if (!cloudA[k] || num(locA[k].t) > num(cloudA[k].t)) localHasMore = true;
+  try { localStorage.setItem("roteiro-answers-v1", JSON.stringify(mergedA)); } catch (e) {}
 
   // eventos: união sem duplicar (mesmo instante + tópico + novo estado)
   const locE = awsReadJson("roteiro-events-v1", []);
@@ -8968,6 +8979,97 @@ function lv2ShowReview(root, rec) {
 
 function lv2Unlock(root) { root.querySelectorAll(".lv2-layers").forEach(l => l.dataset.locked = "0"); }
 
+/* Respostas das atividades (chute, prática e quiz), por aula. Ficam no navegador e vão
+   para a nuvem junto com o resto do progresso (campo "extra" -> answers), então ao reabrir
+   a aula, em qualquer dispositivo, o que você já respondeu continua lá. */
+const LV2_ANS_KEY = "roteiro-answers-v1";
+function lv2ReadAnswers() { try { return JSON.parse(localStorage.getItem(LV2_ANS_KEY) || "{}") || {}; } catch (e) { return {}; } }
+function lv2SaveAnswer(topicId, mutate) {
+  if (!topicId) return;
+  const all = lv2ReadAnswers();
+  const a = all[topicId] || {};
+  a.p = a.p || {}; a.c = a.c || {}; a.q = a.q || {};
+  mutate(a);
+  a.t = Date.now();
+  all[topicId] = a;
+  try { localStorage.setItem(LV2_ANS_KEY, JSON.stringify(all)); } catch (e) {}
+  if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
+}
+const lv2BlockIdx = el => { const sec = el.closest(".lv2-block"); return sec ? sec.id.replace("pt-step-card-", "") : "0"; };
+
+function lv2ApplyPalpite(blk, t) {
+  const opts = blk.querySelectorAll(".lv2-opt"), ok = t.dataset.ok === "1";
+  opts.forEach(o => { o.disabled = true; if (o.dataset.ok === "1") o.classList.add("is-right"); });
+  if (!ok) t.classList.add("is-wrong");
+  const fb = blk.querySelector(".lv2-fb"); fb.hidden = false;
+  fb.querySelector(".lv2-fb-msg").textContent = ok ? "🎯 Acertou o chute!" : "Boa tentativa! Errar o palpite e depois entender o porquê fixa mais do que acertar de primeira.";
+  const why = fb.querySelector(`.lv2-fb-why[data-k="${t.dataset.k}"]`); if (why) why.hidden = false;
+}
+
+function lv2RunCheck(box) {
+  const btn = box.querySelector("[data-lv2=check]"), msg = box.querySelector(".lv2-check-msg");
+  const want = JSON.parse(btn.dataset.v), tol = parseFloat(btn.dataset.tol), got = lv2ParseNums(box.querySelector("input").value);
+  const W = Array.isArray(want) ? want : [want];
+  if (!got.length || got.some(isNaN)) { msg.innerHTML = `<span class="lv2-tag-warn">Digite um número${W.length > 1 ? " para cada componente, separados por ponto e vírgula" : ""}.</span>`; return null; }
+  const right = got.length === W.length && W.every((x, k) => Math.abs(x - got[k]) <= tol + 1e-9);
+  msg.innerHTML = right ? `<span class="lv2-tag-ok">✓ Correto!</span>` : `<span class="lv2-tag-bad">✗ Ainda não. Abra a dica 1 e tente de novo.</span>`;
+  return right;
+}
+
+function lv2RunQuiz(root, q, topicId, restoring) {
+  const items = q.querySelectorAll(".lv2-qz");
+  let score = 0, answered = 0;
+  items.forEach(it => {
+    const sel = it.querySelector("input:checked");
+    it.classList.remove("is-right", "is-wrong");
+    if (sel) answered++;
+    const right = sel && +sel.value === +it.dataset.c;
+    if (right) score++;
+    it.classList.add(right ? "is-right" : "is-wrong");
+    it.querySelector(".lv2-qz-exp").hidden = false;
+  });
+  const res = q.querySelector(".lv2-quiz-res"), n = items.length, min = +q.dataset.min;
+  if (answered < n) { res.innerHTML = `<span class="lv2-tag-warn">Responda todas as ${n} perguntas antes de corrigir.</span>`; items.forEach(it => { it.classList.remove("is-right", "is-wrong"); it.querySelector(".lv2-qz-exp").hidden = true; }); return false; }
+  if (score >= min) {
+    res.innerHTML = `<span class="lv2-tag-ok">${score}/${n}: aprovado! A camada “Vá mais fundo” foi liberada.</span>`;
+    lv2Unlock(root);
+    // Ao restaurar não reagenda as revisões: elas já foram marcadas quando você corrigiu de verdade.
+    const rec = restoring ? (lv2ReadReview()[topicId] || null) : lv2ScheduleReview(topicId, score, n);
+    if (rec) lv2ShowReview(root, rec);
+  } else {
+    res.innerHTML = `<span class="lv2-tag-bad">${score}/${n}. Leia as explicações, reveja os blocos marcados com ✗ e tente de novo.</span>`;
+  }
+  return true;
+}
+
+// Reaplica na tela o que já foi respondido nesta aula
+function lv2RestoreAnswers(root, topicId) {
+  const a = topicId ? lv2ReadAnswers()[topicId] : null;
+  if (!a) return;
+  Object.keys(a.p || {}).forEach(i => {
+    const blk = root.querySelector(`#pt-step-card-${i}`), t = blk && blk.querySelector(`.lv2-opt[data-k="${a.p[i]}"]`);
+    if (t) lv2ApplyPalpite(blk, t);
+  });
+  const checks = root.querySelectorAll(".lv2-check");
+  Object.keys(a.c || {}).forEach(k => {
+    const box = checks[+k], v = a.c[k];
+    if (!box || !v) return;
+    box.querySelector("input").value = v[0] || "";
+    if (+v[1]) lv2RunCheck(box);
+  });
+  Object.keys(a.q || {}).forEach(i => {
+    const blk = root.querySelector(`#pt-step-card-${i}`), q = blk && blk.querySelector(".lv2-quiz-box"), st = a.q[i];
+    if (!q || !st) return;
+    q.querySelectorAll(".lv2-qz").forEach((it, k) => {
+      const j = (st.s || [])[k];
+      const r = j != null && +j >= 0 ? it.querySelector(`input[value="${+j}"]`) : null;
+      if (r) r.checked = true;
+    });
+    if (+st.d) lv2RunQuiz(root, q, topicId, true);
+  });
+  if (+a.u) lv2Unlock(root);
+}
+
 function lv2Init(container) {
   const root = container && container.querySelector(".lv2");
   if (!root || root.__lv2) return;
@@ -8980,49 +9082,50 @@ function lv2Init(container) {
     const res = root.querySelector(".lv2-quiz-res");
     if (res) { res.innerHTML = `Você já passou neste quiz (${rec.score}/${rec.total}). Refaça quando chegar o dia da revisão.`; lv2ShowReview(root, rec); }
   }
+  lv2RestoreAnswers(root, topicId);
+
+  const checks = [...root.querySelectorAll(".lv2-check")];
+  const checkKey = box => String(checks.indexOf(box));
+  const quizState = q => [...q.querySelectorAll(".lv2-qz")].map(it => { const sel = it.querySelector("input:checked"); return sel ? +sel.value : -1; });
+
+  // O que você digita fica salvo mesmo antes de clicar em "Conferir"
+  let typing;
+  root.addEventListener("input", ev => {
+    const box = ev.target.closest(".lv2-check");
+    if (!box) return;
+    clearTimeout(typing);
+    typing = setTimeout(() => lv2SaveAnswer(topicId, a => {
+      const prev = a.c[checkKey(box)];
+      a.c[checkKey(box)] = [ev.target.value, prev && prev[0] === ev.target.value ? prev[1] : 0];
+    }), 500);
+  });
+  // Marcar uma alternativa do quiz já fica salvo
+  root.addEventListener("change", ev => {
+    const q = ev.target.closest(".lv2-quiz-box");
+    if (!q) return;
+    lv2SaveAnswer(topicId, a => { a.q[lv2BlockIdx(q)] = { s: quizState(q), d: 0 }; });
+  });
+
   root.addEventListener("click", ev => {
     const t = ev.target.closest("[data-lv2]"); if (!t) return;
     const kind = t.dataset.lv2, blk = t.closest(".lv2-block");
     if (kind === "palpite") {
-      const opts = blk.querySelectorAll(".lv2-opt"), ok = t.dataset.ok === "1";
-      opts.forEach(o => { o.disabled = true; if (o.dataset.ok === "1") o.classList.add("is-right"); });
-      if (!ok) t.classList.add("is-wrong");
-      const fb = blk.querySelector(".lv2-fb"); fb.hidden = false;
-      fb.querySelector(".lv2-fb-msg").textContent = ok ? "🎯 Acertou o chute!" : "Boa tentativa! Errar o palpite e depois entender o porquê fixa mais do que acertar de primeira.";
-      const why = fb.querySelector(`.lv2-fb-why[data-k="${t.dataset.k}"]`); if (why) why.hidden = false;
+      lv2ApplyPalpite(blk, t);
+      lv2SaveAnswer(topicId, a => { a.p[lv2BlockIdx(blk)] = +t.dataset.k; });
     } else if (kind === "play") {
       const wrap = t.closest(".lv2-video-wrap");
       lv2PlayClip(wrap);
     } else if (kind === "check") {
-      const box = t.closest(".lv2-check"), msg = box.querySelector(".lv2-check-msg");
-      const want = JSON.parse(t.dataset.v), tol = parseFloat(t.dataset.tol), got = lv2ParseNums(box.querySelector("input").value);
-      const W = Array.isArray(want) ? want : [want];
-      if (!got.length || got.some(isNaN)) { msg.innerHTML = `<span class="lv2-tag-warn">Digite um número${W.length > 1 ? " para cada componente, separados por ponto e vírgula" : ""}.</span>`; return; }
-      const right = got.length === W.length && W.every((x, k) => Math.abs(x - got[k]) <= tol + 1e-9);
-      msg.innerHTML = right ? `<span class="lv2-tag-ok">✓ Correto!</span>` : `<span class="lv2-tag-bad">✗ Ainda não. Abra a dica 1 e tente de novo.</span>`;
+      const box = t.closest(".lv2-check"), right = lv2RunCheck(box);
+      if (right === null) return;
+      lv2SaveAnswer(topicId, a => { a.c[checkKey(box)] = [box.querySelector("input").value, 1]; });
     } else if (kind === "quiz") {
-      const q = t.closest(".lv2-quiz-box"), items = q.querySelectorAll(".lv2-qz");
-      let score = 0, answered = 0;
-      items.forEach(it => {
-        const sel = it.querySelector("input:checked");
-        it.classList.remove("is-right", "is-wrong");
-        if (sel) answered++;
-        const right = sel && +sel.value === +it.dataset.c;
-        if (right) score++;
-        it.classList.add(right ? "is-right" : "is-wrong");
-        it.querySelector(".lv2-qz-exp").hidden = false;
-      });
-      const res = q.querySelector(".lv2-quiz-res"), n = items.length, min = +q.dataset.min;
-      if (answered < n) { res.innerHTML = `<span class="lv2-tag-warn">Responda todas as ${n} perguntas antes de corrigir.</span>`; items.forEach(it => { it.classList.remove("is-right", "is-wrong"); it.querySelector(".lv2-qz-exp").hidden = true; }); return; }
-      if (score >= min) {
-        res.innerHTML = `<span class="lv2-tag-ok">${score}/${n}: aprovado! A camada “Vá mais fundo” foi liberada.</span>`;
-        lv2Unlock(root);
-        lv2ShowReview(root, lv2ScheduleReview(topicId, score, n));
-      } else {
-        res.innerHTML = `<span class="lv2-tag-bad">${score}/${n}. Leia as explicações, reveja os blocos marcados com ✗ e tente de novo.</span>`;
-      }
+      const q = t.closest(".lv2-quiz-box");
+      const graded = lv2RunQuiz(root, q, topicId, false);
+      lv2SaveAnswer(topicId, a => { a.q[lv2BlockIdx(q)] = { s: quizState(q), d: graded ? 1 : 0 }; });
     } else if (kind === "unlock") {
       lv2Unlock(root);
+      lv2SaveAnswer(topicId, a => { a.u = 1; });
     }
   });
 }
