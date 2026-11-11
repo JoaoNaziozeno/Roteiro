@@ -506,9 +506,10 @@ def set_topic_index(tracks):
 
 def apply_design(html: str, track: str) -> str:
     """Injeta a camada de design no fim do <head> e do <body> e marca a trilha da página."""
-    html = html.replace("</head>", DESIGN_HEAD + "\n</head>", 1)
+    from modal_ui import MODAL_UI_CSS, MODAL_UI_JS
+    html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
     idx = html.rfind("</body>")
     if idx != -1:
-        html = html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + html[idx:]
+        html = html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS + "\n" + html[idx:]
     return html

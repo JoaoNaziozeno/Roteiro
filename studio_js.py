@@ -383,16 +383,10 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
       if (defaultTipCard) defaultTipCard.style.display = "none";
       if (typeof isPtGuideV2 === "function" && isPtGuideV2(ptGuide)) {
         guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
-          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
-            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual Passo a Passo</span>
-            </div>
-            <div>
-              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
-                📋 Copiar Resumo
-              </button>
-            </div>
+        <div class="guide-shell" id="pt-guide-box">
+          <div class="guide-shell-head">
+            <span class="guide-shell-title">Aula visual</span>
+            <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="m-text-btn" title="Copiar o resumo da aula para o caderno">Copiar resumo para o caderno</button>
           </div>
           ${renderPtGuideV2Body(ptGuide, topicId)}
         </div>
@@ -401,16 +395,10 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
         const fmtExemplo = (ptGuide.exemplo || "").replace(/\n/g, "<br>");
         const fmtFormula = (ptGuide.formula || "").replace(/\n/g, "<br>");
         guideContainer.innerHTML = `
-        <div class="study-left-card" id="pt-guide-box" style="border:1.5px solid var(--bd);background:var(--card);padding:16px 18px;border-radius:14px;margin-bottom:10px;box-shadow:0 4px 16px rgba(0,0,0,.08)">
-          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bd)">
-            <div style="font-size:.92rem;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:7px">
-              <span>📘 Aula Visual Passo a Passo</span>
-            </div>
-            <div>
-              <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="pt-guide-btn pt-btn-secondary" title="Copiar resumo para o caderno de anotações">
-                📋 Copiar Resumo
-              </button>
-            </div>
+        <div class="guide-shell" id="pt-guide-box">
+          <div class="guide-shell-head">
+            <span class="guide-shell-title">Aula visual</span>
+            <button type="button" onclick="copyPtGuideToNotebook('${topicId}')" class="m-text-btn" title="Copiar o resumo da aula para o caderno">Copiar resumo para o caderno</button>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:12px;font-size:.86rem;line-height:1.6;color:var(--tx)">
@@ -641,12 +629,10 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
         guideCardsSeen[i] = true;
         const badge = document.getElementById(`pt-step-badge-${i}`);
         if (badge) {
-          badge.textContent = `✓ ${i}/${totalCards} Lido`;
-          badge.style.background = "rgba(16,185,129,.15)";
-          badge.style.color = "#10b981";
-          badge.style.borderColor = "rgba(16,185,129,.4)";
+          badge.textContent = `✓ ${i}/${totalCards}`;
+          badge.classList.add("is-seen");
         }
-        card.style.borderColor = "rgba(16,185,129,.45)";
+        card.classList.add("is-seen");
       }
     }
   }
@@ -727,42 +713,28 @@ function syncSessionStudyProgressUI() {
   const mins = String(Math.floor(sessionSeconds / 60)).padStart(2, "0");
   const secs = String(sessionSeconds % 60).padStart(2, "0");
   if (timerTxt) {
-    timerTxt.textContent = `⏱️ Sessão: ${mins}:${secs}`;
+    timerTxt.textContent = `Sessão ${mins}:${secs}`;
   }
 
   if (videoPill) {
     videoPill.style.display = hasVideo ? "inline-flex" : "none";
+    videoPill.classList.toggle("is-done", videoPct >= 100);
     if (videoPct >= 100) {
-      videoPill.textContent = hasGuide ? `🎬 Vídeo: 100% ✓ (50/50%)` : `🎬 Vídeo: 100% ✓`;
-      videoPill.style.background = "rgba(37,55,69,.12)";
-      videoPill.style.borderColor = "#4A5C6A";
-      videoPill.style.color = "var(--tx)";
+      videoPill.textContent = "Vídeo ✓";
     } else if (ytDuration > 0) {
-      videoPill.textContent = `🎬 Vídeo: ${videoPct}% (${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)})`;
-      videoPill.style.background = "rgba(74,92,106,.15)";
-      videoPill.style.borderColor = "var(--bd)";
-      videoPill.style.color = "var(--tx)";
+      videoPill.textContent = `Vídeo ${videoPct}% · ${formatSeconds(ytCurrentTime)}/${formatSeconds(ytDuration)}`;
     } else {
-      videoPill.textContent = `🎬 Vídeo: ${videoPct}% (Assista ao vídeo)`;
-      videoPill.style.background = "rgba(74,92,106,.15)";
-      videoPill.style.borderColor = "var(--bd)";
-      videoPill.style.color = "var(--tx)";
+      videoPill.textContent = `Vídeo ${videoPct}%`;
     }
   }
 
   if (guidePill) {
     guidePill.style.display = hasGuide ? "inline-flex" : "none";
+    guidePill.classList.toggle("is-done", guidePct >= 100);
     if (guidePct >= 100) {
-      guidePill.textContent = `📘 Aula Visual: 100% ✓ (50/50%)`;
-      guidePill.style.background = "rgba(37,55,69,.12)";
-      guidePill.style.borderColor = "#4A5C6A";
-      guidePill.style.color = "var(--tx)";
+      guidePill.textContent = "Aula ✓";
     } else {
-      const readSecCap = Math.min(GUIDE_READ_TARGET_SECONDS, guideReadSeconds);
-      guidePill.textContent = `📘 Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
-      guidePill.style.background = "rgba(74,92,106,.15)";
-      guidePill.style.borderColor = "var(--bd)";
-      guidePill.style.color = "var(--tx)";
+      guidePill.textContent = `Aula ${guidePct}% · ${seenCount}/${totalCards} etapas`;
     }
   }
 
@@ -849,11 +821,11 @@ function markPtGuideReadNow(silent = false) {
     guideCardsSeen[i] = true;
     const badge = document.getElementById(`pt-step-badge-${i}`);
     if (badge) {
-      badge.textContent = `✓ ${i}/${totalCards} Lido`;
-      badge.style.background = "rgba(16,185,129,.15)";
-      badge.style.color = "#10b981";
-      badge.style.borderColor = "rgba(16,185,129,.4)";
+      badge.textContent = `✓ ${i}/${totalCards}`;
+      badge.classList.add("is-seen");
     }
+    const card = document.getElementById(`pt-step-card-${i}`);
+    if (card) card.classList.add("is-seen");
   }
   if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
   PR[topicId].gp = 100;

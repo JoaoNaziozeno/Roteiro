@@ -256,6 +256,22 @@ function lv2Esc(s) {
   return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+/* Realce de sintaxe Python, leve e sem dependências: comentários, textos, números,
+   palavras-chave e chamadas de função ganham classes .tk-* coloridas pelo tema. */
+const LV2_PY_RE = /(#[^\n]*)|("{3}[\s\S]*?"{3}|'{3}[\s\S]*?'{3}|[fFrRbB]?"(?:\\.|[^"\\\n])*"|[fFrRbB]?'(?:\\.|[^'\\\n])*')|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b|\b(import|from|as|def|return|for|in|if|elif|else|while|class|with|lambda|and|or|not|is|None|True|False|try|except|finally|raise|yield|pass|break|continue|global|assert)\b|([A-Za-z_]\w*)(?=\()/g;
+function lv2HighlightPy(src) {
+  const s = String(src == null ? "" : src);
+  let out = "", last = 0, m;
+  LV2_PY_RE.lastIndex = 0;
+  while ((m = LV2_PY_RE.exec(s))) {
+    out += lv2Esc(s.slice(last, m.index));
+    const cls = m[1] ? "c" : m[2] ? "s" : m[3] ? "n" : m[4] ? "k" : "f";
+    out += `<span class="tk-${cls}">${lv2Esc(m[0])}</span>`;
+    last = LV2_PY_RE.lastIndex;
+  }
+  return out + lv2Esc(s.slice(last));
+}
+
 function lv2IconArray(b) {
   const cols = b.colunas || 40, total = b.total || 1000, gap = 11, r = 4;
   const rows = Math.ceil(total / cols);
@@ -301,16 +317,16 @@ function lv2Block(b, i, n) {
                `<details><summary>Pensou? Ver a resposta</summary><div>${b.resposta || ""}</div></details>`;
       break;
     case "laboratorio":
-      inner += `<pre class="lv2-code"><code>${lv2Esc(b.codigo)}</code></pre>`;
+      inner += `<pre class="lv2-code"><code>${lv2HighlightPy(b.codigo)}</code></pre>`;
       if (b.experimentos && b.experimentos.length) {
-        inner += `<div class="lv2-exp-title">🔬 Experimente e observe</div><ul>${b.experimentos.map(e => `<li>${e}</li>`).join("")}</ul>`;
+        inner += `<div class="lv2-exp-title">Experimente e observe</div><ul>${b.experimentos.map(e => `<li>${e}</li>`).join("")}</ul>`;
       }
       break;
     case "desafio":
       inner += (b.exercicios || []).map((ex, k) =>
         `<div class="lv2-ex"><div><span class="lv2-ex-n">${k + 1}</span>${ex.enunciado}</div>` +
-        (ex.dicas || []).map((d, j) => `<details><summary>💡 Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
-        `<details><summary>✅ Resposta comentada</summary><div>${ex.resposta || ""}</div></details></div>`).join("");
+        (ex.dicas || []).map((d, j) => `<details><summary>Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
+        `<details><summary>Resposta comentada</summary><div>${ex.resposta || ""}</div></details></div>`).join("");
       break;
     case "armadilhas":
       inner += `<div class="lv2-pitfalls">` + (b.itens || []).map(it =>
@@ -333,7 +349,7 @@ function lv2Block(b, i, n) {
       inner += `<div class="lv2-video-meta"><b>${b.canal || "YouTube"}</b>${b.titulo_video ? ` · ${b.titulo_video}` : ""} · ` +
         (e ? `trecho ${lv2Fmt(s)} → ${lv2Fmt(e)} (~${Math.max(1, Math.round((e - s) / 60))} min)` : (s ? `a partir de ${lv2Fmt(s)}` : "vídeo completo")) + `</div>`;
       if (b.missao && b.missao.length) {
-        inner += `<div class="lv2-mission"><div class="lv2-exp-title" style="margin-top:0">🎯 Sua missão enquanto assiste</div><ol>${b.missao.map(m => `<li>${m}</li>`).join("")}</ol></div>`;
+        inner += `<div class="lv2-mission"><div class="lv2-exp-title" style="margin-top:0">Sua missão enquanto assiste</div><ol>${b.missao.map(m => `<li>${m}</li>`).join("")}</ol></div>`;
       }
       inner += `<div class="lv2-video-wrap" data-src="${src}" data-s="${s}" data-e="${e}"><button type="button" class="lv2-video-play" data-lv2="play">▶ ${e || s ? "Assistir o trecho aqui" : "Assistir aqui"}</button></div>` +
         (e ? `<div class="lv2-clip-note" hidden>⏹ Fim do trecho. <button type="button" class="lv2-clip-replay">↺ Rever o trecho</button></div>` : "") +
@@ -344,7 +360,7 @@ function lv2Block(b, i, n) {
     case "widget":
       inner += `<div class="lv2-wbox" data-widget="${b.widget}"></div>`;
       if (b.missoes && b.missoes.length) {
-        inner += `<div class="lv2-exp-title">🧭 Missões</div><ol>${b.missoes.map(m => `<li>${m}</li>`).join("")}</ol>`;
+        inner += `<div class="lv2-exp-title">Missões</div><ol>${b.missoes.map(m => `<li>${m}</li>`).join("")}</ol>`;
       }
       break;
     case "pratica": {
@@ -352,12 +368,12 @@ function lv2Block(b, i, n) {
       inner += (b.exercicios || []).map((ex, k) => {
         const lv = ex.nivel || 1, nm = N[lv] || N[1];
         const isArr = Array.isArray(ex.valor);
-        return `<div class="lv2-ex lv2-lvl-${lv}"><div class="lv2-lvl-tag">${nm[0]} Nível ${lv} · ${nm[1]}</div>` +
+        return `<div class="lv2-ex lv2-lvl-${lv}"><div class="lv2-lvl-tag">Nível ${lv} · ${nm[1]}</div>` +
           `<div><span class="lv2-ex-n">${k + 1}</span>${ex.enunciado}</div>` +
           (ex.valor != null ? `<div class="lv2-check"><input type="text" inputmode="decimal" aria-label="Sua resposta" placeholder="${isArr ? "ex.: 3; -1; 2" : "sua resposta"}">` +
             `<button type="button" class="lv2-btn" data-lv2="check" data-v='${JSON.stringify(ex.valor)}' data-tol="${ex.tol == null ? 0.01 : ex.tol}">Conferir</button><span class="lv2-check-msg"></span></div>` : "") +
-          (ex.dicas || []).map((d, j) => `<details><summary>💡 Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
-          `<details><summary>✅ Resolução comentada</summary><div>${ex.resposta || ""}</div></details></div>`;
+          (ex.dicas || []).map((d, j) => `<details><summary>Dica ${j + 1}</summary><div>${d}</div></details>`).join("") +
+          `<details><summary>Resolução comentada</summary><div>${ex.resposta || ""}</div></details></div>`;
       }).join("");
       break;
     }
@@ -375,21 +391,21 @@ function lv2Block(b, i, n) {
         `<div class="lv2-src-meta">${[it.trecho, it.tempo ? `~${it.tempo} min` : ""].filter(Boolean).join(" · ")}</div>${it.foco ? `<div>${it.foco}</div>` : ""}</div>`;
       inner += `<div class="lv2-layers" data-locked="1"><div class="lv2-lock"><span>🔒 Libera quando você passar no quiz de saída. Primeiro a base, depois a profundidade.</span>` +
         `<button type="button" class="lv2-btn" data-lv2="unlock">Ver mesmo assim</button></div><div class="lv2-layer-body">`;
-      if (b.ponte && b.ponte.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">🌉 Ponte · acessível e visual</div>${b.ponte.map(src).join("")}</div>`;
+      if (b.ponte && b.ponte.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Ponte · acessível e visual</div>${b.ponte.map(src).join("")}</div>`;
       if (b.profundidade && b.profundidade.length) {
-        inner += `<div class="lv2-layer"><div class="lv2-layer-tag">🏛️ Profundidade · leitura guiada (opcional)</div>` + b.profundidade.map(it =>
+        inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Profundidade · leitura guiada (opcional)</div>` + b.profundidade.map(it =>
           `<div class="lv2-src"><a href="${it.url}" target="_blank" rel="noopener">${it.obra} ↗</a><div class="lv2-src-meta">${it.secao || ""}</div>` +
           (it.perguntas && it.perguntas.length ? `<div>Leia procurando responder:</div><ol>${it.perguntas.map(p => `<li>${p}</li>`).join("")}</ol>` : "") +
           `<div style="font-size:.8rem;color:var(--mu)">✍️ Depois, escreva no caderno 3 frases traduzindo o que leu para a linguagem desta aula. Se não conseguir, marque o tópico como “Revisar”.</div></div>`).join("") + `</div>`;
       }
-      if (b.revisao && b.revisao.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">🔁 Para o dia da revisão · outra explicação</div>${b.revisao.map(src).join("")}</div>`;
+      if (b.revisao && b.revisao.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Para o dia da revisão · outra explicação</div>${b.revisao.map(src).join("")}</div>`;
       inner += `</div></div>`;
       break;
     }
   }
   if (b.depois) inner += `<div class="lv2-prose" style="margin-top:10px">${b.depois}</div>`;
   return `<section class="lv2-block lv2-${tipo}" id="pt-step-card-${i}">` +
-         `<header class="lv2-head"><div class="lv2-kicker">${meta.icon} ${b.rotulo || meta.label}</div>` +
+         `<header class="lv2-head"><div class="lv2-kicker">${b.rotulo || meta.label}</div>` +
          `<span class="lv2-badge" id="pt-step-badge-${i}">${i}/${n}</span></header>` +
          (b.titulo ? `<h4 class="lv2-title">${b.titulo}</h4>` : "") + inner + `</section>`;
 }
@@ -398,17 +414,17 @@ function renderPtGuideV2Body(g, topicId) {
   const blocos = g.blocos || [];
   const n = blocos.length;
   const chips = [];
-  if (g.duracao) chips.push(`⏱️ ~${g.duracao} min`);
-  chips.push(`🧩 ${n} etapas`);
+  if (g.duracao) chips.push(`~${g.duracao} min`);
+  chips.push(`${n} etapas`);
   const exCount = blocos.filter(b => b.tipo === "desafio" || b.tipo === "pratica").reduce((s, b) => s + (b.exercicios || []).length, 0);
-  if (exCount) chips.push(`🎯 ${exCount} exercícios`);
-  if (blocos.some(b => b.tipo === "widget")) chips.push("🕹️ interativo");
-  if (blocos.some(b => b.tipo === "video")) chips.push("🎬 vídeo guiado");
-  if (blocos.some(b => b.tipo === "laboratorio")) chips.push("🧪 laboratório");
+  if (exCount) chips.push(`${exCount} exercícios`);
+  if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
+  if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
+  if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
   const rv = topicId ? lv2ReadReview()[topicId] : null;
   if (rv && rv.next && rv.next.length) {
     const due = rv.next.find(t => t > (rv.done || 0));
-    if (due && due <= Date.now()) chips.push("🔁 revisão de hoje");
+    if (due && due <= Date.now()) chips.push("revisão de hoje");
   }
 
   let html = `<div class="lv2" data-topic="${topicId || ""}"><div class="lv2-hero">` +
@@ -425,11 +441,11 @@ function renderPtGuideV2Body(g, topicId) {
 
   html += `<div class="lv2-footer">`;
   if (g.resumo && g.resumo.length) {
-    html += `<div class="lv2-meta-title">🧠 Para levar desta aula</div><ul>${g.resumo.map(r => `<li>${r}</li>`).join("")}</ul>`;
+    html += `<div class="lv2-meta-title">Para levar desta aula</div><ul>${g.resumo.map(r => `<li>${r}</li>`).join("")}</ul>`;
   }
-  if (g.proxima) html += `<div class="lv2-meta-title" style="margin-top:10px">➡️ Próximo passo da jornada</div><div>${g.proxima}</div>`;
+  if (g.proxima) html += `<div class="lv2-meta-title" style="margin-top:14px">Próximo passo</div><div>${g.proxima}</div>`;
   if (g.referencias && g.referencias.length) {
-    html += `<div class="lv2-refs"><div class="lv2-meta-title">📚 Referências usadas nesta aula</div><ul>` +
+    html += `<div class="lv2-refs"><div class="lv2-meta-title">Referências desta aula</div><ul>` +
       g.referencias.map(r => `<li><b>${r.obra}</b>${r.trecho ? ` — ${r.trecho}` : ""}${r.uso ? `. <i>${r.uso}</i>` : ""}</li>`).join("") + `</ul></div>`;
   }
   html += `</div></div>`;
