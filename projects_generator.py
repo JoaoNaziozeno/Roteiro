@@ -318,20 +318,20 @@ def generate_projects_page(out_path, shared_css):
     <div class="nav-right">
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
-          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+          👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
-            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
-            <span>Sincronização AWS</span>
+            <span>Sincronização na nuvem</span>
           </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
-            <span>Alterar Usuário & Senha</span>
+            <span>Meu perfil e senha</span>
           </button>
           <div class="dropdown-divider"></div>
           <button class="dropdown-item danger" onclick="handleUserLogout()">
@@ -716,7 +716,8 @@ function saveProjectLinks() {{
 function openExportPortfolioModal() {{
   const modal = document.getElementById("modal-export-portfolio");
   let md = "# 🚀 Portfólio de Engenharia de Inteligência Artificial\\n\\n";
-  md += "**Desenvolvedor:** João Naziozeno\\n";
+  const devName = ((typeof getLoggedInUser === "function" && getLoggedInUser()) || {{}}).name || "";
+  md += "**Desenvolvedor:** " + devName + "\\n";
   md += "**Roteiro de Formação:** Do Zero ao Desenvolvimento de IA\\n\\n";
   md += "## 🛠️ Projetos Práticos Desenvolvidos\\n\\n";
 

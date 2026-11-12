@@ -4,8 +4,22 @@
     {
       "name": "roteiro",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-X", "utf8", "server.py"],
+      "runtimeArgs": [
+        "-X",
+        "utf8",
+        "server.py"
+      ],
       "port": 8000
+    },
+    {
+      "name": "lambda-local",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-X",
+        "utf8",
+        "dev_lambda_server.py"
+      ],
+      "port": 8787
     }
   ]
 }

@@ -11,19 +11,15 @@
 (function() {
   try {
     var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
-    if (!raw) {
-      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
-      window.location.replace("index.html");
-      return;
+    var u = raw ? JSON.parse(raw) : null;
+    var dev = location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:";
+    var ok = u && u.authenticated && ((u.token && u.exp * 1000 > Date.now()) || (dev && u.email === "joao@roteiro.ia"));
+    if (!ok) {
+      sessionStorage.setItem("roteiro_redirect_after_login", location.pathname + location.search + location.hash);
+      location.replace("index.html");
     }
-    var user = JSON.parse(raw);
-    if (!user || !user.authenticated) {
-      sessionStorage.setItem("roteiro_redirect_after_login", window.location.href);
-      window.location.replace("index.html");
-      return;
-    }
-  } catch(e) {
-    window.location.replace("index.html");
+  } catch (e) {
+    location.replace("index.html");
   }
 })();
 </script>
@@ -3270,20 +3266,20 @@ main,.hub-main{view-transition-name:ds-page}
     <div class="nav-right">
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
-          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+          👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
-            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
-            <span>Sincronização AWS</span>
+            <span>Sincronização na nuvem</span>
           </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
-            <span>Alterar Usuário & Senha</span>
+            <span>Meu perfil e senha</span>
           </button>
           <div class="dropdown-divider"></div>
           <button class="dropdown-item danger" onclick="handleUserLogout()">
@@ -4770,82 +4766,52 @@ Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput=
 </div>
 
 
-<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM AWS -->
+<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM -->
 <div id="modal-aws-sync" class="modal-sub-overlay" hidden>
   <div class="modal-sub-box modal-aws-box">
     <div class="modal-sub-header">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:1.3rem">☁️</span>
-        <h3 class="modal-sub-title" style="margin:0">Sincronização na Nuvem AWS</h3>
+        <h3 class="modal-sub-title" style="margin:0">Sincronização na nuvem</h3>
       </div>
-      <button class="modal-close-icon" onclick="closeAwsSyncModal()">✕</button>
+      <button class="modal-close-icon" onclick="closeAwsSyncModal()" aria-label="Fechar">✕</button>
     </div>
 
-    <div class="aws-info-banner">
-      <b>AWS Always Free Tier (Custo US$ 0,00):</b> Seus dados e anotações são salvos localmente e replicados com segurança para o <b>Amazon DynamoDB</b> com autenticação via <b>AWS Cognito</b>, mantendo seus <b>US$ 100 de crédito intactos</b>.
-    </div>
+    <div class="aws-info-banner">Seu progresso fica salvo neste navegador e é copiado para a sua conta na nuvem. Só você (e o administrador) consegue ver esses dados.</div>
 
     <div class="aws-stats-grid">
       <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Status da Conexão</span>
-        <div class="aws-stat-val" id="aws-conn-status-val" style="display:flex;align-items:center;gap:6px;color:#10b981">
-          <span class="nav-aws-pulse"></span> Sincronização Automática Ativa
-        </div>
+        <span class="aws-stat-lbl">Conta</span>
+        <div class="aws-stat-val" id="aws-user-email-display" style="font-size:.9rem">—</div>
       </div>
       <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Último Backup na Nuvem</span>
-        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">Hoje, em tempo real</div>
+        <span class="aws-stat-lbl">Último envio</span>
+        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">—</div>
       </div>
       <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Armazenamento Usado</span>
-        <div class="aws-stat-val" id="aws-storage-used-val">~120 KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span></div>
+        <span class="aws-stat-lbl">Tamanho dos dados</span>
+        <div class="aws-stat-val" id="aws-storage-used-val">—</div>
       </div>
       <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Conta AWS Ativa</span>
-        <div class="aws-stat-val" id="aws-user-email-display">João Naziozeno</div>
+        <span class="aws-stat-lbl">Sessão válida até</span>
+        <div class="aws-stat-val" id="aws-session-exp" style="font-size:.9rem">—</div>
       </div>
     </div>
 
     <div class="aws-actions-row">
-      <button class="aws-btn-primary" onclick="triggerAwsManualSync(event)">
-        🔄 Sincronizar Tudo Agora
-      </button>
-      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">
-        📥 Baixar Backup Local (JSON)
-      </button>
+      <button class="aws-btn-primary" onclick="triggerAwsManualSync(event)">🔄 Sincronizar agora</button>
+      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">📥 Baixar backup (JSON)</button>
     </div>
 
-    <details class="aws-cfg-details" open>
-      <summary>⚙️ Parâmetros Técnicos da Nuvem AWS (DynamoDB + Lambda)</summary>
+    <details class="aws-cfg-details">
+      <summary>⚙️ Endereço do servidor</summary>
       <div class="aws-cfg-form">
-        <div>
-          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">URL de Sincronização AWS Lambda (Function URL HTTPS · Always Free)</label>
-          <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input" value="https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/">
-        </div>
-
+        <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="aws-cfg-endpoint">URL da função (AWS Lambda)</label>
+        <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input">
         <div id="aws-conn-test-feedback" style="display:none;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5;border:1px solid var(--bd);margin:8px 0"></div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Região da AWS</label>
-            <input type="text" id="aws-cfg-region" class="aws-cfg-input" value="us-east-2">
-          </div>
-          <div>
-            <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Tabela do Amazon DynamoDB</label>
-            <input type="text" id="aws-cfg-table" class="aws-cfg-input" value="roteiro_estudos_joao">
-          </div>
-        </div>
-        <div>
-          <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Cognito User Pool ID (Opcional)</label>
-          <input type="text" id="aws-cfg-pool" class="aws-cfg-input" placeholder="Ex: us-east-2_a1B2c3D4">
-        </div>
         <div style="display:flex;gap:8px;margin-top:6px">
-          <button type="button" class="aws-btn-primary" style="flex:1" onclick="saveAwsConfigParams()">
-            💾 Salvar & Testar Conexão Agora
-          </button>
-          <button type="button" class="aws-btn-sec" onclick="testAwsLambdaConnection()">
-            🧪 Testar
-          </button>
+          <button type="button" class="aws-btn-primary" style="flex:1" onclick="saveAwsConfigParams()">💾 Salvar e testar</button>
+          <button type="button" class="aws-btn-sec" onclick="resetAwsEndpoint()">Usar o padrão</button>
         </div>
       </div>
     </details>
@@ -4853,51 +4819,49 @@ Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput=
 </div>
 
 
-<!-- MODAL: ALTERAR USUÁRIO E SENHA (COM HASH CRIPTOGRÁFICO SHA-256) -->
+<!-- MODAL: MEU PERFIL E SENHA -->
 <div id="modal-change-credentials" class="modal-sub-overlay" hidden>
   <div class="modal-sub-box" style="max-width:480px;width:95%">
     <div class="modal-sub-header">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:1.3rem">🔑</span>
-        <h3 class="modal-sub-title">Alterar Usuário & Senha</h3>
+        <h3 class="modal-sub-title">Meu perfil e senha</h3>
       </div>
-      <button class="modal-close-icon" onclick="closeChangeCredentialsModal()">✕</button>
-    </div>
-
-    <div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:10px 14px;font-size:.8rem;color:var(--tx);margin-bottom:16px;line-height:1.4">
-      🛡️ <b>Segurança Criptográfica:</b> Sua senha é convertida em um <b>Hash SHA-256 irreversível com Salt</b> antes de ser gravada. O texto puro da sua senha nunca é salvo em nenhum lugar.
+      <button class="modal-close-icon" onclick="closeChangeCredentialsModal()" aria-label="Fechar">✕</button>
     </div>
 
     <form id="form-change-credentials" onsubmit="handleSaveNewCredentials(event)">
       <div style="display:flex;flex-direction:column;gap:12px">
         <div>
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nome de Exibição</label>
-          <input type="text" id="change-user-name" class="aws-cfg-input" required placeholder="Seu Nome Completo">
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="change-user-name">Nome</label>
+          <input type="text" id="change-user-name" class="aws-cfg-input" required maxlength="80" autocomplete="name">
         </div>
         <div>
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">E-mail Cadastrado</label>
-          <input type="email" id="change-user-email" class="aws-cfg-input" required placeholder="seu-email@dominio.com">
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="change-user-email">E-mail da conta</label>
+          <input type="email" id="change-user-email" class="aws-cfg-input" readonly disabled>
+          <span style="font-size:.72rem;color:var(--mu);margin-top:3px;display:block">Para trocar o e-mail, fale com o administrador.</span>
         </div>
         <div class="dropdown-divider"></div>
+        <p style="font-size:.78rem;color:var(--mu);margin:0">Deixe os campos de senha em branco para mudar só o nome.</p>
         <div>
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Senha / PIN Atual</label>
-          <input type="password" id="change-current-pass" class="aws-cfg-input" required placeholder="Digite sua senha ou PIN atual">
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="change-current-pass">Senha atual</label>
+          <input type="password" id="change-current-pass" class="aws-cfg-input" autocomplete="current-password">
         </div>
         <div>
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Nova Senha / PIN (mínimo 4 caracteres)</label>
-          <input type="password" id="change-new-pass" class="aws-cfg-input" required placeholder="Digite a nova senha">
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="change-new-pass">Nova senha (mínimo 8 caracteres)</label>
+          <input type="password" id="change-new-pass" class="aws-cfg-input" minlength="8" autocomplete="new-password">
         </div>
         <div>
-          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px">Confirmar Nova Senha</label>
-          <input type="password" id="change-confirm-pass" class="aws-cfg-input" required placeholder="Confirme a nova senha">
+          <label style="font-size:.78rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="change-confirm-pass">Confirmar nova senha</label>
+          <input type="password" id="change-confirm-pass" class="aws-cfg-input" minlength="8" autocomplete="new-password">
         </div>
       </div>
 
-      <div id="change-cred-error" style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:8px 12px;border-radius:8px;font-size:.82rem;margin-top:14px;text-align:center"></div>
+      <div id="change-cred-error" class="forgot-error-box" style="display:none"></div>
 
       <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px">
         <button type="button" class="aws-btn-sec" onclick="closeChangeCredentialsModal()">Cancelar</button>
-        <button type="submit" class="aws-btn-primary">💾 Salvar Alterações</button>
+        <button type="submit" id="btn-save-credentials" class="aws-btn-primary">Salvar</button>
       </div>
     </form>
   </div>
@@ -4907,110 +4871,224 @@ Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput=
 <script>
 
 // =========================================================================
-// SCRIPT DE AUTENTICAÇÃO, HASH SHA-256, DROPDOWN & NUVEM AWS
+// LOGIN, SESSÃO E SINCRONIZAÇÃO NA NUVEM
+// A senha é conferida na Lambda; aqui fica só o token assinado e a validade.
 // =========================================================================
 const AUTH_USER_KEY = "roteiro_auth_user";
 const AWS_CONFIG_KEY = "roteiro_aws_config";
-const PASSWORD_HASH_KEY = "roteiro_password_hash";
-const CRYPTO_SALT = "roteiro_ia_salt_2026_#9821_";
+const DATA_OWNER_KEY = "roteiro_data_owner";      // e-mail do dono dos dados de estudo deste navegador
+const SAVED_EMAIL_KEY = "roteiro_saved_email";    // e-mail lembrado na tela de login
+const REDIRECT_KEY = "roteiro_redirect_after_login";
+const TEST_USER_EMAIL = "joao@roteiro.ia";        // usuário de teste: só funciona em localhost e não sincroniza
+const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/";
 
-// Função para gerar HASH criptográfico SHA-256 com Salt
-async function computeSha256(plainText) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(CRYPTO_SALT + String(plainText));
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+// Dados de estudo de quem está logado (apagados ao sair ou quando outra pessoa entra)
+const STUDY_KEYS = [
+  "roteiro-ia-v1", "roteiro-answers-v1", "roteiro-review-v1", "roteiro-events-v1", "roteiro-sessions-v1",
+  "roteiro-log-start", "roteiro-start-date", "roteiro-hub-pace", "roteiro_portfolio_projects", "roteiro-snap-v1",
+  "roteiro-effort-v1", "roteiro-auto-progress", "roteiro_aws_last_sync", "roteiro_password_hash"
+];
+const STUDY_PREFIXES = ["roteiro-note-"];
+
+let _awsRealtimeTimer = null;
+
+function escapeHtml(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-// Validar se uma senha/PIN confere com o Hash salvo ou na nuvem AWS DynamoDB
-async function validateLoginPassword(inputPass, email = "") {
-  const inputHash = await computeSha256(inputPass);
-  let savedHash = localStorage.getItem(PASSWORD_HASH_KEY);
-
-  // 1. Se o hash local for idêntico, autenticado imediatamente!
-  if (savedHash && savedHash === inputHash) {
-    return true;
-  }
-
-  // 2. Se não bateu localmente ou não há hash local, verificar na AWS Cloud (DynamoDB)
-  const targetEmail = (email || localStorage.getItem("roteiro_saved_email") || "").trim().toLowerCase();
-  if (targetEmail && targetEmail !== "joao@roteiro.ia" && targetEmail.includes("@")) {
-    const endpoint = getAwsEndpointUrl();
-    if (endpoint) {
-      try {
-        const sep = endpoint.includes("?") ? "&" : "?";
-        const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(targetEmail)}`, { cache: "no-store" });
-        if (res.ok) {
-          const json = await res.json();
-          if (json && json.found && json.data) {
-            const cloudHash = json.data.pwd_hash;
-            if (cloudHash && cloudHash === inputHash) {
-              // Sincroniza o hash autenticado da nuvem com o localStorage local
-              localStorage.setItem(PASSWORD_HASH_KEY, inputHash);
-              if (json.data.user_name) {
-                const u = getLoggedInUser() || {};
-                u.name = json.data.user_name;
-                u.email = targetEmail;
-                localStorage.setItem(AUTH_USER_KEY, JSON.stringify(u));
-              }
-              return true;
-            }
-          }
-        }
-      } catch(e) {
-        console.warn("Falha ao consultar DynamoDB para validar login:", e);
-      }
-    }
-  }
-
-  // 3. Fallback para primeiro acesso em ambiente limpo (sem hash gravado)
-  if (!savedHash) {
-    const defaultHash = await computeSha256("1234");
-    if (inputPass === "1234" || inputPass === "admin") {
-      localStorage.setItem(PASSWORD_HASH_KEY, defaultHash);
-      return true;
-    }
-    // Se o usuário digitou uma senha customizada no primeiro login com >= 4 chars, gravar como seu hash
-    if (inputPass && inputPass.length >= 4) {
-      localStorage.setItem(PASSWORD_HASH_KEY, inputHash);
-      return true;
-    }
-    return false;
-  }
-
-  return false;
+function isLocalDev() {
+  const h = window.location.hostname;
+  return h === "localhost" || h === "127.0.0.1" || window.location.protocol === "file:";
 }
 
+function isTestUser(u) {
+  return !!u && u.email === TEST_USER_EMAIL && isLocalDev();
+}
+
+function clearAuthSession() {
+  try { localStorage.removeItem(AUTH_USER_KEY); sessionStorage.removeItem(AUTH_USER_KEY); } catch (e) {}
+}
+
+// Retorna o usuário logado, ou null se não houver sessão válida.
 function getLoggedInUser() {
+  let u = null;
   try {
     const raw = localStorage.getItem(AUTH_USER_KEY) || sessionStorage.getItem(AUTH_USER_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch(e) {
-    return null;
+    u = raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+  if (!u || !u.authenticated) return null;
+  if (isTestUser(u)) return u;
+  if (!u.token || !u.exp || u.exp * 1000 < Date.now()) { clearAuthSession(); return null; }
+  return u;
+}
+
+function saveAuthSession(resp, remember) {
+  const u = {
+    authenticated: true, name: resp.user.name || "", email: resp.user.email,
+    token: resp.token, exp: resp.expires_at, remember: !!remember
+  };
+  clearAuthSession();
+  try { (remember ? localStorage : sessionStorage).setItem(AUTH_USER_KEY, JSON.stringify(u)); } catch (e) {}
+  try {
+    if (remember) localStorage.setItem(SAVED_EMAIL_KEY, u.email);
+    else localStorage.removeItem(SAVED_EMAIL_KEY);
+  } catch (e) {}
+  return u;
+}
+
+function updateStoredUser(fields) {
+  const u = getLoggedInUser();
+  if (!u) return;
+  Object.assign(u, fields);
+  try { (localStorage.getItem(AUTH_USER_KEY) ? localStorage : sessionStorage).setItem(AUTH_USER_KEY, JSON.stringify(u)); } catch (e) {}
+}
+
+function wipeStudyData() {
+  try {
+    STUDY_KEYS.forEach(k => localStorage.removeItem(k));
+    const extra = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && STUDY_PREFIXES.some(p => k.startsWith(p))) extra.push(k);
+    }
+    extra.forEach(k => localStorage.removeItem(k));
+    localStorage.removeItem(DATA_OWNER_KEY);
+  } catch (e) {}
+}
+
+// Garante que os dados de estudo deste navegador são de quem acabou de entrar.
+// Dados de outra pessoa (ou sem dono conhecido) são apagados antes de baixar os da nuvem.
+function claimLocalDataFor(email) {
+  try {
+    const owner = localStorage.getItem(DATA_OWNER_KEY);
+    if (owner === email) return;
+    // Navegadores do formato antigo não têm dono: os dados só são mantidos se o e-mail lembrado era o mesmo.
+    const legacyEmail = (localStorage.getItem(SAVED_EMAIL_KEY) || "").toLowerCase();
+    if (owner || legacyEmail !== email) wipeStudyData();
+    localStorage.setItem(DATA_OWNER_KEY, email);
+  } catch (e) {}
+}
+
+// Aceita só uma Function URL da AWS ou, com o site rodando em localhost, um servidor local de testes.
+function isValidEndpoint(url) {
+  return /^https:\/\/[a-z0-9]+\.lambda-url\.[a-z0-9-]+\.on\.aws\/?$/.test(url || "")
+    || (isLocalDev() && /^http:\/\/(localhost|127\.0\.0\.1):\d+\/?$/.test(url || ""));
+}
+
+function getAwsConfig() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem(AWS_CONFIG_KEY) || "{}") || {};
+    if (!isValidEndpoint(cfg.endpoint)) cfg.endpoint = OFFICIAL_LAMBDA_URL;
+    return cfg;
+  } catch (e) {
+    return { endpoint: OFFICIAL_LAMBDA_URL };
+  }
+}
+
+function getAwsEndpointUrl() {
+  return getAwsConfig().endpoint || OFFICIAL_LAMBDA_URL;
+}
+
+// Chamada à Lambda. Com auth=true envia o token; se a sessão expirou, leva para o login.
+async function apiCall(action, payload = {}, auth = false) {
+  const body = Object.assign({}, payload, { action });
+  if (auth) {
+    const u = getLoggedInUser();
+    if (!u || !u.token) { handleSessionExpired(); throw new Error("Sessão expirada. Entre novamente."); }
+    body.token = u.token;
+  }
+  let res, json = null;
+  try {
+    res = await fetch(getAwsEndpointUrl(), {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store"
+    });
+  } catch (e) {
+    throw new Error("Sem conexão com o servidor. Verifique a internet e tente de novo.");
+  }
+  try { json = await res.json(); } catch (e) {}
+  if (res.ok && json && json.ok) return json;
+  if (auth && res.status === 401) handleSessionExpired();
+  const err = new Error((json && json.error) || `Erro no servidor (HTTP ${res.status}).`);
+  err.status = res.status;
+  throw err;
+}
+
+function handleSessionExpired() {
+  clearAuthSession();
+  try { sessionStorage.setItem(REDIRECT_KEY, location.pathname + location.search + location.hash); } catch (e) {}
+  if (!/(^|\/)(index\.html)?$/.test(location.pathname)) location.replace("index.html");
+  else if (typeof checkHubAuth === "function") checkHubAuth();
+}
+
+// Para onde ir depois do login: só caminhos deste mesmo site.
+function takeRedirectAfterLogin() {
+  let target = "";
+  try { target = sessionStorage.getItem(REDIRECT_KEY) || ""; sessionStorage.removeItem(REDIRECT_KEY); } catch (e) {}
+  if (!target || !target.startsWith("/") || target.startsWith("//")) return "index.html";
+  return target;
+}
+
+function finishLogin(resp, remember) {
+  // Primeiro confere de quem são os dados deste navegador (usa o e-mail lembrado ANTES de atualizá-lo).
+  claimLocalDataFor(String(resp.user.email || "").toLowerCase());
+  saveAuthSession(resp, remember);
+  // Recarrega a página para que nada do usuário anterior fique na memória.
+  window.location.href = takeRedirectAfterLogin();
+}
+
+function showFormError(el, msg) {
+  if (!el) return;
+  el.textContent = "⚠️ " + msg;
+  el.style.display = "block";
+}
+
+function setBusy(btn, busy, label) {
+  if (!btn) return;
+  if (busy) { btn.dataset.label = btn.textContent; btn.textContent = label || "Aguarde..."; btn.disabled = true; }
+  else { btn.textContent = btn.dataset.label || btn.textContent; btn.disabled = false; }
+}
+
+// ---------------------------------------------------------------- LOGIN
+async function handlePortalLogin(e) {
+  if (e) e.preventDefault();
+  const email = document.getElementById("login-input-email").value.trim().toLowerCase();
+  const pass = document.getElementById("login-input-pass").value;
+  const remember = document.getElementById("login-remember-me").checked;
+  const errorEl = document.getElementById("login-error-msg");
+  const btn = document.querySelector("#portal-login-form button[type='submit']");
+  if (errorEl) errorEl.style.display = "none";
+
+  if (email === TEST_USER_EMAIL && isLocalDev()) {
+    showFormError(errorEl, "O usuário de teste é criado direto no navegador, sem senha.");
+    return;
+  }
+  setBusy(btn, true, "Entrando...");
+  try {
+    const resp = await apiCall("login", { email, password: pass, remember });
+    finishLogin(resp, remember);
+  } catch (err) {
+    showFormError(errorEl, err.message);
+    setBusy(btn, false);
   }
 }
 
 function updateNavAuthUI() {
   closeUserDropdown();
   const user = getLoggedInUser();
+  if (!user) return;
+  const name = user.name || user.email || "Estudante";
+  const email = isTestUser(user) ? "Usuário de teste (local)" : (user.email || "");
   const userPill = document.getElementById("nav-auth-user");
-  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (userPill) {
+    userPill.innerHTML = `👤 <span>${escapeHtml(name)}</span> <span style="font-size:.7rem;margin-left:2px">▾</span>`;
+    userPill.title = `Conectado como ${email} · Clique para opções`;
+  }
   const dropName = document.getElementById("dropdown-user-name");
   const dropEmail = document.getElementById("dropdown-user-email");
-
-  if (user && user.authenticated) {
-    const name = user.name || "João Naziozeno";
-    const email = (user.email && user.email !== "joao@roteiro.ia") ? user.email : "";
-
-    if (userPill) {
-      userPill.innerHTML = `👤 <span>${name}</span> <span style="font-size:.7rem;margin-left:2px">▾</span>`;
-      userPill.title = email ? `Conectado como ${email} · Clique para opções` : `Conectado · Clique para opções`;
-    }
-    if (emailDisplay) emailDisplay.textContent = name;
-    if (dropName) dropName.textContent = name;
-    if (dropEmail) dropEmail.textContent = email || "Conectado";
-  }
+  const emailDisplay = document.getElementById("aws-user-email-display");
+  if (dropName) dropName.textContent = name;
+  if (dropEmail) dropEmail.textContent = email;
+  if (emailDisplay) emailDisplay.textContent = email;
 }
 
 function toggleUserDropdown(e) {
@@ -5018,8 +5096,7 @@ function toggleUserDropdown(e) {
   const dd = document.getElementById("nav-user-dropdown");
   const pill = document.getElementById("nav-auth-user");
   if (!dd) return;
-  const isHidden = dd.hasAttribute("hidden") || dd.style.display === "none";
-  if (isHidden) {
+  if (dd.hasAttribute("hidden") || dd.style.display === "none") {
     dd.removeAttribute("hidden");
     dd.style.display = "flex";
     if (pill) pill.classList.add("active");
@@ -5031,441 +5108,242 @@ function toggleUserDropdown(e) {
 function closeUserDropdown() {
   const dd = document.getElementById("nav-user-dropdown");
   const pill = document.getElementById("nav-auth-user");
-  if (dd) {
-    dd.setAttribute("hidden", "true");
-    dd.style.display = "none";
-  }
+  if (dd) { dd.setAttribute("hidden", "true"); dd.style.display = "none"; }
   if (pill) pill.classList.remove("active");
 }
 
 window.addEventListener("click", (e) => {
   const wrap = document.getElementById("nav-user-wrap");
-  if (wrap && !wrap.contains(e.target)) {
-    closeUserDropdown();
-  }
+  if (wrap && !wrap.contains(e.target)) closeUserDropdown();
 });
 
-function handleUserLogout() {
+async function handleUserLogout() {
   closeUserDropdown();
-  if (confirm("Deseja realmente sair da sua conta? Suas anotações e progresso estão salvos com segurança.")) {
-    try {
-      localStorage.removeItem(AUTH_USER_KEY);
-      sessionStorage.removeItem(AUTH_USER_KEY);
-    } catch(e) {}
-    window.location.href = "index.html";
+  if (!confirm("Deseja sair da sua conta? Seu progresso fica salvo na nuvem e é apagado deste navegador.")) return;
+  const user = getLoggedInUser();
+  if (user && !isTestUser(user)) {
+    clearTimeout(_awsRealtimeTimer);
+    const ok = await Promise.race([awsRealtimePushToDynamoDB(true), new Promise(r => setTimeout(() => r(false), 5000))]);
+    if (!ok && !confirm("Não consegui enviar as últimas alterações para a nuvem. Sair mesmo assim? O que não foi enviado será perdido.")) return;
   }
+  wipeStudyData();
+  clearAuthSession();
+  window.location.href = "index.html";
+}
+
+// ---------------------------------------------------------------- MODAIS
+function showModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.hidden = false; m.removeAttribute("hidden"); m.style.display = "flex"; }
+  return m;
+}
+
+function hideModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.hidden = true; m.setAttribute("hidden", "true"); m.style.display = "none"; }
 }
 
 function openChangeCredentialsModal() {
   closeUserDropdown();
-  const modal = document.getElementById("modal-change-credentials");
   const user = getLoggedInUser();
-  if (modal) {
-    document.getElementById("change-user-name").value = user?.name || "João Naziozeno";
-    document.getElementById("change-user-email").value = (user?.email && user.email !== "joao@roteiro.ia") ? user.email : "";
-    document.getElementById("change-current-pass").value = "";
-    document.getElementById("change-new-pass").value = "";
-    document.getElementById("change-confirm-pass").value = "";
-    const errEl = document.getElementById("change-cred-error");
-    if (errEl) errEl.style.display = "none";
-
-    modal.hidden = false;
-    modal.removeAttribute("hidden");
-    modal.style.display = "flex";
-  }
+  if (!user) return;
+  document.getElementById("change-user-name").value = user.name || "";
+  document.getElementById("change-user-email").value = user.email || "";
+  ["change-current-pass", "change-new-pass", "change-confirm-pass"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("change-cred-error").style.display = "none";
+  showModal("modal-change-credentials");
 }
 
-function closeChangeCredentialsModal() {
-  const modal = document.getElementById("modal-change-credentials");
-  if (modal) {
-    modal.hidden = true;
-    modal.setAttribute("hidden", "true");
-    modal.style.display = "none";
-  }
-}
+function closeChangeCredentialsModal() { hideModal("modal-change-credentials"); }
 
 async function handleSaveNewCredentials(e) {
   e.preventDefault();
-  const name = document.getElementById("change-user-name").value.trim();
-  const email = document.getElementById("change-user-email").value.trim();
-  const curPass = document.getElementById("change-current-pass").value.trim();
-  const newPass = document.getElementById("change-new-pass").value.trim();
-  const confirmPass = document.getElementById("change-confirm-pass").value.trim();
+  const user = getLoggedInUser();
   const errEl = document.getElementById("change-cred-error");
+  const btn = document.getElementById("btn-save-credentials");
+  const name = document.getElementById("change-user-name").value.trim();
+  const cur = document.getElementById("change-current-pass").value;
+  const nova = document.getElementById("change-new-pass").value;
+  const conf = document.getElementById("change-confirm-pass").value;
+  errEl.style.display = "none";
+  if (!user) return;
+  if (isTestUser(user)) { showFormError(errEl, "O usuário de teste não tem conta na nuvem."); return; }
+  if ((cur || nova || conf) && (!cur || nova.length < 8)) { showFormError(errEl, "Para trocar a senha, informe a atual e uma nova com 8 caracteres ou mais."); return; }
+  if (nova !== conf) { showFormError(errEl, "A confirmação da nova senha não confere."); return; }
 
-  const isCurValid = await validateLoginPassword(curPass);
-  if (!isCurValid) {
-    errEl.textContent = "A senha / PIN atual está incorreta.";
-    errEl.style.display = "block";
-    return;
-  }
-
-  if (newPass.length < 4) {
-    errEl.textContent = "A nova senha deve ter no mínimo 4 caracteres.";
-    errEl.style.display = "block";
-    return;
-  }
-
-  if (newPass !== confirmPass) {
-    errEl.textContent = "A confirmação de senha não confere.";
-    errEl.style.display = "block";
-    return;
-  }
-
-  // Gerar HASH criptográfico seguro SHA-256
-  const newHash = await computeSha256(newPass);
-  localStorage.setItem(PASSWORD_HASH_KEY, newHash);
-
-  // Atualizar dados de usuário autenticado
-  const user = getLoggedInUser() || { authenticated: true };
-  user.name = name;
-  user.email = email;
-  user.updatedAt = Date.now();
-
-  if (localStorage.getItem(AUTH_USER_KEY)) {
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-  } else {
-    sessionStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-  }
-
-  closeChangeCredentialsModal();
-  updateNavAuthUI();
-  scheduleAwsRealtimeSync();
-
-  if (typeof showToast === "function") {
-    showToast("🔑 Senha criptografada (SHA-256) e sincronizada!");
-  } else {
-    alert("Dados e senha criptografada (SHA-256) atualizados com sucesso!");
+  setBusy(btn, true, "Salvando...");
+  try {
+    if (name && name !== user.name) {
+      const r = await apiCall("update_profile", { name }, true);
+      updateStoredUser({ name: r.user.name });
+    }
+    if (nova) {
+      const r = await apiCall("change_password", { current: cur, new: nova, remember: !!user.remember }, true);
+      updateStoredUser({ token: r.token, exp: r.expires_at });
+    }
+    closeChangeCredentialsModal();
+    updateNavAuthUI();
+    if (typeof showToast === "function") showToast(nova ? "🔑 Senha alterada. As outras sessões foram encerradas." : "✅ Nome atualizado.");
+  } catch (err) {
+    showFormError(errEl, err.message);
+  } finally {
+    setBusy(btn, false);
   }
 }
 
-// =========================================================================
-// RECUPERAÇÃO DE SENHA EM DUAS ETAPAS (2FA / OTP VIA SES OU WHATSAPP)
-// =========================================================================
-let _currentForgotChannel = "email";
-let _otpExpiryTimer = null;
-let _otpResendTimer = null;
-let _otpExpirySeconds = 600;
-let _otpResendSeconds = 60;
+// ------------------------------------------------- ESQUECI A SENHA
+let _otpExpiryTimer = null, _otpResendTimer = null;
 
 function openForgotPasswordModal() {
-  const modal = document.getElementById("modal-forgot-password");
-  if (!modal) return;
-
-  const err1 = document.getElementById("forgot-msg-error-step1");
-  const err2 = document.getElementById("forgot-msg-error-step2");
-  if (err1) err1.style.display = "none";
-  if (err2) err2.style.display = "none";
-
-  const step1 = document.getElementById("forgot-step-channel");
-  const step2 = document.getElementById("forgot-step-verify");
-  if (step1) step1.style.display = "block";
-  if (step2) step2.style.display = "none";
-
-  const emailInput = document.getElementById("forgot-input-email");
+  ["forgot-msg-error-step1", "forgot-msg-error-step2"].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = "none"; });
+  document.getElementById("forgot-step-channel").style.display = "block";
+  document.getElementById("forgot-step-verify").style.display = "none";
   const loginEmail = document.getElementById("login-input-email");
-  const user = getLoggedInUser();
-  if (emailInput) {
-    const candidate = (user && user.email) || (loginEmail ? loginEmail.value.trim() : "") || (localStorage.getItem("roteiro_saved_email") || "");
-    emailInput.value = (candidate && candidate !== "joao@roteiro.ia") ? candidate : "";
-  }
-
-  selectForgotChannel("email");
-
-  modal.hidden = false;
-  modal.removeAttribute("hidden");
-  modal.style.display = "flex";
+  document.getElementById("forgot-input-email").value = loginEmail ? loginEmail.value.trim() : "";
+  showModal("modal-forgot-password");
 }
 
 function closeForgotPasswordModal() {
-  const modal = document.getElementById("modal-forgot-password");
-  if (modal) {
-    modal.hidden = true;
-    modal.setAttribute("hidden", "true");
-    modal.style.display = "none";
-  }
+  hideModal("modal-forgot-password");
   clearInterval(_otpExpiryTimer);
   clearInterval(_otpResendTimer);
-}
-
-function selectForgotChannel(channel) {
-  _currentForgotChannel = channel;
-  const cardEmail = document.getElementById("channel-card-email");
-  const cardZap = document.getElementById("channel-card-whatsapp");
-  const phoneWrap = document.getElementById("forgot-phone-wrap");
-  const phoneInput = document.getElementById("forgot-input-phone");
-
-  if (cardEmail) cardEmail.classList.toggle("active", channel === "email");
-  if (cardZap) cardZap.classList.toggle("active", channel === "whatsapp");
-
-  if (phoneWrap) {
-    phoneWrap.style.display = channel === "whatsapp" ? "block" : "none";
-  }
-  if (phoneInput && channel === "whatsapp") {
-    phoneInput.required = true;
-    phoneInput.focus();
-  } else if (phoneInput) {
-    phoneInput.required = false;
-  }
 }
 
 function backToChannelSelection() {
   clearInterval(_otpExpiryTimer);
   clearInterval(_otpResendTimer);
-  const step1 = document.getElementById("forgot-step-channel");
-  const step2 = document.getElementById("forgot-step-verify");
-  if (step1) step1.style.display = "block";
-  if (step2) step2.style.display = "none";
+  document.getElementById("forgot-step-channel").style.display = "block";
+  document.getElementById("forgot-step-verify").style.display = "none";
 }
 
 async function handleSendResetCode(e) {
   if (e) e.preventDefault();
-  const email = document.getElementById("forgot-input-email").value.trim();
-  const phone = document.getElementById("forgot-input-phone")?.value.trim() || "";
+  const email = document.getElementById("forgot-input-email").value.trim().toLowerCase();
   const errEl = document.getElementById("forgot-msg-error-step1");
   const btn = document.getElementById("btn-send-reset-code");
-
-  if (!email) {
-    if (errEl) { errEl.textContent = "Informe seu e-mail cadastrado."; errEl.style.display = "block"; }
-    return;
-  }
-  if (_currentForgotChannel === "whatsapp" && !phone) {
-    if (errEl) { errEl.textContent = "Informe o número do WhatsApp com DDD."; errEl.style.display = "block"; }
-    return;
-  }
-
-  if (errEl) errEl.style.display = "none";
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<span>⏳ Enviando código...</span>`;
-  }
-
+  errEl.style.display = "none";
+  setBusy(btn, true, "Enviando...");
   try {
-    const endpoint = getAwsEndpointUrl();
-    const payload = {
-      action: "request_reset",
-      user_id: email.toLowerCase(),
-      channel: _currentForgotChannel,
-      phone: phone
-    };
-
-    const resp = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-    if (!resp.ok || !data.ok) {
-      let msg = data.error || "Não foi possível enviar o código de verificação.";
-      if (data.hint) msg += "\n👉 " + data.hint;
-      throw new Error(msg);
-    }
-
-    const targetDest = document.getElementById("forgot-target-dest");
-    if (targetDest) {
-      targetDest.textContent = data.masked_destination || (_currentForgotChannel === "email" ? email : phone);
-    }
-
-    const step1 = document.getElementById("forgot-step-channel");
-    const step2 = document.getElementById("forgot-step-verify");
-    if (step1) step1.style.display = "none";
-    if (step2) step2.style.display = "block";
-
-    const codeInput = document.getElementById("forgot-input-code");
-    if (codeInput) codeInput.value = "";
-    const newPassInput = document.getElementById("forgot-new-pass");
-    if (newPassInput) newPassInput.value = "";
-    const confirmPassInput = document.getElementById("forgot-confirm-pass");
-    if (confirmPassInput) confirmPassInput.value = "";
-    const err2 = document.getElementById("forgot-msg-error-step2");
-    if (err2) err2.style.display = "none";
-
-    startOtpCountdown(data.expires_in_seconds || 600);
+    await apiCall("request_reset", { email });
+    document.getElementById("forgot-target-dest").textContent = email;
+    document.getElementById("forgot-step-channel").style.display = "none";
+    document.getElementById("forgot-step-verify").style.display = "block";
+    ["forgot-input-code", "forgot-new-pass", "forgot-confirm-pass"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("forgot-msg-error-step2").style.display = "none";
+    startOtpCountdown(15 * 60);
     startResendCountdown(60);
-    if (codeInput) codeInput.focus();
-
-  } catch(err) {
-    if (errEl) {
-      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message.replace(/\n/g, "<br>")}`;
-      errEl.style.display = "block";
-    }
+    document.getElementById("forgot-input-code").focus();
+  } catch (err) {
+    showFormError(errEl, err.message);
   } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<span>🚀 Enviar Código ➔</span>`;
-    }
+    setBusy(btn, false);
   }
 }
 
 async function resendResetCode() {
-  const btnResend = document.getElementById("btn-resend-otp");
-  if (btnResend && btnResend.disabled) return;
+  const b = document.getElementById("btn-resend-otp");
+  if (b && b.disabled) return;
+  backToChannelSelection();
   await handleSendResetCode(null);
 }
 
 function startOtpCountdown(totalSec) {
   clearInterval(_otpExpiryTimer);
-  _otpExpirySeconds = totalSec;
-  const timerEl = document.getElementById("forgot-otp-timer");
-
-  function updateTimer() {
-    const mins = Math.floor(_otpExpirySeconds / 60);
-    const secs = _otpExpirySeconds % 60;
-    if (timerEl) timerEl.textContent = `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-    if (_otpExpirySeconds <= 0) {
-      clearInterval(_otpExpiryTimer);
-      if (timerEl) timerEl.textContent = "Expirado";
-    }
-    _otpExpirySeconds--;
-  }
-  updateTimer();
-  _otpExpiryTimer = setInterval(updateTimer, 1000);
+  let left = totalSec;
+  const el = document.getElementById("forgot-otp-timer");
+  const tick = () => {
+    if (el) el.textContent = left > 0 ? `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}` : "Expirado";
+    if (left-- <= 0) clearInterval(_otpExpiryTimer);
+  };
+  tick();
+  _otpExpiryTimer = setInterval(tick, 1000);
 }
 
 function startResendCountdown(sec) {
   clearInterval(_otpResendTimer);
-  _otpResendSeconds = sec;
-  const btnResend = document.getElementById("btn-resend-otp");
-  const countdownSpan = document.getElementById("resend-countdown");
-  if (btnResend) {
-    btnResend.disabled = true;
-    btnResend.innerHTML = `Reenviar (<span id="resend-countdown">${sec}</span>s)`;
-  }
-
+  let left = sec;
+  const b = document.getElementById("btn-resend-otp");
+  if (b) { b.disabled = true; b.innerHTML = `Reenviar (<span id="resend-countdown">${sec}</span>s)`; }
   _otpResendTimer = setInterval(() => {
-    _otpResendSeconds--;
+    left--;
     const span = document.getElementById("resend-countdown");
-    if (span) span.textContent = _otpResendSeconds;
-    if (_otpResendSeconds <= 0) {
+    if (span) span.textContent = left;
+    if (left <= 0) {
       clearInterval(_otpResendTimer);
-      if (btnResend) {
-        btnResend.disabled = false;
-        btnResend.textContent = "Reenviar código agora";
-      }
+      if (b) { b.disabled = false; b.textContent = "Reenviar código"; }
     }
   }, 1000);
 }
 
 async function handleVerifyAndResetPassword(e) {
   if (e) e.preventDefault();
-  const email = document.getElementById("forgot-input-email").value.trim();
+  const email = document.getElementById("forgot-input-email").value.trim().toLowerCase();
   const code = document.getElementById("forgot-input-code").value.trim();
-  const newPass = document.getElementById("forgot-new-pass").value.trim();
-  const confirmPass = document.getElementById("forgot-confirm-pass").value.trim();
+  const nova = document.getElementById("forgot-new-pass").value;
+  const conf = document.getElementById("forgot-confirm-pass").value;
   const errEl = document.getElementById("forgot-msg-error-step2");
   const btn = document.getElementById("btn-verify-reset-code");
-
-  if (code.length !== 6 || !/^\d{6}$/.test(code)) {
-    if (errEl) { errEl.textContent = "O código deve conter exatamente 6 dígitos numéricos."; errEl.style.display = "block"; }
-    return;
-  }
-  if (newPass.length < 4) {
-    if (errEl) { errEl.textContent = "A nova senha deve ter no mínimo 4 caracteres."; errEl.style.display = "block"; }
-    return;
-  }
-  if (newPass !== confirmPass) {
-    if (errEl) { errEl.textContent = "A confirmação de senha não confere."; errEl.style.display = "block"; }
-    return;
-  }
-
-  if (errEl) errEl.style.display = "none";
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<span>⏳ Validando...</span>`;
-  }
-
+  errEl.style.display = "none";
+  if (!/^\d{6}$/.test(code)) { showFormError(errEl, "O código tem 6 dígitos."); return; }
+  if (nova.length < 8) { showFormError(errEl, "A nova senha precisa ter pelo menos 8 caracteres."); return; }
+  if (nova !== conf) { showFormError(errEl, "A confirmação da senha não confere."); return; }
+  setBusy(btn, true, "Validando...");
   try {
-    const newHash = await computeSha256(newPass);
-    const endpoint = getAwsEndpointUrl();
-    const payload = {
-      action: "confirm_reset",
-      user_id: email.toLowerCase(),
-      code: code,
-      new_pwd_hash: newHash
-    };
-
-    const resp = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await resp.json();
-    if (!resp.ok || !data.ok) {
-      throw new Error(data.error || "Código de verificação incorreto ou expirado.");
-    }
-
-    localStorage.setItem(PASSWORD_HASH_KEY, newHash);
-    const userObj = {
-      authenticated: true,
-      name: data.user_name || "João Naziozeno",
-      email: email,
-      loginTime: Date.now(),
-      provider: "aws-dynamodb-verified"
-    };
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(userObj));
-
+    await apiCall("confirm_reset", { email, code, password: nova });
+    const remember = !!(document.getElementById("login-remember-me") || {}).checked;
+    const resp = await apiCall("login", { email, password: nova, remember });
     closeForgotPasswordModal();
-
-    if (typeof checkHubAuth === "function") checkHubAuth();
-    if (typeof updateNavAuthUI === "function") updateNavAuthUI();
-
-    if (typeof showToast === "function") {
-      showToast("🎉 Senha redefinida com sucesso! Acesso liberado.");
-    } else {
-      alert("🎉 Senha redefinida com sucesso! Você já está autenticado no ecossistema.");
-    }
-
-  } catch(err) {
-    if (errEl) {
-      errEl.innerHTML = `⚠️ <b>Erro:</b> ${err.message}`;
-      errEl.style.display = "block";
-    }
-  } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<span>✅ Redefinir & Entrar ➔</span>`;
-    }
+    finishLogin(resp, remember);
+  } catch (err) {
+    showFormError(errEl, err.message);
+    setBusy(btn, false);
   }
 }
 
-const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/";
-let _awsRealtimeTimer = null;
+// ------------------------------------------------- CONVITE
+function openInviteModal() {
+  ["invite-email", "invite-code", "invite-name", "invite-pass", "invite-pass2"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("invite-error").style.display = "none";
+  const loginEmail = document.getElementById("login-input-email");
+  if (loginEmail) document.getElementById("invite-email").value = loginEmail.value.trim();
+  showModal("modal-accept-invite");
+}
 
-function getAwsConfig() {
+function closeInviteModal() { hideModal("modal-accept-invite"); }
+
+async function handleAcceptInvite(e) {
+  e.preventDefault();
+  const email = document.getElementById("invite-email").value.trim().toLowerCase();
+  const code = document.getElementById("invite-code").value.trim();
+  const name = document.getElementById("invite-name").value.trim();
+  const pass = document.getElementById("invite-pass").value;
+  const pass2 = document.getElementById("invite-pass2").value;
+  const errEl = document.getElementById("invite-error");
+  const btn = document.getElementById("btn-accept-invite");
+  errEl.style.display = "none";
+  if (!/^\d{6}$/.test(code)) { showFormError(errEl, "O código do convite tem 6 dígitos."); return; }
+  if (pass.length < 8) { showFormError(errEl, "A senha precisa ter pelo menos 8 caracteres."); return; }
+  if (pass !== pass2) { showFormError(errEl, "A confirmação da senha não confere."); return; }
+  setBusy(btn, true, "Criando...");
   try {
-    const raw = localStorage.getItem(AWS_CONFIG_KEY);
-    let cfg = raw ? JSON.parse(raw) : {};
-    // Auto-corrigir se o endpoint estiver vazio ou contiver o erro de digitação anterior (rwwcq em vez de rwweq)
-    if (!cfg.endpoint || cfg.endpoint.includes("rwwcq")) {
-      cfg.endpoint = OFFICIAL_LAMBDA_URL;
-      cfg.region = "us-east-2";
-      cfg.table = "roteiro_estudos_joao";
-      try { localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg)); } catch(e) {}
-    }
-    return cfg;
-  } catch(e) {
-    return { endpoint: OFFICIAL_LAMBDA_URL, region: "us-east-2", table: "roteiro_estudos_joao" };
+    const remember = !!(document.getElementById("login-remember-me") || {}).checked;
+    const resp = await apiCall("accept_invite", { email, code, name, password: pass, remember });
+    closeInviteModal();
+    finishLogin(resp, remember);
+  } catch (err) {
+    showFormError(errEl, err.message);
+    setBusy(btn, false);
   }
 }
 
-function getAwsEndpointUrl() {
-  const cfg = getAwsConfig();
-  if (cfg.endpoint && cfg.endpoint.trim()) return cfg.endpoint.trim();
-  return OFFICIAL_LAMBDA_URL;
-}
-
+// ------------------------------------------------- SINCRONIZAÇÃO
 function updateAwsStorageSizeDisplay() {
   try {
-    const rawProg = localStorage.getItem("roteiro-ia-v1") || "{}";
-    const rawProj = localStorage.getItem("roteiro_portfolio_projects") || "[]";
-    const kb = Math.max(1, Math.round((rawProg.length + rawProj.length) / 1024));
+    const bytes = (localStorage.getItem("roteiro-ia-v1") || "").length + (localStorage.getItem("roteiro_portfolio_projects") || "").length
+      + JSON.stringify(awsCollectExtra()).length;
     const el = document.getElementById("aws-storage-used-val");
-    if (el) {
-      el.innerHTML = `~${kb} KB <span style="font-size:.76rem;color:var(--mu);font-weight:500">(de 25 GB grátis)</span>`;
-    }
-  } catch(e) {}
+    if (el) el.textContent = `~${Math.max(1, Math.round(bytes / 1024))} KB`;
+  } catch (e) {}
 }
 
 // -------------------------------------------------------------------------
@@ -5550,403 +5428,190 @@ function awsMergeExtra(x) {
   return localHasMore;
 }
 
+function canSync() {
+  const u = getLoggedInUser();
+  return !!u && !isTestUser(u) && localStorage.getItem(DATA_OWNER_KEY) === u.email;
+}
+
+function setSyncIndicator(text) {
+  const el = document.getElementById("modal-sync-indicator");
+  if (el) el.textContent = text;
+}
+
+function markCloudBadge() {
+  const b = document.getElementById("nav-db-status");
+  if (b) { b.className = "nav-status-pill badge-pg"; b.style.background = "#10b981"; b.style.color = "#fff"; b.textContent = "☁️ Nuvem"; }
+}
+
 function scheduleAwsRealtimeSync() {
   clearTimeout(_awsRealtimeTimer);
-  _awsRealtimeTimer = setTimeout(() => {
-    awsRealtimePushToDynamoDB(true);
-  }, 650);
+  _awsRealtimeTimer = setTimeout(() => awsRealtimePushToDynamoDB(true), 650);
 }
 
 async function awsRealtimePushToDynamoDB(silent = true) {
-  const endpoint = getAwsEndpointUrl();
-  const nowStr = "Hoje, às " + new Date().toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
-  try {
-    localStorage.setItem("roteiro_aws_last_sync", nowStr);
-  } catch(e) {}
-
-  const lastSyncEl = document.getElementById("aws-last-sync-time");
-  if (lastSyncEl) lastSyncEl.textContent = nowStr;
   updateAwsStorageSizeDisplay();
-
-  const syncInd = document.getElementById("modal-sync-indicator");
-  if (syncInd) syncInd.textContent = endpoint ? "☁️ Sincronizando AWS..." : "💾 Salvo automaticamente";
-
-  if (!endpoint) {
-    if (syncInd) syncInd.textContent = "💾 Salvo automaticamente";
-    return false;
-  }
-
-  const user = getLoggedInUser() || {};
-  if (!user || !user.authenticated) {
-    if (syncInd) syncInd.textContent = "💾 Salvo localmente";
-    return false;
-  }
-
-  const userEmail = (user.email || "").trim().toLowerCase();
-  if (!userEmail || userEmail === "joao@roteiro.ia" || !userEmail.includes("@")) {
-    if (syncInd) syncInd.textContent = "💾 Salvo localmente";
-    return false;
-  }
-
-  let progressObj = {};
-  let projectsArr = [];
-  try { progressObj = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"); } catch(e) {}
-  try { projectsArr = JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]"); } catch(e) {}
-
+  if (!canSync()) { setSyncIndicator("💾 Salvo neste navegador"); return false; }
+  setSyncIndicator("☁️ Sincronizando...");
   const payload = {
-    user_id: userEmail,
-    user_name: user.name || "João Naziozeno",
-    pwd_hash: localStorage.getItem(PASSWORD_HASH_KEY) || "",
-    progress: progressObj,
-    projects: projectsArr,
+    progress: awsReadJson("roteiro-ia-v1", {}),
+    projects: awsReadJson("roteiro_portfolio_projects", []),
     start_date: localStorage.getItem("roteiro-start-date") || "",
     pace: localStorage.getItem("roteiro-hub-pace") || "std",
     extra: awsCollectExtra(),
     updated_at: Date.now()
   };
-
   try {
-    console.log("☁️ [AWS Sync] Enviando dados para:", endpoint, payload);
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const resText = await res.text();
-    let json = null;
-    try { json = JSON.parse(resText); } catch(e) {}
-
-    if (res.ok && json && json.ok) {
-      const dbBadge = document.getElementById("nav-db-status");
-      if (dbBadge) {
-        dbBadge.className = "nav-status-pill badge-pg";
-        dbBadge.style.background = "#10b981";
-        dbBadge.style.color = "#fff";
-        dbBadge.textContent = "☁️ DynamoDB";
-      }
-      if (syncInd) syncInd.textContent = "☁️ Salvo no DynamoDB (" + new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"}) + ")";
-      if (!silent && typeof showToast === "function") {
-        showToast("☁️ Sincronizado em tempo real com o Amazon DynamoDB!");
-      }
-      console.log("✅ [AWS Sync] Gravado com sucesso no DynamoDB:", json);
-      return true;
-    } else {
-      const errMsg = (json && (json.error || json.hint)) || resText || `HTTP ${res.status}`;
-      console.error("❌ [AWS Sync Error]", errMsg);
-      if (syncInd) syncInd.textContent = "⚠️ Erro de sincronização AWS";
-      if (!silent) {
-        alert("⚠️ Erro ao salvar no DynamoDB pela Lambda:\n\n" + errMsg);
-      }
-      return false;
-    }
-  } catch(e) {
-    console.error("❌ [AWS Sync Network Error]", e);
-    if (!silent) {
-      alert("⚠️ Erro de conexão ou CORS ao acessar a AWS Lambda:\n\n" + e.message + "\n\nVerifique se o Tipo de Autenticação da Function URL é NONE e se o CORS está liberado.");
-    }
+    await apiCall("save_data", payload, true);
+    const t = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    try { localStorage.setItem("roteiro_aws_last_sync", "Hoje, às " + t); } catch (e) {}
+    const lastEl = document.getElementById("aws-last-sync-time");
+    if (lastEl) lastEl.textContent = "Hoje, às " + t;
+    markCloudBadge();
+    setSyncIndicator("☁️ Salvo na nuvem (" + t + ")");
+    if (!silent && typeof showToast === "function") showToast("☁️ Progresso salvo na nuvem!");
+    return true;
+  } catch (err) {
+    console.warn("[Sync] Falha ao enviar:", err.message);
+    setSyncIndicator("⚠️ Não sincronizou (salvo neste navegador)");
+    if (!silent) alert("⚠️ Não foi possível salvar na nuvem:\n\n" + err.message);
+    return false;
   }
-  if (syncInd) syncInd.textContent = "💾 Salvo localmente";
-  return false;
 }
 
 async function awsRealtimePullFromDynamoDB() {
-  const endpoint = getAwsEndpointUrl();
-  if (!endpoint) return false;
-
-  const user = getLoggedInUser() || {};
-  const savedEmail = localStorage.getItem("roteiro_saved_email") || "";
-  const rawEmail = (user && user.email) || savedEmail || "";
-  const userId = rawEmail.trim().toLowerCase();
-
-  // NUNCA consultar com ID genérico ou email fictício joao@roteiro.ia
-  if (!userId || userId === "joao@roteiro.ia" || userId === "estudante" || !userId.includes("@")) {
-    return false;
-  }
-
-  const sep = endpoint.includes("?") ? "&" : "?";
-
+  if (!canSync()) return false;
+  const user = getLoggedInUser();
+  let cloud;
   try {
-    const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(userId)}`, { cache: "no-store" });
-    if (!res.ok) return false;
-    const json = await res.json();
-    const dbBadge = document.getElementById("nav-db-status");
-    if (dbBadge) {
-      dbBadge.className = "nav-status-pill badge-pg";
-      dbBadge.style.background = "#10b981";
-      dbBadge.style.color = "#fff";
-      dbBadge.textContent = "☁️ DynamoDB";
-    }
-
-    if (json && json.found && json.data) {
-      const cloud = json.data;
-      // Só atualiza o hash local da senha se o usuário atual autenticado for o dono da conta
-      if (cloud.pwd_hash && user && user.authenticated && user.email && user.email.toLowerCase() === userId) {
-        localStorage.setItem(PASSWORD_HASH_KEY, cloud.pwd_hash);
-      }
-      if (cloud.progress && typeof cloud.progress === "object") {
-        let localPr = {};
-        try { localPr = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"); } catch(e) {}
-        const merged = Object.assign({}, localPr, cloud.progress);
-        localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged));
-        if (typeof PR !== "undefined") {
-          for (const k in merged) PR[k] = merged[k];
-        }
-      }
-      if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
-        localStorage.setItem("roteiro_portfolio_projects", JSON.stringify(cloud.projects));
-      }
-      if (cloud.start_date && /^\d{4}-\d{2}-\d{2}$/.test(cloud.start_date)) {
-        localStorage.setItem("roteiro-start-date", cloud.start_date);
-        if (typeof currentStartDate !== "undefined") currentStartDate = cloud.start_date;
-      }
-      if (cloud.pace) {
-        localStorage.setItem("roteiro-hub-pace", cloud.pace);
-        if (typeof currentPace !== "undefined" && typeof HUB_PRESETS !== "undefined" && HUB_PRESETS[cloud.pace]) currentPace = cloud.pace;
-      }
-      const extraChanged = awsMergeExtra(cloud.extra);
-
-      if (typeof paint === "function") paint();
-      if (typeof calcAndPaint === "function") calcAndPaint();
-      // Se o dispositivo tinha registros que a nuvem ainda não tinha, devolve a união para a nuvem
-      if (extraChanged && user && user.authenticated) scheduleAwsRealtimeSync();
-      if (typeof renderHubDashboard === "function") renderHubDashboard();
-      if (typeof renderProjects === "function") renderProjects();
-      return true;
-    } else {
-      // Primeiro acesso na nuvem: envia os dados locais atuais para inicializar a tabela no DynamoDB
-      if (user && user.authenticated) {
-        await awsRealtimePushToDynamoDB(true);
-      }
-      return true;
-    }
-  } catch(e) {
+    cloud = (await apiCall("get_data", {}, true)).data || {};
+  } catch (err) {
+    console.warn("[Sync] Falha ao baixar:", err.message);
     return false;
   }
+  markCloudBadge();
+  if (!Object.keys(cloud).length) {
+    // Conta nova na nuvem: envia o que já existe neste navegador (dele mesmo).
+    await awsRealtimePushToDynamoDB(true);
+    return true;
+  }
+  if (cloud.progress && typeof cloud.progress === "object") {
+    const merged = Object.assign({}, awsReadJson("roteiro-ia-v1", {}), cloud.progress);
+    try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged)); } catch (e) {}
+    if (typeof PR !== "undefined") for (const k in merged) PR[k] = merged[k];
+  }
+  if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
+    try { localStorage.setItem("roteiro_portfolio_projects", JSON.stringify(cloud.projects)); } catch (e) {}
+  }
+  if (cloud.start_date && /^\d{4}-\d{2}-\d{2}$/.test(cloud.start_date)) {
+    try { localStorage.setItem("roteiro-start-date", cloud.start_date); } catch (e) {}
+    if (typeof currentStartDate !== "undefined") currentStartDate = cloud.start_date;
+  }
+  if (cloud.pace) {
+    try { localStorage.setItem("roteiro-hub-pace", cloud.pace); } catch (e) {}
+    if (typeof currentPace !== "undefined" && typeof HUB_PRESETS !== "undefined" && HUB_PRESETS[cloud.pace]) currentPace = cloud.pace;
+  }
+  const extraChanged = awsMergeExtra(cloud.extra);
+  if (typeof paint === "function") paint();
+  if (typeof calcAndPaint === "function") calcAndPaint();
+  if (typeof renderHubDashboard === "function") renderHubDashboard();
+  if (typeof renderProjects === "function") renderProjects();
+  if (extraChanged && user) scheduleAwsRealtimeSync();
+  return true;
 }
 
 function openAwsSyncModal() {
   closeUserDropdown();
-  const modal = document.getElementById("modal-aws-sync");
-  if (modal) {
-    modal.hidden = false;
-    modal.removeAttribute("hidden");
-    modal.style.display = "flex";
-    
-    const lastSyncEl = document.getElementById("aws-last-sync-time");
-    if (lastSyncEl) {
-      const savedSync = localStorage.getItem("roteiro_aws_last_sync");
-      const now = new Date();
-      lastSyncEl.textContent = savedSync || ("Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit"}));
-    }
-    updateAwsStorageSizeDisplay();
-    
-    try {
-      const cfg = getAwsConfig();
-      const epInput = document.getElementById("aws-cfg-endpoint");
-      if (epInput && cfg.endpoint) epInput.value = cfg.endpoint;
-      if (cfg.region) document.getElementById("aws-cfg-region").value = cfg.region;
-      if (cfg.table) document.getElementById("aws-cfg-table").value = cfg.table;
-      if (cfg.pool) document.getElementById("aws-cfg-pool").value = cfg.pool;
-    } catch(e) {}
-  }
+  const user = getLoggedInUser();
+  document.getElementById("aws-last-sync-time").textContent = localStorage.getItem("roteiro_aws_last_sync") || "—";
+  const expEl = document.getElementById("aws-session-exp");
+  if (expEl) expEl.textContent = user && user.exp ? new Date(user.exp * 1000).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+  document.getElementById("aws-cfg-endpoint").value = getAwsEndpointUrl();
+  document.getElementById("aws-conn-test-feedback").style.display = "none";
+  updateAwsStorageSizeDisplay();
+  updateNavAuthUI();
+  showModal("modal-aws-sync");
 }
 
-function closeAwsSyncModal() {
-  const modal = document.getElementById("modal-aws-sync");
-  if (modal) {
-    modal.hidden = true;
-    modal.setAttribute("hidden", "true");
-    modal.style.display = "none";
-  }
-}
+function closeAwsSyncModal() { hideModal("modal-aws-sync"); }
 
 async function triggerAwsManualSync(ev) {
-  const btn = ev?.currentTarget;
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = "⏳ Sincronizando com DynamoDB...";
+  const btn = ev && ev.currentTarget;
+  setBusy(btn, true, "⏳ Sincronizando...");
+  if (!canSync()) {
+    alert(isTestUser(getLoggedInUser()) ? "O usuário de teste não sincroniza com a nuvem." : "Entre na sua conta para sincronizar.");
+  } else {
+    await awsRealtimePullFromDynamoDB();
+    await awsRealtimePushToDynamoDB(false);
   }
-  
-  await awsRealtimePushToDynamoDB(false);
-  
-  setTimeout(() => {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = "🔄 Sincronizar Tudo Agora";
-    }
-    const lastSyncEl = document.getElementById("aws-last-sync-time");
-    if (lastSyncEl) {
-      const now = new Date();
-      lastSyncEl.textContent = "Hoje, às " + now.toLocaleTimeString("pt-BR", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
-    }
-    if (!getAwsEndpointUrl()) {
-      if (typeof showToast === "function") {
-        showToast("💾 Dados salvos! Cole a URL da sua função AWS Lambda abaixo para replicar no DynamoDB.");
-      }
-    }
-  }, 450);
+  setBusy(btn, false);
 }
 
 function exportAwsBackupFile() {
   try {
+    const user = getLoggedInUser();
     const backup = {
       timestamp: new Date().toISOString(),
-      user: getLoggedInUser(),
-      progress: JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}"),
-      notes: {},
-      projects: JSON.parse(localStorage.getItem("roteiro_portfolio_projects") || "[]")
+      user: user ? { name: user.name, email: user.email } : null,
+      progress: awsReadJson("roteiro-ia-v1", {}),
+      projects: awsReadJson("roteiro_portfolio_projects", []),
+      extra: awsCollectExtra(),
+      notes: {}
     };
-    
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.startsWith("roteiro-note-")) {
-        backup.notes[k] = localStorage.getItem(k);
-      }
+      if (k && k.startsWith("roteiro-note-")) backup.notes[k] = localStorage.getItem(k);
     }
-    
     const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `backup_estudos_ia_aws_${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `backup_roteiro_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    if (typeof showToast === "function") showToast("📥 Backup do banco AWS exportado!");
-  } catch(e) {
-    alert("Erro ao exportar backup: " + e.message);
+    if (typeof showToast === "function") showToast("📥 Backup baixado!");
+  } catch (e) {
+    alert("Erro ao gerar o backup: " + e.message);
   }
 }
 
-async function testAwsLambdaConnection() {
-  const epEl = document.getElementById("aws-cfg-endpoint");
-  const endpoint = epEl ? epEl.value.trim() : "";
-  const statusEl = document.getElementById("aws-conn-test-feedback");
+function showConnFeedback(ok, html) {
+  const el = document.getElementById("aws-conn-test-feedback");
+  if (!el) return;
+  el.style.display = "block";
+  el.style.background = ok ? "rgba(16,185,129,.14)" : "rgba(239,68,68,.12)";
+  el.style.borderColor = ok ? "rgba(16,185,129,.4)" : "rgba(239,68,68,.35)";
+  el.style.color = ok ? "#10b981" : "#ef4444";
+  el.innerHTML = html;
+}
 
-  if (!endpoint) {
-    if (statusEl) {
-      statusEl.style.display = "block";
-      statusEl.style.background = "rgba(239,68,68,.12)";
-      statusEl.style.borderColor = "rgba(239,68,68,.35)";
-      statusEl.style.color = "#ef4444";
-      statusEl.innerHTML = "⚠️ <b>Cole a URL da função AWS Lambda</b> no campo acima antes de testar.";
-    }
-    return false;
-  }
-
-  // Auto-detectar região da URL
-  const regMatch = endpoint.match(/lambda-url\.([a-z0-9-]+)\.on\.aws/);
-  if (regMatch && regMatch[1]) {
-    const regInput = document.getElementById("aws-cfg-region");
-    if (regInput) regInput.value = regMatch[1];
-  }
-
-  if (statusEl) {
-    statusEl.style.display = "block";
-    statusEl.style.background = "rgba(74,92,106,.2)";
-    statusEl.style.borderColor = "rgba(155,168,171,.35)";
-    statusEl.style.color = "var(--ac)";
-    statusEl.innerHTML = "⏳ <b>Testando conexão com AWS Lambda e DynamoDB...</b>";
-  }
-
-  const user = getLoggedInUser() || {};
-  const userId = ((user && user.email) || localStorage.getItem("roteiro_saved_email") || "estudante").toLowerCase();
-  const sep = endpoint.includes("?") ? "&" : "?";
-
+async function testAwsLambdaConnection(endpoint) {
+  endpoint = endpoint || getAwsEndpointUrl();
   try {
-    const res = await fetch(`${endpoint}${sep}user_id=${encodeURIComponent(userId)}&test=1`, { cache: "no-store" });
-    const text = await res.text();
-    let json = null;
-    try { json = JSON.parse(text); } catch(e) {}
-
-    if (text.includes("Hello from Lambda!")) {
-      if (statusEl) {
-        statusEl.style.background = "rgba(245,158,11,.14)";
-        statusEl.style.borderColor = "rgba(245,158,11,.45)";
-        statusEl.style.color = "#f59e0b";
-        statusEl.innerHTML = "⚠️ <b>Código padrão da AWS detectado!</b> A sua função Lambda ainda está rodando o código de exemplo inicial da AWS (<i>Hello from Lambda!</i>).<br><br>👉 <b>Como corrigir:</b> Abra o painel da sua função Lambda na AWS, vá na aba <b>Código (Code)</b>, apague o que estiver lá, cole todo o código do arquivo <code>aws_lambda_dynamodb.py</code> e clique no botão azul <b>Deploy</b>!";
-      }
-      return false;
-    }
-
-    if (res.status === 403 || text.includes("Forbidden")) {
-      if (statusEl) {
-        statusEl.style.background = "rgba(239,68,68,.12)";
-        statusEl.style.borderColor = "rgba(239,68,68,.35)";
-        statusEl.style.color = "#ef4444";
-        statusEl.innerHTML = "⚠️ <b>Erro 403 Forbidden!</b> A sua Function URL está exigindo autenticação AWS IAM.<br><br>👉 <b>Como corrigir:</b> Na página da sua Lambda na AWS, vá em <b>Configuração ➔ URL da função ➔ Editar</b> e altere <b>Tipo de autenticação</b> para <b>NONE</b>.";
-      }
-      return false;
-    }
-
-    if (!res.ok || (json && json.ok === false)) {
-      const errMsg = (json && json.error) || text;
-      const hint = (json && json.hint) || "";
-      if (statusEl) {
-        statusEl.style.background = "rgba(239,68,68,.12)";
-        statusEl.style.borderColor = "rgba(239,68,68,.35)";
-        statusEl.style.color = "#ef4444";
-        statusEl.innerHTML = `⚠️ <b>Erro na AWS (${res.status}):</b> ${errMsg}${hint ? `<br><br>💡 <b>Dica:</b> ${hint}` : ""}`;
-      }
-      return false;
-    }
-
-    if (json && json.ok) {
-      const pushed = await awsRealtimePushToDynamoDB(true);
-      if (statusEl) {
-        statusEl.style.background = "rgba(16,185,129,.14)";
-        statusEl.style.borderColor = "rgba(16,185,129,.4)";
-        statusEl.style.color = "#10b981";
-        statusEl.innerHTML = `✅ <b>Conexão 100% Ativa e Funcionando!</b><br>• Tabela DynamoDB: <code>${json.table || "roteiro_estudos_joao"}</code><br>• Região identificada: <code>${json.region || "AWS"}</code><br>• Status: Seus dados locais foram enviados e gravados no DynamoDB agora mesmo! Atualize a tela do DynamoDB na AWS para ver os dados.`;
-      }
-      if (typeof showToast === "function") {
-        showToast("☁️ Conectado com sucesso ao Amazon DynamoDB!");
-      }
-      return true;
-    }
-
-    if (statusEl) {
-      statusEl.innerHTML = `⚠️ Resposta inesperada da Lambda: ${text.slice(0, 160)}`;
-    }
-    return false;
-  } catch(err) {
-    if (statusEl) {
-      statusEl.style.background = "rgba(239,68,68,.12)";
-      statusEl.style.borderColor = "rgba(239,68,68,.35)";
-      statusEl.style.color = "#ef4444";
-      statusEl.innerHTML = `⚠️ <b>Falha ao conectar na URL:</b> ${err.message}<br><br>👉 Verifique se marcou a caixinha <b>Configurar CORS</b> na Function URL da Lambda com <i>Allow Origin = *</i> e <i>Allow Methods = GET, POST, OPTIONS</i>.`;
-    }
-    return false;
+    const res = await fetch(endpoint, { cache: "no-store" });
+    const json = await res.json().catch(() => null);
+    if (json && json.service === "roteiro-auth") { showConnFeedback(true, "✅ Servidor respondendo (versão " + escapeHtml(json.version) + ")."); return true; }
+    showConnFeedback(false, "⚠️ O endereço respondeu, mas não é a versão atual da Lambda do Roteiro.");
+  } catch (e) {
+    showConnFeedback(false, "⚠️ Não consegui falar com esse endereço: " + escapeHtml(e.message));
   }
+  return false;
 }
 
 async function saveAwsConfigParams() {
-  try {
-    const epEl = document.getElementById("aws-cfg-endpoint");
-    const endpoint = epEl ? epEl.value.trim() : "";
-    const regMatch = endpoint.match(/lambda-url\.([a-z0-9-]+)\.on\.aws/);
-    const detectedRegion = (regMatch && regMatch[1]) || document.getElementById("aws-cfg-region").value.trim() || "us-east-2";
-
-    const cfg = {
-      endpoint: endpoint,
-      region: detectedRegion,
-      table: document.getElementById("aws-cfg-table").value.trim() || "roteiro_estudos_joao",
-      pool: document.getElementById("aws-cfg-pool").value.trim() || ""
-    };
-    localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify(cfg));
-    const regInput = document.getElementById("aws-cfg-region");
-    if (regInput) regInput.value = detectedRegion;
-
-    if (cfg.endpoint) {
-      await testAwsLambdaConnection();
-    } else {
-      if (typeof showToast === "function") {
-        showToast("💾 Configurações da AWS salvas!");
-      }
-    }
-  } catch(e) {
-    alert("Erro ao salvar: " + e.message);
+  const endpoint = document.getElementById("aws-cfg-endpoint").value.trim();
+  if (!isValidEndpoint(endpoint)) {
+    showConnFeedback(false, "⚠️ Use o endereço de uma Function URL da AWS (https://....lambda-url.REGIÃO.on.aws/).");
+    return;
   }
+  if (await testAwsLambdaConnection(endpoint)) {
+    try { localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify({ endpoint })); } catch (e) {}
+  }
+}
+
+function resetAwsEndpoint() {
+  try { localStorage.removeItem(AWS_CONFIG_KEY); } catch (e) {}
+  document.getElementById("aws-cfg-endpoint").value = OFFICIAL_LAMBDA_URL;
+  testAwsLambdaConnection(OFFICIAL_LAMBDA_URL);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -6011,9 +5676,9 @@ async function initSync() {
   loadLocal();
   paint();
 
-  // Em ambientes de nuvem/produção (ex: GitHub Pages ou HTTPS), a AWS é o backend oficial; não tenta conectar ao localhost
-  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
-  if (!isLocalHost) {
+  // O banco local do server.py (usuário 1) é só para desenvolvimento: vale apenas para o usuário de teste,
+  // nunca para uma conta real (senão o progresso local se misturaria com o dela). Em produção, a nuvem é o backend.
+  if (!isTestUser(getLoggedInUser())) {
     return;
   }
 

@@ -361,6 +361,7 @@ def act_accept_invite(p, _ctx):
     password = check_new_password(p.get("password"))
     acct = get_acct(email)
     consume_code(acct, "invite", p.get("code"))
+    acct.pop("code_sent_at", None)  # o envio do convite não deve atrasar uma recuperação de senha
     acct.update({"pwd": hash_password(password), "status": "active", "tv": int(acct.get("tv", 0)) + 1,
                  "failed": 0, "locked_until": 0, "last_login": now()})
     if str(p.get("name") or "").strip():
