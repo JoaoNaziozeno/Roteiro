@@ -121,6 +121,8 @@ def check_guide(key, g, problems, code_jobs):
                 bad(f"{where}: sem testes ou sem solução")
             else:
                 code_jobs.append((key, b))
+            if re.search(r"^saida\s*=", b.get("solucao", "") + "\n" + b.get("inicial", ""), re.M):
+                bad(f"{where}: o código usa a variável 'saida', reservada para a saída do programa nos testes")
         elif t == "parsons":
             if len(b.get("linhas", [])) < 3:
                 bad(f"{where}: menos de 3 linhas")

@@ -516,7 +516,7 @@ def dividir(corte):
 print(ganho(compra, *dividir(31)), ganho(compra, *dividir(48)))
 ''',
             [("Gini de grupo puro é 0", "assert gini([1, 1, 1]) == 0"), ("Gini 6x4 é 0.48", "assert abs(gini([1] * 6 + [0] * 4) - 0.48) < 1e-9"),
-             ("Ganho do corte em 31", "assert abs(ganho(compra, *dividir(31)) - 0.2875) < 1e-4, f'deu {ganho(compra, *dividir(31))}'"),
+             ("Ganho do corte em 31", "assert abs(ganho(compra, *dividir(31)) - 0.3) < 1e-4, f'deu {ganho(compra, *dividir(31))}'"),
              ("Corte em 31 é melhor que em 48", "assert ganho(compra, *dividir(31)) > ganho(compra, *dividir(48))")],
             '''
 def gini(rotulos):

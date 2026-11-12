@@ -173,7 +173,7 @@ print(caros)
     ],
     ["SQLite: banco completo num arquivo, já incluso no Python.", "Escreva com parâmetros e confirme com <code>commit</code> (ou <code>with con:</code>).", "<code>to_sql</code> e <code>read_sql</code> ligam Pandas e banco."],
     "SQL avançado: subconsultas e window functions.",
-    livro=("PYDOC:", "Tutorial oficial do Python (biblioteca padrão, módulo sqlite3)", "Que exemplo de uso de parâmetros a documentação do sqlite3 mostra?"))
+    livro=("PYDOC:../library/sqlite3", "Documentação oficial do Python, módulo sqlite3", "Que exemplo de uso de parâmetros a documentação do sqlite3 mostra?"))
 
 AULAS["SQL avançado: subconsultas e window functions"] = aula(
     40,

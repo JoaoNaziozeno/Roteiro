@@ -185,3 +185,21 @@ def finalizar(guia, doc=None):
         if c:
             guia["blocos"].append(c)
     return guia
+
+
+def aula_en(gancho, obj, palpite, conversa, foco, explica, cartoes, escuta, fala, armadilhas, trabalho, perguntas,
+            resumo, prox, yg, dur=30, pre=None, extra=()):
+    """Aula de Inglês no formato padrão da trilha.
+
+    palpite = (pergunta, opções, correta, porquês, explicação)
+    conversa = (título, [(quem, en, pt)])
+    foco = o que anotar enquanto assiste ao vídeo
+    explica = um bloco (tabela/nota/texto) ou lista de blocos com a explicação da estrutura
+    cartoes = [(en, pt, exemplo)]; escuta = itens de ouvir(); fala = [(en, pt)]
+    armadilhas = [(erro, correção)]; trabalho = HTML da ponte com o inglês de tecnologia
+    perguntas = itens de quiz(); extra = blocos opcionais inseridos antes das armadilhas
+    """
+    explica = explica if isinstance(explica, (list, tuple)) else [explica]
+    blocos = [chute(*palpite), dialogo(*conversa), ver(foco, ingles=True), *explica, vocab(cartoes),
+              ouvir(escuta), falar(fala), *extra, erros(armadilhas), ponte("No trabalho com tecnologia", trabalho), quiz(perguntas)]
+    return aula(dur, gancho, obj, pre or ["A aula anterior do módulo."], blocos, resumo, prox, yg=yg)
