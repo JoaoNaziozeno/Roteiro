@@ -7055,7 +7055,7 @@ const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url
 const STUDY_KEYS = [
   "roteiro-ia-v1", "roteiro-answers-v1", "roteiro-review-v1", "roteiro-events-v1", "roteiro-sessions-v1",
   "roteiro-log-start", "roteiro-start-date", "roteiro-hub-pace", "roteiro_portfolio_projects", "roteiro-snap-v1",
-  "roteiro-effort-v1", "roteiro-auto-progress", "roteiro_aws_last_sync", "roteiro_password_hash"
+  "roteiro-effort-v1", "roteiro-auto-progress", "roteiro_aws_last_sync", "roteiro_password_hash", "roteiro-admin-rev", "roteiro-sync-base"
 ];
 const STUDY_PREFIXES = ["roteiro-note-"];
 
@@ -7176,7 +7176,7 @@ async function apiCall(action, payload = {}, auth = false) {
   }
   try { json = await res.json(); } catch (e) {}
   if (res.ok && json && json.ok) return json;
-  if (auth && res.status === 401) handleSessionExpired();
+  if (auth && res.status === 401 && json && json.relogin) handleSessionExpired();
   const err = new Error((json && json.error) || `Erro no servidor (HTTP ${res.status}).`);
   err.status = res.status;
   throw err;
@@ -7617,7 +7617,19 @@ function scheduleAwsRealtimeSync() {
   _awsRealtimeTimer = setTimeout(() => awsRealtimePushToDynamoDB(true), 650);
 }
 
-async function awsRealtimePushToDynamoDB(silent = true) {
+// Versão da última edição de progresso feita pelo admin que este aparelho já baixou.
+function getAdminRev() { return parseInt(localStorage.getItem("roteiro-admin-rev") || "0", 10) || 0; }
+
+// Progresso como estava na última sincronização: serve para saber o que o aluno mudou desde então.
+function setSyncBase(progress) { try { localStorage.setItem("roteiro-sync-base", JSON.stringify(progress || {})); } catch (e) {} }
+
+function localChangesSinceSync() {
+  const base = awsReadJson("roteiro-sync-base", {}), cur = awsReadJson("roteiro-ia-v1", {}), out = {};
+  for (const k in cur) if (JSON.stringify(cur[k]) !== JSON.stringify(base[k])) out[k] = cur[k];
+  return out;
+}
+
+async function awsRealtimePushToDynamoDB(silent = true, retry = true) {
   updateAwsStorageSizeDisplay();
   if (!canSync()) { setSyncIndicator("💾 Salvo neste navegador"); return false; }
   setSyncIndicator("☁️ Sincronizando...");
@@ -7627,10 +7639,12 @@ async function awsRealtimePushToDynamoDB(silent = true) {
     start_date: localStorage.getItem("roteiro-start-date") || "",
     pace: localStorage.getItem("roteiro-hub-pace") || "std",
     extra: awsCollectExtra(),
+    admin_rev: getAdminRev(),
     updated_at: Date.now()
   };
   try {
     await apiCall("save_data", payload, true);
+    setSyncBase(payload.progress);
     const t = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
     try { localStorage.setItem("roteiro_aws_last_sync", "Hoje, às " + t); } catch (e) {}
     const lastEl = document.getElementById("aws-last-sync-time");
@@ -7640,6 +7654,19 @@ async function awsRealtimePushToDynamoDB(silent = true) {
     if (!silent && typeof showToast === "function") showToast("☁️ Progresso salvo na nuvem!");
     return true;
   } catch (err) {
+    if (err.status === 409 && retry) {
+      // O admin editou o progresso: baixa a versão dele, reaplica o que o aluno mudou
+      // desde a última sincronização e envia de novo.
+      const mine = localChangesSinceSync();
+      await awsRealtimePullFromDynamoDB();
+      if (Object.keys(mine).length) {
+        const cur = Object.assign(awsReadJson("roteiro-ia-v1", {}), mine);
+        try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(cur)); } catch (e) {}
+        if (typeof PR !== "undefined") Object.assign(PR, mine);
+        if (typeof paint === "function") paint();
+      }
+      return awsRealtimePushToDynamoDB(silent, false);
+    }
     console.warn("[Sync] Falha ao enviar:", err.message);
     setSyncIndicator("⚠️ Não sincronizou (salvo neste navegador)");
     if (!silent) alert("⚠️ Não foi possível salvar na nuvem:\n\n" + err.message);
@@ -7663,7 +7690,15 @@ async function awsRealtimePullFromDynamoDB() {
     await awsRealtimePushToDynamoDB(true);
     return true;
   }
-  if (cloud.progress && typeof cloud.progress === "object") {
+  const cloudRev = parseInt(cloud.admin_rev || 0, 10) || 0;
+  if (cloudRev > getAdminRev()) {
+    // O admin editou o progresso deste aluno: a versão da nuvem substitui a local (não junta),
+    // senão tópicos zerados pelo admin voltariam deste aparelho.
+    const fresh = (cloud.progress && typeof cloud.progress === "object") ? cloud.progress : {};
+    try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(fresh)); } catch (e) {}
+    if (typeof PR !== "undefined") { for (const k in PR) delete PR[k]; Object.assign(PR, fresh); }
+    try { localStorage.setItem("roteiro-admin-rev", String(cloudRev)); } catch (e) {}
+  } else if (cloud.progress && typeof cloud.progress === "object") {
     const merged = Object.assign({}, awsReadJson("roteiro-ia-v1", {}), cloud.progress);
     try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged)); } catch (e) {}
     if (typeof PR !== "undefined") for (const k in merged) PR[k] = merged[k];
@@ -7679,6 +7714,7 @@ async function awsRealtimePullFromDynamoDB() {
     try { localStorage.setItem("roteiro-hub-pace", cloud.pace); } catch (e) {}
     if (typeof currentPace !== "undefined" && typeof HUB_PRESETS !== "undefined" && HUB_PRESETS[cloud.pace]) currentPace = cloud.pace;
   }
+  setSyncBase(cloud.progress || {});
   const extraChanged = awsMergeExtra(cloud.extra);
   if (typeof paint === "function") paint();
   if (typeof calcAndPaint === "function") calcAndPaint();

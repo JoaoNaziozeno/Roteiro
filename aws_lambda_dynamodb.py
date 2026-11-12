@@ -320,7 +320,9 @@ def send_code_email(acct, code, kind):
 
 
 def audit(admin_email, action, target="", details=None):
-    STORE.put({"user_id": f"audit#{now():010d}#{secrets.token_hex(4)}", "at": now(), "admin": admin_email,
+    # Chave com milissegundos para o histórico sair em ordem mesmo com várias ações no mesmo segundo.
+    stamp = max(now() * 1000, int(time.time() * 1000))
+    STORE.put({"user_id": f"audit#{stamp:013d}#{secrets.token_hex(4)}", "at": now(), "admin": admin_email,
                "action": action, "target": target, "details": details or {}})
 
 
@@ -432,7 +434,7 @@ def act_me(_p, ctx):
 
 def act_get_data(_p, ctx):
     data = STORE.get(f"data#{ctx['acct']['email']}") or {}
-    return {"data": {k: data.get(k) for k in DATA_FIELDS + ("updated_at",) if k in data}}
+    return {"data": {k: data.get(k) for k in DATA_FIELDS + ("updated_at", "admin_rev") if k in data}}
 
 
 def act_save_data(p, ctx):
@@ -441,7 +443,14 @@ def act_save_data(p, ctx):
     if not isinstance(incoming.get("progress", {}), dict) or not isinstance(incoming.get("projects", []), list):
         raise ApiError(400, "Formato de dados inválido.")
     prev = STORE.get(f"data#{email}") or {}
+    # Se o admin editou o progresso depois da última leitura deste aparelho, recusa a gravação:
+    # o aparelho baixa a versão do admin e envia de novo (senão desfaria a edição).
+    admin_rev = int(prev.get("admin_rev") or 0)
+    if int(p.get("admin_rev") or 0) < admin_rev:
+        raise ApiError(409, "O administrador alterou seu progresso. Atualizando...", admin_rev=admin_rev)
     item = {"user_id": f"data#{email}"}
+    if admin_rev:
+        item["admin_rev"] = admin_rev
     for k in DATA_FIELDS:
         item[k] = incoming[k] if k in incoming else prev.get(k)
         if item[k] is None:
@@ -456,7 +465,7 @@ def act_save_data(p, ctx):
 def act_change_password(p, ctx):
     acct = ctx["acct"]
     if not check_password(str(p.get("current") or ""), acct.get("pwd")):
-        raise ApiError(401, "A senha atual está incorreta.")
+        raise ApiError(400, "A senha atual está incorreta.")
     acct["pwd"] = hash_password(check_new_password(p.get("new")))
     acct["tv"] = int(acct.get("tv", 0)) + 1  # derruba as outras sessões
     STORE.put(acct)
@@ -496,7 +505,7 @@ def act_admin_get_user(p, _ctx):
     acct = _student(p.get("email"))
     data = STORE.get(f"data#{acct['email']}") or {}
     return {"user": public_user(acct, data),
-            "data": {k: data.get(k) for k in DATA_FIELDS + ("updated_at",) if k in data}}
+            "data": {k: data.get(k) for k in DATA_FIELDS + ("updated_at", "admin_rev") if k in data}}
 
 
 def act_admin_invite(p, ctx):
@@ -615,6 +624,7 @@ def act_admin_edit_progress(p, ctx):
         raise ApiError(400, "Operação inválida.")
     data["progress"] = progress
     data["updated_at"] = now() * 1000
+    data["admin_rev"] = max(int(data.get("admin_rev") or 0) + 1, now() * 1000)
     STORE.put(data)
     audit(ctx["acct"]["email"], "edit_progress", acct["email"], details)
     return {"progress_summary": progress_summary(progress), "updated_at": data["updated_at"]}

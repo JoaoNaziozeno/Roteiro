@@ -86,6 +86,13 @@ class TestFluxoNormal(Base):
         r = self.call("get_data", token=r["body"]["token"])
         self.assertEqual(r["body"]["data"]["progress"]["ia-0-0-0"]["s"], "e")
 
+    def test_senha_atual_errada_nao_derruba_sessao(self):
+        tok = self.make_student()
+        r = self.call("change_password", token=tok, current="errada123", new="OutraSenha#1")
+        self.assertEqual(r["status"], 400)
+        self.assertFalse(r["body"].get("relogin"))
+        self.assertEqual(self.call("me", token=tok)["status"], 200)
+
     def test_token_no_header(self):
         tok = self.make_student()
         r = self.call("me", headers={"authorization": "Bearer " + tok})
@@ -278,6 +285,20 @@ class TestAdmin(Base):
         self.assertEqual(bad["status"], 400)
         actions = [e["action"] for e in self.call("admin_audit", token=self.admin)["body"]["entries"]]
         self.assertEqual(actions.count("edit_progress"), 2)
+
+    def test_edicao_do_admin_nao_e_desfeita_pelo_aparelho(self):
+        tok = self.make_student()
+        self.call("save_data", token=tok, progress={"ia-0-0-0": {"s": "e"}, "ia-0-0-1": {"s": "e"}})
+        self.call("admin_edit_progress", token=self.admin, email="ana@exemplo.com", op="reset_trail", trail="ia")
+        # aparelho antigo (sem a versão do admin) tenta regravar o progresso que foi zerado
+        r = self.call("save_data", token=tok, progress={"ia-0-0-0": {"s": "e"}, "ia-0-0-1": {"s": "e"}})
+        self.assertEqual(r["status"], 409)
+        data = self.call("get_data", token=tok)["body"]["data"]
+        self.assertEqual(data["progress"], {})
+        # depois de baixar a versão do admin, o aparelho volta a gravar normalmente
+        r = self.call("save_data", token=tok, progress={"ia-0-0-2": {"s": "r"}}, admin_rev=data["admin_rev"])
+        self.assertEqual(r["status"], 200)
+        self.assertEqual(self.call("get_data", token=tok)["body"]["data"]["admin_rev"], data["admin_rev"])
 
     def test_excluir_exige_confirmacao(self):
         self.make_student()

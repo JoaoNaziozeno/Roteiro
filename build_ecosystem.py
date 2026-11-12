@@ -2289,6 +2289,11 @@ generate_projects_page(out_proj, SHARED_CSS)
 generate_hub_page(out_hub)
 generate_hub_page(out_mirror)
 
+# Painel do administrador (login próprio; fala só com a Lambda)
+from admin_page import generate_admin_page
+out_admin = os.path.join(BASE_DIR, "admin.html")
+generate_admin_page(out_admin, {"ia": ia_phases, "mat": mat_phases, "ing": ing_phases})
+
 # Sincronização automática para produção em dist_deploy/ e roteiro_aws_deploy.zip
 import shutil, zipfile
 base_dir = os.path.dirname(out_hub)
@@ -2300,7 +2305,8 @@ deploy_files = [
     (out_ing, "ingles.html"),
     (out_proj, "projetos.html"),
     (out_hub, "index.html"),
-    (out_mirror, "Roteiro de Estudo_ do zero à IA.html")
+    (out_mirror, "Roteiro de Estudo_ do zero à IA.html"),
+    (out_admin, "admin.html")
 ]
 for src, name in deploy_files:
     shutil.copy2(src, os.path.join(dist_dir, name))
