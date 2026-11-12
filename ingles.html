@@ -2166,6 +2166,7 @@ input:checked + .slider:before { transform: translateX(14px); }
 .lv2-py-actions{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;border-top:1px solid var(--bd)}
 .lv2-py-out{margin:0;padding:10px 14px;border-top:1px solid var(--bd);font:12.5px/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:260px;overflow:auto;background:transparent;color:var(--tx)}
 .lv2-py-out.is-err{color:#ef4444}
+.lv2-py-stdin{padding:6px 14px;border-top:1px solid var(--bd);font-size:.76rem;color:var(--mu)}
 .lv2-py-tests{padding:0 14px}
 .lv2-py-tests:not(:empty){padding:8px 14px 10px;border-top:1px solid var(--bd)}
 .lv2-py-test{font-size:.84rem;padding:2px 0}
@@ -9917,6 +9918,8 @@ const LV2_PYODIDE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
 const LV2_PY_WORKER = [
   'importScripts("' + LV2_PYODIDE + '");',
   "let py = null;",
+  // input() simulado: devolve, na ordem, as entradas que o exercício definiu (e mostra na saída, como num terminal)
+  "const PRE = '__fila = list(__entradas)\\ndel __entradas\\ndef input(prompt=\"\"):\\n    if not __fila:\\n        raise EOFError(\"input() sem entrada: as entradas simuladas deste exercicio acabaram.\")\\n    v = str(__fila.pop(0))\\n    print(str(prompt) + v)\\n    return v\\n';",
   "const last = e => { const t = String(e && e.message || e).trim().split('\\n').filter(Boolean); return t.slice(-1)[0] || 'Erro'; };",
   "const tb = e => { const t = String(e && e.message || e).trim().split('\\n').filter(Boolean); const k = t.findIndex(l => l.includes('File \"<exec>\"')); return (k >= 0 ? t.slice(k) : t.slice(-3)).join('\\n'); };",
   "self.onmessage = async (ev) => {",
@@ -9924,11 +9927,13 @@ const LV2_PY_WORKER = [
   "  try {",
   "    if (!py) py = await loadPyodide();",
   "    if (m.boot) { self.postMessage({ id: m.id, ok: true }); return; }",
+  "    if (m.prep) { try { await py.loadPackagesFromImports(m.prep); } catch (_) {} self.postMessage({ id: m.id, ok: true }); return; }",
   "    let out = '';",
   "    py.setStdout({ batched: s => { out += s + '\\n'; } });",
   "    py.setStderr({ batched: s => { out += s + '\\n'; } });",
-  "    try { await py.loadPackagesFromImports(m.code); } catch (_) {}",
   "    const ns = py.globals.get('dict')();",
+  "    ns.set('__entradas', py.toPy(m.stdin || []));",
+  "    await py.runPythonAsync(PRE, { globals: ns });",
   "    let err = null;",
   "    try { await py.runPythonAsync(m.code, { globals: ns, filename: '<exec>' }); } catch (e) { err = tb(e); }",
   "    const results = [];",
@@ -9964,22 +9969,25 @@ function lv2PyCall(msg, timeoutMs) {
     w.postMessage(Object.assign({ id }, msg));
   });
 }
-async function lv2PyRun(code, tests, status) {
+async function lv2PyRun(code, tests, status, stdin) {
   if (!lv2PyReady) {
     status("Carregando o Python no navegador (só na primeira vez, ~10 MB)...");
     const b = await lv2PyCall({ boot: true }, 120000);
     if (!b.ok) return b.timeout ? { ok: false, err: "O Python demorou demais para carregar. Verifique a internet e tente de novo." } : b;
     lv2PyReady = true;
   }
+  if (/^\s*(import|from)\s+(numpy|pandas|scipy|matplotlib|sklearn|sympy)/m.test(code)) status("Baixando bibliotecas (só na primeira vez)...");
+  const p = await lv2PyCall({ prep: code }, 180000);
+  if (!p.ok) return p.timeout ? { ok: false, err: "As bibliotecas demoraram demais para baixar. Verifique a internet e tente de novo." } : p;
   status("Rodando...");
-  return lv2PyCall({ code, tests }, 8000);
+  return lv2PyCall({ code, tests, stdin }, 8000);
 }
 
 // ---------------------------------------------------------------- renderizadores
 const LV2_EXTRA = {
   codigo(b, i) {
     const id = `py-${i}`;
-    LV2_SPECS[id] = { inicial: b.inicial || "", testes: b.testes || [] };
+    LV2_SPECS[id] = { inicial: b.inicial || "", testes: b.testes || [], stdin: b.entradas || [] };
     const rows = Math.min(18, Math.max(5, (b.inicial || "").split("\n").length + 2));
     let h = b.enunciado ? `<div class="lv2-q">${b.enunciado}</div>` : "";
     h += `<div class="lv2-py" data-py="${id}">` +
@@ -9988,6 +9996,7 @@ const LV2_EXTRA = {
       `<div class="lv2-py-actions"><button type="button" class="lv2-btn" data-lv2x="py-run">▶ Rodar</button>` +
       ((b.testes || []).length ? `<button type="button" class="lv2-btn lv2-btn-main" data-lv2x="py-check">✓ Verificar</button>` : "") +
       `<button type="button" class="lv2-btn lv2-btn-ghost" data-lv2x="py-reset" title="Voltar ao código inicial">↺ Recomeçar</button></div>` +
+      ((b.entradas || []).length ? `<div class="lv2-py-stdin">Entradas simuladas para o <code>input()</code>: ${b.entradas.map(v => `<code>${lv2Esc(v)}</code>`).join(", ")}</div>` : "") +
       `<pre class="lv2-py-out" hidden></pre><div class="lv2-py-tests"></div></div>`;
     (b.dicas || []).forEach((d, j) => { h += `<details><summary>Dica ${j + 1}</summary><div>${d}</div></details>`; });
     if (b.solucao) h += `<details><summary>Ver uma solução</summary><div><pre class="lv2-code"><code>${lv2HighlightPy(b.solucao)}</code></pre>${b.explicacao || ""}</div></details>`;
@@ -10144,6 +10153,9 @@ function lv2InitExtra(root, topicId) {
   const X = saved.x || {};
   const saveX = (key, val) => lv2SaveAnswer(topicId, a => { a.x = a.x || {}; a.x[key] = val; });
 
+  // Código Python escrito no texto das aulas (helper py() da fábrica) ganha o mesmo realce dos exercícios
+  root.querySelectorAll('pre.lv2-code[data-lang="py"] > code').forEach(c => { if (!c.querySelector("span")) c.innerHTML = lv2HighlightPy(c.textContent); });
+
   // --- Python: restaura o código salvo e o resultado dos testes
   root.querySelectorAll(".lv2-py").forEach(box => {
     const id = box.dataset.py, st = X[id], ed = box.querySelector(".lv2-py-ed");
@@ -10201,7 +10213,7 @@ function lv2InitExtra(root, topicId) {
       const out = box.querySelector(".lv2-py-out"), res = box.querySelector(".lv2-py-tests"), status = box.querySelector(".lv2-py-status");
       if (kind === "py-reset") { ed.value = spec.inicial || ""; out.hidden = true; res.innerHTML = ""; saveX(id, { c: ed.value, ok: 0 }); return; }
       box.querySelectorAll("button").forEach(b => b.disabled = true);
-      const r = await lv2PyRun(ed.value, kind === "py-check" ? spec.testes : [], s => { status.textContent = s; });
+      const r = await lv2PyRun(ed.value, kind === "py-check" ? spec.testes : [], s => { status.textContent = s; }, spec.stdin);
       box.querySelectorAll("button").forEach(b => b.disabled = false);
       status.textContent = "";
       out.hidden = false;
