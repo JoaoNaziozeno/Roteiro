@@ -26,7 +26,8 @@ PILOT_ID_RE = re.compile(r"\"id\":\s*\"([\w-]{11})\"")
 
 def collect():
     found = {}
-    for name in SOURCES:
+    extra = sorted(p.name for pat in ("ia_f*.py", "en_m*.py") for p in BASE.glob(pat))
+    for name in SOURCES + extra:
         p = BASE / name
         if not p.exists():
             continue

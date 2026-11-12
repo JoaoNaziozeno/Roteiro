@@ -516,7 +516,7 @@ def get_enriched_ia_phases():
                             "title": "Aprendizado supervisionado vs. não supervisionado",
                             "video_url": "https://www.youtube.com/watch?v=1FZ0A1QCMWc",
                             "video_label": "▶ Andrew Ng Supervised vs Unsupervised",
-                            "doc_url": "https://scikit-learn.org/stable/tutorial/basic/tutorial.html",
+                            "doc_url": "https://scikit-learn.org/stable/getting_started.html",
                             "doc_label": "📖 Sklearn Intro Tutorial"
                         },
                         {
@@ -718,8 +718,8 @@ def get_enriched_ia_phases():
                             "title": "Séries temporais com ML",
                             "video_url": "https://www.youtube.com/watch?v=UFuo7EHI8zc",
                             "video_label": "▶ Forecasting com Machine Learning",
-                            "doc_url": "https://otexts.com/fpp3/",
-                            "doc_label": "📖 Forecasting: Principles and Practice"
+                            "doc_url": "https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html",
+                            "doc_label": "📖 Sklearn: atributos de tempo"
                         }
                     ]
                 ],
@@ -1134,7 +1134,7 @@ def get_enriched_ia_phases():
                             "title": "Janela de contexto e KV cache",
                             "video_url": "https://www.youtube.com/watch?v=80bIUggRJf4",
                             "video_label": "▶ Efficient NLP · KV Cache",
-                            "doc_url": "https://kipp.ly/transformer-inference-optimizations/",
+                            "doc_url": "https://huggingface.co/docs/transformers/kv_cache",
                             "doc_label": "📖 KV Cache Optimization Guide"
                         },
                         {
@@ -1435,8 +1435,8 @@ def get_enriched_ia_phases():
                             "title": "Escrever artigos e posts",
                             "video_url": "https://www.youtube.com/watch?v=qBigTkBLU6g",
                             "video_label": "▶ Criando Conteúdo Técnico e Artigos",
-                            "doc_url": "https://medium.com/topic/machine-learning",
-                            "doc_label": "📖 Medium Towards Data Science"
+                            "doc_url": "https://developers.google.com/tech-writing",
+                            "doc_label": "📖 Google Technical Writing"
                         },
                         {
                             "title": "Comunidades e eventos",
