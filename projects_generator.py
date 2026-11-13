@@ -791,9 +791,8 @@ try {{
   if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
 }} catch(e) {{}}
 
-window.addEventListener("DOMContentLoaded", () => {{
-  loadProjects();
-}});
+// Monta os cards antes da primeira pintura (o script está no fim do <body>)
+loadProjects();
 </script>
 </body>
 </html>"""

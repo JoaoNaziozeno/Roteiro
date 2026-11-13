@@ -2208,10 +2208,9 @@ try{
   document.documentElement.setAttribute("data-theme", savedTheme);
 }catch(e){}
 
-window.addEventListener("DOMContentLoaded", () => {
-  initSync();
-  checkHubAuth();
-});
+// Monta a tela antes da primeira pintura (o script está no fim do <body>)
+try { initSync(); } catch (e) { console.error(e); }
+checkHubAuth();
 </script>
 </body>
 </html>

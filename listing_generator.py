@@ -1544,10 +1544,9 @@ try {
   document.documentElement.setAttribute("data-theme", savedTheme);
 } catch(e) {}
 
-window.addEventListener("DOMContentLoaded", () => {
-  initSync();
-  if (typeof initSplitResizer === "function") initSplitResizer();
-});
+// Monta a lista antes da primeira pintura (o script está no fim do <body>)
+initSync();
+if (typeof initSplitResizer === "function") initSplitResizer();
 </script>
 </body>
 </html>

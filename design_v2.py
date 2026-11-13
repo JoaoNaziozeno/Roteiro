@@ -20,9 +20,17 @@ O que ela traz:
 """
 
 DESIGN_HEAD = r"""
+<!-- Segura a primeira pintura até o fim da página (#ds-end): a transição já mostra a página pronta,
+     sem montar menu, tema e listas na frente do usuário. Navegadores sem suporte ignoram. -->
+<link rel="expect" href="#ds-end" blocking="render">
+<script>try{var t=localStorage.getItem("roteiro-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+<!-- Fontes: pré-carregadas para estarem prontas na primeira pintura, e "optional" para nunca trocarem
+     depois que a página aparece (a troca da fonte do sistema para a Inter fazia o menu "pular"). -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional">
 <style id="design-v2">
 /* ============================ TOKENS ============================ */
 :root{
@@ -488,7 +496,8 @@ window.DS_TOPICS = __DS_TOPICS__;
       }
     } catch (e) {}
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+  // Este script fica no fim do <body>: o conteúdo já existe, então monta na hora (antes da primeira pintura).
+  init();
 })();
 </script>
 """
@@ -545,5 +554,6 @@ def apply_design(html: str, track: str) -> str:
     html = html.replace("</header>", "</header>\n" + NAV_EARLY_SCRIPT, 1)
     idx = html.rfind("</body>")
     if idx != -1:
-        html = html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS + "\n" + html[idx:]
+        html = (html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS
+                + '\n<div id="ds-end" hidden></div>\n' + html[idx:])
     return html

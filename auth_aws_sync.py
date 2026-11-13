@@ -1227,8 +1227,9 @@ async function awsRealtimePullFromDynamoDB() {
   return true;
 }
 
+// O menu já existe acima deste script: mostra o nome antes da primeira pintura (sem o menu "pular").
+try { updateNavAuthUI(); } catch (e) {}
 window.addEventListener("DOMContentLoaded", () => {
-  updateNavAuthUI();
   awsRealtimePullFromDynamoDB();
 });
 """

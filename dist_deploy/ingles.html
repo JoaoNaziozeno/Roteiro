@@ -2608,9 +2608,17 @@ input:checked + .slider:before { transform: translateX(14px); }
 
 </style>
 
+<!-- Segura a primeira pintura até o fim da página (#ds-end): a transição já mostra a página pronta,
+     sem montar menu, tema e listas na frente do usuário. Navegadores sem suporte ignoram. -->
+<link rel="expect" href="#ds-end" blocking="render">
+<script>try{var t=localStorage.getItem("roteiro-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+<!-- Fontes: pré-carregadas para estarem prontas na primeira pintura, e "optional" para nunca trocarem
+     depois que a página aparece (a troca da fonte do sistema para a Inter fazia o menu "pular"). -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional">
 <style id="design-v2">
 /* ============================ TOKENS ============================ */
 :root{
@@ -6127,8 +6135,9 @@ async function awsRealtimePullFromDynamoDB() {
   return true;
 }
 
+// O menu já existe acima deste script: mostra o nome antes da primeira pintura (sem o menu "pular").
+try { updateNavAuthUI(); } catch (e) {}
 window.addEventListener("DOMContentLoaded", () => {
-  updateNavAuthUI();
   awsRealtimePullFromDynamoDB();
 });
 
@@ -9905,10 +9914,9 @@ try {
   document.documentElement.setAttribute("data-theme", savedTheme);
 } catch(e) {}
 
-window.addEventListener("DOMContentLoaded", () => {
-  initSync();
-  if (typeof initSplitResizer === "function") initSplitResizer();
-});
+// Monta a lista antes da primeira pintura (o script está no fim do <body>)
+initSync();
+if (typeof initSplitResizer === "function") initSplitResizer();
 </script>
 
 <script id="design-v2-js">
@@ -10126,7 +10134,8 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
       }
     } catch (e) {}
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+  // Este script fica no fim do <body>: o conteúdo já existe, então monta na hora (antes da primeira pintura).
+  init();
 })();
 </script>
 
@@ -10145,5 +10154,6 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
 })();
 </script>
 
+<div id="ds-end" hidden></div>
 </body>
 </html>
