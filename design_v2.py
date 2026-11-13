@@ -205,10 +205,23 @@ kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;b
 /* ============================ TRANSIÇÃO ENTRE PÁGINAS ============================ */
 @view-transition{navigation:auto}
 main,.hub-main{view-transition-name:ds-page}
-::view-transition-old(ds-page){animation:ds-page-out .22s ease-in both}
-::view-transition-new(ds-page){animation:ds-page-in .38s var(--ds-ease) both}
-@keyframes ds-page-out{to{opacity:0;transform:translateY(-8px)}}
-@keyframes ds-page-in{from{opacity:0;transform:translateY(12px)}}
+/* Fundo da transição igual ao do site (evita clarão entre a saída e a entrada) */
+html::view-transition{background:var(--bg)}
+/* Menu do topo: troca na hora, sem esmaecer (senão aparecem dois menus sobrepostos) */
+::view-transition-group(ds-nav){animation:none}
+::view-transition-old(ds-nav){display:none}
+::view-transition-new(ds-nav){animation:none}
+/* Resto da tela (barra lateral, fundo): a página antiga sai antes da nova entrar, sem sobrepor */
+::view-transition-old(root){animation:ds-fade-out .14s ease-in both}
+::view-transition-new(root){animation:ds-fade-in .24s ease-out .1s both}
+/* Conteúdo: sem "esticar" de uma altura para outra; sai e depois entra com um leve deslize */
+::view-transition-group(ds-page){animation:none}
+::view-transition-old(ds-page){animation:ds-page-out .14s ease-in both}
+::view-transition-new(ds-page){animation:ds-page-in .3s var(--ds-ease) .1s both}
+@keyframes ds-fade-out{to{opacity:0}}
+@keyframes ds-fade-in{from{opacity:0}}
+@keyframes ds-page-out{to{opacity:0;transform:translateY(-6px)}}
+@keyframes ds-page-in{from{opacity:0;transform:translateY(10px)}}
 
 /* ============================ PALETA DE COMANDOS ============================ */
 .ds-pal{position:fixed;inset:0;z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:color-mix(in srgb,#020608 55%,transparent);backdrop-filter:blur(6px)}
@@ -504,11 +517,32 @@ def set_topic_index(tracks):
     _TOPIC_INDEX_JSON = json.dumps(rows, ensure_ascii=False, separators=(",", ":")).replace("</", "<\/")
 
 
+# Roda logo depois do menu, antes da primeira pintura: o selo já nasce "Nuvem" para quem está logado
+# (antes ele aparecia como "Local" e trocava ~1 s depois, fazendo o menu pular a cada troca de página).
+NAV_EARLY_SCRIPT = """<script>
+(function () {
+  try {
+    var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
+    var u = raw ? JSON.parse(raw) : null;
+    var b = document.getElementById("nav-db-status");
+    if (!b || !u || !u.token || !(u.exp * 1000 > Date.now())) return;
+    if (localStorage.getItem("roteiro_data_owner") !== u.email) return;
+    b.className = "nav-status-pill badge-pg";
+    b.style.background = "#10b981";
+    b.style.color = "#fff";
+    b.style.display = "inline-flex";
+    b.textContent = "\\u2601\\ufe0f Nuvem";
+  } catch (e) {}
+})();
+</script>"""
+
+
 def apply_design(html: str, track: str) -> str:
     """Injeta a camada de design no fim do <head> e do <body> e marca a trilha da página."""
     from modal_ui import MODAL_UI_CSS, MODAL_UI_JS
     html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
+    html = html.replace("</header>", "</header>\n" + NAV_EARLY_SCRIPT, 1)
     idx = html.rfind("</body>")
     if idx != -1:
         html = html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS + "\n" + html[idx:]
