@@ -659,7 +659,7 @@ main{max-width:1260px;width:100%;margin:0 auto;padding:26px 24px 90px}
 from studio_css import STUDIO_CSS
 SHARED_CSS = BASE_SHARED_CSS + "\n" + STUDIO_CSS
 
-from auth_aws_sync import AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, FORGOT_PASSWORD_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, FORGOT_PASSWORD_MODAL_HTML, AUTH_AWS_SYNC_JS
 from projects_generator import generate_projects_page
 from favicon import FAVICON_LINK
 from hub_journey import JOURNEY_CSS, JOURNEY_HTML, JOURNEY_JS_A, JOURNEY_JS_B
@@ -1858,10 +1858,6 @@ __HUB_CSS__
             <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
-          <button class="dropdown-item" onclick="openAwsSyncModal()">
-            <span>☁️</span>
-            <span>Sincronização na nuvem</span>
-          </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
             <span>Meu perfil e senha</span>
@@ -2088,7 +2084,6 @@ __HUB_CSS__
   </div> <!-- /#hub-authenticated-view -->
 </main>
 
-__AWS_SYNC_MODAL__
 __CHANGE_CREDENTIALS_MODAL__
 __FORGOT_PASSWORD_MODAL__
 
@@ -2228,7 +2223,6 @@ window.addEventListener("DOMContentLoaded", () => {
         .replace("__JOURNEY_HTML__", JOURNEY_HTML)
         .replace("__JOURNEY_JS_A__", JOURNEY_JS_A)
         .replace("__JOURNEY_JS_B__", JOURNEY_JS_B)
-        .replace("__AWS_SYNC_MODAL__", AWS_SYNC_MODAL_HTML)
         .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__FORGOT_PASSWORD_MODAL__", FORGOT_PASSWORD_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)

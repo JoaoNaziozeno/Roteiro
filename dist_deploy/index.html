@@ -4426,10 +4426,6 @@ html::view-transition{background:var(--bg)}
             <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
-          <button class="dropdown-item" onclick="openAwsSyncModal()">
-            <span>☁️</span>
-            <span>Sincronização na nuvem</span>
-          </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
             <span>Meu perfil e senha</span>
@@ -4757,59 +4753,6 @@ html::view-transition{background:var(--bg)}
   </section>
   </div> <!-- /#hub-authenticated-view -->
 </main>
-
-
-<!-- MODAL DE SINCRONIZAÇÃO NA NUVEM -->
-<div id="modal-aws-sync" class="modal-sub-overlay" hidden>
-  <div class="modal-sub-box modal-aws-box">
-    <div class="modal-sub-header">
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:1.3rem">☁️</span>
-        <h3 class="modal-sub-title" style="margin:0">Sincronização na nuvem</h3>
-      </div>
-      <button class="modal-close-icon" onclick="closeAwsSyncModal()" aria-label="Fechar">✕</button>
-    </div>
-
-    <div class="aws-info-banner">Seu progresso fica salvo neste navegador e é copiado para a sua conta na nuvem. Só você (e o administrador) consegue ver esses dados.</div>
-
-    <div class="aws-stats-grid">
-      <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Conta</span>
-        <div class="aws-stat-val" id="aws-user-email-display" style="font-size:.9rem">—</div>
-      </div>
-      <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Último envio</span>
-        <div class="aws-stat-val" id="aws-last-sync-time" style="font-size:.9rem">—</div>
-      </div>
-      <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Tamanho dos dados</span>
-        <div class="aws-stat-val" id="aws-storage-used-val">—</div>
-      </div>
-      <div class="aws-stat-card">
-        <span class="aws-stat-lbl">Sessão válida até</span>
-        <div class="aws-stat-val" id="aws-session-exp" style="font-size:.9rem">—</div>
-      </div>
-    </div>
-
-    <div class="aws-actions-row">
-      <button class="aws-btn-primary" onclick="triggerAwsManualSync(event)">🔄 Sincronizar agora</button>
-      <button class="aws-btn-sec" onclick="exportAwsBackupFile()">📥 Baixar backup (JSON)</button>
-    </div>
-
-    <details class="aws-cfg-details">
-      <summary>⚙️ Endereço do servidor</summary>
-      <div class="aws-cfg-form">
-        <label style="font-size:.76rem;font-weight:700;color:var(--mu);display:block;margin-bottom:4px" for="aws-cfg-endpoint">URL da função (AWS Lambda)</label>
-        <input type="url" id="aws-cfg-endpoint" class="aws-cfg-input">
-        <div id="aws-conn-test-feedback" style="display:none;padding:10px 14px;border-radius:10px;font-size:.82rem;line-height:1.5;border:1px solid var(--bd);margin:8px 0"></div>
-        <div style="display:flex;gap:8px;margin-top:6px">
-          <button type="button" class="aws-btn-primary" style="flex:1" onclick="saveAwsConfigParams()">💾 Salvar e testar</button>
-          <button type="button" class="aws-btn-sec" onclick="resetAwsEndpoint()">Usar o padrão</button>
-        </div>
-      </div>
-    </details>
-  </div>
-</div>
 
 
 <!-- MODAL: MEU PERFIL E SENHA -->
@@ -5180,10 +5123,8 @@ function updateNavAuthUI() {
   }
   const dropName = document.getElementById("dropdown-user-name");
   const dropEmail = document.getElementById("dropdown-user-email");
-  const emailDisplay = document.getElementById("aws-user-email-display");
   if (dropName) dropName.textContent = name;
   if (dropEmail) dropEmail.textContent = email;
-  if (emailDisplay) emailDisplay.textContent = email;
 }
 
 function toggleUserDropdown(e) {
@@ -5432,14 +5373,6 @@ async function handleAcceptInvite(e) {
 }
 
 // ------------------------------------------------- SINCRONIZAÇÃO
-function updateAwsStorageSizeDisplay() {
-  try {
-    const bytes = (localStorage.getItem("roteiro-ia-v1") || "").length + (localStorage.getItem("roteiro_portfolio_projects") || "").length
-      + JSON.stringify(awsCollectExtra()).length;
-    const el = document.getElementById("aws-storage-used-val");
-    if (el) el.textContent = `~${Math.max(1, Math.round(bytes / 1024))} KB`;
-  } catch (e) {}
-}
 
 // -------------------------------------------------------------------------
 // Dados de estudo além do progresso: revisões espaçadas, histórico de eventos
@@ -5556,7 +5489,6 @@ function localChangesSinceSync() {
 }
 
 async function awsRealtimePushToDynamoDB(silent = true, retry = true) {
-  updateAwsStorageSizeDisplay();
   if (!canSync()) { setSyncIndicator("💾 Salvo neste navegador"); return false; }
   setSyncIndicator("☁️ Sincronizando...");
   const payload = {
@@ -5573,8 +5505,6 @@ async function awsRealtimePushToDynamoDB(silent = true, retry = true) {
     setSyncBase(payload.progress);
     const t = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
     try { localStorage.setItem("roteiro_aws_last_sync", "Hoje, às " + t); } catch (e) {}
-    const lastEl = document.getElementById("aws-last-sync-time");
-    if (lastEl) lastEl.textContent = "Hoje, às " + t;
     markCloudBadge();
     setSyncIndicator("☁️ Salvo na nuvem (" + t + ")");
     if (!silent && typeof showToast === "function") showToast("☁️ Progresso salvo na nuvem!");
@@ -5650,104 +5580,8 @@ async function awsRealtimePullFromDynamoDB() {
   return true;
 }
 
-function openAwsSyncModal() {
-  closeUserDropdown();
-  const user = getLoggedInUser();
-  document.getElementById("aws-last-sync-time").textContent = localStorage.getItem("roteiro_aws_last_sync") || "—";
-  const expEl = document.getElementById("aws-session-exp");
-  if (expEl) expEl.textContent = user && user.exp ? new Date(user.exp * 1000).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
-  document.getElementById("aws-cfg-endpoint").value = getAwsEndpointUrl();
-  document.getElementById("aws-conn-test-feedback").style.display = "none";
-  updateAwsStorageSizeDisplay();
-  updateNavAuthUI();
-  showModal("modal-aws-sync");
-}
-
-function closeAwsSyncModal() { hideModal("modal-aws-sync"); }
-
-async function triggerAwsManualSync(ev) {
-  const btn = ev && ev.currentTarget;
-  setBusy(btn, true, "⏳ Sincronizando...");
-  if (!canSync()) {
-    alert(isTestUser(getLoggedInUser()) ? "O usuário de teste não sincroniza com a nuvem." : "Entre na sua conta para sincronizar.");
-  } else {
-    await awsRealtimePullFromDynamoDB();
-    await awsRealtimePushToDynamoDB(false);
-  }
-  setBusy(btn, false);
-}
-
-function exportAwsBackupFile() {
-  try {
-    const user = getLoggedInUser();
-    const backup = {
-      timestamp: new Date().toISOString(),
-      user: user ? { name: user.name, email: user.email } : null,
-      progress: awsReadJson("roteiro-ia-v1", {}),
-      projects: awsReadJson("roteiro_portfolio_projects", []),
-      extra: awsCollectExtra(),
-      notes: {}
-    };
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith("roteiro-note-")) backup.notes[k] = localStorage.getItem(k);
-    }
-    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `backup_roteiro_${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    if (typeof showToast === "function") showToast("📥 Backup baixado!");
-  } catch (e) {
-    alert("Erro ao gerar o backup: " + e.message);
-  }
-}
-
-function showConnFeedback(ok, html) {
-  const el = document.getElementById("aws-conn-test-feedback");
-  if (!el) return;
-  el.style.display = "block";
-  el.style.background = ok ? "rgba(16,185,129,.14)" : "rgba(239,68,68,.12)";
-  el.style.borderColor = ok ? "rgba(16,185,129,.4)" : "rgba(239,68,68,.35)";
-  el.style.color = ok ? "#10b981" : "#ef4444";
-  el.innerHTML = html;
-}
-
-async function testAwsLambdaConnection(endpoint) {
-  endpoint = endpoint || getAwsEndpointUrl();
-  try {
-    const res = await fetch(endpoint, { cache: "no-store" });
-    const json = await res.json().catch(() => null);
-    if (json && json.service === "roteiro-auth") { showConnFeedback(true, "✅ Servidor respondendo (versão " + escapeHtml(json.version) + ")."); return true; }
-    showConnFeedback(false, "⚠️ O endereço respondeu, mas não é a versão atual da Lambda do Roteiro.");
-  } catch (e) {
-    showConnFeedback(false, "⚠️ Não consegui falar com esse endereço: " + escapeHtml(e.message));
-  }
-  return false;
-}
-
-async function saveAwsConfigParams() {
-  const endpoint = document.getElementById("aws-cfg-endpoint").value.trim();
-  if (!isValidEndpoint(endpoint)) {
-    showConnFeedback(false, "⚠️ Use o endereço de uma Function URL da AWS (https://....lambda-url.REGIÃO.on.aws/).");
-    return;
-  }
-  if (await testAwsLambdaConnection(endpoint)) {
-    try { localStorage.setItem(AWS_CONFIG_KEY, JSON.stringify({ endpoint })); } catch (e) {}
-  }
-}
-
-function resetAwsEndpoint() {
-  try { localStorage.removeItem(AWS_CONFIG_KEY); } catch (e) {}
-  document.getElementById("aws-cfg-endpoint").value = OFFICIAL_LAMBDA_URL;
-  testAwsLambdaConnection(OFFICIAL_LAMBDA_URL);
-}
-
 window.addEventListener("DOMContentLoaded", () => {
   updateNavAuthUI();
-  updateAwsStorageSizeDisplay();
   awsRealtimePullFromDynamoDB();
 });
 

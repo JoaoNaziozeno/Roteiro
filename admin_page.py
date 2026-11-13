@@ -145,6 +145,7 @@ try{var th=localStorage.getItem("roteiro-theme");if(th)document.documentElement.
       <div class="small mu">Conectado como <b id="who"></b> · sessão até <span id="exp"></span></div>
     </div>
     <div class="row">
+      <button class="btn" id="btn-server">Servidor</button>
       <button class="btn" id="btn-pass">Trocar minha senha</button>
       <button class="btn" id="btn-logout">Sair</button>
     </div>
@@ -215,6 +216,22 @@ try{var th=localStorage.getItem("roteiro-theme");if(th)document.documentElement.
   </div>
 </dialog>
 
+<dialog id="dlg-server">
+  <div class="dlg-head"><h2 style="margin:0">Servidor (AWS Lambda)</h2><button class="btn link" data-close aria-label="Fechar">✕</button></div>
+  <form class="dlg-body" id="server-form">
+    <p class="small mu" style="margin-top:0">Endereço que o painel e o site usam <b>neste navegador</b>. Os alunos sempre usam o endereço padrão.</p>
+    <label for="srv-url">URL da função</label>
+    <input type="text" id="srv-url" autocomplete="off" spellcheck="false">
+    <div class="small mu" style="margin-top:6px">Padrão: <code id="srv-default"></code></div>
+    <div id="srv-msg"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px">
+      <button class="btn" type="button" id="srv-test">Testar conexão</button>
+      <button class="btn" type="button" id="srv-reset">Usar o padrão</button>
+      <button class="btn primary" type="submit">Salvar e testar</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="dlg-pass">
   <div class="dlg-head"><h2 style="margin:0">Trocar minha senha</h2><button class="btn link" data-close aria-label="Fechar">✕</button></div>
   <form class="dlg-body" id="pass-form">
@@ -248,10 +265,14 @@ let CURRENT = null;      // { user, progress }
 let PENDING = {};        // tópico -> nova situação
 
 function isLocalDev() { const h = location.hostname; return h === "localhost" || h === "127.0.0.1" || location.protocol === "file:"; }
+function isValidEndpoint(ep) {
+  return /^https:\/\/[a-z0-9]+\.lambda-url\.[a-z0-9-]+\.on\.aws\/?$/.test(ep || "")
+    || (isLocalDev() && /^http:\/\/(localhost|127\.0\.0\.1):\d+\/?$/.test(ep || ""));
+}
 function endpoint() {
   try {
     const ep = (JSON.parse(localStorage.getItem("roteiro_aws_config") || "{}") || {}).endpoint || "";
-    if (/^https:\/\/[a-z0-9]+\.lambda-url\.[a-z0-9-]+\.on\.aws\/?$/.test(ep) || (isLocalDev() && /^http:\/\/(localhost|127\.0\.0\.1):\d+\/?$/.test(ep))) return ep;
+    if (isValidEndpoint(ep)) return ep;
   } catch (e) {}
   return OFFICIAL_LAMBDA_URL;
 }
@@ -405,7 +426,7 @@ async function openUser(email) {
   if (!dlg.open) dlg.showModal();
   try {
     const r = await api("admin_get_user", { email });
-    CURRENT = { user: r.user, progress: (r.data && r.data.progress) || {} };
+    CURRENT = { user: r.user, data: r.data || {}, progress: (r.data && r.data.progress) || {} };
     renderUser();
   } catch (err) {
     $("du-name").textContent = "Erro";
@@ -416,8 +437,9 @@ async function openUser(email) {
 function renderUser() {
   const u = CURRENT.user;
   $("du-name").textContent = u.name || u.email;
-  $("du-sub").innerHTML = `${esc(u.email)} · ${statusBadge(u)} · último acesso: ${fmtDate(u.last_login)} · última sincronização: ${u.last_sync ? new Date(Number(u.last_sync)).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—"}`;
-  const a = [];
+  const kb = Math.max(1, Math.round(JSON.stringify(CURRENT.data).length / 1024));
+  $("du-sub").innerHTML = `${esc(u.email)} · ${statusBadge(u)} · último acesso: ${fmtDate(u.last_login)} · última sincronização: ${u.last_sync ? new Date(Number(u.last_sync)).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—"} · dados na nuvem: ~${kb} KB`;
+  const a = [`<button class="btn" data-act="backup">Baixar backup (JSON)</button>`];
   if (u.status === "invited") a.push(`<button class="btn" data-act="resend">Reenviar convite</button>`);
   if (u.status === "active") a.push(`<button class="btn" data-act="block">Bloquear</button>`, `<button class="btn" data-act="reset">Forçar troca de senha</button>`);
   if (u.status === "blocked") a.push(`<button class="btn" data-act="unblock">Desbloquear</button>`);
@@ -504,6 +526,7 @@ $("du-actions").addEventListener("click", async (e) => {
   if (!b) return;
   const u = CURRENT.user, act = b.dataset.act;
   const who = u.name || u.email;
+  if (act === "backup") { downloadBackup(); return; }
   let call, ok;
   if (act === "resend") { call = ["admin_resend_invite", {}]; ok = "Convite reenviado. Peça para a pessoa olhar também o spam."; }
   if (act === "block") {
@@ -542,6 +565,58 @@ document.querySelectorAll("dialog [data-close]").forEach(b => b.addEventListener
   if (d.id !== "dlg-user" || confirmDiscard()) d.close();
 }));
 $("dlg-user").addEventListener("cancel", (e) => { if (!confirmDiscard()) e.preventDefault(); });
+
+// Backup do que está na nuvem para este aluno (anotações locais do caderno não entram: ficam só no aparelho dele).
+function downloadBackup() {
+  const u = CURRENT.user;
+  const backup = { exported_at: new Date().toISOString(), user: { name: u.name, email: u.email }, data: CURRENT.data };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `backup_${u.email.replace(/[^a-z0-9]+/gi, "_")}_${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// ---------------------------------------------------------------- servidor
+async function testServer(url) {
+  msg($("srv-msg"), "warn", "Testando...");
+  try {
+    const t0 = performance.now();
+    const res = await fetch(url, { cache: "no-store" });
+    const json = await res.json().catch(() => null);
+    const ms = Math.round(performance.now() - t0);
+    if (json && json.service === "roteiro-auth") { msg($("srv-msg"), "ok", `Servidor respondendo (versão ${json.version}, ${ms} ms).`); return true; }
+    msg($("srv-msg"), "err", "O endereço respondeu, mas não é a Lambda atual do Roteiro.");
+  } catch (e) {
+    msg($("srv-msg"), "err", "Não consegui falar com esse endereço (rede ou CORS).");
+  }
+  return false;
+}
+
+$("btn-server").addEventListener("click", () => {
+  $("srv-url").value = endpoint();
+  $("srv-default").textContent = OFFICIAL_LAMBDA_URL;
+  msg($("srv-msg"), "", "");
+  $("dlg-server").showModal();
+});
+$("srv-test").addEventListener("click", () => testServer($("srv-url").value.trim()));
+$("srv-reset").addEventListener("click", async () => {
+  try { localStorage.removeItem("roteiro_aws_config"); } catch (e) {}
+  $("srv-url").value = OFFICIAL_LAMBDA_URL;
+  await testServer(OFFICIAL_LAMBDA_URL);
+});
+$("server-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const url = $("srv-url").value.trim();
+  if (!isValidEndpoint(url)) return msg($("srv-msg"), "err", "Use o endereço de uma Function URL da AWS (https://....lambda-url.REGIÃO.on.aws/).");
+  if (await testServer(url)) {
+    try { localStorage.setItem("roteiro_aws_config", JSON.stringify({ endpoint: url })); } catch (e) {}
+    msg($("srv-msg"), "ok", "Endereço salvo e testado. Faça login de novo se ele apontar para outro servidor.");
+  }
+});
 
 // ---------------------------------------------------------------- histórico
 function auditDetails(e) {
