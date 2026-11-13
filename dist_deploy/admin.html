@@ -469,7 +469,7 @@ $("du-actions").addEventListener("click", async (e) => {
   const u = CURRENT.user, act = b.dataset.act;
   const who = u.name || u.email;
   let call, ok;
-  if (act === "resend") { call = ["admin_resend_invite", {}]; ok = "Convite reenviado."; }
+  if (act === "resend") { call = ["admin_resend_invite", {}]; ok = "Convite reenviado. Peça para a pessoa olhar também o spam."; }
   if (act === "block") {
     if (!confirm(`Bloquear ${who}? A pessoa sai na hora de todos os aparelhos e não consegue entrar até ser desbloqueada.`)) return;
     call = ["admin_set_status", { status: "blocked" }]; ok = "Aluno bloqueado.";
@@ -491,7 +491,7 @@ $("du-actions").addEventListener("click", async (e) => {
     else {
       await openUser(u.email);
       const warn = r.email_sent === false;
-      msg($("du-msg"), warn ? "warn" : "ok", warn ? "Feito, mas o e-mail não foi enviado. Confira o Amazon SES." : ok);
+      msg($("du-msg"), warn ? "warn" : "ok", warn ? "Feito, mas o e-mail não foi enviado. Com o Amazon SES no sandbox, verifique antes o e-mail do aluno em SES → Identidades." : ok);
     }
     loadUsers();
   } catch (err) {

@@ -321,6 +321,20 @@ class TestAdmin(Base):
         r = self.call("confirm_reset", email="ana@exemplo.com", code=self.last_code("ana@exemplo.com"), password="Nova#Senha1")
         self.assertEqual(r["status"], 200)
 
+    def test_envio_falhando_no_sandbox(self):
+        def falha(*_a):
+            raise RuntimeError("MessageRejected: Email address is not verified")
+        L.SEND_EMAIL = falha
+        r = self.call("admin_invite", token=self.admin, email="novo@exemplo.com", name="Novo")
+        self.assertEqual(r["status"], 200)
+        self.assertFalse(r["body"]["email_sent"])
+        self.assertIn("Identidades", r["body"]["message"])
+        r = self.call("admin_resend_invite", token=self.admin, email="novo@exemplo.com")
+        self.assertEqual(r["status"], 502)
+        self.assertIn("sandbox", r["body"]["error"])
+        # recuperação de senha responde igual mesmo se o envio falhar
+        self.assertEqual(self.call("request_reset", email="novo@exemplo.com")["status"], 200)
+
     def test_convite_duplicado(self):
         self.make_student()
         r = self.call("admin_invite", token=self.admin, email="ANA@exemplo.com", name="Ana 2")

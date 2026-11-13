@@ -383,7 +383,10 @@ def act_request_reset(p, _ctx):
             code = issue_code(acct, "reset")
             acct["code_sent_at"] = now()
             STORE.put(acct)
-            send_code_email(acct, code, "reset")
+            try:
+                send_code_email(acct, code, "reset")
+            except Exception as exc:  # resposta igual mesmo se o envio falhar (não revela a conta)
+                print("Falha ao enviar código de redefinição:", repr(exc))
     return {"message": "Se o e-mail estiver cadastrado, enviamos um código para ele."}
 
 
@@ -534,7 +537,9 @@ def act_admin_invite(p, ctx):
     except Exception:
         sent = False
     audit(ctx["acct"]["email"], "invite", email, {"name": name, "imported_legacy": imported, "email_sent": sent})
-    msg = "Convite enviado." if sent else "Conta criada, mas o e-mail não foi enviado. Use \"Reenviar convite\"."
+    msg = ("Convite enviado. Peça para a pessoa olhar também a caixa de spam." if sent else
+           "Conta criada, mas o e-mail não foi enviado. Com o Amazon SES no sandbox, verifique antes o e-mail do aluno "
+           "em SES → Identidades e depois use \"Reenviar convite\".")
     return {"user": public_user(acct), "email_sent": sent, "imported_legacy": imported, "message": msg}
 
 
@@ -545,7 +550,12 @@ def act_admin_resend_invite(p, ctx):
     code = issue_code(acct, "invite")
     acct["code_sent_at"] = now()
     STORE.put(acct)
-    send_code_email(acct, code, "invite")
+    try:
+        send_code_email(acct, code, "invite")
+    except Exception as exc:
+        print("Falha ao reenviar convite:", repr(exc))
+        raise ApiError(502, "O e-mail não foi enviado. Com o Amazon SES no sandbox, verifique antes o e-mail do aluno "
+                            "em SES → Identidades e tente de novo.")
     audit(ctx["acct"]["email"], "resend_invite", acct["email"])
     return {"message": "Convite reenviado."}
 

@@ -14,14 +14,17 @@ Tempo estimado: cerca de 40 minutos, sem contar a liberação do SES pela AWS (p
 
 ## Antes do dia do deploy
 
-### 1. Peça a saída do SES do modo sandbox
-No sandbox, o Amazon SES só envia e-mail para endereços verificados um a um, então os convites não chegariam aos alunos.
+### 1. Prepare o Amazon SES
+Abra o SES já na região certa: `https://us-east-2.console.aws.amazon.com/ses/home?region=us-east-2`.
 
-1. Console da AWS → **Amazon SES** → região **us-east-2**.
-2. **Identities → Create identity**: verifique o e-mail remetente (por exemplo, o seu Gmail) ou um domínio. Clique no link que a AWS mandar.
-3. **Account dashboard → Request production access**. Explique que são e-mails transacionais (convite e código de senha) para alunos convidados, com volume baixo.
+1. **Configuração → Identidades → Criar identidade → Endereço de e-mail**: verifique o remetente (por exemplo, o seu Gmail) clicando no link que a AWS mandar. Esse endereço vai em `SES_SENDER_EMAIL`.
+2. Envie um **e-mail de teste** para você mesmo (Identidades → marque o e-mail → Enviar e-mail de teste → Personalizado). Com remetente `@gmail.com`, ele costuma cair no **spam**: marque "Não é spam".
 
-Enquanto a liberação não chega, dá para testar verificando também o e-mail de quem vai receber (o seu e-mail de aluno).
+**Sandbox ou produção?** Nesta conta, o botão **Solicitar acesso à produção** só é liberado depois de verificar um **domínio** (aviso "Verificação de domínio necessária"). Dá para funcionar de graça no sandbox:
+
+- O SES só entrega para endereços verificados, até 200 e-mails por dia.
+- **Antes de convidar um aluno**, cadastre o e-mail dele em **Identidades** e peça para ele clicar no link da AWS. Depois convide pelo `admin.html`. Se o convite sair antes, o painel avisa que o e-mail não foi enviado: verifique o endereço e use **Reenviar convite**.
+- Para liberar convites para qualquer pessoa (e ajudar a sair do spam), registre um domínio (Registro.br ou Route 53), verifique-o em **Criar identidade → Domínio** colando os registros DKIM no DNS, e então use **Solicitar acesso à produção** (tipo **Transacional**, site `https://joaonaziozeno.github.io/Roteiro/`).
 
 ### 2. Gere os dois segredos
 Rode no seu terminal, duas vezes, e guarde cada resultado num gerenciador de senhas:
