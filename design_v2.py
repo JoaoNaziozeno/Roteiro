@@ -220,12 +220,28 @@ html::view-transition{background:var(--bg)}
 ::view-transition-group(ds-nav){animation:none}
 ::view-transition-old(ds-nav){display:none}
 ::view-transition-new(ds-nav){animation:none}
-/* Resto da tela: só esmaecimento. A página antiga sai e a nova entra, sem sobrepor e sem mudar de
-   tamanho (o conteúdo não tem nome próprio na transição, porque roteiros têm barra lateral e o Hub não) */
-::view-transition-old(root){animation:ds-fade-out .16s ease-in both}
-::view-transition-new(root){animation:ds-fade-in .28s ease-out .12s both}
+/* Conteúdo (a tela inteira, camada "root"): a página antiga sobe um pouco enquanto some e a nova entra
+   de baixo enquanto aparece. Como é a tela inteira que se move, nada é esticado entre layouts diferentes
+   (roteiros têm barra lateral e o Hub não). As duas nunca ficam sobrepostas. */
+::view-transition-old(root){animation:ds-page-out .18s cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:ds-page-in .46s var(--ds-ease) .12s both}
+@keyframes ds-page-out{to{opacity:0;transform:translateY(-10px)}}
+@keyframes ds-page-in{from{opacity:0;transform:translateY(16px)}}
 @keyframes ds-fade-out{to{opacity:0}}
 @keyframes ds-fade-in{from{opacity:0}}
+/* Barra lateral dos roteiros (só em telas largas, onde ela fica fixa ao lado do conteúdo) */
+@media (min-width:1040px){
+  .sidebar{view-transition-name:ds-side}
+  /* Entre dois roteiros ela fica no lugar e só troca o conteúdo, sem sobrepor os textos */
+  ::view-transition-group(ds-side){animation:none}
+  ::view-transition-old(ds-side){animation:ds-fade-out .14s ease-in both}
+  ::view-transition-new(ds-side){animation:ds-fade-in .3s ease-out .1s both}
+  /* Do Hub/Projetos para um roteiro ela desliza da esquerda; na volta, desliza para a esquerda */
+  ::view-transition-new(ds-side):only-child{animation:ds-side-in .5s var(--ds-ease) .06s both}
+  ::view-transition-old(ds-side):only-child{animation:ds-side-out .24s cubic-bezier(.4,0,1,1) both}
+}
+@keyframes ds-side-in{from{opacity:0;transform:translateX(-28px)}}
+@keyframes ds-side-out{to{opacity:0;transform:translateX(-28px)}}
 
 /* ============================ PALETA DE COMANDOS ============================ */
 .ds-pal{position:fixed;inset:0;z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:color-mix(in srgb,#020608 55%,transparent);backdrop-filter:blur(6px)}
