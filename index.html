@@ -3940,24 +3940,20 @@ kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;b
 
 /* ============================ TRANSIÇÃO ENTRE PÁGINAS ============================ */
 @view-transition{navigation:auto}
-main,.hub-main{view-transition-name:ds-page}
+/* Espaço da barra de rolagem sempre reservado: o menu não desliza ~8 px quando ela aparece */
+html{scrollbar-gutter:stable}
 /* Fundo da transição igual ao do site (evita clarão entre a saída e a entrada) */
 html::view-transition{background:var(--bg)}
-/* Menu do topo: troca na hora, sem esmaecer (senão aparecem dois menus sobrepostos) */
+/* Menu do topo: fica parado e troca na hora (mesma largura em todas as páginas) */
 ::view-transition-group(ds-nav){animation:none}
 ::view-transition-old(ds-nav){display:none}
 ::view-transition-new(ds-nav){animation:none}
-/* Resto da tela (barra lateral, fundo): a página antiga sai antes da nova entrar, sem sobrepor */
-::view-transition-old(root){animation:ds-fade-out .14s ease-in both}
-::view-transition-new(root){animation:ds-fade-in .24s ease-out .1s both}
-/* Conteúdo: sem "esticar" de uma altura para outra; sai e depois entra com um leve deslize */
-::view-transition-group(ds-page){animation:none}
-::view-transition-old(ds-page){animation:ds-page-out .14s ease-in both}
-::view-transition-new(ds-page){animation:ds-page-in .3s var(--ds-ease) .1s both}
+/* Resto da tela: só esmaecimento. A página antiga sai e a nova entra, sem sobrepor e sem mudar de
+   tamanho (o conteúdo não tem nome próprio na transição, porque roteiros têm barra lateral e o Hub não) */
+::view-transition-old(root){animation:ds-fade-out .16s ease-in both}
+::view-transition-new(root){animation:ds-fade-in .28s ease-out .12s both}
 @keyframes ds-fade-out{to{opacity:0}}
 @keyframes ds-fade-in{from{opacity:0}}
-@keyframes ds-page-out{to{opacity:0;transform:translateY(-6px)}}
-@keyframes ds-page-in{from{opacity:0;transform:translateY(10px)}}
 
 /* ============================ PALETA DE COMANDOS ============================ */
 .ds-pal{position:fixed;inset:0;z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:color-mix(in srgb,#020608 55%,transparent);backdrop-filter:blur(6px)}
@@ -4425,6 +4421,7 @@ html::view-transition{background:var(--bg)}
       <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
     </nav>
     <div class="nav-right">
+<button type="button" class="ds-k-btn" title="Buscar páginas e tópicos (Ctrl + K)"><span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd></button>
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
@@ -6251,13 +6248,18 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); pal && pal.classList.contains("open") ? closePal() : openPal(); }
   });
   function addNavButton() {
-    var right = $(".nav-right"); if (!right || $(".ds-k-btn", right)) return;
+    // O botão já vem no HTML (apply_design), para o menu não mudar de largura depois de desenhado.
+    var right = $(".nav-right"); if (!right) return;
     var mac = /Mac|iPhone|iPad/.test(navigator.platform || "");
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "ds-k-btn"; b.title = "Buscar páginas e tópicos (" + (mac ? "⌘" : "Ctrl") + " + K)";
-    b.innerHTML = '<span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>' + (mac ? "⌘" : "Ctrl") + " K</kbd>";
+    var b = $(".ds-k-btn", right);
+    if (!b) {
+      b = document.createElement("button");
+      b.type = "button"; b.className = "ds-k-btn";
+      b.innerHTML = '<span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd>';
+      right.insertBefore(b, right.firstChild);
+    }
+    if (mac) { var k = $("kbd", b); if (k) k.textContent = "⌘ K"; b.title = "Buscar páginas e tópicos (⌘ + K)"; }
     b.addEventListener("click", openPal);
-    right.insertBefore(b, right.firstChild);
   }
 
   function init() {

@@ -336,6 +336,7 @@ def generate_projects_page(out_path, shared_css):
           </button>
         </div>
       </div>
+      <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
   </div>
