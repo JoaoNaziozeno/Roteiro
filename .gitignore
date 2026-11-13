@@ -1,3 +1,7 @@
 __pycache__/
 *.pyc
 *.bak
+
+# testes locais do login
+dev_accounts.json
+dev_outbox.log

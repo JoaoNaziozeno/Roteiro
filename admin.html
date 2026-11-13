@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel do Administrador · Roteiro</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235B6F7D%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231B2E3B%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22url%28%23g%29%22/%3E%3Cpath%20d%3D%22M15%2049C26%2049%2022%2032%2032%2032S39%2015%2049%2015%22%20fill%3D%22none%22%20stroke%3D%22%23E6EAEB%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2249%22%20r%3D%226%22%20fill%3D%22%23FFFFFF%22/%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%225.5%22%20fill%3D%22%23FFFFFF%22/%3E%3Ccircle%20cx%3D%2249%22%20cy%3D%2215%22%20r%3D%229%22%20fill%3D%22%2310b981%22/%3E%3C/svg%3E">
+<meta name="theme-color" content="#06141B">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#18202a;--mu:#5d6876;--bd:#dfe3e8;--ac:#2f6fed;--ac-tx:#fff;--ok:#12805c;--ok-bg:#e3f5ee;--warn:#9a6200;--warn-bg:#fdf1dc;--bad:#b42318;--bad-bg:#fde8e7;--bar:#e8ebef}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--card:#171c23;--tx:#e6e9ee;--mu:#9aa4b1;--bd:#2a313b;--ac:#6d9bff;--ac-tx:#0f1318;--ok:#4fd1a1;--ok-bg:#12302a;--warn:#f0b75a;--warn-bg:#33270f;--bad:#ff8a80;--bad-bg:#3a1714;--bar:#252c35}}
+:root[data-theme="dark"]{--bg:#0f1318;--card:#171c23;--tx:#e6e9ee;--mu:#9aa4b1;--bd:#2a313b;--ac:#6d9bff;--ac-tx:#0f1318;--ok:#4fd1a1;--ok-bg:#12302a;--warn:#f0b75a;--warn-bg:#33270f;--bad:#ff8a80;--bad-bg:#3a1714;--bar:#252c35}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px}
+h1{font-size:1.35rem;margin:0}
+h2{font-size:1.05rem;margin:0 0 12px}
+.mu{color:var(--mu)}
+.small{font-size:.82rem}
+label{display:block;font-size:.8rem;font-weight:600;color:var(--mu);margin:0 0 4px}
+input[type=text],input[type=email],input[type=password],input[type=search],select{width:100%;padding:9px 11px;border:1px solid var(--bd);border-radius:8px;background:var(--bg)}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.btn{border:1px solid var(--bd);background:var(--card);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:600;white-space:nowrap}
+.btn:hover{border-color:var(--ac)}
+.btn.primary{background:var(--ac);border-color:var(--ac);color:var(--ac-tx)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn.link{border:0;background:none;color:var(--ac);padding:4px 6px}
+.btn:disabled{opacity:.55;cursor:default}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.msg{padding:9px 12px;border-radius:8px;font-size:.87rem;margin-top:12px}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.msg.err{background:var(--bad-bg);color:var(--bad)}
+.msg.warn{background:var(--warn-bg);color:var(--warn)}
+#login-view{max-width:400px;margin:8vh auto 0}
+#login-view .card>*+*{margin-top:12px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--bd);margin-bottom:16px}
+.tab{border:0;background:none;padding:9px 14px;cursor:pointer;font-weight:600;color:var(--mu);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab[aria-selected=true]{color:var(--tx);border-bottom-color:var(--ac)}
+.invite{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 12px}
+.stat b{display:block;font-size:1.3rem}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--bd);vertical-align:middle}
+th{font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mu);font-weight:600}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--bg)}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.75rem;font-weight:700}
+.b-active{background:var(--ok-bg);color:var(--ok)}
+.b-invited{background:var(--warn-bg);color:var(--warn)}
+.b-blocked{background:var(--bad-bg);color:var(--bad)}
+.bar{height:6px;border-radius:99px;background:var(--bar);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--ac)}
+.pct{font-size:.78rem;color:var(--mu);font-variant-numeric:tabular-nums}
+.empty{text-align:center;padding:30px 10px;color:var(--mu)}
+dialog{border:1px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);padding:0;width:min(860px,96vw);max-height:92vh}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:16px 18px;border-bottom:1px solid var(--bd);position:sticky;top:0;background:var(--card);z-index:1}
+.dlg-body{padding:16px 18px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 18px}
+details.trail{border:1px solid var(--bd);border-radius:10px;margin-bottom:10px}
+details.trail>summary{padding:10px 12px;cursor:pointer;display:flex;gap:10px;align-items:center;font-weight:600}
+.phase{padding:4px 12px 10px}
+.phase h4{font-size:.82rem;color:var(--mu);margin:10px 0 4px}
+.topic{display:flex;gap:10px;align-items:center;padding:4px 0;border-bottom:1px dashed var(--bd)}
+.topic span{flex:1;font-size:.88rem}
+.topic select{width:150px;padding:4px 6px;font-size:.82rem}
+.topic.changed span{font-weight:700;color:var(--ac)}
+.savebar{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 18px;display:none;justify-content:space-between;align-items:center;gap:10px}
+.savebar.on{display:flex}
+@media (max-width:760px){
+  .invite{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hide-sm{display:none}
+  th,td{padding:8px 4px}
+  .topic select{width:120px}
+}
+</style>
+<script>
+try{var th=localStorage.getItem("roteiro-theme");if(th)document.documentElement.setAttribute("data-theme",th);}catch(e){}
+</script>
+</head>
+<body>
+<div class="wrap">
+
+<section id="login-view" hidden>
+  <div class="card">
+    <h1>Painel do administrador</h1>
+    <p class="mu small">Área restrita. Entre com a conta de administrador (é diferente da conta de aluno).</p>
+    <form id="login-form">
+      <div><label for="lg-email">E-mail</label><input type="email" id="lg-email" required autocomplete="username"></div>
+      <div style="margin-top:10px"><label for="lg-pass">Senha</label><input type="password" id="lg-pass" required autocomplete="current-password"></div>
+      <div id="lg-msg"></div>
+      <button class="btn primary" type="submit" style="width:100%;margin-top:14px">Entrar</button>
+    </form>
+    <p class="small mu"><a href="index.html">← Voltar para o site</a></p>
+  </div>
+</section>
+
+<section id="app-view" hidden>
+  <header class="top">
+    <div>
+      <h1>Painel do administrador</h1>
+      <div class="small mu">Conectado como <b id="who"></b> · sessão até <span id="exp"></span></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="btn-pass">Trocar minha senha</button>
+      <button class="btn" id="btn-logout">Sair</button>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="users">Alunos</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="audit">Histórico</button>
+  </div>
+
+  <div id="tab-users">
+    <div class="card">
+      <h2>Convidar aluno</h2>
+      <form id="invite-form" class="invite">
+        <div><label for="inv-name">Nome</label><input type="text" id="inv-name" required maxlength="80" autocomplete="off"></div>
+        <div><label for="inv-email">E-mail</label><input type="email" id="inv-email" required autocomplete="off"></div>
+        <button class="btn primary" type="submit">Enviar convite</button>
+      </form>
+      <div id="inv-msg"></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <h2 class="grow" style="margin:0">Alunos</h2>
+        <input type="search" id="filter" placeholder="Buscar por nome ou e-mail" style="max-width:260px">
+        <button class="btn" id="btn-reload">Atualizar</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Aluno</th><th>Situação</th><th>IA</th><th>Matemática</th><th>Inglês</th><th class="hide-sm">Último acesso</th></tr></thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-audit" hidden>
+    <div class="card">
+      <div class="row" style="margin-bottom:10px"><h2 class="grow" style="margin:0">Histórico de ações</h2><button class="btn" id="btn-audit">Atualizar</button></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Quando</th><th>Ação</th><th>Aluno</th><th class="hide-sm">Detalhes</th></tr></thead>
+          <tbody id="audit-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<dialog id="dlg-user">
+  <div class="dlg-head">
+    <div><h2 id="du-name" style="margin:0"></h2><div class="small mu" id="du-sub"></div></div>
+    <button class="btn link" data-close aria-label="Fechar">✕</button>
+  </div>
+  <div class="dlg-body">
+    <div class="actions" id="du-actions"></div>
+    <div id="du-msg"></div>
+    <h2 style="margin-top:6px">Progresso</h2>
+    <p class="small mu" style="margin-top:-6px">Altere a situação dos tópicos e clique em "Salvar alterações". Tudo fica registrado no histórico.</p>
+    <div id="du-trails"></div>
+  </div>
+  <div class="savebar" id="du-savebar">
+    <span class="small"><b id="du-count">0</b> alteração(ões) pendente(s)</span>
+    <div class="row"><button class="btn" id="du-discard">Descartar</button><button class="btn primary" id="du-save">Salvar alterações</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-pass">
+  <div class="dlg-head"><h2 style="margin:0">Trocar minha senha</h2><button class="btn link" data-close aria-label="Fechar">✕</button></div>
+  <form class="dlg-body" id="pass-form">
+    <div><label for="pw-cur">Senha atual</label><input type="password" id="pw-cur" required autocomplete="current-password"></div>
+    <div style="margin-top:10px"><label for="pw-new">Nova senha (mínimo 8 caracteres)</label><input type="password" id="pw-new" required minlength="8" autocomplete="new-password"></div>
+    <div style="margin-top:10px"><label for="pw-new2">Confirmar nova senha</label><input type="password" id="pw-new2" required minlength="8" autocomplete="new-password"></div>
+    <div id="pw-msg"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn primary" type="submit">Salvar</button></div>
+  </form>
+</dialog>
+
+<script>
+"use strict";
+const TOPICS = {"ia":[{"t":"Fase 1 · Fundamentos de programação com Python","items":[["ia-0-0-0","Instalar Python e usar o terminal"],["ia-0-0-1","Variáveis e tipos (int, float, str, bool)"],["ia-0-0-2","Entrada e saída de dados"],["ia-0-0-3","Condicionais (if, elif, else)"],["ia-0-0-4","Laços (for, while)"],["ia-0-0-5","Funções, parâmetros e retorno"],["ia-0-1-0","Listas e fatiamento"],["ia-0-1-1","Dicionários"],["ia-0-1-2","Tuplas e conjuntos"],["ia-0-1-3","List comprehension"],["ia-0-2-0","Orientação a objetos (classes, métodos, herança)"],["ia-0-2-1","Módulos e pacotes"],["ia-0-2-2","Arquivos (ler e escrever)"],["ia-0-2-3","Tratamento de erros (try/except)"],["ia-0-2-4","Ambientes virtuais e pip"],["ia-0-3-0","Git: commit, branch, merge"],["ia-0-3-1","GitHub: repositórios e README"],["ia-0-3-2","Consumir APIs com requests e JSON"],["ia-0-4-0","Estilo de código PEP 8"],["ia-0-4-1","Docstrings e comentários"],["ia-0-4-2","Depuração (debug) e leitura de erros"],["ia-0-4-3","Testes simples com pytest"],["ia-0-4-4","Lambda, map e filter"],["ia-0-4-5","Geradores e iteradores"],["ia-0-4-6","Decoradores (noção)"],["ia-0-5-0","datetime"],["ia-0-5-1","os e pathlib"],["ia-0-5-2","json e csv"],["ia-0-5-3","Expressões regulares (re)"],["ia-0-5-4","Web scraping com BeautifulSoup"],["ia-0-6-0","30 exercícios (Beecrowd, HackerRank, Exercism)"],["ia-0-6-1","Algoritmos de busca e ordenação"],["ia-0-6-2","Noções de complexidade (Big O)"],["ia-0-6-3","Projeto de linha de comando completo"]]},{"t":"Fase 2 · Python para dados & SQL","items":[["ia-1-0-0","NumPy: arrays e operações vetorizadas"],["ia-1-0-1","Pandas: DataFrames e Series"],["ia-1-0-2","Pandas: filtrar, agrupar e juntar (merge)"],["ia-1-0-3","Limpeza de dados e valores ausentes"],["ia-1-1-0","Matplotlib"],["ia-1-1-1","Seaborn"],["ia-1-1-2","Análise exploratória de dados (EDA)"],["ia-1-2-0","Jupyter Notebook e Google Colab"],["ia-1-2-1","SQL: SELECT, WHERE, JOIN, GROUP BY"],["ia-1-2-2","Ler CSV, Excel e JSON"],["ia-1-3-0","Broadcasting"],["ia-1-3-1","Máscaras booleanas e indexação"],["ia-1-3-2","Séries temporais"],["ia-1-3-3","Pivot tables e melt"],["ia-1-3-4","Apply e funções vetorizadas"],["ia-1-3-5","Outliers e duplicados"],["ia-1-3-6","Encoding de variáveis categóricas"],["ia-1-4-0","Web scraping e APIs"],["ia-1-4-1","SQLite e SQLAlchemy"],["ia-1-4-2","SQL avançado: subconsultas e window functions"],["ia-1-4-3","Formato Parquet"],["ia-1-4-4","Plotly e gráficos interativos"],["ia-1-5-0","Notebooks reprodutíveis"],["ia-1-5-1","Storytelling com dados"],["ia-1-5-2","Dashboards com Streamlit"]]},{"t":"Fase 3 · Machine Learning clássico","items":[["ia-2-0-0","Aprendizado supervisionado vs. não supervisionado"],["ia-2-0-1","Treino, validação e teste"],["ia-2-0-2","Overfitting e underfitting"],["ia-2-0-3","Validação cruzada"],["ia-2-0-4","Engenharia de atributos (feature engineering)"],["ia-2-1-0","Regressão linear"],["ia-2-1-1","Regressão logística"],["ia-2-1-2","Árvores de decisão"],["ia-2-1-3","Random Forest"],["ia-2-1-4","Gradient Boosting (XGBoost, LightGBM)"],["ia-2-1-5","K-Means e clusterização"],["ia-2-1-6","PCA"],["ia-2-2-0","Métricas: acurácia, precisão, recall, F1"],["ia-2-2-1","Matriz de confusão e curva ROC"],["ia-2-2-2","Scikit-learn e pipelines"],["ia-2-2-3","Ajuste de hiperparâmetros"],["ia-2-3-0","KNN"],["ia-2-3-1","Naive Bayes"],["ia-2-3-2","SVM"],["ia-2-3-3","DBSCAN e clusterização hierárquica"],["ia-2-3-4","Regularização Lasso e Ridge"],["ia-2-3-5","Detecção de anomalias"],["ia-2-4-0","Normalização e padronização"],["ia-2-4-1","Dados desbalanceados (SMOTE)"],["ia-2-4-2","Seleção de atributos"],["ia-2-4-3","Vazamento de dados (data leakage)"],["ia-2-4-4","Séries temporais com ML"],["ia-2-5-0","Importância de atributos"],["ia-2-5-1","SHAP e LIME"],["ia-2-5-2","Viés e ética em ML"],["ia-2-5-3","Sistemas de recomendação"]]},{"t":"Fase 4 · Deep Learning & Redes Neurais","items":[["ia-3-0-0","Neurônio, camadas e pesos"],["ia-3-0-1","Funções de ativação"],["ia-3-0-2","Função de perda"],["ia-3-0-3","Backpropagation"],["ia-3-0-4","Gradiente descendente e otimizadores (SGD, Adam)"],["ia-3-0-5","Regularização (dropout, weight decay)"],["ia-3-1-0","CNNs para imagens"],["ia-3-1-1","Transfer learning"],["ia-3-1-2","RNNs e LSTMs para sequências"],["ia-3-2-0","Tensores e autograd"],["ia-3-2-1","Datasets e DataLoaders"],["ia-3-2-2","Loop de treino e avaliação"],["ia-3-2-3","Treinar em GPU (Colab)"],["ia-3-3-0","Autoencoders"],["ia-3-3-1","GANs"],["ia-3-3-2","Modelos de difusão (noção)"],["ia-3-3-3","Redes de grafos (noção)"],["ia-3-3-4","Detecção de objetos (YOLO)"],["ia-3-3-5","Segmentação de imagens"],["ia-3-4-0","Batch normalization"],["ia-3-4-1","Learning rate schedulers"],["ia-3-4-2","Data augmentation"],["ia-3-4-3","Early stopping e checkpoints"],["ia-3-4-4","Depurar rede que não aprende"],["ia-3-4-5","Mixed precision"],["ia-3-5-0","TensorFlow e Keras (noção)"],["ia-3-5-1","TensorBoard e logs"],["ia-3-5-2","Exportar modelos com ONNX"],["ia-3-5-3","PyTorch Lightning"]]},{"t":"Fase 5 · IA moderna, LLMs e Transformers","items":[["ia-4-0-0","Tokenização e embeddings"],["ia-4-0-1","Mecanismo de atenção"],["ia-4-0-2","Arquitetura Transformer"],["ia-4-0-3","Pré-treino, fine-tuning e RLHF (visão geral)"],["ia-4-1-0","Hugging Face: modelos, datasets e transformers"],["ia-4-1-1","Fine-tuning com LoRA"],["ia-4-1-2","Engenharia de prompts"],["ia-4-1-3","Usar APIs de LLMs (chamadas, streaming, tool use)"],["ia-4-2-0","RAG: busca em documentos + LLM"],["ia-4-2-1","Bancos vetoriais e busca semântica"],["ia-4-2-2","Agentes e uso de ferramentas"],["ia-4-2-3","Avaliação e segurança de sistemas com LLM"],["ia-4-3-0","Self-attention e multi-head"],["ia-4-3-1","Positional encoding"],["ia-4-3-2","Encoder vs. decoder (BERT vs. GPT)"],["ia-4-3-3","Janela de contexto e KV cache"],["ia-4-3-4","Quantização (4-bit, 8-bit)"],["ia-4-3-5","Scaling laws"],["ia-4-4-0","Chunking e estratégias de recuperação no RAG"],["ia-4-4-1","Reranking"],["ia-4-4-2","Saída estruturada (JSON)"],["ia-4-4-3","Memória e orquestração de agentes"],["ia-4-4-4","Protocolo MCP"],["ia-4-4-5","Multimodalidade: visão e áudio"],["ia-4-5-0","Avaliação de LLMs (evals e benchmarks)"],["ia-4-5-1","Alucinações e mitigação"],["ia-4-5-2","Prompt injection"],["ia-4-5-3","Custo e latência"],["ia-4-5-4","Modelos locais (Ollama, llama.cpp)"]]},{"t":"Fase 6 · Engenharia de IA, MLOps e Produção","items":[["ia-5-0-0","Docker"],["ia-5-0-1","FastAPI e criação de APIs"],["ia-5-0-2","Deploy em nuvem (AWS, GCP ou Azure)"],["ia-5-0-3","Testes e boas práticas de código"],["ia-5-1-0","Versionamento de dados e modelos"],["ia-5-1-1","MLflow ou Weights & Biases"],["ia-5-1-2","Monitoramento de modelos"],["ia-5-2-0","3 a 5 projetos documentados no GitHub"],["ia-5-2-1","READMEs com problema, solução e resultados"],["ia-5-2-2","Perfil ativo no LinkedIn e Kaggle"],["ia-5-2-3","Inglês técnico"],["ia-5-3-0","Linux e shell avançado"],["ia-5-3-1","CI/CD com GitHub Actions"],["ia-5-3-2","Kubernetes (noção)"],["ia-5-3-3","Filas e processamento assíncrono"],["ia-5-3-4","Redis, Postgres e pgvector"],["ia-5-4-0","Interfaces com Gradio e Streamlit"],["ia-5-4-1","Front-end básico (HTML e JS)"],["ia-5-4-2","Autenticação e limites de uso"],["ia-5-4-3","Observabilidade de LLMs"],["ia-5-5-0","Currículo e entrevistas técnicas"],["ia-5-5-1","Contribuir com open source"],["ia-5-5-2","Escrever artigos e posts"],["ia-5-5-3","Comunidades e eventos"],["ia-5-5-4","Certificações (opcional)"]]}],"mat":[{"t":"Módulo 1 · Álgebra Linear para IA & Tensores","items":[["mat-0-0-0","Vetores e espaços vetoriais: intuição geométrica"],["mat-0-0-1","Combinações lineares, espaço gerado (span) e bases"],["mat-0-0-2","Produto escalar (Dot Product) e projeções"],["mat-0-0-3","Norma de vetores (L1, L2 Euclidiana) e distâncias"],["mat-0-0-4","Ângulo entre vetores e Similaridade de Cosseno"],["mat-0-1-0","Matrizes como transformações lineares no espaço"],["mat-0-1-1","Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)"],["mat-0-1-2","Sistemas de equações lineares e determinantes"],["mat-0-1-3","Inversa de matriz e pseudoinversa de Moore-Penrose"],["mat-0-1-4","Autovalores e Autovetores (Eigenvalues & Eigenvectors)"],["mat-0-1-5","Decomposição em Valores Singulares (SVD) e PCA"]]},{"t":"Módulo 2 · Cálculo Diferencial, Gradientes & Otimização","items":[["mat-1-0-0","Limites e taxa de variação instantânea (ideia geral)"],["mat-1-0-1","Derivadas fundamentais e regras básicas (potência, produto, soma)"],["mat-1-0-2","Regra da Cadeia (Chain Rule) - o motor do Backpropagation"],["mat-1-0-3","Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)"],["mat-1-1-0","Derivadas parciais e o vetor Gradiente (nabla f)"],["mat-1-1-1","Matriz Jacobiana e Matriz Hessiana (curvatura da loss)"],["mat-1-1-2","Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)"],["mat-1-1-3","Otimizadores modernos: Momentum, RMSprop e Adam"],["mat-1-1-4","Taxa de aprendizado (Learning Rate), convergência e pontos de sela"]]},{"t":"Módulo 3 · Probabilidade & Estatística para IA","items":[["mat-2-0-0","Variáveis aleatórias discretas e contínuas"],["mat-2-0-1","Média, mediana, variância e desvio padrão"],["mat-2-0-2","Esperança matemática, covariância e correlação"],["mat-2-0-3","Probabilidade condicional e Teorema de Bayes"],["mat-2-1-0","Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança"],["mat-2-1-1","Teorema do Limite Central e amostragem"],["mat-2-1-2","Intervalos de confiança e teste de hipóteses (noção)"],["mat-2-1-3","Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)"],["mat-2-1-4","Trade-off Viés vs. Variância (Bias-Variance Dilemma)"]]},{"t":"Módulo 4 · Funções Matemáticas, Geometria & Teoria da Informação","items":[["mat-3-0-0","Equações, inequações e gráficos de funções aplicadas"],["mat-3-0-1","Exponenciais e logaritmos na modelagem de IA"],["mat-3-0-2","Somatório, produtório e notação matemática em papers"],["mat-3-0-3","Geometria analítica e distância Euclidiana vs Manhattan"],["mat-3-1-0","Entropia de Shannon (medida de incerteza da informação)"],["mat-3-1-1","Entropia Cruzada (Cross-Entropy Loss) e função Softmax"],["mat-3-1-2","Divergência de Kullback-Leibler (KL Divergence)"],["mat-3-1-3","Funções de perda de regressão (MSE, MAE, Huber) e classificação"]]},{"t":"Módulo 5 · Matemática dos Transformers & Geometria de Embeddings","items":[["mat-4-0-0","Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs"],["mat-4-0-1","Normalização de embeddings e geometria do espaço semântico"],["mat-4-0-2","Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)"],["mat-4-1-0","Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V"],["mat-4-1-1","Mecanismo Multi-Head Attention: divisão de dimensões e concatenação"],["mat-4-1-2","Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)"]]}],"ing":[{"t":"Módulo 1 · Fundamentos Básicos & Apresentação","items":[["ing-0-0-0","Curso de Inglês GRÁTIS - Aula Zero"],["ing-0-0-1","Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas"],["ing-0-0-2","Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação"],["ing-0-0-3","Curso de Inglês - Módulo 01 Aula 03 - Aula Prática"],["ing-0-1-0","Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa"],["ing-0-1-1","Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100"],["ing-0-1-2","Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)"],["ing-0-2-0","Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos"],["ing-0-2-1","Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto"],["ing-0-2-2","Curso de Inglês - Módulo 01 Aula 09 - Small Talk"],["ing-0-3-0","Curso de Inglês - Módulo 01 Aula 10 - Family Tree"],["ing-0-3-1","Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02"],["ing-0-3-2","Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês"]]},{"t":"Módulo 2 · Rotina Diária, Horas & Preposições","items":[["ing-1-0-0","Curso de Inglês - Módulo 02 Aula 01 - Falando da Família"],["ing-1-0-1","Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An"],["ing-1-0-2","Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária"],["ing-1-1-0","Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos"],["ing-1-1-1","Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT"],["ing-1-1-2","Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês"],["ing-1-2-0","Curso de Inglês - Módulo 02 Aula 07 - Com que frequência"],["ing-1-2-1","Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas"],["ing-1-2-2","Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?"],["ing-1-3-0","Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas"],["ing-1-3-1","Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver"],["ing-1-3-2","Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês"]]},{"t":"Módulo 3 · Verbos Modais, Futuro & Pronomes","items":[["ing-2-0-0","Curso de Inglês - Módulo 03 Aula 01 - Eu posso!"],["ing-2-0-1","Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns"],["ing-2-1-0","Curso de Inglês - Módulo 03 Aula 03 - Eu deveria"],["ing-2-1-1","Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos"],["ing-2-1-2","Curso de Inglês - Módulo 03 Aula 05 - Eu devo"],["ing-2-2-0","Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas"],["ing-2-2-1","Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will"],["ing-2-2-2","Curso de Inglês - Módulo 03 Aula 08 - Advérbios"],["ing-2-3-0","Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To"],["ing-2-3-1","Curso de Inglês - Módulo 03 Aula 10 - Do or Make?"],["ing-2-3-2","Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades"],["ing-2-3-3","Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos"]]},{"t":"Módulo 4 · Passado, Hábitos & Comparativos","items":[["ing-3-0-0","Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria"],["ing-3-0-1","Curso de Inglês - Módulo 04 Aula 02 - Comparativos"],["ing-3-0-2","Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que"],["ing-3-1-0","Curso de Inglês - Módulo 04 Aula 04 - Superlativos"],["ing-3-1-1","Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be"],["ing-3-1-2","Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade"],["ing-3-2-0","Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)"],["ing-3-2-1","Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados"],["ing-3-2-2","Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia"],["ing-3-3-0","Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns"],["ing-3-3-1","Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados"],["ing-3-3-2","Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria"]]},{"t":"Módulo 5 · Estruturas Intermediárias & Conversação","items":[["ing-4-0-0","Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva"],["ing-4-0-1","Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares"],["ing-4-1-0","Curso de Inglês - Módulo 05 Aula 03 - E se..."],["ing-4-1-1","Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares"],["ing-4-1-2","Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse"],["ing-4-2-0","Curso de Inglês - Módulo 05 Aula 06 - Prefixes"],["ing-4-2-1","Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando"],["ing-4-2-2","Curso de Inglês - Módulo 05 Aula 08 - Suffixes"],["ing-4-3-0","Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos"],["ing-4-3-1","Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas"],["ing-4-3-2","Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se"],["ing-4-3-3","Curso de Inglês - Módulo 05 Aula 12 - Quantificadores"]]},{"t":"Módulo 6 · Fluência Avançada, Tempos Perfeitos & Voz Passiva","items":[["ing-5-0-0","Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês"],["ing-5-0-1","Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio"],["ing-5-1-0","Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca"],["ing-5-1-1","Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo"],["ing-5-1-2","Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando"],["ing-5-2-0","Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio"],["ing-5-2-1","Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado"],["ing-5-2-2","Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva"],["ing-5-3-0","Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes"],["ing-5-3-1","Curso de Inglês - Módulo 06 Aula 10 - Reported Speech"],["ing-5-3-2","Curso de Inglês - Módulo 06 Aula 11 - Três Desejos"],["ing-5-3-3","Curso de Inglês - Módulo 06 Aula 12 - Tag Questions"]]}]};
+const TRAIL_NAMES = {"ia": "IA & Código", "mat": "Matemática", "ing": "Inglês"};
+const TOTALS = Object.fromEntries(Object.entries(TOPICS).map(([k, ph]) => [k, ph.reduce((n, p) => n + p.items.length, 0)]));
+const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/";
+const SESSION_KEY = "roteiro_admin_session";
+const STATUS_LABEL = { z: "Não iniciado", r: "Em andamento", e: "Concluído" };
+const ACTION_LABEL = {
+  bootstrap_admin: "Conta admin criada", bootstrap_reset_admin: "Senha do admin redefinida", invite: "Convite enviado",
+  resend_invite: "Convite reenviado", set_status: "Situação alterada", delete_user: "Aluno excluído",
+  force_reset: "Troca de senha forçada", edit_progress: "Progresso editado"
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmtDate = (sec) => sec ? new Date(Number(sec) * 1000).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—";
+let USERS = [];
+let CURRENT = null;      // { user, progress }
+let PENDING = {};        // tópico -> nova situação
+
+function isLocalDev() { const h = location.hostname; return h === "localhost" || h === "127.0.0.1" || location.protocol === "file:"; }
+function endpoint() {
+  try {
+    const ep = (JSON.parse(localStorage.getItem("roteiro_aws_config") || "{}") || {}).endpoint || "";
+    if (/^https:\/\/[a-z0-9]+\.lambda-url\.[a-z0-9-]+\.on\.aws\/?$/.test(ep) || (isLocalDev() && /^http:\/\/(localhost|127\.0\.0\.1):\d+\/?$/.test(ep))) return ep;
+  } catch (e) {}
+  return OFFICIAL_LAMBDA_URL;
+}
+
+function getSession() {
+  try {
+    const s = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+    if (s && s.token && s.exp * 1000 > Date.now()) return s;
+  } catch (e) {}
+  sessionStorage.removeItem(SESSION_KEY);
+  return null;
+}
+
+async function api(action, payload = {}, auth = true) {
+  const body = Object.assign({}, payload, { action, aud: "admin" });
+  if (auth) {
+    const s = getSession();
+    if (!s) { showLogin("Sua sessão expirou. Entre novamente."); throw new Error("Sessão expirada."); }
+    body.token = s.token;
+  }
+  let res, json = null;
+  try {
+    res = await fetch(endpoint(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" });
+  } catch (e) { throw new Error("Sem conexão com o servidor."); }
+  try { json = await res.json(); } catch (e) {}
+  if (res.ok && json && json.ok) return json;
+  if (auth && res.status === 401 && json && json.relogin) { sessionStorage.removeItem(SESSION_KEY); showLogin("Sua sessão expirou. Entre novamente."); }
+  throw new Error((json && json.error) || `Erro no servidor (HTTP ${res.status}).`);
+}
+
+function msg(el, kind, text) { el.innerHTML = text ? `<div class="msg ${kind}">${esc(text)}</div>` : ""; }
+
+function busy(btn, on) { if (btn) btn.disabled = on; }
+
+// ---------------------------------------------------------------- login
+function showLogin(text) {
+  $("app-view").hidden = true;
+  $("login-view").hidden = false;
+  document.querySelectorAll("dialog[open]").forEach(d => d.close());
+  msg($("lg-msg"), "warn", text || "");
+  $("lg-pass").value = "";
+}
+
+function showApp() {
+  const s = getSession();
+  if (!s) return showLogin();
+  $("login-view").hidden = true;
+  $("app-view").hidden = false;
+  $("who").textContent = s.name ? `${s.name} (${s.email})` : s.email;
+  $("exp").textContent = new Date(s.exp * 1000).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  loadUsers();
+}
+
+$("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.submitter;
+  busy(btn, true);
+  msg($("lg-msg"), "", "");
+  try {
+    const r = await api("login", { email: $("lg-email").value.trim().toLowerCase(), password: $("lg-pass").value }, false);
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token: r.token, exp: r.expires_at, email: r.user.email, name: r.user.name }));
+    $("lg-pass").value = "";
+    showApp();
+  } catch (err) {
+    msg($("lg-msg"), "err", err.message);
+  } finally { busy(btn, false); }
+});
+
+$("btn-logout").addEventListener("click", () => { sessionStorage.removeItem(SESSION_KEY); showLogin("Você saiu do painel."); });
+
+// Encerra a tela quando a sessão vence, mesmo sem cliques.
+setInterval(() => { if (!$("app-view").hidden && !getSession()) showLogin("Sua sessão expirou. Entre novamente."); }, 30000);
+
+// ---------------------------------------------------------------- abas
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", String(x === t)));
+  $("tab-users").hidden = t.dataset.tab !== "users";
+  $("tab-audit").hidden = t.dataset.tab !== "audit";
+  if (t.dataset.tab === "audit") loadAudit();
+}));
+
+// ---------------------------------------------------------------- alunos
+function statusBadge(u) {
+  const map = { active: ["b-active", "Ativo"], invited: ["b-invited", "Convite pendente"], blocked: ["b-blocked", "Bloqueado"] };
+  const [cls, label] = map[u.status] || ["", u.status];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+function progressCell(u, trail) {
+  const done = ((u.progress_summary || {})[trail] || {}).done || 0;
+  const pct = TOTALS[trail] ? Math.round(done * 100 / TOTALS[trail]) : 0;
+  return `<div class="bar" title="${done} de ${TOTALS[trail]} concluídos"><i style="width:${pct}%"></i></div><span class="pct">${done}/${TOTALS[trail]}</span>`;
+}
+
+function renderUsers() {
+  const q = $("filter").value.trim().toLowerCase();
+  const list = USERS.filter(u => !q || (u.name || "").toLowerCase().includes(q) || u.email.includes(q));
+  $("users-body").innerHTML = list.length ? list.map(u => `
+    <tr class="click" data-email="${esc(u.email)}" tabindex="0">
+      <td><b>${esc(u.name || "—")}</b><div class="small mu">${esc(u.email)}</div></td>
+      <td>${statusBadge(u)}</td>
+      <td>${progressCell(u, "ia")}</td><td>${progressCell(u, "mat")}</td><td>${progressCell(u, "ing")}</td>
+      <td class="hide-sm small">${fmtDate(u.last_login)}</td>
+    </tr>`).join("") : `<tr><td colspan="6" class="empty">${USERS.length ? "Nenhum aluno encontrado." : "Nenhum aluno ainda. Use o formulário acima para convidar o primeiro."}</td></tr>`;
+  const count = (st) => USERS.filter(u => u.status === st).length;
+  const week = USERS.filter(u => u.last_login && Date.now() / 1000 - u.last_login < 7 * 86400).length;
+  $("stats").innerHTML = [["Alunos", USERS.length], ["Ativos", count("active")], ["Convites pendentes", count("invited")], ["Entraram nos últimos 7 dias", week]]
+    .map(([l, v]) => `<div class="stat"><span class="small mu">${l}</span><b>${v}</b></div>`).join("");
+}
+
+async function loadUsers() {
+  try {
+    USERS = (await api("admin_list_users")).users || [];
+    renderUsers();
+  } catch (err) {
+    $("users-body").innerHTML = `<tr><td colspan="6" class="empty">${esc(err.message)}</td></tr>`;
+  }
+}
+
+$("filter").addEventListener("input", renderUsers);
+$("btn-reload").addEventListener("click", loadUsers);
+$("users-body").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-email]"); if (tr) openUser(tr.dataset.email); });
+$("users-body").addEventListener("keydown", (e) => { const tr = e.target.closest("tr[data-email]"); if (tr && e.key === "Enter") openUser(tr.dataset.email); });
+
+$("invite-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.submitter;
+  busy(btn, true);
+  try {
+    const r = await api("admin_invite", { name: $("inv-name").value.trim(), email: $("inv-email").value.trim().toLowerCase() });
+    let text = r.message;
+    if (r.imported_legacy) text += " O progresso que já existia para esse e-mail foi importado.";
+    msg($("inv-msg"), r.email_sent ? "ok" : "warn", text);
+    $("invite-form").reset();
+    loadUsers();
+  } catch (err) {
+    msg($("inv-msg"), "err", err.message);
+  } finally { busy(btn, false); }
+});
+
+// ---------------------------------------------------------------- detalhe do aluno
+async function openUser(email) {
+  const dlg = $("dlg-user");
+  $("du-name").textContent = "Carregando...";
+  $("du-sub").textContent = "";
+  $("du-actions").innerHTML = "";
+  $("du-trails").innerHTML = "";
+  msg($("du-msg"), "", "");
+  PENDING = {};
+  updateSavebar();
+  if (!dlg.open) dlg.showModal();
+  try {
+    const r = await api("admin_get_user", { email });
+    CURRENT = { user: r.user, progress: (r.data && r.data.progress) || {} };
+    renderUser();
+  } catch (err) {
+    $("du-name").textContent = "Erro";
+    msg($("du-msg"), "err", err.message);
+  }
+}
+
+function renderUser() {
+  const u = CURRENT.user;
+  $("du-name").textContent = u.name || u.email;
+  $("du-sub").innerHTML = `${esc(u.email)} · ${statusBadge(u)} · último acesso: ${fmtDate(u.last_login)} · última sincronização: ${u.last_sync ? new Date(Number(u.last_sync)).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "—"}`;
+  const a = [];
+  if (u.status === "invited") a.push(`<button class="btn" data-act="resend">Reenviar convite</button>`);
+  if (u.status === "active") a.push(`<button class="btn" data-act="block">Bloquear</button>`, `<button class="btn" data-act="reset">Forçar troca de senha</button>`);
+  if (u.status === "blocked") a.push(`<button class="btn" data-act="unblock">Desbloquear</button>`);
+  a.push(`<button class="btn danger" data-act="delete">Excluir aluno</button>`);
+  $("du-actions").innerHTML = a.join("");
+  renderTrails();
+}
+
+function topicStatus(id) {
+  if (id in PENDING) return PENDING[id];
+  const v = CURRENT.progress[id];
+  return v && (v.s === "e" || v.s === "r") ? v.s : "z";
+}
+
+function renderTrails() {
+  const openNow = new Set([...document.querySelectorAll("details.trail[open]")].map(d => d.dataset.trail));
+  $("du-trails").innerHTML = Object.entries(TOPICS).map(([tr, phases]) => {
+    const ids = phases.flatMap(p => p.items.map(i => i[0]));
+    const done = ids.filter(id => topicStatus(id) === "e").length;
+    const started = ids.filter(id => topicStatus(id) === "r").length;
+    const body = phases.map(p => `<div class="phase"><h4>${esc(p.t)}</h4>${p.items.map(([id, title]) => {
+      const s = topicStatus(id);
+      const opts = ["z", "r", "e"].map(v => `<option value="${v}"${v === s ? " selected" : ""}>${STATUS_LABEL[v]}</option>`).join("");
+      return `<div class="topic${id in PENDING ? " changed" : ""}"><span>${esc(title)}</span><select data-topic="${id}" aria-label="Situação de ${esc(title)}">${opts}</select></div>`;
+    }).join("")}</div>`).join("");
+    return `<details class="trail" data-trail="${tr}"${openNow.has(tr) ? " open" : ""}>
+      <summary><span class="grow">${esc(TRAIL_NAMES[tr])}</span><span class="pct">${done}/${ids.length} concluídos · ${started} em andamento</span></summary>
+      <div class="phase"><button class="btn danger" data-reset-trail="${tr}">Zerar ${esc(TRAIL_NAMES[tr])}</button></div>${body}</details>`;
+  }).join("");
+}
+
+function updateSavebar() {
+  const n = Object.keys(PENDING).length;
+  $("du-count").textContent = n;
+  $("du-savebar").classList.toggle("on", n > 0);
+}
+
+$("du-trails").addEventListener("change", (e) => {
+  const sel = e.target.closest("select[data-topic]");
+  if (!sel) return;
+  const id = sel.dataset.topic;
+  const v = CURRENT.progress[id];
+  const orig = v && (v.s === "e" || v.s === "r") ? v.s : "z";
+  if (sel.value === orig) delete PENDING[id]; else PENDING[id] = sel.value;
+  sel.closest(".topic").classList.toggle("changed", id in PENDING);
+  updateSavebar();
+});
+
+$("du-discard").addEventListener("click", () => { PENDING = {}; updateSavebar(); renderTrails(); });
+
+$("du-save").addEventListener("click", async (e) => {
+  const btn = e.currentTarget;
+  busy(btn, true);
+  try {
+    await api("admin_edit_progress", { email: CURRENT.user.email, op: "set_topics", changes: PENDING });
+    const n = Object.keys(PENDING).length;
+    await openUser(CURRENT.user.email);
+    msg($("du-msg"), "ok", `${n} tópico(s) atualizado(s). O aluno vê a mudança na próxima vez que abrir o site.`);
+    loadUsers();
+  } catch (err) {
+    msg($("du-msg"), "err", err.message);
+  } finally { busy(btn, false); }
+});
+
+$("du-trails").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-reset-trail]");
+  if (!b) return;
+  const tr = b.dataset.resetTrail;
+  if (!confirm(`Zerar todo o progresso de ${TRAIL_NAMES[tr]} de ${CURRENT.user.name || CURRENT.user.email}? Isso não pode ser desfeito.`)) return;
+  busy(b, true);
+  try {
+    await api("admin_edit_progress", { email: CURRENT.user.email, op: "reset_trail", trail: tr });
+    await openUser(CURRENT.user.email);
+    msg($("du-msg"), "ok", `Progresso de ${TRAIL_NAMES[tr]} zerado.`);
+    loadUsers();
+  } catch (err) {
+    msg($("du-msg"), "err", err.message);
+    busy(b, false);
+  }
+});
+
+$("du-actions").addEventListener("click", async (e) => {
+  const b = e.target.closest("[data-act]");
+  if (!b) return;
+  const u = CURRENT.user, act = b.dataset.act;
+  const who = u.name || u.email;
+  let call, ok;
+  if (act === "resend") { call = ["admin_resend_invite", {}]; ok = "Convite reenviado. Peça para a pessoa olhar também o spam."; }
+  if (act === "block") {
+    if (!confirm(`Bloquear ${who}? A pessoa sai na hora de todos os aparelhos e não consegue entrar até ser desbloqueada.`)) return;
+    call = ["admin_set_status", { status: "blocked" }]; ok = "Aluno bloqueado.";
+  }
+  if (act === "unblock") { call = ["admin_set_status", { status: "active" }]; ok = "Aluno desbloqueado."; }
+  if (act === "reset") {
+    if (!confirm(`Forçar ${who} a criar uma senha nova? A senha atual deixa de valer e a pessoa recebe um código por e-mail.`)) return;
+    call = ["admin_force_reset", {}]; ok = "Senha anulada e código enviado.";
+  }
+  if (act === "delete") {
+    const typed = prompt(`Excluir ${who} apaga a conta e TODO o progresso, sem volta.\n\nPara confirmar, digite o e-mail do aluno:`);
+    if (typed === null) return;
+    call = ["admin_delete_user", { confirm: typed.trim().toLowerCase() }]; ok = "Aluno excluído.";
+  }
+  busy(b, true);
+  try {
+    const r = await api(call[0], Object.assign({ email: u.email }, call[1]));
+    if (act === "delete") { $("dlg-user").close(); msg($("inv-msg"), "ok", `${who}: ${ok}`); }
+    else {
+      await openUser(u.email);
+      const warn = r.email_sent === false;
+      msg($("du-msg"), warn ? "warn" : "ok", warn ? "Feito, mas o e-mail não foi enviado. Com o Amazon SES no sandbox, verifique antes o e-mail do aluno em SES → Identidades." : ok);
+    }
+    loadUsers();
+  } catch (err) {
+    msg($("du-msg"), "err", err.message);
+    busy(b, false);
+  }
+});
+
+const confirmDiscard = () => !Object.keys(PENDING).length || confirm("Descartar as alterações de progresso que não foram salvas?");
+document.querySelectorAll("dialog [data-close]").forEach(b => b.addEventListener("click", () => {
+  const d = b.closest("dialog");
+  if (d.id !== "dlg-user" || confirmDiscard()) d.close();
+}));
+$("dlg-user").addEventListener("cancel", (e) => { if (!confirmDiscard()) e.preventDefault(); });
+
+// ---------------------------------------------------------------- histórico
+function auditDetails(e) {
+  const d = e.details || {};
+  if (e.action === "set_status") return d.status === "blocked" ? "Bloqueado" : "Desbloqueado";
+  if (e.action === "edit_progress") {
+    if (d.op === "reset_trail") return `Zerou ${TRAIL_NAMES[d.trail] || d.trail} (${d.removed || 0} tópicos)`;
+    return Object.entries(d.changes || {}).map(([id, s]) => `${id}: ${STATUS_LABEL[s] || s}`).join(", ");
+  }
+  if (e.action === "invite") return [d.name, d.imported_legacy ? "progresso antigo importado" : "", d.email_sent === false ? "e-mail não enviado" : ""].filter(Boolean).join(" · ");
+  if (e.action === "force_reset") return d.email_sent === false ? "e-mail não enviado" : "código enviado";
+  return "";
+}
+
+async function loadAudit() {
+  $("audit-body").innerHTML = `<tr><td colspan="4" class="empty">Carregando...</td></tr>`;
+  try {
+    const rows = (await api("admin_audit", { limit: 200 })).entries || [];
+    $("audit-body").innerHTML = rows.length ? rows.map(e => `<tr>
+      <td class="small">${fmtDate(e.at)}</td><td>${esc(ACTION_LABEL[e.action] || e.action)}</td>
+      <td class="small">${esc(e.target || "")}</td><td class="hide-sm small mu">${esc(auditDetails(e))}</td></tr>`).join("")
+      : `<tr><td colspan="4" class="empty">Nenhuma ação registrada.</td></tr>`;
+  } catch (err) {
+    $("audit-body").innerHTML = `<tr><td colspan="4" class="empty">${esc(err.message)}</td></tr>`;
+  }
+}
+$("btn-audit").addEventListener("click", loadAudit);
+
+// ---------------------------------------------------------------- minha senha
+$("btn-pass").addEventListener("click", () => { $("pass-form").reset(); msg($("pw-msg"), "", ""); $("dlg-pass").showModal(); });
+$("pass-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if ($("pw-new").value !== $("pw-new2").value) return msg($("pw-msg"), "err", "A confirmação não confere.");
+  const btn = e.submitter;
+  busy(btn, true);
+  try {
+    const r = await api("change_password", { current: $("pw-cur").value, new: $("pw-new").value });
+    const s = getSession();
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(Object.assign(s, { token: r.token, exp: r.expires_at })));
+    $("dlg-pass").close();
+    showApp();
+  } catch (err) {
+    msg($("pw-msg"), "err", err.message);
+  } finally { busy(btn, false); }
+});
+
+if (getSession()) showApp(); else showLogin();
+</script>
+</body>
+</html>

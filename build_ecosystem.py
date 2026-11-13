@@ -1851,20 +1851,20 @@ __HUB_CSS__
     <div class="nav-right">
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
-          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+          👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
-            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
-            <span>Sincronização AWS</span>
+            <span>Sincronização na nuvem</span>
           </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
-            <span>Alterar Usuário & Senha</span>
+            <span>Meu perfil e senha</span>
           </button>
           <div class="dropdown-divider"></div>
           <button class="dropdown-item danger" onclick="handleUserLogout()">
@@ -1886,7 +1886,7 @@ __HUB_CSS__
       <div class="portal-card">
         <div class="portal-badge">🔒 Área Restrita do Estudante</div>
         <h2 class="portal-title">Portal de Acesso · Roteiro de IA</h2>
-        <p class="portal-subtitle">Faça login para desbloquear suas trilhas de estudo.</p>
+        <p class="portal-subtitle">Entre com a conta que o administrador criou para você. Recebeu um convite por e-mail? Use "Tenho um convite" para criar sua senha.</p>
         
         <form id="portal-login-form" onsubmit="handlePortalLogin(event)" class="portal-form">
           <div class="portal-input-group">
@@ -1896,7 +1896,7 @@ __HUB_CSS__
 
           <div class="portal-input-group">
             <label class="portal-label">Senha</label>
-            <input type="password" id="login-input-pass" class="portal-input" required placeholder="Digite sua senha">
+            <input type="password" id="login-input-pass" class="portal-input" required placeholder="Digite sua senha" autocomplete="current-password">
           </div>
 
           <div class="portal-remember-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
@@ -1904,7 +1904,10 @@ __HUB_CSS__
               <input type="checkbox" id="login-remember-me" checked>
               <span>Lembrar meu acesso</span>
             </label>
-            <a href="javascript:void(0)" onclick="openForgotPasswordModal()" class="forgot-pass-link" title="Recuperar senha com código via E-mail (SES) ou WhatsApp">Esqueci minha senha</a>
+            <span style="display:flex;gap:14px;flex-wrap:wrap">
+              <a href="javascript:void(0)" onclick="openInviteModal()" class="forgot-pass-link">Tenho um convite</a>
+              <a href="javascript:void(0)" onclick="openForgotPasswordModal()" class="forgot-pass-link">Esqueci minha senha</a>
+            </span>
           </div>
 
           <div id="login-error-msg" class="portal-error-msg" style="display:none"></div>
@@ -2093,22 +2096,6 @@ __FORGOT_PASSWORD_MODAL__
 __AUTH_AWS_SYNC_JS__
 
 function checkHubAuth() {
-  // Limpeza preventiva: se houver qualquer legado do email fictício joao@roteiro.ia no storage, remove
-  try {
-    const raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
-    if (raw && raw.includes("joao@roteiro.ia")) {
-      const u = JSON.parse(raw);
-      if (u.email === "joao@roteiro.ia") {
-        u.email = "";
-        if (localStorage.getItem("roteiro_auth_user")) localStorage.setItem("roteiro_auth_user", JSON.stringify(u));
-        if (sessionStorage.getItem("roteiro_auth_user")) sessionStorage.setItem("roteiro_auth_user", JSON.stringify(u));
-      }
-    }
-    if (localStorage.getItem("roteiro_saved_email") === "joao@roteiro.ia") {
-      localStorage.removeItem("roteiro_saved_email");
-    }
-  } catch(e) {}
-
   const user = getLoggedInUser();
   const loginView = document.getElementById("hub-login-view");
   const authView = document.getElementById("hub-authenticated-view");
@@ -2116,15 +2103,16 @@ function checkHubAuth() {
   const navLinks = document.getElementById("hub-nav-links");
   const dbStatus = document.getElementById("nav-db-status");
 
-  if (user && user.authenticated) {
+  if (user) {
     if (loginView) loginView.style.display = "none";
     if (authView) authView.style.display = "block";
     if (navUserWrap) navUserWrap.style.display = "inline-block";
     if (navLinks) navLinks.style.display = "flex";
     if (dbStatus) dbStatus.style.display = "inline-flex";
-    
+
     const heroP = document.querySelector(".hub-hero p");
-    if (heroP) heroP.innerHTML = `Bem-vindo de volta, <b>${user.name || "João"}</b>! Programação, matemática e inglês caminham juntos até você construir seus próprios projetos de IA. Continue de onde parou:`;
+    const firstName = String(user.name || "").trim().split(" ")[0];
+    if (heroP) heroP.innerHTML = `Bem-vindo de volta${firstName ? ", <b>" + escapeHtml(firstName) + "</b>" : ""}! Programação, matemática e inglês caminham juntos até você construir seus próprios projetos de IA. Continue de onde parou:`;
 
     calcAndPaint();
   } else {
@@ -2135,83 +2123,7 @@ function checkHubAuth() {
     if (dbStatus) dbStatus.style.display = "none";
 
     const emailInput = document.getElementById("login-input-email");
-    if (emailInput) {
-      const savedEmail = localStorage.getItem("roteiro_saved_email");
-      emailInput.value = (savedEmail && savedEmail !== "joao@roteiro.ia") ? savedEmail : "";
-    }
-  }
-}
-
-async function handlePortalLogin(e) {
-  e.preventDefault();
-  const email = document.getElementById("login-input-email").value.trim();
-  const pass = document.getElementById("login-input-pass").value.trim();
-  const remember = document.getElementById("login-remember-me").checked;
-  const errorEl = document.getElementById("login-error-msg");
-  const submitBtn = document.querySelector("#portal-login-form button[type='submit']");
-
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span>⏳ Validando acesso...</span>`;
-  }
-
-  try {
-    // Validação criptográfica com HASH SHA-256 e sincronização AWS
-    const isValid = await validateLoginPassword(pass, email);
-
-    if (isValid) {
-      let userName = "João Naziozeno";
-      const existing = getLoggedInUser();
-      if (existing && existing.name) userName = existing.name;
-
-      const userObj = {
-        authenticated: true,
-        name: userName,
-        email: email,
-        loginTime: Date.now(),
-        provider: "aws-dynamodb-verified"
-      };
-
-      if (remember) {
-        localStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
-        if (email && email !== "joao@roteiro.ia") {
-          localStorage.setItem("roteiro_saved_email", email);
-        }
-      } else {
-        sessionStorage.setItem("roteiro_auth_user", JSON.stringify(userObj));
-        localStorage.removeItem("roteiro_saved_email");
-      }
-
-      if (errorEl) errorEl.style.display = "none";
-
-      const redirectUrl = sessionStorage.getItem("roteiro_redirect_after_login");
-      if (redirectUrl) {
-        sessionStorage.removeItem("roteiro_redirect_after_login");
-        window.location.href = redirectUrl;
-        return;
-      }
-
-      checkHubAuth();
-      updateNavAuthUI();
-      if (typeof awsRealtimePullFromDynamoDB === "function") {
-        awsRealtimePullFromDynamoDB();
-      }
-    } else {
-      if (errorEl) {
-        errorEl.textContent = "Senha incorreta. Verifique suas credenciais e tente novamente.";
-        errorEl.style.display = "block";
-      }
-    }
-  } catch(err) {
-    if (errorEl) {
-      errorEl.textContent = "Erro ao validar credenciais: " + (err.message || err);
-      errorEl.style.display = "block";
-    }
-  } finally {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = `<span>🚀 Entrar no Ecossistema de IA &rarr;</span>`;
-    }
+    if (emailInput && !emailInput.value) emailInput.value = localStorage.getItem("roteiro_saved_email") || "";
   }
 }
 
@@ -2247,9 +2159,9 @@ async function initSync(){
   loadPaceSettings();
   calcAndPaint();
 
-  // Em ambientes de nuvem/produção (ex: GitHub Pages ou HTTPS), a AWS é o backend oficial; não tenta conectar ao localhost
-  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
-  if (!isLocalHost) {
+  // O banco local do server.py (usuário 1) é só para desenvolvimento: vale apenas para o usuário de teste,
+  // nunca para uma conta real (senão o progresso local se misturaria com o dela). Em produção, a nuvem é o backend.
+  if (!isTestUser(getLoggedInUser())) {
     return;
   }
 
@@ -2377,6 +2289,11 @@ generate_projects_page(out_proj, SHARED_CSS)
 generate_hub_page(out_hub)
 generate_hub_page(out_mirror)
 
+# Painel do administrador (login próprio; fala só com a Lambda)
+from admin_page import generate_admin_page
+out_admin = os.path.join(BASE_DIR, "admin.html")
+generate_admin_page(out_admin, {"ia": ia_phases, "mat": mat_phases, "ing": ing_phases})
+
 # Sincronização automática para produção em dist_deploy/ e roteiro_aws_deploy.zip
 import shutil, zipfile
 base_dir = os.path.dirname(out_hub)
@@ -2388,7 +2305,8 @@ deploy_files = [
     (out_ing, "ingles.html"),
     (out_proj, "projetos.html"),
     (out_hub, "index.html"),
-    (out_mirror, "Roteiro de Estudo_ do zero à IA.html")
+    (out_mirror, "Roteiro de Estudo_ do zero à IA.html"),
+    (out_admin, "admin.html")
 ]
 for src, name in deploy_files:
     shutil.copy2(src, os.path.join(dist_dir, name))

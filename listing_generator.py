@@ -223,20 +223,20 @@ __AUTH_AWS_CSS__
     <div class="nav-right">
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
-          👤 <span>João Naziozeno</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
+          👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
         </button>
         <div class="nav-user-dropdown" id="nav-user-dropdown" hidden style="display:none">
           <div class="dropdown-user-header">
-            <div class="dropdown-user-name" id="dropdown-user-name">João Naziozeno</div>
+            <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
           <button class="dropdown-item" onclick="openAwsSyncModal()">
             <span>☁️</span>
-            <span>Sincronização AWS</span>
+            <span>Sincronização na nuvem</span>
           </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
-            <span>Alterar Usuário & Senha</span>
+            <span>Meu perfil e senha</span>
           </button>
           <div class="dropdown-divider"></div>
           <button class="dropdown-item danger" onclick="handleUserLogout()">
@@ -938,9 +938,9 @@ async function initSync() {
   loadLocal();
   paint();
 
-  // Em ambientes de nuvem/produção (ex: GitHub Pages ou HTTPS), a AWS é o backend oficial; não tenta conectar ao localhost
-  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:";
-  if (!isLocalHost) {
+  // O banco local do server.py (usuário 1) é só para desenvolvimento: vale apenas para o usuário de teste,
+  // nunca para uma conta real (senão o progresso local se misturaria com o dela). Em produção, a nuvem é o backend.
+  if (!isTestUser(getLoggedInUser())) {
     return;
   }
 
