@@ -20,9 +20,17 @@ O que ela traz:
 """
 
 DESIGN_HEAD = r"""
+<!-- Segura a primeira pintura até o fim da página (#ds-end): a transição já mostra a página pronta,
+     sem montar menu, tema e listas na frente do usuário. Navegadores sem suporte ignoram. -->
+<link rel="expect" href="#ds-end" blocking="render">
+<script>try{var t=localStorage.getItem("roteiro-theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
+<!-- Fontes: pré-carregadas para estarem prontas na primeira pintura, e "optional" para nunca trocarem
+     depois que a página aparece (a troca da fonte do sistema para a Inter fazia o menu "pular"). -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/spacegrotesk/v22/V8mDoQDjQSkFtoMM3T6r8E7mPbF4Cw.woff2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=optional">
 <style id="design-v2">
 /* ============================ TOKENS ============================ */
 :root{
@@ -204,24 +212,20 @@ kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;b
 
 /* ============================ TRANSIÇÃO ENTRE PÁGINAS ============================ */
 @view-transition{navigation:auto}
-main,.hub-main{view-transition-name:ds-page}
+/* Espaço da barra de rolagem sempre reservado: o menu não desliza ~8 px quando ela aparece */
+html{scrollbar-gutter:stable}
 /* Fundo da transição igual ao do site (evita clarão entre a saída e a entrada) */
 html::view-transition{background:var(--bg)}
-/* Menu do topo: troca na hora, sem esmaecer (senão aparecem dois menus sobrepostos) */
+/* Menu do topo: fica parado e troca na hora (mesma largura em todas as páginas) */
 ::view-transition-group(ds-nav){animation:none}
 ::view-transition-old(ds-nav){display:none}
 ::view-transition-new(ds-nav){animation:none}
-/* Resto da tela (barra lateral, fundo): a página antiga sai antes da nova entrar, sem sobrepor */
-::view-transition-old(root){animation:ds-fade-out .14s ease-in both}
-::view-transition-new(root){animation:ds-fade-in .24s ease-out .1s both}
-/* Conteúdo: sem "esticar" de uma altura para outra; sai e depois entra com um leve deslize */
-::view-transition-group(ds-page){animation:none}
-::view-transition-old(ds-page){animation:ds-page-out .14s ease-in both}
-::view-transition-new(ds-page){animation:ds-page-in .3s var(--ds-ease) .1s both}
+/* Resto da tela: só esmaecimento. A página antiga sai e a nova entra, sem sobrepor e sem mudar de
+   tamanho (o conteúdo não tem nome próprio na transição, porque roteiros têm barra lateral e o Hub não) */
+::view-transition-old(root){animation:ds-fade-out .16s ease-in both}
+::view-transition-new(root){animation:ds-fade-in .28s ease-out .12s both}
 @keyframes ds-fade-out{to{opacity:0}}
 @keyframes ds-fade-in{from{opacity:0}}
-@keyframes ds-page-out{to{opacity:0;transform:translateY(-6px)}}
-@keyframes ds-page-in{from{opacity:0;transform:translateY(10px)}}
 
 /* ============================ PALETA DE COMANDOS ============================ */
 .ds-pal{position:fixed;inset:0;z-index:2000;display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 16px;background:color-mix(in srgb,#020608 55%,transparent);backdrop-filter:blur(6px)}
@@ -466,13 +470,18 @@ window.DS_TOPICS = __DS_TOPICS__;
     if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); pal && pal.classList.contains("open") ? closePal() : openPal(); }
   });
   function addNavButton() {
-    var right = $(".nav-right"); if (!right || $(".ds-k-btn", right)) return;
+    // O botão já vem no HTML (apply_design), para o menu não mudar de largura depois de desenhado.
+    var right = $(".nav-right"); if (!right) return;
     var mac = /Mac|iPhone|iPad/.test(navigator.platform || "");
-    var b = document.createElement("button");
-    b.type = "button"; b.className = "ds-k-btn"; b.title = "Buscar páginas e tópicos (" + (mac ? "⌘" : "Ctrl") + " + K)";
-    b.innerHTML = '<span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>' + (mac ? "⌘" : "Ctrl") + " K</kbd>";
+    var b = $(".ds-k-btn", right);
+    if (!b) {
+      b = document.createElement("button");
+      b.type = "button"; b.className = "ds-k-btn";
+      b.innerHTML = '<span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd>';
+      right.insertBefore(b, right.firstChild);
+    }
+    if (mac) { var k = $("kbd", b); if (k) k.textContent = "⌘ K"; b.title = "Buscar páginas e tópicos (⌘ + K)"; }
     b.addEventListener("click", openPal);
-    right.insertBefore(b, right.firstChild);
   }
 
   function init() {
@@ -488,7 +497,8 @@ window.DS_TOPICS = __DS_TOPICS__;
       }
     } catch (e) {}
   }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+  // Este script fica no fim do <body>: o conteúdo já existe, então monta na hora (antes da primeira pintura).
+  init();
 })();
 </script>
 """
@@ -537,13 +547,21 @@ NAV_EARLY_SCRIPT = """<script>
 </script>"""
 
 
+# Botão de busca já no HTML do menu (antes era criado por JavaScript depois da primeira pintura e
+# empurrava os links do menu ~86 px para os lados em IA, Matemática e Inglês).
+NAV_SEARCH_BUTTON = ('<button type="button" class="ds-k-btn" title="Buscar páginas e tópicos (Ctrl + K)">'
+                     '<span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd></button>')
+
+
 def apply_design(html: str, track: str) -> str:
     """Injeta a camada de design no fim do <head> e do <body> e marca a trilha da página."""
     from modal_ui import MODAL_UI_CSS, MODAL_UI_JS
     html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
     html = html.replace("</header>", "</header>\n" + NAV_EARLY_SCRIPT, 1)
+    html = html.replace('<div class="nav-right">', '<div class="nav-right">\n' + NAV_SEARCH_BUTTON, 1)
     idx = html.rfind("</body>")
     if idx != -1:
-        html = html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS + "\n" + html[idx:]
+        html = (html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS
+                + '\n<div id="ds-end" hidden></div>\n' + html[idx:])
     return html

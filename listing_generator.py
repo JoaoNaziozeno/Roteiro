@@ -7,7 +7,7 @@ Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 import json
 from studio_js import STUDIO_JS
 from favicon import FAVICON_LINK
-from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
     total_topics = 0
@@ -230,10 +230,6 @@ __AUTH_AWS_CSS__
             <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
-          <button class="dropdown-item" onclick="openAwsSyncModal()">
-            <span>☁️</span>
-            <span>Sincronização na nuvem</span>
-          </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
             <span>Meu perfil e senha</span>
@@ -877,7 +873,6 @@ Assista ao vídeo e registre aqui seus insights, fórmulas e códigos!" oninput=
   </div>
 </div>
 
-__AWS_SYNC_MODAL__
 __CHANGE_CREDENTIALS_MODAL__
 
 <script>
@@ -1549,10 +1544,9 @@ try {
   document.documentElement.setAttribute("data-theme", savedTheme);
 } catch(e) {}
 
-window.addEventListener("DOMContentLoaded", () => {
-  initSync();
-  if (typeof initSplitResizer === "function") initSplitResizer();
-});
+// Monta a lista antes da primeira pintura (o script está no fim do <body>)
+initSync();
+if (typeof initSplitResizer === "function") initSplitResizer();
 </script>
 </body>
 </html>
@@ -1568,7 +1562,6 @@ window.addEventListener("DOMContentLoaded", () => {
     rendered = (template
         .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
         .replace("__AUTH_AWS_CSS__", AUTH_AWS_SYNC_CSS)
-        .replace("__AWS_SYNC_MODAL__", AWS_SYNC_MODAL_HTML)
         .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
         .replace("__PAGE_TITLE__", page_title)

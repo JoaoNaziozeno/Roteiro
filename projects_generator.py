@@ -7,7 +7,7 @@ e exportador para LinkedIn / README.
 """
 
 from favicon import FAVICON_LINK
-from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, AWS_SYNC_MODAL_HTML, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
+from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 PROJECTS_CSS = """
 /* =========================================================================
@@ -325,10 +325,6 @@ def generate_projects_page(out_path, shared_css):
             <div class="dropdown-user-name" id="dropdown-user-name">Minha conta</div>
             <div class="dropdown-user-email" id="dropdown-user-email"></div>
           </div>
-          <button class="dropdown-item" onclick="openAwsSyncModal()">
-            <span>☁️</span>
-            <span>Sincronização na nuvem</span>
-          </button>
           <button class="dropdown-item" onclick="openChangeCredentialsModal()">
             <span>🔑</span>
             <span>Meu perfil e senha</span>
@@ -340,6 +336,7 @@ def generate_projects_page(out_path, shared_css):
           </button>
         </div>
       </div>
+      <span id="nav-db-status" class="nav-status-pill">💾 Local</span>
       <button class="nav-theme-btn" onclick="toggleTheme()" title="Alternar tema claro/escuro">🌓</button>
     </div>
   </div>
@@ -402,7 +399,6 @@ def generate_projects_page(out_path, shared_css):
   </section>
 </main>
 
-{AWS_SYNC_MODAL_HTML}
 {CHANGE_CREDENTIALS_MODAL_HTML}
 
 <!-- MODAL: ANOTAÇÕES & LIÇÕES APRENDIDAS DO PROJETO -->
@@ -796,9 +792,8 @@ try {{
   if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
 }} catch(e) {{}}
 
-window.addEventListener("DOMContentLoaded", () => {{
-  loadProjects();
-}});
+// Monta os cards antes da primeira pintura (o script está no fim do <body>)
+loadProjects();
 </script>
 </body>
 </html>"""
