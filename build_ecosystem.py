@@ -2255,6 +2255,16 @@ out_hub = os.path.join(BASE_DIR, "index.html")
 out_mirror = os.path.join(BASE_DIR, "Roteiro de Estudo_ do zero à IA.html")
 
 
+# Inglês · Módulo 7 (Inglês para trabalhar com IA): entra no fim, então os ids ing-0..5 não mudam
+import copy as _copy
+from en_m7_trabalho import MODULO_7 as _M7
+_m7 = _copy.deepcopy(_M7)
+for _g in _m7["g"]:
+    for _t in _g[1]:
+        if _t["videoId"] in ENGLISH_GUIDES:
+            _t["pt_guide"] = ENGLISH_GUIDES[_t["videoId"]]
+ing_phases.append(_m7)
+
 # Currículo: ids fixos, reorganização da Matemática e tópicos opcionais (ver curriculo.py).
 # Precisa rodar antes de qualquer página ser gerada.
 import curriculo
