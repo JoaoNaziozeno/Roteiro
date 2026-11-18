@@ -191,6 +191,9 @@ kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;b
 .topic-row::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--bd);transition:background .3s,box-shadow .3s}
 .topic-row.status-r::before{background:#e8a100}
 .topic-row.status-e::before{background:#2fa36b;box-shadow:0 0 10px #2fa36b}
+/* Tópicos opcionais (aprofundamento): fora da meta, levemente apagados e com etiqueta */
+.topic-optional .topic-title-text{opacity:.78}
+.opt-badge{display:inline-block;margin-left:8px;vertical-align:middle;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px dashed var(--ds-line);color:var(--mu);cursor:help}
 .topic-row:hover{transform:translateX(3px);border-color:color-mix(in srgb,var(--t,var(--t-hub)) 40%,transparent)!important;background:color-mix(in srgb,var(--t,var(--t-hub)) 6%,var(--card))!important}
 .fil-btn.active,.trk-btn.active{background:var(--tx)!important;color:var(--bg)!important;border-color:var(--tx)!important}
 .sidebar{background:color-mix(in srgb,var(--bg) 80%,transparent)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-right:1px solid var(--ds-line)!important}
@@ -532,13 +535,9 @@ def set_topic_index(tracks):
         for p_idx, p in enumerate(phases):
             for g_idx, g in enumerate(p["g"]):
                 for t_idx, raw in enumerate(g[1]):
-                    if isinstance(raw, dict):
-                        title = raw.get("title", "")
-                    elif isinstance(raw, str) and "||" in raw:
-                        title = raw.split("||", 1)[0]
-                    else:
-                        title = str(raw)
-                    rows.append([f"{tr}-{p_idx}-{g_idx}-{t_idx}", tr, title])
+                    import curriculo
+                    title = curriculo.title_of(raw) + (" (opcional)" if curriculo.is_optional(raw) else "")
+                    rows.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), tr, title])
     global _TOPIC_INDEX_JSON
     _TOPIC_INDEX_JSON = json.dumps(rows, ensure_ascii=False, separators=(",", ":")).replace("</", "<\/")
 

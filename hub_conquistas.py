@@ -11,6 +11,8 @@ Usa só dados reais do navegador (nada inventado):
 
 import json
 
+import curriculo
+
 TRACKS = [
     ("ia", "IA & Código", "🤖", "ia.html", "--t-ia"),
     ("mat", "Matemática", "📐", "matematica.html", "--t-mat"),
@@ -34,9 +36,10 @@ def build_index(tracks):
             for g_idx, g in enumerate(p["g"]):
                 mod = f"{tr}-{p_idx}-{g_idx}"
                 items = g[1]
-                modules[mod] = [str(g[0]), len(items)]
+                modules[mod] = [str(g[0]), sum(1 for r in items if not curriculo.is_optional(r))]
                 for t_idx, raw in enumerate(items):
-                    topics[f"{mod}-{t_idx}"] = [_title(raw), mod]
+                    tid = curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx)
+                    topics[tid] = [_title(raw), mod, 1 if curriculo.is_optional(raw) else 0]
     data = {"topics": topics, "modules": modules}
     return json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 
@@ -143,12 +146,14 @@ function renderConquistas() {
   const projects = cqRead("roteiro_portfolio_projects", []);
   const topics = CQ_INDEX.topics, modules = CQ_INDEX.modules;
 
-  // Situação atual de cada tópico conhecido
-  const done = {}, started = {};
+  // Situação atual de cada tópico conhecido (opcionais contam à parte, como bônus)
+  const done = {}, started = {}, bonus = {};
   for (const id in topics) {
     const s = prog[id] && prog[id].s;
+    if (topics[id][2]) { if (s === "e") bonus[id] = true; continue; }
     if (s === "e") done[id] = true; else if (s === "r") started[id] = true;
   }
+  const totalReq = Object.keys(topics).filter(id => !topics[id][2]).length;
   // Data em que cada tópico foi concluído (último evento "-> e" de um tópico que continua concluído)
   const doneAt = {};
   events.forEach(e => { if (e && e.to === "e" && done[e.id] && (!doneAt[e.id] || e.t > doneAt[e.id])) doneAt[e.id] = e.t; });
@@ -194,10 +199,11 @@ function renderConquistas() {
 
   // Cartões por disciplina
   const cards = CQ_TRACKS.map(([tr, name, icon, href, color]) => {
-    const ids = Object.keys(topics).filter(id => id.startsWith(tr + "-"));
+    const ids = Object.keys(topics).filter(id => id.startsWith(tr + "-") && !topics[id][2]);
+    const extras = Object.keys(bonus).filter(id => id.startsWith(tr + "-")).length;
     const total = ids.length, d = ids.filter(id => done[id]).length, r = ids.filter(id => started[id]).length;
     const pct = total ? d / total * 100 : 0;
-    const mods = Object.keys(modules).filter(m => m.startsWith(tr + "-"));
+    const mods = Object.keys(modules).filter(m => m.startsWith(tr + "-") && modules[m][1] > 0);
     const fm = mods.filter(m => (modDone[m] || 0) >= modules[m][1]).length;
     const lastId = ids.filter(id => doneAt[id]).sort((a, b) => doneAt[b] - doneAt[a])[0];
     // Meta próxima: o módulo mais perto de terminar (a previsão do roteiro inteiro fica na Jornada)
@@ -219,6 +225,7 @@ function renderConquistas() {
       '<div class="cq-card-top">' + cqRing(pct, pctLabel) + '<div><div class="cq-name">' + icon + " " + name + "</div>" +
       '<div class="cq-count"><b>' + d + "</b> de " + total + " concluídos" + (r ? " · " + r + " em andamento" : "") + "</div></div></div>" +
       '<div class="cq-line">Módulos completos: <b>' + fm + " de " + mods.length + "</b></div>" +
+      (extras ? '<div class="cq-line">⭐ Bônus: <b>' + extras + " aprofundamento" + (extras === 1 ? "" : "s") + " opcional" + (extras === 1 ? "" : "is") + "</b> concluído" + (extras === 1 ? "" : "s") + "</div>" : "") +
       (lastId ? '<div class="cq-line">Última conquista: <b>' + cqEsc(topics[lastId][0]) + "</b> (" + cqDate(doneAt[lastId]) + ")</div>" : "") +
       '<div class="cq-est">' + est + "</div></a>";
   });
@@ -246,7 +253,7 @@ function renderConquistas() {
   // Selos
   const tracksThisWeek = new Set(Object.keys(doneAt).filter(id => doneAt[id] >= now - 7 * CQ_DAY).map(id => id.split("-")[0]));
   const tiers = [
-    ["📘", "tópico", "tópicos", totalDone, [1, 5, 10, 25, 50, 100, 150, 200, 289]],
+    ["📘", "tópico", "tópicos", totalDone, [1, 5, 10, 25, 50, 100, 150, 200, totalReq]],
     ["⏱️", "hora estudada", "horas estudadas", totalSec / 3600, [1, 5, 10, 25, 50, 100]],
     ["🔥", "dia seguido", "dias seguidos", best, [3, 7, 14, 30, 60]],
     ["🧩", "módulo completo", "módulos completos", fullMods.length, [1, 3, 5, 10, 20]],
