@@ -336,5 +336,6 @@ function calcAndPaint() {
   else if (!deadline) end = now + 90 * DAY;
   jrSet("jr-chart", drawJourney({ start, end, now, deadline, total: T.points, pts: P.pts, curve: cv, fc }));
   updateWhatIf();
+  if (typeof renderConquistas === "function") { try { renderConquistas(); } catch (e) { console.error(e); } }
 }
 """

@@ -3,6 +3,9 @@ const RM = (() => {
   const DAY = 86400000, WEEK = 7 * DAY;
   const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };
   const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
+  // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
+  // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
+  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k);
   const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
   const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
 
@@ -21,6 +24,7 @@ const RM = (() => {
     for (const t in TRACK_TOTAL) per[t] = { done: 0, pts: 0, total: TRACK_TOTAL[t], ptsTotal: TRACK_TOTAL[t] * trackW(eff, t) };
     let structDone = 0, pts = 0;
     for (const k in PR) {
+      if (!isTopic(k)) continue;
       const it = PR[k] || {}, t = trackOf(k), w = weightOf(k, eff);
       let c = 0;
       if (it.s === "e") { c = w; structDone++; per[t].done++; }
@@ -32,6 +36,7 @@ const RM = (() => {
 
   // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}
   const evNet = (e, eff) => {
+    if (!isTopic(e.id)) return 0;
     const w = weightOf(e.id, eff);
     return (e.to === "e" && e.f !== "e") ? w : (e.f === "e" && e.to !== "e") ? -w : 0;
   };
@@ -116,7 +121,7 @@ const RM = (() => {
     return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
   }
 
-  return { TRACK_TOTAL, trackOf, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+  return { TRACK_TOTAL, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
            planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;
