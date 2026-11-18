@@ -663,6 +663,7 @@ from auth_aws_sync import AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, FORG
 from projects_generator import generate_projects_page
 from favicon import FAVICON_LINK
 from hub_journey import JOURNEY_CSS, JOURNEY_HTML, JOURNEY_JS_A, JOURNEY_JS_B
+from hub_conquistas import CONQ_CSS, CONQ_HTML, CONQ_JS, TRACKS as CONQ_TRACKS, build_index as conq_index
 
 print("SHARED_CSS pronto.")
 
@@ -2217,11 +2218,13 @@ checkHubAuth();
 """
 
     html = (html_template
-        .replace("__HUB_CSS__", hub_css + JOURNEY_CSS)
+        .replace("__HUB_CSS__", hub_css + JOURNEY_CSS + CONQ_CSS)
         .replace("__FAVICON__", FAVICON_LINK)
-        .replace("__JOURNEY_HTML__", JOURNEY_HTML)
+        .replace("__JOURNEY_HTML__", CONQ_HTML + "\n\n  " + JOURNEY_HTML)
         .replace("__JOURNEY_JS_A__", JOURNEY_JS_A)
-        .replace("__JOURNEY_JS_B__", JOURNEY_JS_B)
+        .replace("__JOURNEY_JS_B__", JOURNEY_JS_B + CONQ_JS
+                 .replace("__CONQ_INDEX__", conq_index({"ia": ia_phases, "mat": mat_phases, "ing": ing_phases}))
+                 .replace("__CONQ_TRACKS__", json.dumps([list(t) for t in CONQ_TRACKS], ensure_ascii=False)))
         .replace("__CHANGE_CREDENTIALS_MODAL__", CHANGE_CREDENTIALS_MODAL_HTML)
         .replace("__FORGOT_PASSWORD_MODAL__", FORGOT_PASSWORD_MODAL_HTML)
         .replace("__AUTH_AWS_SYNC_JS__", AUTH_AWS_SYNC_JS)
