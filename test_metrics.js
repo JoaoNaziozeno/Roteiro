@@ -51,4 +51,10 @@ assert.strictEqual(RM.status(10, 50, total, 30).k, "late");            // -40 pt
 // marcos só a partir do log
 const cv = RM.curve([{ t: now - DAY, id: "ia-1", f: "z", to: "e" }], eff, now - 10 * DAY, now, 30);
 assert.ok(RM.milestones(cv, 289).some(m => m.th === 10));
+// chaves antigas (números do formato anterior) não contam como tópicos
+const legado = RM.progress({ "35": { s: "e" }, "211": { s: "e" }, "ia-1": { s: "e" } }, eff);
+assert.strictEqual(legado.structDone, 1);
+assert.strictEqual(legado.per.ia.done, 1);
+assert.strictEqual(RM.evNet({ id: "35", f: "z", to: "e" }, eff), 0);
+assert.strictEqual(RM.evNet({ id: "ia-1", f: "z", to: "e" }, eff), 1);
 console.log("✅ todos os testes passaram");
