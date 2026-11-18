@@ -25,8 +25,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE)
 
 RUNNER = r'''
-import sys, json, io, contextlib
+import sys, json, io, contextlib, ast, asyncio, inspect
 spec = json.load(open(sys.argv[1], encoding="utf-8"))
+# Como no navegador (runPythonAsync): aceita "await" no nível do módulo, num único loop para código e testes.
+_loop = asyncio.new_event_loop()
+def _run(src, ns):
+    r = eval(compile(src, "<exec>", "exec", flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT), ns)
+    if inspect.iscoroutine(r): _loop.run_until_complete(r)
 if spec.get("libs"): sys.path.insert(0, spec["libs"])
 fila = list(spec.get("stdin") or [])
 def _input(prompt=""):
@@ -37,14 +42,14 @@ buf = io.StringIO()
 res = {"err": None, "tests": []}
 try:
     with contextlib.redirect_stdout(buf):
-        exec(compile(spec["code"], "<exec>", "exec"), ns)
+        _run(spec["code"], ns)
 except BaseException as e:
     res["err"] = type(e).__name__ + ": " + str(e)
 if not res["err"]:
     for t in spec["tests"]:
         ns["saida"] = buf.getvalue()
         try:
-            exec(t["codigo"], ns); res["tests"].append([t["nome"], True, ""])
+            _run(t["codigo"], ns); res["tests"].append([t["nome"], True, ""])
         except BaseException as e:
             res["tests"].append([t["nome"], False, type(e).__name__ + ": " + str(e)])
 print("@@" + json.dumps(res))
@@ -52,7 +57,7 @@ print("@@" + json.dumps(res))
 # Bibliotecas pesadas (numpy, pandas): defina LV_PYLIBS com uma pasta onde elas estejam instaladas
 # (pip install --target PASTA numpy pandas) para conferir também esses exercícios.
 LIBS = os.environ.get("LV_PYLIBS", "")
-HEAVY = re.compile(r"^\s*(import|from)\s+(numpy|pandas|scipy|matplotlib|sklearn|sympy)\b", re.M)
+HEAVY = re.compile(r"^\s*(import|from)\s+(numpy|pandas|scipy|matplotlib|sklearn|sympy|pydantic)\b", re.M)
 
 
 def run_code(code, tests, stdin):
