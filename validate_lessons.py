@@ -155,6 +155,9 @@ def main():
     ia, en = ia_guides(), en_guides()
     titles = [t["title"] for p in get_enriched_ia_phases() for g in p["g"] for t in g[1]]
     vids = [e["videoId"] for e in json.load(open(os.path.join(BASE, "english_playlist.json"), encoding="utf-8"))]
+    from en_m7_trabalho import MODULO_7
+    vids += [t["videoId"] for g in MODULO_7["g"] for t in g[1]]          # Módulo 7 (Inglês no trabalho)
+    from math_lessons_v2_extra import AULAS as mat_extra                  # aulas novas de Matemática
     miss_ia, miss_en = [t for t in titles if t not in ia], [v for v in vids if v not in en]
     extra = [k for k in ia if k not in titles] + [k for k in en if k not in vids]
     print(f"IA: {len(titles) - len(miss_ia)}/{len(titles)} aulas · Inglês: {len(vids) - len(miss_en)}/{len(vids)} aulas")
@@ -167,7 +170,7 @@ def main():
             print("   falta EN:", v)
 
     problems, code_jobs = [], []
-    for key, g in list(ia.items()) + list(en.items()):
+    for key, g in list(ia.items()) + list(en.items()) + list(mat_extra.items()):
         if only is None or key in only:
             check_guide(key, g, problems, code_jobs)
 
