@@ -5,12 +5,14 @@ Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 """
 
 import json
+import curriculo
 from studio_js import STUDIO_JS
 from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
-    total_topics = 0
+    total_topics = 0      # só obrigatórios (meta e percentuais)
+    all_topics = 0        # todos, inclusive opcionais (filtro "Todos")
     phase_items = []
     topics_map = {}
 
@@ -27,8 +29,11 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
             topics_list = []
 
             for t_idx, raw_t in enumerate(g[1]):
-                topic_id = f"{track_id}-{p_idx}-{g_idx}-{t_idx}"
-                total_topics += 1
+                topic_id = curriculo.topic_id(raw_t, track_id, p_idx, g_idx, t_idx)
+                is_opt = curriculo.is_optional(raw_t)
+                all_topics += 1
+                if not is_opt:
+                    total_topics += 1
 
                 topic_title = ""
                 yt_url = ""
@@ -68,7 +73,9 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     "doc_url": doc_url,
                     "doc_label": doc_label,
                     "pt_guide": pt_guide,
-                    "yt_pt_url": yt_pt_url
+                    "yt_pt_url": yt_pt_url,
+                    "opt": is_opt,
+                    "opt_note": raw_t.get("opt_note", "") if isinstance(raw_t, dict) else ""
                 }
                 topics_list.append(t_dict)
                 topics_map[topic_id] = t_dict
@@ -143,9 +150,9 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">{doc_lbl_clean} ↗</a>'
 
                 topics_rows.append(f"""
-                <div class="topic-row" data-id="{t['id']}" id="top-{t['id']}">
+                <div class="topic-row{' topic-optional' if t.get('opt') else ''}" data-id="{t['id']}" id="top-{t['id']}"{' data-opt="1"' if t.get('opt') else ''}>
                   <div class="topic-left" onclick="openStudyModal('{t['id']}', false, 1)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
-                    <span class="topic-title-text">{t['title']}</span>
+                    <span class="topic-title-text">{t['title']}</span>{f'<span class="opt-badge" title="{t.get("opt_note", "")}">Opcional</span>' if t.get('opt') else ''}
                   </div>
                   <div class="topic-actions">
                     {yt_btn_html}
@@ -352,7 +359,7 @@ __AUTH_AWS_CSS__
 
       <section class="filter-row">
         <div class="filters">
-          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos (__TOTAL_TOPICS__)</button>
+          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos (__ALL_TOPICS__)</button>
           <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero</button>
           <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar</button>
           <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído</button>
@@ -1006,8 +1013,10 @@ function paint() {
     const tid = row.getAttribute("data-id");
     const item = PR[tid] || { s: "z", n: "", d: "" };
     const status = item.s || "z";
+    const isOpt = row.hasAttribute("data-opt");   // opcionais: fora dos contadores e da meta
 
-    if (status === "e") doneCount++;
+    if (isOpt) { /* não conta */ }
+    else if (status === "e") doneCount++;
     else if (status === "r") progCount++;
     else zeroCount++;
 
@@ -1031,7 +1040,7 @@ function paint() {
     }
 
     // Identificar primeiro não concluído para recomendação
-    if (!firstUncompletedRow && status !== "e") {
+    if (!firstUncompletedRow && status !== "e" && !isOpt) {
       firstUncompletedRow = row;
     }
 
@@ -1570,6 +1579,7 @@ if (typeof initSplitResizer === "function") initSplitResizer();
         .replace("__TRACK_ICON__", track_icon)
         .replace("__TRACK_ID__", track_id)
         .replace("__TOTAL_TOPICS__", str(total_topics))
+        .replace("__ALL_TOPICS__", str(all_topics))
         .replace("__SHARED_CSS__", shared_css)
         .replace("__FAVICON__", FAVICON_LINK)
         .replace("__ACTIVE_HUB__", active_hub)

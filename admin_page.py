@@ -30,7 +30,9 @@ def build_topics(tracks):
             items = []
             for g_idx, g in enumerate(p["g"]):
                 for t_idx, raw in enumerate(g[1]):
-                    items.append([f"{tr}-{p_idx}-{g_idx}-{t_idx}", _topic_title(raw)])
+                    import curriculo
+                    title = _topic_title(raw) + (" (opcional)" if curriculo.is_optional(raw) else "")
+                    items.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), title])
             out[tr].append({"t": p.get("t", f"Fase {p_idx + 1}"), "items": items})
     return out
 

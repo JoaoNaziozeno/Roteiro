@@ -118,6 +118,7 @@ JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
   </section>"""
 
 JOURNEY_JS_A = METRICS_JS + r"""
+RM.configure(__RM_CONFIG__);   // totais só com os tópicos obrigatórios (opcionais ficam fora da meta)
 HUB_PRESETS.none = { name: "Sem meta", days: null, label: "Sem data-alvo definida" };
 const EVENTS_KEY = "roteiro-events-v1", SESS_KEY = "roteiro-sessions-v1",
       LOGSTART_KEY = "roteiro-log-start", EFFORT_KEY = "roteiro-effort-v1";

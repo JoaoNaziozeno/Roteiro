@@ -685,6 +685,12 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 
 print("Listing page generator pronto (conectado ao listing_generator modular).")
 
+def _cnt_label(tr, unit, parts):
+    c = CURR_COUNTS[tr]
+    extra = f" (+{c['opt']} opcionais)" if c["opt"] else ""
+    return f"{c['req']} {unit}{extra} · {c['phases']} {parts}"
+
+
 def generate_hub_page(out_path):
     hub_css = SHARED_CSS + "\n" + AUTH_AWS_SYNC_CSS + """
 /* =========================================================================
@@ -1950,7 +1956,7 @@ __HUB_CSS__
       <div>
         <div class="track-card-top">
           <div class="track-card-icon">🤖</div>
-          <span class="track-badge-count">173 Tópicos · 6 Fases</span>
+          <span class="track-badge-count">__CNT_IA__</span>
         </div>
         <h3 class="track-card-title">Inteligência Artificial & Código</h3>
         <p class="track-card-desc">
@@ -1977,7 +1983,7 @@ __HUB_CSS__
       <div>
         <div class="track-card-top">
           <div class="track-card-icon">📐</div>
-          <span class="track-badge-count">43 Tópicos · 5 Módulos</span>
+          <span class="track-badge-count">__CNT_MAT__</span>
         </div>
         <h3 class="track-card-title">Matemática Essencial para IA</h3>
         <p class="track-card-desc">
@@ -2004,7 +2010,7 @@ __HUB_CSS__
       <div>
         <div class="track-card-top">
           <div class="track-card-icon">🇺🇸</div>
-          <span class="track-badge-count">73 Aulas · 6 Módulos</span>
+          <span class="track-badge-count">__CNT_ING__</span>
         </div>
         <h3 class="track-card-title">Curso de Inglês EnglishBay</h3>
         <p class="track-card-desc">
@@ -2221,7 +2227,10 @@ checkHubAuth();
         .replace("__HUB_CSS__", hub_css + JOURNEY_CSS + CONQ_CSS)
         .replace("__FAVICON__", FAVICON_LINK)
         .replace("__JOURNEY_HTML__", CONQ_HTML + "\n\n  " + JOURNEY_HTML)
-        .replace("__JOURNEY_JS_A__", JOURNEY_JS_A)
+        .replace("__JOURNEY_JS_A__", JOURNEY_JS_A.replace("__RM_CONFIG__", json.dumps(RM_CONFIG)))
+        .replace("__CNT_IA__", _cnt_label("ia", "Tópicos", "Fases"))
+        .replace("__CNT_MAT__", _cnt_label("mat", "Tópicos", "Módulos"))
+        .replace("__CNT_ING__", _cnt_label("ing", "Aulas", "Módulos"))
         .replace("__JOURNEY_JS_B__", JOURNEY_JS_B + CONQ_JS
                  .replace("__CONQ_INDEX__", conq_index({"ia": ia_phases, "mat": mat_phases, "ing": ing_phases}))
                  .replace("__CONQ_TRACKS__", json.dumps([list(t) for t in CONQ_TRACKS], ensure_ascii=False)))
@@ -2245,6 +2254,14 @@ out_proj = os.path.join(BASE_DIR, "projetos.html")
 out_hub = os.path.join(BASE_DIR, "index.html")
 out_mirror = os.path.join(BASE_DIR, "Roteiro de Estudo_ do zero à IA.html")
 
+
+# Currículo: ids fixos, reorganização da Matemática e tópicos opcionais (ver curriculo.py).
+# Precisa rodar antes de qualquer página ser gerada.
+import curriculo
+_TRACKS = {"ia": ia_phases, "mat": mat_phases, "ing": ing_phases}
+curriculo.apply(_TRACKS)
+CURR_COUNTS = curriculo.counts(_TRACKS)
+RM_CONFIG = {"totals": {t: c["req"] for t, c in CURR_COUNTS.items()}, "optional": curriculo.optional_ids(_TRACKS)}
 
 # Índice de todos os tópicos para a busca global (Ctrl/⌘ + K) do design v2
 from design_v2 import set_topic_index

@@ -9,11 +9,16 @@ Uso:  python metrics_js.py   ->  gera metrics.js para testar com `node test_metr
 METRICS_JS = r"""
 const RM = (() => {
   const DAY = 86400000, WEEK = 7 * DAY;
-  const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };
+  const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };   // substituído por configure() com os obrigatórios
+  const OPTIONAL = new Set();                            // tópicos opcionais: fora da meta e dos percentuais
   const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
   // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
   // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
-  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k);
+  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k) && !OPTIONAL.has(k);
+  function configure(c) {
+    if (c && c.totals) for (const t in c.totals) TRACK_TOTAL[t] = c.totals[t];
+    if (c && Array.isArray(c.optional)) { OPTIONAL.clear(); c.optional.forEach(k => OPTIONAL.add(k)); }
+  }
   const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
   const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
 
@@ -129,7 +134,7 @@ const RM = (() => {
     return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
   }
 
-  return { TRACK_TOTAL, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+  return { TRACK_TOTAL, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
            planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;
