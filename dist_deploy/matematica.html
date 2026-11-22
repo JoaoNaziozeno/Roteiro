@@ -6832,16 +6832,16 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
     const card = document.getElementById(`pt-step-card-${i}`);
     if (!card) continue;
     const r = card.getBoundingClientRect();
-    if (r.top < cRect.bottom - 25 && r.bottom > cRect.top + 15) {
-      if (!guideCardsSeen[i]) {
-        guideCardsSeen[i] = true;
-        const badge = document.getElementById(`pt-step-badge-${i}`);
-        if (badge) {
-          badge.textContent = `✓ ${i}/${totalCards}`;
-          badge.classList.add("is-seen");
-        }
-        card.classList.add("is-seen");
+    if (r.top < cRect.bottom - 25 && r.bottom > cRect.top + 15) guideCardsSeen[i] = true;
+    // O ✓ depende do estado, não do instante em que a etapa foi vista: ao reabrir uma aula já lida
+    // o estado volta preenchido, mas o HTML é desenhado de novo, sem marca nenhuma.
+    if ((guideCardsSeen[i] || guideCompleted) && !card.classList.contains("is-seen")) {
+      const badge = document.getElementById(`pt-step-badge-${i}`);
+      if (badge) {
+        badge.textContent = `✓ ${i}/${totalCards}`;
+        badge.classList.add("is-seen");
       }
+      card.classList.add("is-seen");
     }
   }
 }
