@@ -25,8 +25,13 @@ BASE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE)
 
 RUNNER = r'''
-import sys, json, io, contextlib
+import sys, json, io, contextlib, ast, asyncio, inspect
 spec = json.load(open(sys.argv[1], encoding="utf-8"))
+# Como no navegador (runPythonAsync): aceita "await" no nível do módulo, num único loop para código e testes.
+_loop = asyncio.new_event_loop()
+def _run(src, ns):
+    r = eval(compile(src, "<exec>", "exec", flags=ast.PyCF_ALLOW_TOP_LEVEL_AWAIT), ns)
+    if inspect.iscoroutine(r): _loop.run_until_complete(r)
 if spec.get("libs"): sys.path.insert(0, spec["libs"])
 fila = list(spec.get("stdin") or [])
 def _input(prompt=""):
@@ -37,14 +42,14 @@ buf = io.StringIO()
 res = {"err": None, "tests": []}
 try:
     with contextlib.redirect_stdout(buf):
-        exec(compile(spec["code"], "<exec>", "exec"), ns)
+        _run(spec["code"], ns)
 except BaseException as e:
     res["err"] = type(e).__name__ + ": " + str(e)
 if not res["err"]:
     for t in spec["tests"]:
         ns["saida"] = buf.getvalue()
         try:
-            exec(t["codigo"], ns); res["tests"].append([t["nome"], True, ""])
+            _run(t["codigo"], ns); res["tests"].append([t["nome"], True, ""])
         except BaseException as e:
             res["tests"].append([t["nome"], False, type(e).__name__ + ": " + str(e)])
 print("@@" + json.dumps(res))
@@ -52,7 +57,7 @@ print("@@" + json.dumps(res))
 # Bibliotecas pesadas (numpy, pandas): defina LV_PYLIBS com uma pasta onde elas estejam instaladas
 # (pip install --target PASTA numpy pandas) para conferir também esses exercícios.
 LIBS = os.environ.get("LV_PYLIBS", "")
-HEAVY = re.compile(r"^\s*(import|from)\s+(numpy|pandas|scipy|matplotlib|sklearn|sympy)\b", re.M)
+HEAVY = re.compile(r"^\s*(import|from)\s+(numpy|pandas|scipy|matplotlib|sklearn|sympy|pydantic)\b", re.M)
 
 
 def run_code(code, tests, stdin):
@@ -150,6 +155,9 @@ def main():
     ia, en = ia_guides(), en_guides()
     titles = [t["title"] for p in get_enriched_ia_phases() for g in p["g"] for t in g[1]]
     vids = [e["videoId"] for e in json.load(open(os.path.join(BASE, "english_playlist.json"), encoding="utf-8"))]
+    from en_m7_trabalho import MODULO_7
+    vids += [t["videoId"] for g in MODULO_7["g"] for t in g[1]]          # Módulo 7 (Inglês no trabalho)
+    from math_lessons_v2_extra import AULAS as mat_extra                  # aulas novas de Matemática
     miss_ia, miss_en = [t for t in titles if t not in ia], [v for v in vids if v not in en]
     extra = [k for k in ia if k not in titles] + [k for k in en if k not in vids]
     print(f"IA: {len(titles) - len(miss_ia)}/{len(titles)} aulas · Inglês: {len(vids) - len(miss_en)}/{len(vids)} aulas")
@@ -162,7 +170,7 @@ def main():
             print("   falta EN:", v)
 
     problems, code_jobs = [], []
-    for key, g in list(ia.items()) + list(en.items()):
+    for key, g in list(ia.items()) + list(en.items()) + list(mat_extra.items()):
         if only is None or key in only:
             check_guide(key, g, problems, code_jobs)
 

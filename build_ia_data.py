@@ -130,6 +130,15 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Otávio Miranda · venv e pip",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/venv.html",
                             "doc_label": "📖 Docs Ambientes Virtuais"
+                        },
+                        {
+                            "title": "Python assíncrono (async/await)",
+                            "video_url": "https://www.youtube.com/watch?v=ZKaamqfIi7A",
+                            "video_label": "▶ Funções assíncronas na prática",
+                            "video2_url": "https://www.youtube.com/watch?v=I8doc-MlQ9g",
+                            "video2_label": "🎬 Live de Python #154 · AsyncIO",
+                            "doc_url": "https://docs.python.org/pt-br/3/library/asyncio.html",
+                            "doc_label": "📖 Docs asyncio"
                         }
                     ]
                 ],
@@ -156,6 +165,13 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Hashtag · Biblioteca Requests",
                             "doc_url": "https://requests.readthedocs.io/en/latest/",
                             "doc_label": "📖 Docs Requests Oficial"
+                        },
+                        {
+                            "title": "Desenvolver com assistentes de IA (Claude Code, Copilot, Cursor)",
+                            "video_url": "https://www.youtube.com/watch?v=Vo5ePeM3C3U",
+                            "video_label": "▶ Claude Code do zero (PT-BR)",
+                            "doc_url": "https://docs.github.com/pt/copilot",
+                            "doc_label": "📖 Docs GitHub Copilot"
                         }
                     ]
                 ],
@@ -210,6 +226,13 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Decorators Desmistificados",
                             "doc_url": "https://peps.python.org/pep-0318/",
                             "doc_label": "📖 Docs PEP 318 Decorators"
+                        },
+                        {
+                            "title": "Tipagem, dataclasses e Pydantic",
+                            "video_url": "https://www.youtube.com/watch?v=UdfLu1G47BU",
+                            "video_label": "▶ Live de Python #165 · Pydantic",
+                            "doc_url": "https://docs.pydantic.dev/latest/",
+                            "doc_label": "📖 Docs Pydantic"
                         }
                     ]
                 ],
@@ -1237,6 +1260,15 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Tech With Tim · Ollama em 15 min",
                             "doc_url": "https://ollama.com/",
                             "doc_label": "📖 Ollama Official Website"
+                        },
+                        {
+                            "title": "LGPD e dados pessoais em sistemas de IA",
+                            "video_url": "https://www.youtube.com/watch?v=GSu44mAJ1tE",
+                            "video_label": "▶ Governança de IA e LGPD",
+                            "video2_url": "https://www.youtube.com/watch?v=CgXbnIfDFLA",
+                            "video2_label": "🎬 OAB Campinas · IA x LGPD",
+                            "doc_url": "https://www.gov.br/anpd/pt-br",
+                            "doc_label": "📖 ANPD (Autoridade Nacional de Proteção de Dados)"
                         }
                     ]
                 ]
@@ -1279,6 +1311,13 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Hashtag · PyTest",
                             "doc_url": "https://docs.pytest.org/",
                             "doc_label": "📖 Pytest Documentation"
+                        },
+                        {
+                            "title": "Erros, tentativas e logs em produção",
+                            "video_url": "https://www.youtube.com/watch?v=PGAOqAWuwC0",
+                            "video_label": "▶ Live de Python #198 · Logs",
+                            "doc_url": "https://docs.python.org/pt-br/3/howto/logging.html",
+                            "doc_label": "📖 Docs Logging HOWTO"
                         }
                     ]
                 ],
@@ -1338,6 +1377,13 @@ def get_enriched_ia_phases():
                             "video_label": "▶ Playlist Inglês EnglishBay",
                             "doc_url": "https://arxiv.org/archive/cs",
                             "doc_label": "📄 arXiv Computer Science"
+                        },
+                        {
+                            "title": "Design de sistemas de ML e LLM (entrevistas)",
+                            "video_url": "https://www.youtube.com/watch?v=jkKAeIx7F8c",
+                            "video_label": "▶ (EN) ML System Design Interview",
+                            "doc_url": "https://huyenchip.com/machine-learning-systems-design/toc.html",
+                            "doc_label": "📖 Chip Huyen · ML Systems Design"
                         }
                     ]
                 ],

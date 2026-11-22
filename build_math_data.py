@@ -20,6 +20,10 @@ for g in [GUIDES_MOD1, GUIDES_MOD2, GUIDES_MOD3, GUIDES_MOD4, GUIDES_MOD5]:
 from math_lessons_pilot import PILOT_GUIDES
 ALL_GUIDES.update(PILOT_GUIDES)
 
+# Aulas acrescentadas na revisão do currículo (tópicos novos entram no FIM de um grupo: nenhum id muda)
+from math_lessons_v2_extra import AULAS as EXTRA_GUIDES, TOPICO_AB
+ALL_GUIDES.update(EXTRA_GUIDES)
+
 BASE_MAT_PHASES = [ { 'd': '3 a 4 semanas',
     'g': [ [ 'Vetores e Operações',
              [ { 'doc_label': '📘 Aula Visual: Vetores',
@@ -429,6 +433,11 @@ def get_enriched_mat_phases():
     didáticas, fórmulas e exemplos passo a passo.
     """
     phases = copy.deepcopy(BASE_MAT_PHASES)
+    # Estatística para comparar modelos: no fim de "Distribuições & Inferência" (id mat-2-1-5)
+    for p in phases:
+        for grp in p['g']:
+            if grp[0] == 'Distribuições & Inferência':
+                grp[1].append(copy.deepcopy(TOPICO_AB))
     for p in phases:
         for grp in p['g']:
             for t in grp[1]:
