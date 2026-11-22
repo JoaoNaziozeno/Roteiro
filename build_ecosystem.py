@@ -2083,7 +2083,7 @@ __HUB_CSS__
         <span class="market-stat-lbl">Projetos de IA ativos no ecossistema global do GitHub & Hugging Face</span>
       </div>
       <div class="market-stat">
-        <span class="market-stat-num">289 Tópicos</span>
+        <span class="market-stat-num">__CNT_TOTAL__ Tópicos</span>
         <span class="market-stat-lbl">Currículo completo deste roteiro cobrindo as 3 habilidades essenciais</span>
       </div>
     </div>
@@ -2145,7 +2145,7 @@ const HUB_PRESETS = {
 let currentPace = "optimistic";
 let currentStartDate = "";
 let isDemoMode = false;
-let lastRemainingTopics = 289;
+let lastRemainingTopics = __CNT_REQ__;
 
 __JOURNEY_JS_A__
 
@@ -2228,6 +2228,8 @@ checkHubAuth();
         .replace("__FAVICON__", FAVICON_LINK)
         .replace("__JOURNEY_HTML__", CONQ_HTML + "\n\n  " + JOURNEY_HTML)
         .replace("__JOURNEY_JS_A__", JOURNEY_JS_A.replace("__RM_CONFIG__", json.dumps(RM_CONFIG)))
+        .replace("__CNT_TOTAL__", str(sum(c["req"] + c["opt"] for c in CURR_COUNTS.values())))
+        .replace("__CNT_REQ__", str(sum(c["req"] for c in CURR_COUNTS.values())))
         .replace("__CNT_IA__", _cnt_label("ia", "Tópicos", "Fases"))
         .replace("__CNT_MAT__", _cnt_label("mat", "Tópicos", "Módulos"))
         .replace("__CNT_ING__", _cnt_label("ing", "Aulas", "Módulos"))

@@ -1,0 +1,991 @@
+{
+ "ia | 3 a 5 projetos documentados no GitHub": {
+  "fCXBaEnPzgo": "Data Professor | Building your Data Science Portfolio with GitHub (Data Science 101)"
+ },
+ "ia | 30 exercícios (Beecrowd, HackerRank, Exercism)": {
+  "PLHz_AreHm4dm6wYOIW20Nyg12TAjmMGT-": "Curso em Vídeo | Exercícios de Python 3"
+ },
+ "ia | Agentes e uso de ferramentas": {
+  "HzGOWq5UyjY": "Tech With Tim | How AI Agents Actually Work (Every Piece Explained & Built)"
+ },
+ "ia | Ajuste de hiperparâmetros": {
+  "HdlDYng8g9s": "codebasics | Machine Learning Tutorial Python - 16: Hyper parameter Tuning (GridSearchCV)"
+ },
+ "ia | Algoritmos de busca e ordenação": {
+  "EgLE5HwRy_M": "Programação Dinâmica | Como implementar BUSCA BINÁRIA? *Você deveria aprender isso!* | Algoritmos #10"
+ },
+ "ia | Alucinações e mitigação": {
+  "YqIToD-GehM": "AI Roots - David Farias | Alucinações em IA: O Guia Prático para Identificar, Medir e Controlar Erros em LLMs"
+ },
+ "ia | Ambientes virtuais e pip": {
+  "m1TYpvIYm74": "Otávio Miranda | Ambiente virtual Python no Windows (usando venv e VS Code)"
+ },
+ "ia | Análise exploratória de dados (EDA)": {
+  "woObL4Mx9ns": "Patricia de Siqueira Ramos | Análise Exploratória de Dados em Python: pandas, Google Colab, gráficos com matplotlib e seaborn"
+ },
+ "ia | Apply e funções vetorizadas": {
+  "P_q0tkYqvSk": "Data School | How do I apply a function to a pandas Series or DataFrame?"
+ },
+ "ia | Aprendizado supervisionado vs. não supervisionado": {
+  "1FZ0A1QCMWc": "Simplilearn | Supervised vs Unsupervised vs Reinforcement Learning | Machine Learning Tutorial | Simplilearn"
+ },
+ "ia | Arquitetura Transformer": {
+  "kCc8FmEb1nY": "Andrej Karpathy | Let's build GPT: from scratch, in code, spelled out."
+ },
+ "ia | Arquivos (ler e escrever)": {
+  "bfTFe6bKLXk": "Curso em Vídeo | Exercício Python #115b - Arquivos com Python"
+ },
+ "ia | Autenticação e limites de uso": {
+  "qqGkshRzw_g": "Hashtag Programação | Curso de FastAPI - Rest API com Python - Aula 06: Autenticação, OAuth2 e JWT Tokens"
+ },
+ "ia | Autoencoders": {
+  "ADbPhK5-bvE": "IA Expert Academy | Introdução a autoencoders"
+ },
+ "ia | Avaliação de LLMs (evals e benchmarks)": {
+  "EN8jVkv0kiw": "ByteByteAI | Why Everyone Should Know About AI Evals: The Fundamentals Explained"
+ },
+ "ia | Avaliação e segurança de sistemas com LLM": {
+  "MltkRz94SWA": "Aish Reganti | The Most Important Skill for AI Engineers: Evals Explained"
+ },
+ "ia | Backpropagation": {
+  "Ilg3gGewQ5U": "3Blue1Brown | Backpropagation, intuitively | Deep Learning Chapter 3"
+ },
+ "ia | Bancos vetoriais e busca semântica": {
+  "klTvEwg3oJ4": "Fireship | Vector databases are so hot right now. WTF are they?"
+ },
+ "ia | Batch normalization": {
+  "DtEq44FTPM4": "CodeEmporium | Batch Normalization - EXPLAINED!"
+ },
+ "ia | Broadcasting": {
+  "oG1t3qlzq14": "mCoding | Numpy Array Broadcasting In Python Explained"
+ },
+ "ia | CI/CD com GitHub Actions": {
+  "R8_veQiYBjI": "TechWorld with Nana | GitHub Actions Tutorial - Basic Concepts and CI/CD Pipeline with Docker"
+ },
+ "ia | CNNs para imagens": {
+  "HGwBXDKFk9I": "StatQuest with Josh Starmer | Neural Networks Part 8: Image Classification with Convolutional Neural Networks (CNNs)"
+ },
+ "ia | Certificações (opcional)": {
+  "TGjq6u8VqK8": "Amazon Web Services | Getting Started: AWS Certified Machine Learning Engineer - Associate | Amazon Web Services"
+ },
+ "ia | Chunking e estratégias de recuperação no RAG": {
+  "8OJC21T2SL4": "Greg Kamradt | The 5 Levels Of Text Splitting For Retrieval"
+ },
+ "ia | Comunidades e eventos": {
+  "UIJ0o0YCgPE": "Felipe Salles | NETWORKING NA ÁREA DE TECNOLOGIA - GRUPOS E COMUNIDADES PARA VOCÊ PARTICIPAR!"
+ },
+ "ia | Condicionais (if, elif, else)": {
+  "K10u3XIf1-Q": "Curso em Vídeo | Curso Python #10 - Condições (Parte 1)"
+ },
+ "ia | Condições aninhadas e elif": {
+  "j9bYDjaAYzw": "Curso em Vídeo | Curso Python #012 - Condições Aninhadas"
+ },
+ "ia | Consumir APIs com requests e JSON": {
+  "IdviYZIQLlA": "Hashtag Programação | Biblioteca Requests no Python [Métodos GET, POST, PATCH e DELETE]"
+ },
+ "ia | Contribuir com open source": {
+  "WldXhauP024": "GitHub | Getting started with open source contributions for beginners"
+ },
+ "ia | Currículo e entrevistas técnicas": {
+  "s-MaQ6S9_DA": "Aced (formerly Exponent) | ML Engineer Interviews Explained (in 5 Minutes)"
+ },
+ "ia | Custo e latência": {
+  "u57EnkQaUTY": "IBM Technology | What is Prompt Caching? Optimize LLM Latency with AI Transformers"
+ },
+ "ia | DBSCAN e clusterização hierárquica": {
+  "RDZUdRSDOok": "StatQuest with Josh Starmer | Clustering with DBSCAN, Clearly Explained!!!"
+ },
+ "ia | Dados desbalanceados (SMOTE)": {
+  "JnlM4yLFNuo": "codebasics | Handling imbalanced dataset in machine learning | Deep Learning Tutorial 21 (Tensorflow2.0 & Python)"
+ },
+ "ia | Dashboards com Streamlit": {
+  "zxA97KcUm1Q": "Asimov Academy | Streamlit em menos de 10 minutos"
+ },
+ "ia | Data augmentation": {
+  "mTVf7BN7S8w": "codebasics | Data augmentation to address overfitting | Deep Learning Tutorial 26 (Tensorflow, Keras & Python)"
+ },
+ "ia | Datasets e DataLoaders": {
+  "PXOzkkB5eH0": "Patrick Loeber | PyTorch Tutorial 09 - Dataset and DataLoader - Batch Training"
+ },
+ "ia | Decoradores (noção)": {
+  "FsAPt_9Bf3U": "Corey Schafer | Python Tutorial: Decorators - Dynamically Alter The Functionality Of Your Functions"
+ },
+ "ia | Deploy em nuvem (AWS, GCP ou Azure)": {
+  "pJ_nCklQ65w": "Shaw Talebi | How to Deploy ML Solutions with FastAPI, Docker, & AWS"
+ },
+ "ia | Depurar rede que não aprende": {
+  "P6sfmUTpUmc": "Andrej Karpathy | Building makemore Part 3: Activations & Gradients, BatchNorm"
+ },
+ "ia | Depuração (debug) e leitura de erros": {
+  "5AY6EnC1yWM": "Hashtag Programação | Como Debugar Python com o VSCode? [Fácil e Rápido]"
+ },
+ "ia | Desenvolver com assistentes de IA (Claude Code, Copilot, Cursor)": {
+  "Vo5ePeM3C3U": "Vagner Mazzeo | Claude Code Tutorial Completo em Português: Do Zero ao Primeiro Projeto"
+ },
+ "ia | Design de sistemas de ML e LLM (entrevistas)": {
+  "jkKAeIx7F8c": "Jay Feng | Machine Learning System Design Interview: YouTube Recommendations"
+ },
+ "ia | Detecção de anomalias": {
+  "Y1x51i1936M": "Elder Research, a MANTECH company | Isolation Forests: Identify Outliers in Data"
+ },
+ "ia | Detecção de objetos (YOLO)": {
+  "ag3DLKsl2vk": "codebasics | What is YOLO algorithm? | Deep Learning Tutorial 31 (Tensorflow, Keras & Python)"
+ },
+ "ia | Dicionários": {
+  "ZWj8o692qGY": "Curso em Vídeo | Curso Python #19 - Dicionários"
+ },
+ "ia | Docker": {
+  "fqMOX6JJhGo": "freeCodeCamp.org | Docker Tutorial for Beginners - A Full DevOps Course on How to Run Applications in Containers"
+ },
+ "ia | Docstrings e comentários": {
+  "XgPLNNy3qgI": "Universo Discreto | Caracteres por Linha, Indentação, Comentários e Docstrings - Python Clean Code 02"
+ },
+ "ia | Early stopping e checkpoints": {
+  "Ygvskt5HadI": "CampusX | Early Stopping In Neural Networks | End to End Deep Learning Course"
+ },
+ "ia | Encoder vs. decoder (BERT vs. GPT)": {
+  "FKlPCK1uFrc": "InnerWorkingsAI | BERT Research - Ep. 1 - Key Concepts & Sources"
+ },
+ "ia | Encoding de variáveis categóricas": {
+  "RWaMw02_MQQ": "Eduardo | Ciência dos Dados | APRENDA QUANDO USAR \"LabelEncoder\" ou \"One-Hot Encoder\""
+ },
+ "ia | Engenharia de atributos (feature engineering)": {
+  "pYVScuY-GPk": "codebasics | What is feature engineering | Feature Engineering Tutorial Python # 1"
+ },
+ "ia | Engenharia de prompts": {
+  "jC4v5AS4RIM": "Jeff Su | Master the Perfect ChatGPT Prompt Formula (in just 8 minutes)!"
+ },
+ "ia | Entrada e saída de dados": {
+  "31llNGKWDdo": "Curso em Vídeo | Curso Python #04 - Primeiros comandos em Python3",
+  "nIHq1MtJaKs": "Curso em Vídeo | Exercício Python #001 - Deixando tudo pronto"
+ },
+ "ia | Erros, tentativas e logs em produção": {
+  "PGAOqAWuwC0": "Eduardo Mendes | Como criar logs em Python? - Live de Python #198 [Logging, Loguru, Sentry]"
+ },
+ "ia | Escrever artigos e posts": {
+  "YODPgBadj80": "freeCodeCamp Talks | How to write technical blog posts - talk by Quincy Larson",
+  "z37VL3BlY-I": "Lucas Badico | ARTIGOS técnicos ainda IMPORTAM para programadores?"
+ },
+ "ia | Estilo de código PEP 8": {
+  "wDl1f4uLlHo": "Hashtag Programação | Como Escrever Melhor seu Código em Python - PEP8"
+ },
+ "ia | Exportar modelos com ONNX": {
+  "0t2jOBZSd6s": "DigitalSreeni | 295 - ONNX – open format for machine learning models​"
+ },
+ "ia | Expressões regulares (re)": {
+  "K8L6KVGG-7o": "Corey Schafer | Python Tutorial: re Module - How to Write and Match Regular Expressions (Regex)"
+ },
+ "ia | FastAPI e criação de APIs": {
+  "R26iojTwUv8": "Hashtag Programação | Como Criar API em Python Usando o FastAPI"
+ },
+ "ia | Filas e processamento assíncrono": {
+  "VRHVEporra0": "Pretty Printed | Getting Started With Celery: Asynchronous Tasks in Python"
+ },
+ "ia | Fine-tuning com LoRA": {
+  "dA-NhCtrrVE": "Chris Alexiuk | Low-rank Adaption of Large Language Models: Explaining the Key Concepts Behind LoRA"
+ },
+ "ia | Formato Parquet": {
+  "pTwDOKfB9QA": "Hashtag Programação | Melhores Formatos para Salvar seus Dados csv x parquet x feather"
+ },
+ "ia | Front-end básico (HTML e JS)": {
+  "B4FU3NFRTDw": "Curso em Vídeo | A diferença entre HTML, CSS e JavaScript - @Curso em Vídeo HTML5 e CSS3",
+  "Ptbk2af68e8": "Curso em Vídeo | O que o JavaScript é capaz de fazer? - Curso JavaScript #01"
+ },
+ "ia | Função de perda": {
+  "IHZwWFHWa-w": "3Blue1Brown | Gradient descent, how neural networks learn | Deep Learning Chapter 2"
+ },
+ "ia | Funções de ativação": {
+  "68BZ5f7P94E": "StatQuest with Josh Starmer | Neural Networks Pt. 3: ReLU In Action!!!"
+ },
+ "ia | Funções, parâmetros e retorno": {
+  "ezfr9d7wd_k": "Curso em Vídeo | Curso Python #20 - Funções (Parte 1)"
+ },
+ "ia | Funções: escopo, opcionais e docstrings": {
+  "etjJ_4Eqrk8": "Curso em Vídeo | Curso Python #21 - Funções (Parte 2)"
+ },
+ "ia | GANs": {
+  "8L11aMN5KY8": "Luis Serrano Academy | A Friendly Introduction to Generative Adversarial Networks (GANs)"
+ },
+ "ia | Geradores e iteradores": {
+  "tmeKsb2Fras": "mCoding | Python Generators"
+ },
+ "ia | Git: commit, branch, merge": {
+  "6Czd1Yetaac": "Fabio Akita | Entendendo GIT | (não é um tutorial!)"
+ },
+ "ia | GitHub: repositórios e README": {
+  "5BYm7UdCrX0": "Curso em Vídeo | Criando o primeiro Repositório - Curso de Git e GitHub"
+ },
+ "ia | Gradient Boosting (XGBoost, LightGBM)": {
+  "3CC4N4z3GJc": "StatQuest with Josh Starmer | Gradient Boost Part 1 (of 4): Regression Main Ideas"
+ },
+ "ia | Gradiente descendente e otimizadores (SGD, Adam)": {
+  "MD2fYip6QsQ": "Sourish Kundu | Who's Adam and What's He Optimizing? | Deep Dive into Optimizers for Machine Learning!"
+ },
+ "ia | Hugging Face: modelos, datasets e transformers": {
+  "tiZFewofSLM": "Hugging Face | The pipeline function"
+ },
+ "ia | Importância de atributos": {
+  "U-iahfXlSoY": "A Data Odyssey | Permutation Feature Importance from Scratch | Explanation & Python Code"
+ },
+ "ia | Inglês técnico": {
+  "XDbUO-dm4jQ": "Inglês Para Devs | Como Ler Documentação de Códigos em Inglês - 3 Dicas para Desenvolvedores"
+ },
+ "ia | Instalar Python e usar o terminal": {
+  "S9uPNppGsGo": "Curso em Vídeo | Curso Python #01 - Seja um Programador",
+  "VuKvR1J2LQE": "Curso em Vídeo | Curso Python #03 - Instalando o Python3 e o IDLE"
+ },
+ "ia | Interfaces com Gradio e Streamlit": {
+  "eE7CamOE-PA": "AssemblyAI | Gradio Crash Course - Fastest way to build & share Machine Learning apps"
+ },
+ "ia | Interromper laços (break) e f-strings": {
+  "1OFp_-R2B2A": "Curso em Vídeo | Curso Python #15 - Interrompendo repetições while"
+ },
+ "ia | Janela de contexto e KV cache": {
+  "80bIUggRJf4": "Efficient NLP | The KV Cache: Memory Usage in Transformers"
+ },
+ "ia | Jupyter Notebook e Google Colab": {
+  "HW29067qVWk": "Corey Schafer | Jupyter Notebook Tutorial: Introduction, Setup, and Walkthrough"
+ },
+ "ia | K-Means e clusterização": {
+  "4b5d3muPQmA": "StatQuest with Josh Starmer | StatQuest: K-means clustering"
+ },
+ "ia | KNN": {
+  "HVXime0nQeI": "StatQuest with Josh Starmer | StatQuest: K-nearest neighbors, Clearly Explained"
+ },
+ "ia | Kubernetes (noção)": {
+  "X48VuDVv0do": "TechWorld with Nana | Kubernetes Tutorial for Beginners [FULL COURSE in 4 Hours]"
+ },
+ "ia | LGPD e dados pessoais em sistemas de IA": {
+  "CgXbnIfDFLA": "OAB Campinas | Desafios: Inteligência Artificial x LGPD",
+  "GSu44mAJ1tE": "João Bosco Direito | GOVERNANÇA DE IA E LGPD: desafios éticos e legais na proteção de dados e transparência algorítmica."
+ },
+ "ia | Lambda, map e filter": {
+  "xmMXULd0dxc": "Hashtag Programação | Como Usar as Funções Lambda (Expressões Lambda) no Python"
+ },
+ "ia | Laços (for, while)": {
+  "cL4YDtFnCt4": "Curso em Vídeo | Curso Python #013 - Estrutura de repetição for"
+ },
+ "ia | Learning rate schedulers": {
+  "QzulmoOg2JE": "DeepLearningAI | Learning Rate Decay (C2W2L09)"
+ },
+ "ia | Ler CSV, Excel e JSON": {
+  "AnJPtKLtc7o": "Hashtag Programação | Como Trabalhar com Arquivos CSV no Python"
+ },
+ "ia | Limpeza de dados e valores ausentes": {
+  "bDhvCp3_lYw": "Alex The Analyst | Data Cleaning in Pandas | Python Pandas Tutorials"
+ },
+ "ia | Linux e shell avançado": {
+  "oxuRxtrO2Ag": "Joe Collins (EzeeLinux) | Beginner's Guide to the Bash Terminal"
+ },
+ "ia | List comprehension": {
+  "M2zL6LnQwkw": "Hashtag Programação | O que é, Como Usar e para Que Serve o List Comprehension no Python?"
+ },
+ "ia | Listas compostas (listas dentro de listas)": {
+  "YV_JQmZNFsk": "Curso em Vídeo | Curso Python #17 - Listas (Parte 2)"
+ },
+ "ia | Listas e fatiamento": {
+  "N1hTsbW50eM": "Curso em Vídeo | Curso Python #17 - Listas (Parte 1)"
+ },
+ "ia | Loop de treino e avaliação": {
+  "c36lUUr864M": "Patrick Loeber | Deep Learning With PyTorch - Full Course"
+ },
+ "ia | MLflow ou Weights & Biases": {
+  "6ngxBkx05Fs": "codebasics | MLFlow Tutorial | ML Ops Tutorial"
+ },
+ "ia | Manipular textos (strings)": {
+  "a7DH88vk2Sk": "Curso em Vídeo | Curso Python #09 - Manipulando Texto"
+ },
+ "ia | Matplotlib": {
+  "UO98lJQ3QGI": "Corey Schafer | Matplotlib Tutorial (Part 1): Creating and Customizing Our First Plots"
+ },
+ "ia | Matriz de confusão e curva ROC": {
+  "4jRBRDbJemM": "StatQuest with Josh Starmer | ROC and AUC, Clearly Explained!"
+ },
+ "ia | Mecanismo de atenção": {
+  "eMlx5fFNoYc": "3Blue1Brown | Attention in transformers, step-by-step | Deep Learning Chapter 6"
+ },
+ "ia | Memória e orquestração de agentes": {
+  "3Yp-hIEcWXk": "LangChain | Build Agents that Never Forget: LangMem Semantic Memory Tutorial"
+ },
+ "ia | Mixed precision": {
+  "ks3oZ7Va8HU": "Aladdin Persson | PyTorch Quick Tip: Mixed Precision Training (FP16)"
+ },
+ "ia | Modelos de difusão (noção)": {
+  "1CIpzeNxIhU": "Computerphile | How AI Image Generators Work (Stable Diffusion / Dall-E) - Computerphile"
+ },
+ "ia | Modelos locais (Ollama, llama.cpp)": {
+  "UtSSMs6ObqY": "Tech With Tim | Learn Ollama in 15 Minutes - Run LLM Models Locally for FREE"
+ },
+ "ia | Monitoramento de modelos": {
+  "uOG685WFO00": "Fiddler AI | ML Drift: Identifying Issues Before You Have a Problem"
+ },
+ "ia | Multimodalidade: visão e áudio": {
+  "lOD_EE96jhM": "IBM Technology | What Are Vision Language Models? How AI Sees & Understands Images"
+ },
+ "ia | Máscaras booleanas e indexação": {
+  "_d_Ka-ks2a0": "codebasics | numpy tutorial - slicing/stacking arrays, indexing with boolean arrays"
+ },
+ "ia | Métricas: acurácia, precisão, recall, F1": {
+  "qWfzIYCvBqo": "Kimberly Fessel | Never Forget Again! // Precision vs Recall with a Clear Example of Precision and Recall"
+ },
+ "ia | Módulos e pacotes": {
+  "s3r8_Aug4y8": "Curso em Vídeo | Curso Python #22 - Módulos e Pacotes"
+ },
+ "ia | Naive Bayes": {
+  "O2L2Uv9pdDA": "StatQuest with Josh Starmer | Naive Bayes, Clearly Explained!!!"
+ },
+ "ia | Neurônio, camadas e pesos": {
+  "aircAruvnKk": "3Blue1Brown | But what is a neural network? | Deep learning chapter 1"
+ },
+ "ia | Normalização e padronização": {
+  "sxEqtjLC0aM": "Normalized Nerd | Standardization vs Normalization Clearly Explained!"
+ },
+ "ia | Notebooks reprodutíveis": {
+  "szP9IRbwO9o": "Let's Data | Dominando o Jupyter Notebook | Funcionalidades e 20 Atalhos Matadores"
+ },
+ "ia | Noções de complexidade (Big O)": {
+  "v4cd1O4zkGw": "HackerRank | Big O Notation"
+ },
+ "ia | NumPy: arrays e operações vetorizadas": {
+  "LZDZ0AZmWHI": "Hashtag Programação | Como Sair do Zero com a Biblioteca Numpy no Python"
+ },
+ "ia | Observabilidade de LLMs": {
+  "THfB4p2xCFY": "Langfuse | Langfuse Walkthrough - Full Demo of Agent Tracing, Evals, Experiments and Prompt Management"
+ },
+ "ia | Operadores aritméticos": {
+  "Vw6gLypRKmY": "Curso em Vídeo | Curso Python #07 - Operadores Aritméticos"
+ },
+ "ia | Orientação a objetos (classes, métodos, herança)": {
+  "BQsv_BkoBCU": "Curso em Vídeo | POO para Iniciantes: Guia Definitivo - Classes, Objetos, Atributos, etc - Curso Python POO: Aula 03",
+  "dJyZmwLpxnE": "Curso em Vídeo | Python Orientado a Objetos: Criando Classes e Objetos na Prática - Curso Python POO: Aula 04"
+ },
+ "ia | Outliers e duplicados": {
+  "EdlUaBMlEzE": "Asimov Dados | Tudo sobre LIMPEZA DE DADOS NO PYTHON (Pandas)"
+ },
+ "ia | Overfitting e underfitting": {
+  "EuBBz3bI-aA": "StatQuest with Josh Starmer | Machine Learning Fundamentals: Bias and Variance"
+ },
+ "ia | PCA": {
+  "FgakZw6K1QQ": "StatQuest with Josh Starmer | StatQuest: Principal Component Analysis (PCA), Step-by-Step"
+ },
+ "ia | Pandas: DataFrames e Series": {
+  "vmEHCJofslg": "Keith Galli | Complete Python Pandas Data Science Tutorial! (Reading CSV/Excel files, Sorting, Filtering, Groupby)"
+ },
+ "ia | Pandas: filtrar, agrupar e juntar (merge)": {
+  "3zyZGEJO0wg": "Eduardo Ogasawara | Pandas: Como Juntar, Filtrar, Ordenar e Agrupar Dados"
+ },
+ "ia | Perfil ativo no LinkedIn e Kaggle": {
+  "cBbYhhH399c": "Kaggle | Live Portfolio and Resume Analysis with Data Science Hiring Managers | CareerCon 2019| Kaggle"
+ },
+ "ia | Pivot tables e melt": {
+  "xPPs59pn6qU": "codebasics | Python Pandas Tutorial 10. Pivot table"
+ },
+ "ia | Plotly e gráficos interativos": {
+  "GGL6U0k8WYA": "Derek Banas | Plotly Tutorial 2023"
+ },
+ "ia | Positional encoding": {
+  "1biZfFLPRSY": "AI Coffee Break with Letitia | Positional embeddings in transformers EXPLAINED | Demystifying positional encodings."
+ },
+ "ia | Projeto de linha de comando completo": {
+  "pog8YmHkGMs": "Curso em Vídeo | Exercício Python #115a - Criando um menu em Python"
+ },
+ "ia | Prompt injection": {
+  "jrHRe9lSqqA": "IBM Technology | What Is a Prompt Injection Attack?"
+ },
+ "ia | Protocolo MCP": {
+  "deprLB_y6Ho": "Código Fonte TV | MCP - Model Context Protocol (O USB das IAs) // Dicionário do Programador"
+ },
+ "ia | Pré-treino, fine-tuning e RLHF (visão geral)": {
+  "bZQun8Y4L2A": "Microsoft Developer | State of GPT | BRK216HFS"
+ },
+ "ia | PyTorch Lightning": {
+  "DbESHcCoWbM": "Lightning AI | Episode 3: From PyTorch to PyTorch Lightning"
+ },
+ "ia | Python assíncrono (async/await)": {
+  "I8doc-MlQ9g": "Eduardo Mendes | Live de Python #154 - Uma introdução histórica à corrotinas PARTE 3 (AsyncIO)",
+  "ZKaamqfIi7A": "Desvendando o Código | Funções Assíncronas em Python na Prática | Async, Await, Gather e Create Task"
+ },
+ "ia | Quantização (4-bit, 8-bit)": {
+  "mNE_d-C82lI": "Maarten Grootendorst | Which Quantization Method is Right for You? (GPTQ vs. GGUF vs. AWQ)"
+ },
+ "ia | RAG: busca em documentos + LLM": {
+  "tcqEUSNCn8I": "pixegami | RAG + Langchain Python Project: Easy AI/Chat For Your Docs"
+ },
+ "ia | READMEs com problema, solução e resultados": {
+  "jIa8R69pKh8": "DevSuperior | Como fazer um README para portfolio no Github",
+  "k4Rsy8GbKE0": "Fernanda Kipper | COMO CRIAR SEUS READMEs? GUIA DO README COMPLETO"
+ },
+ "ia | RNNs e LSTMs para sequências": {
+  "AsNTP8Kwu80": "StatQuest with Josh Starmer | Recurrent Neural Networks (RNNs), Clearly Explained!!!"
+ },
+ "ia | Random Forest": {
+  "J4Wdy0Wc_xQ": "StatQuest with Josh Starmer | StatQuest: Random Forests Part 1 - Building, Using and Evaluating"
+ },
+ "ia | Redes de grafos (noção)": {
+  "GXhBEj1ZtE8": "Alex Foo | Graph Neural Networks - a perspective from the ground up"
+ },
+ "ia | Redis, Postgres e pgvector": {
+  "1Tfzm7Wfk74": "LuizTools | O que é o Redis? E como utilizá-lo como cache?",
+  "80w4GVlp_qY": "DataWay | Como usar Postgres como VectorDB! Aprenda PgAI e PgVector - Video 1"
+ },
+ "ia | Regressão linear": {
+  "7ArmBVF2dCs": "StatQuest with Josh Starmer | Linear Regression, Clearly Explained!!!"
+ },
+ "ia | Regressão logística": {
+  "yIYKR4sgzI8": "StatQuest with Josh Starmer | StatQuest: Logistic Regression"
+ },
+ "ia | Regularização (dropout, weight decay)": {
+  "D8PJAL-MZv8": "DeepLearningAI | Dropout Regularization (C2W1L06)"
+ },
+ "ia | Regularização Lasso e Ridge": {
+  "Q81RR3yKn30": "StatQuest with Josh Starmer | Regularization Part 1: Ridge (L2) Regression"
+ },
+ "ia | Repetir enquanto (while)": {
+  "LH6OIn2lBaI": "Curso em Vídeo | Curso Python #014 - Estrutura de repetição while"
+ },
+ "ia | Reranking": {
+  "aVgZE746OXw": "Techventures | How Retrieval and Reranking works in RAG | Bi Encoder vs Cross Encoder"
+ },
+ "ia | SHAP e LIME": {
+  "MQ6fFDwjuco": "A Data Odyssey | SHAP values for beginners | What they mean and their applications"
+ },
+ "ia | SQL avançado: subconsultas e window functions": {
+  "Ww71knvhQ-s": "techTFQ | SQL Window Function | How to write SQL Query using RANK, DENSE RANK, LEAD/LAG | SQL Queries Tutorial"
+ },
+ "ia | SQL: SELECT, WHERE, JOIN, GROUP BY": {
+  "G7bMwefn8RQ": "Dev Aprender | Jhonatan de Souza | Curso SQL Completo 2025 [Iniciantes] + Desafios + Muita Prática"
+ },
+ "ia | SQLite e SQLAlchemy": {
+  "AKQ3XEDI9Mw": "NeuralNine | SQLAlchemy Turns Python Objects Into Database Entries"
+ },
+ "ia | SVM": {
+  "efR1C6CvhmE": "StatQuest with Josh Starmer | Support Vector Machines Part 1 (of 3): Main Ideas!!!"
+ },
+ "ia | Saída estruturada (JSON)": {
+  "xpvFinvqRCA": "Efficient NLP | Structured Output from LLMs: Grammars, Regex, and State Machines"
+ },
+ "ia | Scaling laws": {
+  "PZXN7jm9IC0": "Edan Meyer | Chinchilla Explained: Compute-Optimal Massive Language Models"
+ },
+ "ia | Scikit-learn e pipelines": {
+  "xIqX1dqcNbY": "Greg Hogg | Scikit-Learn Model Pipeline Tutorial"
+ },
+ "ia | Seaborn": {
+  "6GUZXDef2U0": "Derek Banas | Seaborn Tutorial : Seaborn Full Course"
+ },
+ "ia | Segmentação de imagens": {
+  "NhdzGfB1q74": "rupert ai | The U-Net (actually) explained in 10 minutes"
+ },
+ "ia | Seleção de atributos": {
+  "0yM07AURFRY": "Hashtag Programação | Seleção de Recursos (Feature Selection) em Projetos de Ciência de Dados"
+ },
+ "ia | Self-attention e multi-head": {
+  "eMlx5fFNoYc": "3Blue1Brown | Attention in transformers, step-by-step | Deep Learning Chapter 6"
+ },
+ "ia | Sistemas de recomendação": {
+  "n3RKsY2H-NE": "Art of the Problem | The Math Behind Recommender Systems"
+ },
+ "ia | Storytelling com dados": {
+  "i1U8Zdoshw0": "Métricas Boss | Storytelling com dados - Resumo do livro"
+ },
+ "ia | Séries temporais": {
+  "UFuo7EHI8zc": "Corey Schafer | Python Pandas Tutorial (Part 10): Working with Dates and Time Series Data"
+ },
+ "ia | Séries temporais com ML": {
+  "vV12dGe_Fho": "Rob Mulla | Time Series Forecasting with XGBoost - Use python and machine learning to predict energy consumption"
+ },
+ "ia | TensorBoard e logs": {
+  "VJW9wU-1n18": "Patrick Loeber | PyTorch Tutorial 16 - How To Use The TensorBoard"
+ },
+ "ia | TensorFlow e Keras (noção)": {
+  "tPYj3fFJGjk": "freeCodeCamp.org | TensorFlow 2.0 Complete Course - Python Neural Networks for Beginners Tutorial"
+ },
+ "ia | Tensores e autograd": {
+  "IC0_FRiX-sw": "PyTorch Foundation | Introduction to PyTorch"
+ },
+ "ia | Testes e boas práticas de código": {
+  "FW-mYXr2M8w": "Hashtag Programação | PyTest - testes profissionais para seus códigos Python"
+ },
+ "ia | Testes simples com pytest": {
+  "pZvhZ-Lr-PE": "Eduardo Mendes | O mínimo que você deveria saber sobre testes unitários - #30diasdepython"
+ },
+ "ia | Tipagem, dataclasses e Pydantic": {
+  "UdfLu1G47BU": "Eduardo Mendes | Pydantic - Live de Python #165"
+ },
+ "ia | Tokenização e embeddings": {
+  "zduSFxRajkE": "Andrej Karpathy | Let's build the GPT Tokenizer"
+ },
+ "ia | Transfer learning": {
+  "BqqfQnyjmgg": "Hugging Face | What is Transfer Learning?"
+ },
+ "ia | Tratamento de erros (try/except)": {
+  "xz2B3bfNjEk": "Curso em Vídeo | Curso Python #23 - Tratamento de Erros e Exceções"
+ },
+ "ia | Treinar em GPU (Colab)": {
+  "obMhoz-Dw2g": "Programador Artificial | Como Usar GPU Gratuita no Google Colab para Treinar Modelos de IA"
+ },
+ "ia | Treino, validação e teste": {
+  "fSytzGwwBVw": "StatQuest with Josh Starmer | Machine Learning Fundamentals: Cross Validation"
+ },
+ "ia | Tuplas e conjuntos": {
+  "0LB3FSfjvao": "Curso em Vídeo | Curso Python #16 - Tuplas"
+ },
+ "ia | Usar APIs de LLMs (chamadas, streaming, tool use)": {
+  "gMeTK6zzaO4": "Adam Lucek | LLM Function Calling - AI Tools Deep Dive"
+ },
+ "ia | Usar módulos prontos (import)": {
+  "oOUyhGNib2Q": "Curso em Vídeo | Curso Python #08 - Utilizando Módulos"
+ },
+ "ia | Validação cruzada": {
+  "fSytzGwwBVw": "StatQuest with Josh Starmer | Machine Learning Fundamentals: Cross Validation"
+ },
+ "ia | Variáveis e tipos (int, float, str, bool)": {
+  "hdDHg1p3YVc": "Curso em Vídeo | Curso Python #06 - Tipos Primitivos e Saída de Dados"
+ },
+ "ia | Vazamento de dados (data leakage)": {
+  "9Wlno8DTbYQ": "TileStats | Data Leakage Explained: The Growing Crisis in AI"
+ },
+ "ia | Versionamento de dados e modelos": {
+  "kLKBcPonMYw": "DVCorg | Versioning Data with DVC (Hands-On Tutorial!)"
+ },
+ "ia | Viés e ética em ML": {
+  "gV0_raKR2UQ": "CrashCourse | Algorithmic Bias and Fairness: Crash Course AI #18"
+ },
+ "ia | Web scraping com BeautifulSoup": {
+  "WzUPnQwSQyk": "Hashtag Programação | Introdução ao BeautifulSoup - Raspagem de Dados com Python"
+ },
+ "ia | Web scraping e APIs": {
+  "kqvWOcPog4s": "Programação Dinâmica | RASPAGEM de DADOS com PYTHON usando BeautifulSoup | Python na Prática #9"
+ },
+ "ia | datetime": {
+  "A7S_RwWcrK0": "Hashtag Programação | Datas em Python - Biblioteca Datetime - Como Trabalhar de Forma Eficiente"
+ },
+ "ia | json e csv": {
+  "9N6a-VLBa2I": "Corey Schafer | Python Tutorial: Working with JSON Data using the json Module"
+ },
+ "ia | os e pathlib": {
+  "T17BTNKBeJY": "Otávio Miranda | Manipulando caminhos, pastas e arquivos no Python com pathlib"
+ },
+ "ia | Árvores de decisão": {
+  "7VeUPuFGJHk": "StatQuest with Josh Starmer | StatQuest: Decision Trees"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas": {
+  "0HHnezXSKnI": "EnglishBay | Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação": {
+  "Fx1H0rMv7Tc": "EnglishBay | Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 03 - Aula Prática": {
+  "Ld5fCpTBPaA": "EnglishBay | Curso de Inglês - Módulo 01 Aula 03 - Aula Prática"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa": {
+  "DgYgwqkGWbM": "EnglishBay | Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100": {
+  "Yfysh7_TSLQ": "EnglishBay | Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)": {
+  "vcGoFMhPf8s": "EnglishBay | Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos": {
+  "Jepam2PotJA": "EnglishBay | Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto": {
+  "CPfBy3XS3rw": "EnglishBay | Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 09 - Small Talk": {
+  "vn6_8Qi6mrY": "EnglishBay | Curso de Inglês - Módulo 01 Aula 09 - Small Talk"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 10 - Family Tree": {
+  "IawUWrFj2NU": "EnglishBay | Curso de Inglês - Módulo 01 Aula 10 - Family Tree"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02": {
+  "E-9dr7XSFa0": "EnglishBay | Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02"
+ },
+ "ing | Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês": {
+  "wtwVXnmm-SU": "EnglishBay | Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 01 - Falando da Família": {
+  "DaOSZIaRX7Y": "EnglishBay | Curso de Inglês - Módulo 02 Aula 01 - Falando da Família"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An": {
+  "kWJk63P_yZQ": "EnglishBay | Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária": {
+  "O2_WVL3A5ss": "EnglishBay | Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos": {
+  "avj_pHu-iC4": "EnglishBay | Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT": {
+  "eFpF6vaC4Lg": "EnglishBay | Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês": {
+  "BS1-b4ye7XM": "EnglishBay | Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 07 - Com que frequência": {
+  "alfqsc1heU0": "EnglishBay | Curso de Inglês - Módulo 02 Aula 07 - Com que frequência"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas": {
+  "1fFaahobZz4": "EnglishBay | Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?": {
+  "Y-M_0XQxNqs": "EnglishBay | Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas": {
+  "Wmz0G34-XrU": "EnglishBay | Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver": {
+  "pamLZ5yBo38": "EnglishBay | Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver"
+ },
+ "ing | Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês": {
+  "idWXEhKaeDM": "EnglishBay | Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 01 - Eu posso!": {
+  "FEKwE-Qv3vs": "EnglishBay | Curso de Inglês - Módulo 03 Aula 01 - Eu posso!"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns": {
+  "u5dfaEGYFNU": "EnglishBay | Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 03 - Eu deveria": {
+  "A2ltxVTt848": "EnglishBay | Curso de Inglês - Módulo 03 Aula 03 - Eu deveria"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos": {
+  "Y7gdrj-Ybic": "EnglishBay | Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 05 - Eu devo": {
+  "64cZmvI6Vgc": "EnglishBay | Curso de Inglês - Módulo 03 Aula 05 - Eu devo"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas": {
+  "9zNciQ1cEDw": "EnglishBay | Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will": {
+  "NyB6UD2AONQ": "EnglishBay | Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 08 - Advérbios": {
+  "hIpbIoHMDhw": "EnglishBay | Curso de Inglês - Módulo 03 Aula 08 - Advérbios"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To": {
+  "UbdEe-ZxNYQ": "EnglishBay | Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 10 - Do or Make?": {
+  "WngjcLm7-5w": "EnglishBay | Curso de Inglês - Módulo 03 Aula 10 - Do or Make?"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades": {
+  "xqcp7yjjG_U": "EnglishBay | Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades"
+ },
+ "ing | Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos": {
+  "aW02r1E_3LE": "EnglishBay | Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria": {
+  "l50m33RpkUE": "EnglishBay | Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 02 - Comparativos": {
+  "emDuyhYqlXw": "EnglishBay | Curso de Inglês - Módulo 04 Aula 02 - Comparativos"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que": {
+  "WdVqhS24iVQ": "EnglishBay | Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 04 - Superlativos": {
+  "HeGr10ZcxoQ": "EnglishBay | Curso de Inglês - Módulo 04 Aula 04 - Superlativos"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be": {
+  "FvenFX_x-tE": "EnglishBay | Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade": {
+  "jmURr5xmZj4": "EnglishBay | Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)": {
+  "dw5bMTE8KLo": "EnglishBay | Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados": {
+  "pcumLY323g0": "EnglishBay | Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia": {
+  "_5GZqUvGT4g": "EnglishBay | Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns": {
+  "-_unckJkFIc": "EnglishBay | Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados": {
+  "rj5baJSLzVY": "EnglishBay | Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados"
+ },
+ "ing | Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria": {
+  "mC2yXY81mbw": "EnglishBay | Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares": {
+  "EkQFgzgBIJM": "EnglishBay | Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 03 - E se...": {
+  "H8zfpyT6-Fg": "EnglishBay | Curso de Inglês - Módulo 05 Aula 03 - E se..."
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares": {
+  "RUEtguBgQ5w": "EnglishBay | Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse": {
+  "2dm7AWaqlv0": "EnglishBay | Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 06 - Prefixes": {
+  "-XezYg-1jgE": "EnglishBay | Curso de Inglês - Módulo 05 Aula 06 - Prefixes"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando": {
+  "DrYGemNVFE0": "EnglishBay | Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 08 - Suffixes": {
+  "wvonlpPjSjk": "EnglishBay | Curso de Inglês - Módulo 05 Aula 08 - Suffixes"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos": {
+  "lv7V0Y4gBjA": "EnglishBay | Curso de Inglês - Módulo 05 Aula 09 - Ofertas & Pedidos"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva": {
+  "NwfOgDuhLmE": "EnglishBay | Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas": {
+  "HkSkVauaqsg": "EnglishBay | Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se": {
+  "4-rfUL-_u7U": "EnglishBay | Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se"
+ },
+ "ing | Curso de Inglês - Módulo 05 Aula 12 - Quantificadores": {
+  "-G7fCbIAJiw": "EnglishBay | Curso de Inglês - Módulo 05 Aula 12 - Quantificadores"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês": {
+  "jvzzJk-JYi0": "EnglishBay | Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio": {
+  "nxIyHmTR380": "EnglishBay | Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca": {
+  "kNfVkkFjLks": "EnglishBay | Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo": {
+  "R7LE9GpY0Xk": "EnglishBay | Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando": {
+  "qhV0VSyLi-M": "EnglishBay | Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio": {
+  "noeoRb1TmHo": "EnglishBay | Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado": {
+  "P1SEKoLjDIE": "EnglishBay | Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva": {
+  "5oiNmAkmkak": "EnglishBay | Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes": {
+  "zNnOZfTAS7E": "EnglishBay | Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 10 - Reported Speech": {
+  "rKHmZvjEHvc": "EnglishBay | Curso de Inglês - Módulo 06 Aula 10 - Reported Speech"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 11 - Três Desejos": {
+  "4bL5nYlIWqc": "EnglishBay | Curso de Inglês - Módulo 06 Aula 11 - Três Desejos"
+ },
+ "ing | Curso de Inglês - Módulo 06 Aula 12 - Tag Questions": {
+  "JrdKbC1zOhw": "EnglishBay | Curso de Inglês - Módulo 06 Aula 12 - Tag Questions"
+ },
+ "ing | Curso de Inglês GRÁTIS - Aula Zero": {
+  "f9tmKAvJAAQ": "EnglishBay | Curso de Inglês GRÁTIS - Aula Zero"
+ },
+ "ing | Inglês no trabalho 01 · Ler documentação técnica": {
+  "lwqeNnboh_4": "Ijemma Onwuzulike | How to Read Technical Documentation for Software Engineers"
+ },
+ "ing | Inglês no trabalho 02 · Ler artigos de Machine Learning": {
+  "RjG689EwG5g": "Vizuara | 3 ways to read an ML research paper | Explained by MIT PhD researcher"
+ },
+ "ing | Inglês no trabalho 03 · Escrever o README do seu projeto": {
+  "fDJNt67xdvQ": "OrcDev | How To Write A README People Actually Read"
+ },
+ "ing | Inglês no trabalho 04 · Pull requests e code review": {
+  "DWCO02rBrAg": "Tech English Voices | How to Give Code Review Feedback in English | Polite Phrases for Developers"
+ },
+ "ing | Inglês no trabalho 05 · E-mails e mensagens de trabalho": {
+  "qXCWEOIOYhc": "English Etc. With Julie | How To Write Professional Emails in English! | Business English Lesson"
+ },
+ "ing | Inglês no trabalho 06 · Daily stand-up e reuniões": {
+  "MsxcpZr1LpM": "EnglishNotNull | English for Developers: Real Daily Stand-up Meeting | Listening Practice"
+ },
+ "ing | Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos": {
+  "VmsJVjKIWSg": "Learn with EngrWaqas | How to Explain Projects in Your Job Interview in 5 MINUTES"
+ },
+ "ing | Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais": {
+  "RtXqF1_rKMk": "Peter Teaches Easy English | How to Answer \"Tell Me About Yourself\" in IT Interviews (Present-Past-Future) | English for Work"
+ },
+ "mat | Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)": {
+  "IHZwWFHWa-w": "3Blue1Brown | Gradient descent, how neural networks learn | Deep Learning Chapter 2",
+  "Vn4ZuylKYQk": "Khan Academy Brasil | Gradiente"
+ },
+ "mat | Autovalores e Autovetores (Eigenvalues & Eigenvectors)": {
+  "PFDu9oVAE-g": "3Blue1Brown | Eigenvectors and eigenvalues | Chapter 14, Essence of linear algebra",
+  "hJhtsfeBLok": "Khan Academy Brasil | Introdução a auto-valores e auto-vetores"
+ },
+ "mat | Combinações lineares, espaço gerado (span) e bases": {
+  "k7RM-ot2NWY": "3Blue1Brown | Linear combinations, span, and basis vectors | Chapter 2, Essence of linear algebra",
+  "pWGCka7DLWE": "Khan Academy Brasil | Combinação linear e espaços gerados."
+ },
+ "mat | Decomposição em Valores Singulares (SVD) e PCA": {
+  "LdvTAyT3jrs": "Fabricio Murai | DCC639: Decomposição por valores singulares (SVD)",
+  "vSczTbgc8Rc": "Visual Kernel | SVD Visualized, Singular Value Decomposition explained | SEE Matrix , Chapter 3 #SoME2"
+ },
+ "mat | Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)": {
+  "6j6-ArZLIGk": "Machine Learning para humanos | Redes Neurais Artificiais #19: Funções de ativação e suas derivadas",
+  "aircAruvnKk": "3Blue1Brown | But what is a neural network? | Deep learning chapter 1"
+ },
+ "mat | Derivadas fundamentais e regras básicas (potência, produto, soma)": {
+  "S0_qX4VJhMQ": "3Blue1Brown | Derivative formulas through geometry | Chapter 3, Essence of calculus",
+  "W8QdwWyP0jY": "Khan Academy Brasil | Regra da potência | Matematica | Khan Academy"
+ },
+ "mat | Derivadas parciais e o vetor Gradiente (nabla f)": {
+  "EWcBlzlvdW8": "Khan Academy Brasil | Introdução às derivadas parciais",
+  "IHZwWFHWa-w": "3Blue1Brown | Gradient descent, how neural networks learn | Deep Learning Chapter 2"
+ },
+ "mat | Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança": {
+  "hgtMWR3TFnY": "Khan Academy | Introduction to the normal distribution | Probability and Statistics | Khan Academy",
+  "rzFX5NWojp0": "StatQuest with Josh Starmer | The Normal Distribution, Clearly Explained!!!"
+ },
+ "mat | Divergência de Kullback-Leibler (KL Divergence)": {
+  "MXcsW613msA": "DataMListic | Kullback-Leibler (KL) Divergence Mathematics Explained",
+  "SxGYPqCgJWM": "Adian Liusie | Intuitively Understanding the KL Divergence"
+ },
+ "mat | Entropia Cruzada (Cross-Entropy Loss) e função Softmax": {
+  "6ArSys5qHAU": "StatQuest with Josh Starmer | Neural Networks Part 6: Cross Entropy",
+  "6Qi_9s_dpX8": "Daniel Krei | Binary Cross Entropy Explained With Examples"
+ },
+ "mat | Entropia de Shannon (medida de incerteza da informação)": {
+  "H3eh00i2v-A": "Khan Academy Brasil | entropia da informação | Ciência da Computação | Khan Academy",
+  "l6DKRf-fAAM": "3Blue1Brown | Reinventing Entropy | Information theory, part 1"
+ },
+ "mat | Equações, inequações e gráficos de funções aplicadas": {
+  "cHrwPuKwUzk": "Khan Academy Brasil | Representação gráfica de inequações",
+  "zoAI2f-JouA": "Khan Academy Brasil | Equações lineares com duas variáveis e seus gráficos"
+ },
+ "mat | Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs": {
+  "9-Jl0dxWQs8": "3Blue1Brown | How might LLMs store facts | Deep Learning Chapter 7",
+  "r-CVIzXS9Uk": "Gabriel Tozatto Zago | Sistemas de ML em produção 11.1.2 - Maldição da Dimensionalidade"
+ },
+ "mat | Esperança matemática, covariância e correlação": {
+  "VMVwGJiD2EA": "Khan Academy Brasil | Valor esperado de uma variável aleatória discreta | Matematica | Khan Academy",
+  "qtaqvPAeEJY": "StatQuest with Josh Starmer | Covariance, Clearly Explained!!!"
+ },
+ "mat | Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)": {
+  "Xz0x-8-cgaQ": "StatQuest with Josh Starmer | Bootstrapping Main Ideas!!!",
+  "j9pnNCiQz3I": "Meigarom | Comunidade DS | O que é e para que serve o Teste A/B ? | Dados na Prática | Meigarom Lopes"
+ },
+ "mat | Exponenciais e logaritmos na modelagem de IA": {
+  "LV81nqJWwdk": "Khan Academy Brasil | Logaritmos",
+  "m2MIpDrF7Es": "3Blue1Brown | What's so special about Euler's number e? | Chapter 5, Essence of calculus"
+ },
+ "mat | Funções de perda de regressão (MSE, MAE, Huber) e classificação": {
+  "QBbC3Cjsnjg": "CodeEmporium | Loss Functions - EXPLAINED!",
+  "YqjrJQchKV0": "Khan Academy Brasil | Introdução aos resíduos e regressão de mínimos quadrados"
+ },
+ "mat | Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V": {
+  "9pEUkg_VHqg": "Aprendiz do Futuro | Modelo Transformer | Mecanismo de atenção: Self-Attention | Deep Learning e NLP | Leonardo Ribeiro",
+  "eMlx5fFNoYc": "3Blue1Brown | Attention in transformers, step-by-step | Deep Learning Chapter 6"
+ },
+ "mat | Geometria analítica e distância Euclidiana vs Manhattan": {
+  "DryorIQ0Uvo": "Khan Academy Brasil | Fórmula da distância",
+  "hl3bQySs8sM": "sentdex | Euclidean Distance - Practical Machine Learning Tutorial with Python p.15"
+ },
+ "mat | Intervalos de confiança e teste de hipóteses (noção)": {
+  "TqOeMYtOc1w": "StatQuest with Josh Starmer | Confidence Intervals, Clearly Explained!!!",
+  "VLDVDLF4CDY": "Khan Academy Brasil | Intervalos de confiança e margem de erro"
+ },
+ "mat | Inversa de matriz e pseudoinversa de Moore-Penrose": {
+  "LSVLRg70DhA": "Khan Academy Brasil | Matriz Inversa (parte 1)",
+  "uQhTuRlWMxw": "3Blue1Brown | Inverse matrices, column space and null space | Chapter 7, Essence of linear algebra"
+ },
+ "mat | Limites e taxa de variação instantânea (ideia geral)": {
+  "WUvTyaaNkzM": "3Blue1Brown | The essence of calculus",
+  "fitJZb1KI44": "Khan Academy Brasil | Introdução aos limites"
+ },
+ "mat | Matriz Jacobiana e Matriz Hessiana (curvatura da loss)": {
+  "6FesMicc844": "DataMListic | The Jacobian Matrix - Explained",
+  "LbBcuZukCAw": "Khan Academy | The Hessian matrix | Multivariable calculus | Khan Academy"
+ },
+ "mat | Matrizes como transformações lineares no espaço": {
+  "4PCktDZJH8E": "Khan Academy | Linear transformations | Matrix transformations | Linear Algebra | Khan Academy",
+  "kYB8IZa5AuE": "3Blue1Brown | Linear transformations and matrices | Chapter 3, Essence of linear algebra"
+ },
+ "mat | Mecanismo Multi-Head Attention: divisão de dimensões e concatenação": {
+  "42L1q1Z4Ojc": "Visual AI | Multi-Head Attention Explained Visually | Simple Transformer Guide",
+  "eMlx5fFNoYc": "3Blue1Brown | Attention in transformers, step-by-step | Deep Learning Chapter 6"
+ },
+ "mat | Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)": {
+  "0ziYp9N-zGE": "Khan Academy Brasil | Introdução à multiplicação de matriz",
+  "XkY2DOUCWMU": "3Blue1Brown | Matrix multiplication as composition | Chapter 4, Essence of linear algebra"
+ },
+ "mat | Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)": {
+  "KF9IrsAlc_E": "A Escola de Exatas | O que é um Estimador de Máxima Verossimilhança?",
+  "XepXtl9YKwc": "StatQuest with Josh Starmer | Maximum Likelihood, clearly explained!!!"
+ },
+ "mat | Média, mediana, variância e desvio padrão": {
+  "SzZ6GpcfoQY": "StatQuest with Josh Starmer | Calculating the Mean, Variance and Standard Deviation, Clearly Explained!!!",
+  "UdrtnBGSeSw": "Khan Academy Brasil | Amplitude, variância e desvio padrão como medidas de dispersão"
+ },
+ "mat | Norma de vetores (L1, L2 Euclidiana) e distâncias": {
+  "hVxIbeDIV8Y": "Roan Brasil Monteiro | EP03 - Normas L1, L2 e L∞: MSE, Ridge e Lasso | Álgebra Linear para Machine Learning",
+  "jnwlDOrLD_M": "Khan Academy Brasil | Vetores unitários"
+ },
+ "mat | Normalização de embeddings e geometria do espaço semântico": {
+  "FQYG-MKz1sA": "Vida com IA - Filipe Lauar | Embeddings e vetores de alta dimensão. Como calcular similaridade?",
+  "u7xJkFbf9qw": "Khan Academy Brasil | Notação de vetor unitário"
+ },
+ "mat | Otimizadores modernos: Momentum, RMSprop e Adam": {
+  "NE88eqLngkg": "DeepBean | Optimization for Deep Learning (Momentum, RMSprop, AdaGrad, Adam)",
+  "x_vMFs9d6H4": "Daniel Hasan Dalip | [AM - Aula 6 Tópico 4] Algoritmos Adam e RMSProp para Redes neurais profundas"
+ },
+ "mat | Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)": {
+  "T3OT8kqoqjc": "BrainDrain | How positional encoding works in transformers?",
+  "dWkm4nFikgM": "ExplainingAI | Positional Encoding in Transformer | Sinusoidal Positional Encoding Explained"
+ },
+ "mat | Probabilidade condicional e Teorema de Bayes": {
+  "885a44XKDqM": "Khan Academy Brasil | Exercícios preparatórios para probabilidade condicional",
+  "HZGCoVF3YvM": "3Blue1Brown | Bayes theorem, the geometry of changing beliefs"
+ },
+ "mat | Produto escalar (Dot Product) e projeções": {
+  "LyGKycYT2v0": "3Blue1Brown | Dot products and duality | Chapter 9, Essence of linear algebra",
+  "OtGMHiOmMGE": "Khan Academy Brasil | Produto escalar"
+ },
+ "mat | Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)": {
+  "eMlx5fFNoYc": "3Blue1Brown | Attention in transformers, step-by-step | Deep Learning Chapter 6",
+  "we829K4NOq8": "Khan Academy | Projections onto subspaces with orthonormal bases | Linear Algebra | Khan Academy"
+ },
+ "mat | Regra da Cadeia (Chain Rule) - o motor do Backpropagation": {
+  "YG15m2VwSjA": "3Blue1Brown | Visualizing the chain rule and product rule | Chapter 4, Essence of calculus",
+  "sgYtbgQWcKw": "Khan Academy Brasil | Regra da cadeia"
+ },
+ "mat | Sistemas de equações lineares e determinantes": {
+  "Ip3X9LOh2dk": "3Blue1Brown | The determinant | Chapter 6, Essence of linear algebra",
+  "OU9sWHk_dlw": "Khan Academy | Finding the determinant of a 2x2 matrix | Matrices | Precalculus | Khan Academy"
+ },
+ "mat | Somatório, produtório e notação matemática em papers": {
+  "gLpOBp5kJf8": "3-Minute Data Science | Summation and Product Notation in 3 Minutes | Mathematical Notation",
+  "kCbfPGFQlOY": "Khan Academy Brasil | Notação Sigma para somatórios"
+ },
+ "mat | Taxa de aprendizado (Learning Rate), convergência e pontos de sela": {
+  "4AN8ORyh88Y": "Tutoriais de Programação | Como a taxa de aprendizado influencia na descida de gradiente",
+  "sDv4f4s2SB8": "StatQuest with Josh Starmer | Gradient Descent, Step-by-Step"
+ },
+ "mat | Teorema do Limite Central e amostragem": {
+  "JNm3M9cqWyc": "Khan Academy | Central limit theorem | Inferential statistics | Probability and Statistics | Khan Academy",
+  "YAlJCEDH2uY": "StatQuest with Josh Starmer | The Central Limit Theorem, Clearly Explained!!!"
+ },
+ "mat | Trade-off Viés vs. Variância (Bias-Variance Dilemma)": {
+  "--NWR_1uIW0": "Apoena Stack - Iury Rosal | Bias e Variância | Machine Learning: Fundamentos (Parte 6) [MLF6]",
+  "EuBBz3bI-aA": "StatQuest with Josh Starmer | Machine Learning Fundamentals: Bias and Variance"
+ },
+ "mat | Variáveis aleatórias discretas e contínuas": {
+  "IYdiKeQ9xEI": "Khan Academy | Introduction to Random Variables",
+  "dOr0NKyD31Q": "Khan Academy | Discrete and continuous random variables | Probability and Statistics | Khan Academy"
+ },
+ "mat | Vetores e espaços vetoriais: intuição geométrica": {
+  "Y0ZyUhi0khY": "Khan Academy Brasil | Introdução aos vetores para a álgebra linear.",
+  "fNk_zzaMoSs": "3Blue1Brown | Vectors | Chapter 1, Essence of linear algebra"
+ },
+ "mat | Ângulo entre vetores e Similaridade de Cosseno": {
+  "0HOoTNrRDU4": "Khan Academy em Português de Portugal | O produto escalar de dois vetores e o ângulo por eles formado - Khan Academy em português (11.º ano)",
+  "e9U0QAFbfLI": "StatQuest with Josh Starmer | Cosine Similarity, Clearly Explained!!!"
+ }
+}
