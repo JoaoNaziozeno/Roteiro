@@ -771,14 +771,14 @@ function syncSessionStudyProgressUI() {
   if (autoProgressEnabled) {
     const curStatus = (PR[topicId] && PR[topicId].s) ? PR[topicId].s : "z";
 
-    // Mudar de "Do zero" para "Falta terminar" ao iniciar estudo real
+    // Mudar de "Do zero" para "Em andamento" ao iniciar estudo real
     if (curStatus === "z" && (totalPct >= 5 || ytPlayerState === 1 || guideReadSeconds >= 8)) {
       PR[topicId].s = "r";
       updateModalStatusBtn("r");
       saveLocal();
       paint();
       syncTopicToServer(topicId);
-      showToast("🟡 Estudo iniciado! Status atualizado para: Falta terminar");
+      showToast("🟡 Estudo iniciado! Status atualizado para: Em andamento");
     }
 
     // Avisos intermediários quando completa uma das metades (50%)
@@ -1939,7 +1939,7 @@ function exportNotebookMarkdown() {
     if (item && item.n && item.n.trim()) {
       count++;
       const info = (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[tid]) || {};
-      const statusLabel = item.s === "e" ? "🟢 Concluído" : item.s === "r" ? "🟡 Falta terminar" : "🔴 Do zero";
+      const statusLabel = item.s === "e" ? "🟢 Concluído" : item.s === "r" ? "🟡 Em andamento" : "🔴 Do zero";
       md += `## 📌 ${info.title || tid}\n`;
       md += `**Status:** ${statusLabel} | **ID:** \`${tid}\`\n\n`;
       if (info.url) md += `* **Vídeo Aula:** ${info.url}\n`;

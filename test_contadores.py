@@ -79,7 +79,7 @@ class Contadores(unittest.TestCase):
             r, o = len(self.req[tr]), len(self.opt[tr])
             extra = f" (+{o} opcionais)" if o else ""
             self.assertIn(f"<b>{r} tópicos</b>{extra} organizados", s)
-            self.assertIn(f">Todos {r + o}" + (f" ({r} + {o} opcionais)" if o else "") + "</button>", s)
+            self.assertIn(f'title="Todos: {r + o}' + (f" ({r} + {o} opcionais)" if o else "") + '">Todos</button>', s)
             self.assertIn(f"const TOTAL_TRACK_TOPICS = {r};", s)
 
     def test_cartoes_do_hub(self):
