@@ -4096,6 +4096,11 @@ html::view-transition{background:var(--bg)}
 #note-modal .lv2-kicker{font-size:.6875rem;font-weight:600;letter-spacing:.09em;color:var(--m-acc)}
 #note-modal .lv2-badge{border:0;background:none;padding:0;font-size:var(--m-fs-xs);font-weight:500;color:color-mix(in srgb,var(--m-mu) 75%,transparent);font-variant-numeric:tabular-nums}
 #note-modal .lv2-badge.is-seen{color:var(--m-ok)}
+/* Marcação manual da etapa (rolar a tela não marca) */
+.pt-step-check{display:flex;align-items:center;margin:20px 0 0 auto;min-height:36px;padding:6px 14px;font:inherit;font-size:.8rem;font-weight:600;color:var(--m-mu,var(--mu));background:transparent;border:1px solid var(--m-line,var(--bd));border-radius:99px;cursor:pointer}
+.pt-step-check:hover{color:var(--m-tx,var(--tx));border-color:var(--m-ok,#2fa36b)}
+.pt-step-check[aria-pressed="true"]{color:var(--m-ok,#2fa36b);border-color:color-mix(in srgb,var(--m-ok,#2fa36b) 45%,transparent)}
+.pt-step-check:disabled{cursor:default;border-color:transparent;padding-right:0}
 #note-modal .lv2-title{font-size:1.25rem;font-weight:600;line-height:1.35;margin:4px 0 14px;letter-spacing:-.015em}
 #note-modal .lv2-concreto,#note-modal .lv2-palpite,#note-modal .lv2-quiz{border-left:0!important}
 #note-modal .lv2-crianca{background:none!important}

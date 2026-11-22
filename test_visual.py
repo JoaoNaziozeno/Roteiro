@@ -76,6 +76,15 @@ class Visual(unittest.TestCase):
             n = len(re.findall(r'<div class="phase-card"', s))
             self.assertEqual(s.count('<details class="phase-about">'), n, tr)
 
+    def test_etapa_da_aula_so_e_marcada_pelo_aluno(self):
+        for tr, s in self.pag.items():
+            ini = s.index("function checkPtGuideScrollAndVisibility(")
+            corpo = s[ini:s.index("\nfunction ", ini + 10)]
+            self.assertNotIn("guideCardsSeen[i] = true", corpo, tr)
+            self.assertIn("togglePtStepRead(i)", corpo, tr)
+            self.assertIn("function togglePtStepRead(", s, tr)
+            self.assertIn("saved.gc", s, tr)
+
     def test_hub_sem_anel(self):
         self.assertNotIn("function cqRing", self.hub)
         self.assertIn("function cqCard", self.hub)
