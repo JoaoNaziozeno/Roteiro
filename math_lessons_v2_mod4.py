@@ -103,8 +103,8 @@ GUIDES_MOD4_V2 = {
             "Geometria analítica do plano cartesiano ($y = mx + b$)"
         ],
         "objetivos": [
-            "compreender equações lineares como hiperplanos separadores em $\mathbb{R}^d$;",
-            "entender o significado geométrico do vetor normal de pesos $\mathbf{w}$ e do viés (bias) $b$;",
+            "compreender equações lineares como hiperplanos separadores em $\\mathbb{R}^d$;",
+            "entender o significado geométrico do vetor normal de pesos $\\mathbf{w}$ e do viés (bias) $b$;",
             "calcular a distância de um ponto até o hiperplano de decisão e entender a margem de separação."
         ],
         "blocos": [
@@ -194,8 +194,8 @@ for x, logit, pred in zip(X, logits, predicoes):
             }
         ],
         "resumo": [
-            "Classificadores lineares tomam decisões avaliando de qual lado de um hiperplano $\mathbf{w}^\top \mathbf{x} + b = 0$ o dado se encontra.",
-            "O vetor de pesos $\mathbf{w}$ dita a inclinação e orientação ortogonal da fronteira e o viés $b$ controla o deslocamento.",
+            "Classificadores lineares tomam decisões avaliando de qual lado de um hiperplano $\\mathbf{w}^\\top \\mathbf{x} + b = 0$ o dado se encontra.",
+            "O vetor de pesos $\\mathbf{w}$ dita a inclinação e orientação ortogonal da fronteira e o viés $b$ controla o deslocamento.",
             "A distância geométrica até a fronteira quantifica o grau de confiança da previsão do modelo."
         ],
         "proxima": r"Por que quase todas as funções de custo e ativações da IA utilizam exponenciais e logaritmos? No próximo tópico, vamos entender o papel de $e^x$ e $\ln(x)$.",
@@ -218,7 +218,7 @@ for x, logit, pred in zip(X, logits, predicoes):
         ],
         "objetivos": [
             "compreender por que $e^x$ é a ferramenta perfeita para garantir positividade estrita em IA;",
-            "dominar as propriedades de $\ln(x)$ que transformam produtos de probabilidade em somas dóceis;",
+            "dominar as propriedades de $\\ln(x)$ que transformam produtos de probabilidade em somas dóceis;",
             "entender o truque do LogSumExp para impedir instabilidade numérica em GPUs."
         ],
         "blocos": [
@@ -250,11 +250,11 @@ $$\frac{d}{dx}[e^x] = e^x$$
                 "passos": [
                     {
                         "faca": r"Encontre o valor máximo dos logits: $$m = \max(z_1, z_2, \dots, z_n)$$",
-                        "porque": "Subtrair o máximo garantirá que o maior expoente seja exatamente zero ($z_i - m \le 0$)."
+                        "porque": "Subtrair o máximo garantirá que o maior expoente seja exatamente zero ($z_i - m \\le 0$)."
                     },
                     {
                         "faca": r"Coloque $e^m$ em evidência dentro da soma: $$\sum_{i=1}^n e^{z_i} = \sum_{i=1}^n e^{(z_i - m) + m} = e^m \cdot \sum_{i=1}^n e^{z_i - m}$$",
-                        "porque": "Propriedade das potências: $e^{a+b} = e^a \cdot e^b$."
+                        "porque": "Propriedade das potências: $e^{a+b} = e^a \\cdot e^b$."
                     },
                     {
                         "faca": r"Aplique o logaritmo na expressão fatorada: $$\ln\left( \sum_{i=1}^n e^{z_i} \right) = \ln\left( e^m \cdot \sum_{i=1}^n e^{z_i - m} \right) = \ln(e^m) + \ln\left( \sum_{i=1}^n e^{z_i - m} \right)$$",
@@ -298,7 +298,7 @@ from scipy.special import logsumexp
 print(f"SciPy logsumexp  : {logsumexp(logits):.6f}")
 assert np.isclose(lse_correto, logsumexp(logits)), "O cálculo deve bater com o SciPy!"''',
                 "experimentos": [
-                    "Experimente com logits extremamente negativos (ex.: <code>[-1000.0, -1002.0]</code>) e verifique como a implementação ingênua sofre de underflow (resultando em $\log(0) = -\infty$), enquanto o LogSumExp permanece exato.",
+                    "Experimente com logits extremamente negativos (ex.: <code>[-1000.0, -1002.0]</code>) e verifique como a implementação ingênua sofre de underflow (resultando em $\\log(0) = -\\infty$), enquanto o LogSumExp permanece exato.",
                     "Entenda por que PyTorch tem a função nativa <code>torch.nn.functional.log_softmax</code> para fundir o cálculo em um único kernel de GPU ultrarrápido."
                 ]
             }
@@ -327,8 +327,8 @@ assert np.isclose(lse_correto, logsumexp(logits)), "O cálculo deve bater com o 
             "Vetores e matrizes (Tópicos 1 e 7)"
         ],
         "objetivos": [
-            "aprender a ler e traduzir somatórios ($\sum$) e produtórios ($\prod$) com múltiplos índices e condições;",
-            "compreender os operadores $\arg\max$, $\arg\min$ e a função indicadora $\mathbb{I}[\cdot]$;",
+            "aprender a ler e traduzir somatórios ($\\sum$) e produtórios ($\\prod$) com múltiplos índices e condições;",
+            "compreender os operadores $\\arg\\max$, $\\arg\\min$ e a função indicadora $\\mathbb{I}[\\cdot]$;",
             "traduzir expressões complexas de papers diretamente em operações vetorizadas de NumPy."
         ],
         "blocos": [
@@ -350,7 +350,7 @@ assert np.isclose(lse_correto, logsumexp(logits)), "O cálculo deve bater com o 
                     [r"$\arg\min_w L(w)$", "Argumento do mínimo da perda", "Retorna o peso w que minimiza o erro", "O resultado da otimização final"],
                     [r"$\mathbb{I}[\text{condição}]$", "Função indicadora", "Retorna 1 se a condição for verdadeira, e 0 se for falsa", "<code>int(condicao)</code> ou <code>(y == pred).astype(int)</code>"],
                     [r"$\mathbf{A} \odot \mathbf{B}$ ou $\circ$", "Produto de Hadamard", "Multiplicação elemento a elemento entre duas matrizes de mesmo tamanho", "<code>A * B</code> (não use <code>A @ B</code>!)"],
-                    [r"$\|\mathbf{x}\|_2$", "Norma L2 Euclidiana", "Comprimento do vetor $\sqrt{\sum x_i^2}$", "<code>np.linalg.norm(x)</code>"],
+                    [r"$\|\mathbf{x}\|_2$", "Norma L2 Euclidiana", "Comprimento do vetor $\\sqrt{\\sum x_i^2}$", "<code>np.linalg.norm(x)</code>"],
                     [r"$\mathbb{E}_{x \sim p}[f(x)]$", "Esperança de f sob a distribuição p", "Média ponderada pela probabilidade", "<code>np.mean(f(x_amostrado))</code>"]
                 ]
             },
@@ -404,14 +404,14 @@ print(f"Função Indicadora: {indicadora} (1 = acerto, 0 = erro)")
 acuracia = np.mean(indicadora)
 print(f"Acurácia calculada: {acuracia * 100:.1f}% (3 acertos em 4)")''',
                 "experimentos": [
-                    "Traduza a fórmula da entropia de Shannon $-\sum p \log p$ usando <code>-np.sum(p * np.log2(p))</code>.",
-                    "Experimente com matrizes e o operador de Hadamard ($\odot$) multiplicando duas matrizes com <code>A * B</code>."
+                    "Traduza a fórmula da entropia de Shannon $-\\sum p \\log p$ usando <code>-np.sum(p * np.log2(p))</code>.",
+                    "Experimente com matrizes e o operador de Hadamard ($\\odot$) multiplicando duas matrizes com <code>A * B</code>."
                 ]
             }
         ],
         "resumo": [
             "A notação matemática de papers é uma linguagem compacta com correspondência direta para loops e operações vetorizadas.",
-            "$\arg\max$ recupera o índice do maior elemento e $\mathbb{I}[\cdot]$ converte condições booleanas em 1 ou 0.",
+            "$\\arg\\max$ recupera o índice do maior elemento e $\\mathbb{I}[\\cdot]$ converte condições booleanas em 1 ou 0.",
             "Dominar essa sintaxe destrava a capacidade de ler e implementar os artigos mais recentes de inteligência artificial."
         ],
         "proxima": r"Como medir o quão distantes dois pontos ou embeddings estão no espaço multidimensional? Vamos explorar a Geometria Analítica das distâncias Euclidiana e Manhattan.",
@@ -532,8 +532,8 @@ assert classes[vizinho_L2] == 1, "Deveria classificar como Excelente!"''',
             "Logaritmos e propriedades da base 2 (Tópico 31)"
         ],
         "objetivos": [
-            "compreender a fórmula da Auto-Informação (Surpresa) $I(x) = -\log_2 P(x)$;",
-            "deduzir a Entropia de Shannon $H(X) = -\sum p_i \log_2 p_i$ como a incerteza média de um sistema;",
+            "compreender a fórmula da Auto-Informação (Surpresa) $I(x) = -\\log_2 P(x)$;",
+            "deduzir a Entropia de Shannon $H(X) = -\\sum p_i \\log_2 p_i$ como a incerteza média de um sistema;",
             "entender por que a distribuição uniforme maximiza a entropia e como isso se relaciona com a inteligência de LLMs."
         ],
         "blocos": [
@@ -557,8 +557,8 @@ $$I(x) = -\log_2 P(x) = \log_2\left(\frac{1}{P(x)}\right) \text{ (medida em bits
 $$H(X) = \mathbb{E}[I(X)] = -\sum_{i=1}^n P(x_i) \log_2 P(x_i)$$""",
                 "itens": [
                     {"simbolo": r"$H(X)$", "leitura": "entropia de X", "significado": "Mede o grau médio de incerteza ou desordem da fonte de dados. Quanto mais imprevisível for o sorteio, maior é a entropia."},
-                    {"simbolo": r"$\log_2$", "leitura": "logaritmo na base 2", "significado": "Unidade em <b>bits</b> (dígitos binários de sim/não necessários para codificar a mensagem sem perdas). Se usar logaritmo natural $\ln$, a unidade chama-se <i>nats</i>."},
-                    {"simbolo": r"0 \log 0 = 0", "leitura": "convenção de continuidade", "significado": "Por limite matemático, $\lim_{p \to 0^+} p \log p = 0$. Eventos impossíveis não contribuem para a entropia."},
+                    {"simbolo": r"$\log_2$", "leitura": "logaritmo na base 2", "significado": "Unidade em <b>bits</b> (dígitos binários de sim/não necessários para codificar a mensagem sem perdas). Se usar logaritmo natural $\\ln$, a unidade chama-se <i>nats</i>."},
+                    {"simbolo": r"0 \log 0 = 0", "leitura": "convenção de continuidade", "significado": "Por limite matemático, $\\lim_{p \\to 0^+} p \\log p = 0$. Eventos impossíveis não contribuem para a entropia."},
                 ],
             },
             {
@@ -614,7 +614,7 @@ assert h_confuso > h_confiante * 4, "O modelo confuso deve ter entropia muito ma
             }
         ],
         "resumo": [
-            "A auto-informação mede a surpresa de um evento individual ($-\log_2 P(x)$).",
+            "A auto-informação mede a surpresa de um evento individual ($-\\log_2 P(x)$).",
             "A Entropia de Shannon quantifica a incerteza média global de uma distribuição de probabilidade.",
             "Distribuições uniformes têm entropia máxima e modelos determinísticos têm entropia zero."
         ],
@@ -639,8 +639,8 @@ assert h_confuso > h_confiante * 4, "O modelo confuso deve ter entropia muito ma
         ],
         "objetivos": [
             "compreender a função Softmax como a generalização multidimensional da Sigmoide;",
-            "deduzir a fórmula da Entropia Cruzada $H(y, \hat{y}) = -\sum y_i \ln \hat{y}_i$;",
-            "provar a dedução do gradiente da Softmax + Cross-Entropy: $\frac{\partial L}{\partial z_i} = p_i - y_i$."
+            "deduzir a fórmula da Entropia Cruzada $H(y, \\hat{y}) = -\\sum y_i \\ln \\hat{y}_i$;",
+            "provar a dedução do gradiente da Softmax + Cross-Entropy: $\\frac{\\partial L}{\\partial z_i} = p_i - y_i$."
         ],
         "blocos": [
             {
@@ -682,7 +682,7 @@ $$L_{\text{CE}} = -\ln(\hat{y}_c)$$
                     },
                     {
                         "faca": r"Distribua o somatório: $$-\sum_k y_k \delta_{ki} + \sum_k y_k p_i = -y_i + p_i \sum_k y_k$$",
-                        "porque": "O único termo sobrevivente com $\delta_{ki}$ é quando $k=i$."
+                        "porque": "O único termo sobrevivente com $\\delta_{ki}$ é quando $k=i$."
                     },
                     {
                         "faca": r"Como $y$ é uma distribuição de probabilidade, a soma de suas componentes é $\sum y_k = 1$: $$\frac{\partial L}{\partial z_i} = p_i - y_i$$",
@@ -730,7 +730,7 @@ assert np.isclose(np.sum(grad_logits), 0.0), "A soma dos gradientes da Softmax d
         "resumo": [
             "Softmax mapeia logits contínuos em distribuições estocásticas normalizadas.",
             "Cross-Entropy penaliza exponencialmente desvios onde o modelo expressa certeza errônea.",
-            "A união analítica de Softmax e Cross-Entropy resulta no gradiente linear mais limpo do cálculo: $\mathbf{p} - \mathbf{y}$."
+            "A união analítica de Softmax e Cross-Entropy resulta no gradiente linear mais limpo do cálculo: $\\mathbf{p} - \\mathbf{y}$."
         ],
         "proxima": r"Como medir a diferença entre duas distribuições contínuas de probabilidade sem usar a entropia direta? Vamos conhecer a Divergência de Kullback-Leibler (KL).",
         "referencias": [
@@ -752,7 +752,7 @@ assert np.isclose(np.sum(grad_logits), 0.0), "A soma dos gradientes da Softmax d
         ],
         "objetivos": [
             "compreender a definição da Divergência KL como perda de informação por usar a distribuição $Q$ para aproximar $P$;",
-            "provar que $D_{\text{KL}}(P \parallel Q) \ge 0$ (Desigualdade de Gibbs) com igualdade se e somente se $P = Q$;",
+            "provar que $D_{\\text{KL}}(P \\parallel Q) \\ge 0$ (Desigualdade de Gibbs) com igualdade se e somente se $P = Q$;",
             "entender o impacto da assimetria da KL (Mode-seeking vs. Mean-seeking) e seu papel no RLHF e VAEs."
         ],
         "blocos": [
@@ -812,7 +812,7 @@ assert kl_divergence(P, P) == 0.0, "D_KL de uma distribuição com ela mesma dev
 print("Propriedades de Kullback-Leibler verificadas com perfeição!")''',
                 "experimentos": [
                     "Faça $Q$ ter probabilidade zero onde $P$ é positivo (ex.: <code>Q = [0.0, 0.8, 0.2]</code>) e veja como a divergência explode para o infinito.",
-                    "Implemente a Divergência de Jensen-Shannon (JSD), que é a versão simétrica da KL: $JSD(P, Q) = \frac{1}{2} D_{KL}(P \parallel M) + \frac{1}{2} D_{KL}(Q \parallel M)$, onde $M = \frac{P+Q}{2}$."
+                    "Implemente a Divergência de Jensen-Shannon (JSD), que é a versão simétrica da KL: $JSD(P, Q) = \\frac{1}{2} D_{KL}(P \\parallel M) + \\frac{1}{2} D_{KL}(Q \\parallel M)$, onde $M = \\frac{P+Q}{2}$."
                 ]
             }
         ],
@@ -874,9 +874,9 @@ Para erros pequenos ($|e| \le \delta$), ela se comporta como MSE (derivada suave
                 "titulo": "Guia de Decisão de Funções de Perda",
                 "cabecalho": ["Função de Perda", "Alvo Estatístico", "Comportamento do Gradiente", "Quando usar?"],
                 "linhas": [
-                    ["MSE (L2)", "Média $\mathbb{E}[y \mid x]$", "Proporcional ao erro ($2e$); encolhe suavemente até zero", "Dados limpos com ruído puramente gaussiano, regressão padrão"],
-                    ["MAE (L1)", "Mediana", "Constante ($\pm 1$); não diminui perto do zero", "Dados com muitos outliers e caudas pesadas"],
-                    ["Huber", "Média perto do centro, Mediana nas caudas", "Linear suave no centro e saturado em $\pm \delta$ nas pontas", "Detecção de objetos (YOLO, Faster R-CNN), redes neurais profundas com ruído"]
+                    ["MSE (L2)", "Média $\\mathbb{E}[y \\mid x]$", "Proporcional ao erro ($2e$); encolhe suavemente até zero", "Dados limpos com ruído puramente gaussiano, regressão padrão"],
+                    ["MAE (L1)", "Mediana", "Constante ($\\pm 1$); não diminui perto do zero", "Dados com muitos outliers e caudas pesadas"],
+                    ["Huber", "Média perto do centro, Mediana nas caudas", "Linear suave no centro e saturado em $\\pm \\delta$ nas pontas", "Detecção de objetos (YOLO, Faster R-CNN), redes neurais profundas com ruído"]
                 ]
             },
             {

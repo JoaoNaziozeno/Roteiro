@@ -74,10 +74,10 @@ GUIDES_MOD1_V2 = {
                 "corpo": r"""<p>Veja como os livros de IA e Álgebra Linear representam vetores:</p>
 $$\vec{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} \in \mathbb{R}^n$$""",
                 "itens": [
-                    {"simbolo": r"$\vec{v}$ ou $\mathbf{v}$", "leitura": "vetor v", "significado": "A seta ou negrito distingue o vetor de um número comum (escalar $v$). Em papers de IA, usa-se quase sempre negrito minúsculo $\mathbf{x}$."},
-                    {"simbolo": r"$\begin{bmatrix} v_1 \\ v_2 \end{bmatrix}$", "leitura": "vetor coluna v", "significado": "Por convenção matemática universal, vetores padrão são tratados como <b>colunas verticais</b>. Uma linha horizontal é representada com a transposta $\mathbf{v}^\top = [v_1, v_2]$."},
+                    {"simbolo": r"$\vec{v}$ ou $\mathbf{v}$", "leitura": "vetor v", "significado": "A seta ou negrito distingue o vetor de um número comum (escalar $v$). Em papers de IA, usa-se quase sempre negrito minúsculo $\\mathbf{x}$."},
+                    {"simbolo": r"$\begin{bmatrix} v_1 \\ v_2 \end{bmatrix}$", "leitura": "vetor coluna v", "significado": "Por convenção matemática universal, vetores padrão são tratados como <b>colunas verticais</b>. Uma linha horizontal é representada com a transposta $\\mathbf{v}^\\top = [v_1, v_2]$."},
                     {"simbolo": r"$v_i$", "leitura": "v índice i", "significado": "O elemento individual na posição $i$ do vetor (ex.: $v_1$ é a primeira feature, $v_2$ é a segunda)."},
-                    {"simbolo": r"$\mathbb{R}^n$", "leitura": "R elevado a n (ou espaço real de dimensão n)", "significado": "Conjunto de todas as listas com $n$ números reais contínuos. O plano cartesiano 2D é $\mathbb{R}^2$. Um embedding do modelo da OpenAI é $\mathbb{R}^{1536}$ (1.536 dimensões)."},
+                    {"simbolo": r"$\mathbb{R}^n$", "leitura": "R elevado a n (ou espaço real de dimensão n)", "significado": "Conjunto de todas as listas com $n$ números reais contínuos. O plano cartesiano 2D é $\\mathbb{R}^2$. Um embedding do modelo da OpenAI é $\\mathbb{R}^{1536}$ (1.536 dimensões)."},
                 ],
             },
             {
@@ -162,7 +162,7 @@ print("Primeiros 3 valores:", embedding_fake[:3].round(3))''',
         "gancho": r"""Como dois vetores simples como $[1, 0]$ e $[0, 1]$ conseguem construir qualquer imagem na tela do seu computador? E quando adicionamos um terceiro vetor, ele ajuda a alcançar novos pontos ou é apenas redundante? Essa é a diferença entre um espaço rico e um modelo com parâmetros inúteis.""",
         "prerequisitos": ["Aula 1: soma e multiplicação de vetores por escalares."],
         "objetivos": [
-            "entender e calcular combinações lineares $c_1 \vec{v}_1 + c_2 \vec{v}_2$;",
+            "entender e calcular combinações lineares $c_1 \\vec{v}_1 + c_2 \\vec{v}_2$;",
             "visualizar o conceito de Espaço Gerado (Span) e identificar quando ele é uma reta, um plano ou um volume 3D;",
             "distinguir independência linear de dependência linear;",
             "compreender o conceito de Base como o conjunto mínimo gerador de um espaço.",
@@ -268,7 +268,7 @@ print("Posto (Rank) LD:", np.linalg.matrix_rank(A_ld))  # 1 (preso em 1D)''',
             },
             {
                 "tipo": "passos",
-                "titulo": "Cálculo Comparativo Passo a Passo com $\vec{v} = [3, -4]$",
+                "titulo": "Cálculo Comparativo Passo a Passo com $\\vec{v} = [3, -4]$",
                 "passos": [
                     {"faca": r"Norma L1: somar os módulos $|3| + |-4| = 3 + 4 = \mathbf{7}$.", "porque": "A norma L1 ignora sinais negativos e mede o percurso em quarteirões."},
                     {"faca": r"Norma L2: elevar ao quadrado $3^2 + (-4)^2 = 9 + 16 = 25$.", "porque": "O quadrado penaliza distâncias maiores e elimina sinais."},
@@ -536,9 +536,9 @@ print("Produto de Hadamard (A * B):\n", hadamard)''',
         "gancho": r"""O que o número do Determinante mede na geometria real? E por que se o determinante de uma matriz for zero, é impossível recuperar a informação original de uma imagem ou vetor?""",
         "prerequisitos": ["Aula 6: matrizes como transformações do espaço."],
         "objetivos": [
-            "escrever qualquer sistema de equações na forma matricial compacta $A \vec{x} = \vec{b}$;",
+            "escrever qualquer sistema de equações na forma matricial compacta $A \\vec{x} = \\vec{b}$;",
             "compreender o Determinante como o fator de escala de área (2D) ou volume (3D);",
-            "identificar quando um sistema tem solução única ($\det(A) \neq 0$) ou infinitas/nenhuma solução ($\det(A) = 0$).",
+            "identificar quando um sistema tem solução única ($\\det(A) \\neq 0$) ou infinitas/nenhuma solução ($\\det(A) = 0$).",
         ],
         "blocos": [
             {
@@ -610,7 +610,7 @@ print(f"Solução [x, y]: {x}")''',
         "objetivos": [
             "compreender a Matriz Inversa $A^{-1}$ como a operação que desfaz a transformação linear ($A^{-1} A = I$);",
             "entender por que sistemas retangulares (mais amostras que variáveis) exigem a Pseudoinversa de Moore-Penrose $A^+$;",
-            "deduzir a solução exata dos Mínimos Quadrados da Regressão Linear: $\vec{w} = (X^\top X)^{-1} X^\top \vec{y}$.",
+            "deduzir a solução exata dos Mínimos Quadrados da Regressão Linear: $\\vec{w} = (X^\\top X)^{-1} X^\\top \\vec{y}$.",
         ],
         "blocos": [
             {
@@ -673,9 +673,9 @@ print("Diferença da fórmula manual:", np.max(np.abs(X_pinv - manual_pinv)))'''
         "gancho": r"""A maioria dos vetores muda de direção quando uma matriz atua sobre eles: uma seta que apontava para o nordeste passa a apontar para o leste. Mas em quase toda matriz, existem eixos privilegiados que permanecem rigorosamente na mesma reta, apenas esticando ou encolhendo. Descobrir esses eixos é o segredo do PageRank do Google e da compressão de imagens.""",
         "prerequisitos": ["Aula 6: Matrizes como transformações.", "Aula 8: Determinantes."],
         "objetivos": [
-            "compreender a equação fundamental $A \vec{v} = \lambda \vec{v}$;",
+            "compreender a equação fundamental $A \\vec{v} = \\lambda \\vec{v}$;",
             "interpretar autovetores como eixos de rotação/estiramento invariantes e autovalores como o fator de escala;",
-            "calcular autovalores através da equação característica $\det(A - \lambda I) = 0$;",
+            "calcular autovalores através da equação característica $\\det(A - \\lambda I) = 0$;",
             "reconhecer o papel de autovetores em estabilidade, PageRank e PCA.",
         ],
         "blocos": [
@@ -749,8 +749,8 @@ print("lambda1 * v1:", (l1 * v1).round(3))''',
         "gancho": r"""Como comprimir uma imagem de 10 Megabytes para apenas 500 Kilobytes preservando todas as feições principais? E como reduzir uma tabela com 500 características de clientes para apenas 2 eixos para plotar em um gráfico 2D sem perder a variabilidade dos dados? A resposta é o PCA e o SVD.""",
         "prerequisitos": ["Aula 10: Autovalores e Autovetores.", "Aula 4: Normas e Distâncias."],
         "objetivos": [
-            "compreender o teorema do SVD: qualquer matriz pode ser decomposta em $A = U \Sigma V^\top$;",
-            "interpretar a tríade geométrica: Rotação $\to$ Escala $\to$ Rotação;",
+            "compreender o teorema do SVD: qualquer matriz pode ser decomposta em $A = U \\Sigma V^\\top$;",
+            "interpretar a tríade geométrica: Rotação $\\to$ Escala $\\to$ Rotação;",
             "entender o PCA (Principal Component Analysis) como a busca pelas direções de máxima variância;",
             "usar PCA para comprimir e descompactar dados com NumPy.",
         ],

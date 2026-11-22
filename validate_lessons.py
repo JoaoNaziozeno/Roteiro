@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Confere as Aulas Visuais de IA e Inglês antes de publicar.
+Confere as Aulas Visuais de IA, Inglês e Matemática antes de publicar.
 
     python -X utf8 validate_lessons.py            -> estrutura + exercícios de código
     python -X utf8 validate_lessons.py --links    -> também testa os links de livros e documentação
@@ -10,6 +10,7 @@ O que é verificado:
   - cobertura: quais tópicos de IA e aulas de Inglês ainda não têm Aula Visual;
   - estrutura de cada bloco (alternativa correta dentro do intervalo, um "porquê" por alternativa etc.);
   - HTML básico (tags abertas e fechadas) e cifrões soltos, que o KaTeX leria como fórmula;
+  - LaTeX de todas as aulas de Matemática: caractere de controle ou comando quebrado por escape do Python;
   - exercícios de código: a solução oficial passa em todos os testes e o código inicial NÃO passa.
     Exercícios com numpy/pandas não rodam aqui (são conferidos no navegador, com o Pyodide).
 """
@@ -97,6 +98,53 @@ def check_html(s):
     return probs
 
 
+# Numa string comum do Python, "\times" vira TAB + "imes" e "\neq" vira quebra de linha + "eq".
+CONTROLE = re.compile(r"[\x00-\x09\x0b-\x1f\x7f]")
+# O auto-render do KaTeX procura fórmulas dentro de cada nó de texto, então uma tag sempre separa fórmulas.
+TAG = re.compile(r"</?[A-Za-z][^>]*>")
+FORMULA = re.compile(r"\$\$(.+?)\$\$|\$([^$]+)\$", re.S)
+TEXTO_LATEX = re.compile(r"\\(?:text\w*|operatorname|mathrm)\{[^{}]*\}")
+# Em fórmula de bloco a quebra de linha é válida, menos quando é o que sobrou de um comando \n...
+RESTO_DE_N = re.compile(r"\n(?:abla|eq|eg|ot|otin|earrow|exists)(?![A-Za-z])")
+SEM_BARRA = re.compile(
+    r"(?<![\\A-Za-z])(?:ec|rac|imes|ext|extbf|heta|pprox|abla|ightarrow|ilde"
+    r"|vec|frac|sqrt|times|approx|theta|nabla|mathbf|mathbb|mathcal)(?![A-Za-z])")
+BARRA_DUPLA = re.compile(r"(?<!\\)\\\\[A-Za-z]")                # fora de matriz, "\\vec" é quebra + "vec"
+BARRA_SIMPLES = re.compile(r"(?<!\\)\\(?=[\s\d])")              # em matriz, o "\\" que virou "\"
+
+
+def textos_mat(guia):
+    """Como strings(), mais as linhas de tabela: só em "parsons" o campo "linhas" é código."""
+    yield from strings(guia)
+    for b in (guia or {}).get("blocos", []):
+        if b.get("tipo") == "tabela":
+            yield from strings(b.get("linhas", []))
+
+
+def check_latex(s):
+    probs = []
+    texto = re.sub(r"<pre.*?</pre>|<code>.*?</code>", "<br>", s, flags=re.S)
+    for c in sorted(set(CONTROLE.findall(texto))):
+        probs.append(f"caractere de controle {c!r} (use string r'...' ou dobre a barra)")
+    for trecho in TAG.split(texto):
+        for m in FORMULA.finditer(trecho):
+            bloco, linha = m.groups()
+            f = bloco or linha
+            matriz = "\\begin{" in f
+            if (linha and "\n" in linha) or RESTO_DE_N.search(f):
+                motivo = "quebra de linha no lugar de comando"
+            elif SEM_BARRA.search(TEXTO_LATEX.sub("", f)):
+                motivo = "comando sem a barra"
+            elif not matriz and BARRA_DUPLA.search(f):
+                motivo = "barra dupla antes de comando"
+            elif matriz and BARRA_SIMPLES.search(f):
+                motivo = "barra simples no fim de linha da matriz"
+            else:
+                continue
+            probs.append(f"LaTeX quebrado ({motivo}) em {m.group(0)[:60]!r}")
+    return probs
+
+
 def check_guide(key, g, problems, code_jobs):
     def bad(msg):
         problems.append(f"[{key}] {msg}")
@@ -158,9 +206,12 @@ def main():
     from en_m7_trabalho import MODULO_7
     vids += [t["videoId"] for g in MODULO_7["g"] for t in g[1]]          # Módulo 7 (Inglês no trabalho)
     from math_lessons_v2_extra import AULAS as mat_extra                  # aulas novas de Matemática
+    from build_math_data import get_enriched_mat_phases
+    mat = [t for p in get_enriched_mat_phases() for g in p["g"] for t in g[1]]
     miss_ia, miss_en = [t for t in titles if t not in ia], [v for v in vids if v not in en]
     extra = [k for k in ia if k not in titles] + [k for k in en if k not in vids]
-    print(f"IA: {len(titles) - len(miss_ia)}/{len(titles)} aulas · Inglês: {len(vids) - len(miss_en)}/{len(vids)} aulas")
+    print(f"IA: {len(titles) - len(miss_ia)}/{len(titles)} aulas · Inglês: {len(vids) - len(miss_en)}/{len(vids)} aulas"
+          f" · Matemática: {sum(1 for t in mat if t.get('pt_guide'))}/{len(mat)} aulas")
     if extra:
         print("  CHAVES QUE NÃO CASAM COM NENHUM TÓPICO:", extra)
     if "--faltam" in sys.argv:
@@ -173,6 +224,12 @@ def main():
     for key, g in list(ia.items()) + list(en.items()) + list(mat_extra.items()):
         if only is None or key in only:
             check_guide(key, g, problems, code_jobs)
+    for t in mat:
+        key = t["title"]
+        if only is None or key in only:
+            for s in textos_mat(t.get("pt_guide")):
+                for p in check_latex(s):
+                    problems.append(f"[{key}] {p}")
 
     ran = skipped = 0
     for key, b in code_jobs:
