@@ -701,7 +701,7 @@ print("\nComprovação matemática de RoPE executada com sucesso absoluto!")''',
             "Positional Encodings sinusoidais somam ondas aos embeddings, enquanto RoPE rotaciona vetores no plano.",
             "O RoPE transforma a posição absoluta em distância relativa pura via produto de matrizes ortogonais, sendo o padrão do LLaMA 3 e dos LLMs de longo contexto."
         ],
-        "proxima": r"Parabéns! Você completou a jornada das 43 Aulas Visuais de Matemática Essencial para IA! Da geometria dos vetores até o coração dos Transformers, você agora domina os fundamentos matemáticos que movem a inteligência artificial moderna.",
+        "proxima": r"Parabéns! Você completou toda a jornada de Aulas Visuais de Matemática Essencial para IA! Da geometria dos vetores até o coração dos Transformers, você agora domina os fundamentos matemáticos que movem a inteligência artificial moderna.",
         "referencias": [
             {"obra": "Su et al. (2021). RoFormer: Enhanced Transformer with Rotary Position Embedding", "trecho": "Paper seminal (arXiv:2104.09864)", "uso": "Dedução teórica completa da formulação complexa e matricial de RoPE"},
             {"obra": "Vaswani et al. (2017). Attention Is All You Need", "trecho": "Seção 3.5: Positional Encoding", "uso": "Formulação original com funções trigonométricas de frequências geométricas"}

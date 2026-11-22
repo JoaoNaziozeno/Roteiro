@@ -140,6 +140,17 @@ def counts(tracks):
     return out
 
 
+def split_count(topics):
+    """(obrigatórios, opcionais) de uma lista de tópicos: a regra única de todos os contadores."""
+    opt = sum(1 for t in topics if is_optional(t))
+    return len(topics) - opt, opt
+
+
+def required_ids(tracks):
+    return sorted(raw["sid"] for phases in tracks.values() for p in phases for g in p["g"]
+                  for raw in g[1] if not is_optional(raw))
+
+
 def optional_ids(tracks):
     return sorted(raw["sid"] for phases in tracks.values() for p in phases for g in p["g"]
                   for raw in g[1] if is_optional(raw))

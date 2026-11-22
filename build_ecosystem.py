@@ -14,7 +14,7 @@ for _aula in english_playlist:
         _aula['pt_guide'] = ENGLISH_GUIDES[_aula['videoId']]
 
 # ---------------------------------------------------------------------------
-# 1. Dados de IA (6 Fases Técnicas - 173 Tópicos)
+# 1. Dados de IA (6 fases)
 # ---------------------------------------------------------------------------
 from build_ia_data import get_enriched_ia_phases
 ia_phases = get_enriched_ia_phases()
@@ -28,13 +28,13 @@ for _fase in ia_phases:
                 _t['pt_guide'] = IA_GUIDES[_t['title']]
 
 # ---------------------------------------------------------------------------
-# 2. Dados de Matemática (5 Módulos - 43 Tópicos de Matemática Essencial para IA)
+# 2. Dados de Matemática (5 módulos)
 # ---------------------------------------------------------------------------
 from build_math_data import get_enriched_mat_phases
 mat_phases = get_enriched_mat_phases()
 
 # ---------------------------------------------------------------------------
-# 3. Dados de Inglês EnglishBay (6 Módulos - 73 Vídeo-Aulas)
+# 3. Dados de Inglês EnglishBay (playlist; o Módulo 7 entra mais abaixo)
 # ---------------------------------------------------------------------------
 ing_phases = [
     {
@@ -276,7 +276,9 @@ details.sb-phase summary::-webkit-details-marker{display:none}
 details.sb-phase summary:hover{background:var(--bg)}
 details.sb-phase.active-phase summary{background:rgba(74,92,106,.25);color:var(--tx)}
 .sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
+.cnt-opt{opacity:.65;font-weight:500}
+.fil-count{opacity:.8;margin-left:3px;font-variant-numeric:tabular-nums}
+.sb-badge-count{white-space:nowrap;font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
 
 .sb-sub-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 6px 14px;margin-left:8px;border-left:1px solid var(--bd)}
 .sb-sub-btn{
@@ -2266,6 +2268,7 @@ for _g in _m7["g"]:
         if _t["videoId"] in ENGLISH_GUIDES:
             _t["pt_guide"] = ENGLISH_GUIDES[_t["videoId"]]
 ing_phases.append(_m7)
+_N_M7 = sum(len(_g[1]) for _g in _m7["g"])
 
 # Currículo: ids fixos, reorganização da Matemática e tópicos opcionais (ver curriculo.py).
 # Precisa rodar antes de qualquer página ser gerada.
@@ -2273,7 +2276,8 @@ import curriculo
 _TRACKS = {"ia": ia_phases, "mat": mat_phases, "ing": ing_phases}
 curriculo.apply(_TRACKS)
 CURR_COUNTS = curriculo.counts(_TRACKS)
-RM_CONFIG = {"totals": {t: c["req"] for t, c in CURR_COUNTS.items()}, "optional": curriculo.optional_ids(_TRACKS)}
+RM_CONFIG = {"totals": {t: c["req"] for t, c in CURR_COUNTS.items()}, "optional": curriculo.optional_ids(_TRACKS),
+             "required": curriculo.required_ids(_TRACKS)}
 
 # Índice de todos os tópicos para a busca global (Ctrl/⌘ + K) do design v2
 from design_v2 import set_topic_index
@@ -2302,7 +2306,8 @@ generate_listing_page(
 generate_listing_page(
     track_id="ing",
     page_title="Curso de Inglês EnglishBay (Playlist Oficial)",
-    page_sub="Sequência completa de 73 vídeo-aulas da playlist oficial com links diretos para o YouTube, anotações de vocabulário e exercícios",
+    page_sub=(f"As {CURR_COUNTS['ing']['req'] - _N_M7} vídeo-aulas da playlist oficial + {_N_M7} de inglês para trabalhar com IA, "
+              "com anotações de vocabulário e exercícios"),
     track_icon="🇺🇸",
     phases=ing_phases,
     out_path=out_ing,

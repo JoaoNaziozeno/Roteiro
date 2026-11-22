@@ -29,7 +29,8 @@ def _title(raw):
 
 
 def build_index(tracks):
-    """Índice compacto: tópicos {id: [título, módulo]} e módulos {módulo: [nome, total]}."""
+    """Índice compacto: tópicos {id: [título, bloco, opcional]} e blocos {bloco: [nome, obrigatórios]}.
+    Bloco "ia-0-2" = 3º subgrupo da 1ª fase de IA; a fase (ou módulo) é o bloco sem o último número."""
     topics, modules = {}, {}
     for tr, phases in tracks.items():
         for p_idx, p in enumerate(phases):
@@ -176,7 +177,7 @@ function renderConquistas() {
   const totalDone = Object.keys(done).length;
   const last30 = Object.values(doneAt).filter(t => t >= now - 30 * CQ_DAY).length;
 
-  // Módulos completos
+  // Blocos (subgrupos) completos; a fase/módulo fecha quando todos os blocos dela fecham
   const modDone = {};
   for (const id in done) { const m = topics[id][1]; modDone[m] = (modDone[m] || 0) + 1; }
   const fullMods = Object.keys(modDone).filter(m => modDone[m] >= modules[m][1]);
@@ -187,7 +188,7 @@ function renderConquistas() {
   if (!totalDone && !daysStudied) lead = "Aqui vão aparecer os tópicos que você concluir, os dias em que estudou e os selos que conquistar. Conclua sua primeira aula e veja este painel ganhar vida.";
   else {
     lead = "Você já concluiu <b>" + cqNum(totalDone) + " tópico" + (totalDone === 1 ? "" : "s") + "</b>";
-    if (fullMods.length) lead += " e fechou <b>" + fullMods.length + " módulo" + (fullMods.length === 1 ? "" : "s") + " inteiro" + (fullMods.length === 1 ? "" : "s") + "</b>";
+    if (fullMods.length) lead += " e fechou <b>" + fullMods.length + " bloco" + (fullMods.length === 1 ? "" : "s") + " inteiro" + (fullMods.length === 1 ? "" : "s") + "</b>";
     lead += ". ";
     if (streak >= 2) lead += "🔥 São <b>" + streak + " dias seguidos</b> de estudo. Não deixe a sequência quebrar hoje!";
     else if (last30) lead += "Só nos últimos 30 dias foram <b>" + last30 + "</b>. Cada aula concluída é um passo que ninguém tira de você.";
@@ -205,8 +206,11 @@ function renderConquistas() {
     const pct = total ? d / total * 100 : 0;
     const mods = Object.keys(modules).filter(m => m.startsWith(tr + "-") && modules[m][1] > 0);
     const fm = mods.filter(m => (modDone[m] || 0) >= modules[m][1]).length;
+    const phases = {};   // fase -> todos os blocos dela estão completos?
+    mods.forEach(m => { const p = m.slice(0, m.lastIndexOf("-")); phases[p] = (phases[p] !== false) && (modDone[m] || 0) >= modules[m][1]; });
+    const phaseList = Object.values(phases);
     const lastId = ids.filter(id => doneAt[id]).sort((a, b) => doneAt[b] - doneAt[a])[0];
-    // Meta próxima: o módulo mais perto de terminar (a previsão do roteiro inteiro fica na Jornada)
+    // Meta próxima: o bloco mais perto de terminar (a previsão do roteiro inteiro fica na Jornada)
     const recent = ids.filter(id => doneAt[id] && doneAt[id] >= now - 28 * CQ_DAY).length;
     const open = mods.filter(m => (modDone[m] || 0) < modules[m][1])
       .sort((a, b) => ((modDone[b] || 0) / modules[b][1]) - ((modDone[a] || 0) / modules[a][1]) || (a < b ? -1 : 1));
@@ -214,7 +218,7 @@ function renderConquistas() {
     if (d >= total) est = "🎓 Disciplina concluída. Que orgulho!";
     else if (open.length) {
       const m = open[0], left = modules[m][1] - (modDone[m] || 0);
-      est = "🎯 Próximo módulo: <b>" + cqEsc(modules[m][0]) + "</b> · falta" + (left > 1 ? "m " + left + " tópicos" : " 1 tópico");
+      est = "🎯 Próximo bloco: <b>" + cqEsc(modules[m][0]) + "</b> · falta" + (left > 1 ? "m " + left + " tópicos" : " 1 tópico");
       if (recent > 0) {
         const days = Math.max(1, Math.ceil(left / (recent / 28)));
         est += ". No seu ritmo, você fecha em ~" + days + (days === 1 ? " dia." : " dias.");
@@ -224,7 +228,7 @@ function renderConquistas() {
     return '<a class="cq-card" href="' + href + '" style="--c:var(' + color + ')">' +
       '<div class="cq-card-top">' + cqRing(pct, pctLabel) + '<div><div class="cq-name">' + icon + " " + name + "</div>" +
       '<div class="cq-count"><b>' + d + "</b> de " + total + " concluídos" + (r ? " · " + r + " em andamento" : "") + "</div></div></div>" +
-      '<div class="cq-line">Módulos completos: <b>' + fm + " de " + mods.length + "</b></div>" +
+      '<div class="cq-line">' + (tr === "ia" ? "Fases completas" : "Módulos completos") + ': <b>' + phaseList.filter(Boolean).length + " de " + phaseList.length + "</b> · Blocos: <b>" + fm + " de " + mods.length + "</b></div>" +
       (extras ? '<div class="cq-line">⭐ Bônus: <b>' + extras + " aprofundamento" + (extras === 1 ? "" : "s") + " opcional" + (extras === 1 ? "" : "is") + "</b> concluído" + (extras === 1 ? "" : "s") + "</div>" : "") +
       (lastId ? '<div class="cq-line">Última conquista: <b>' + cqEsc(topics[lastId][0]) + "</b> (" + cqDate(doneAt[lastId]) + ")</div>" : "") +
       '<div class="cq-est">' + est + "</div></a>";
@@ -256,7 +260,7 @@ function renderConquistas() {
     ["📘", "tópico", "tópicos", totalDone, [1, 5, 10, 25, 50, 100, 150, 200, totalReq]],
     ["⏱️", "hora estudada", "horas estudadas", totalSec / 3600, [1, 5, 10, 25, 50, 100]],
     ["🔥", "dia seguido", "dias seguidos", best, [3, 7, 14, 30, 60]],
-    ["🧩", "módulo completo", "módulos completos", fullMods.length, [1, 3, 5, 10, 20]],
+    ["🧩", "bloco completo", "blocos completos", fullMods.length, [1, 3, 5, 10, 20]],
   ];
   const earned = [], upcoming = [];
   tiers.forEach(([ic, one, many, val, steps]) => {

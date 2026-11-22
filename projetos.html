@@ -179,7 +179,9 @@ details.sb-phase summary::-webkit-details-marker{display:none}
 details.sb-phase summary:hover{background:var(--bg)}
 details.sb-phase.active-phase summary{background:rgba(74,92,106,.25);color:var(--tx)}
 .sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
+.cnt-opt{opacity:.65;font-weight:500}
+.fil-count{opacity:.8;margin-left:3px;font-variant-numeric:tabular-nums}
+.sb-badge-count{white-space:nowrap;font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
 
 .sb-sub-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 6px 14px;margin-left:8px;border-left:1px solid var(--bd)}
 .sb-sub-btn{
@@ -4910,6 +4912,7 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     };
     youAnim = requestAnimationFrame(step);
   };
+  if (window.__dsRouteData) window.dsRoute(window.__dsRouteData);   // cálculo feito antes deste script existir
 
   /* ---------- Paleta de comandos (Ctrl/⌘ + K) ---------- */
   var pal = null, items = [], sel = 0;

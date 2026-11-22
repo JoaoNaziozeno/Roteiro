@@ -11,13 +11,15 @@ const RM = (() => {
   const DAY = 86400000, WEEK = 7 * DAY;
   const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };   // substituído por configure() com os obrigatórios
   const OPTIONAL = new Set();                            // tópicos opcionais: fora da meta e dos percentuais
+  const REQUIRED = new Set();                            // ids obrigatórios do roteiro atual (vazio = sem catálogo)
   const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
   // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
   // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
-  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k) && !OPTIONAL.has(k);
+  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k) && !OPTIONAL.has(k) && (!REQUIRED.size || REQUIRED.has(k));
   function configure(c) {
     if (c && c.totals) for (const t in c.totals) TRACK_TOTAL[t] = c.totals[t];
     if (c && Array.isArray(c.optional)) { OPTIONAL.clear(); c.optional.forEach(k => OPTIONAL.add(k)); }
+    if (c && Array.isArray(c.required)) { REQUIRED.clear(); c.required.forEach(k => REQUIRED.add(k)); }
   }
   const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
   const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
@@ -26,7 +28,7 @@ const RM = (() => {
   function totals(eff) {
     let topics = 0, points = 0;
     for (const t in TRACK_TOTAL) { topics += TRACK_TOTAL[t]; points += TRACK_TOTAL[t] * trackW(eff, t); }
-    for (const k in (eff.topics || {})) if (eff.topics[k] > 0) points += eff.topics[k] - trackW(eff, trackOf(k));
+    for (const k in (eff.topics || {})) if (isTopic(k) && eff.topics[k] > 0) points += eff.topics[k] - trackW(eff, trackOf(k));
     return { topics, points };
   }
 

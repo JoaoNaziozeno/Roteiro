@@ -8,7 +8,7 @@ AULAS = {}
 AULAS["f9tmKAvJAAQ"] = aula(
     15,
     "Antes da primeira frase, vale combinar o método. Aprender inglês funciona como academia: pouco, todo dia, com repetição em voz alta. Esta aula zero mostra como aproveitar o curso e as ferramentas desta página (áudio, ditado, fala e revisões).",
-    ["entender como o curso está organizado (6 módulos, 12 aulas cada);", "montar uma rotina de estudo realista;", "conhecer as ferramentas de cada aula visual."],
+    ["entender como o curso está organizado (7 módulos: 6 da playlist e 1 de inglês para trabalhar com IA);", "montar uma rotina de estudo realista;", "conhecer as ferramentas de cada aula visual."],
     ["Nenhum."],
     [
         chute("Qual rotina tende a dar mais resultado?", ["3 horas no sábado.", "20 a 30 minutos todos os dias.", "Estudar só quando der vontade."], 1,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Trilha de Matemática Essencial para IA (43 tópicos enriquecidos).
+Trilha de Matemática Essencial para IA.
 Aulas Visuais completas e didáticas com intuição geométrica, nomenclaturas explicadas termo a termo,
 cálculos demonstrados passo a passo e implementações práticas em Python.
 """

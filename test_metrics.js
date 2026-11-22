@@ -57,4 +57,10 @@ assert.strictEqual(legado.structDone, 1);
 assert.strictEqual(legado.per.ia.done, 1);
 assert.strictEqual(RM.evNet({ id: "35", f: "z", to: "e" }, eff), 0);
 assert.strictEqual(RM.evNet({ id: "ia-1", f: "z", to: "e" }, eff), 1);
+// com catálogo: id que não existe no roteiro e opcional não contam (nem em progresso, nem em eventos, nem no total)
+RM.configure({ totals: { ia: 2, mat: 1, ing: 1 }, optional: ["ia-op"], required: ["ia-a", "ia-b", "mat-a", "ing-a"] });
+const cat = RM.progress({ "ia-a": { s: "e" }, "ia-op": { s: "e" }, "ia-9-9-9": { s: "e" } }, eff);
+assert.strictEqual(cat.structDone, 1);
+assert.strictEqual(RM.evNet({ id: "ia-9-9-9", f: "z", to: "e" }, eff), 0);
+assert.strictEqual(RM.totals({ tracks: eff.tracks, topics: { "ia-9-9-9": 7 } }).points, 4);
 console.log("✅ todos os testes passaram");
