@@ -10,6 +10,21 @@ from studio_js import STUDIO_JS
 from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
+def _count_badge(topics):
+    req, opt = curriculo.split_count(topics)
+    if not opt:
+        return f'<span class="sb-badge-count">{req}</span>'
+    return (f'<span class="sb-badge-count" title="{req} obrigatórios + {opt} opcionais">'
+            f'{req} <span class="cnt-opt">+{opt}</span></span>')
+
+
+def _count_title(topics):
+    req, opt = curriculo.split_count(topics)
+    if not opt:
+        return str(req)
+    return f"{req} + {opt} {'opcional' if opt == 1 else 'opcionais'}"
+
+
 def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
     total_topics = 0      # só obrigatórios (meta e percentuais)
     all_topics = 0        # todos, inclusive opcionais (filtro "Todos")
@@ -99,13 +114,13 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
     # Sidebar Tree HTML
     sidebar_tree_html = []
     for p in phase_items:
-        p_count = sum(len(g["topics"]) for g in p["groups"])
+        p_topics = [t for g in p["groups"] for t in g["topics"]]
         sub_btns = []
         for g in p["groups"]:
             sub_btns.append(f"""
             <button class="sb-sub-btn" onclick="jumpToSub('{g['id']}')">
               <span>{g['name']}</span>
-              <span class="sb-badge-count">{len(g['topics'])}</span>
+              {_count_badge(g['topics'])}
             </button>
             """)
 
@@ -113,7 +128,7 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
         <details class="sb-phase" open>
           <summary>
             <span class="sb-phase-title">📁 {p['title'].split('·')[0].strip()}</span>
-            <span class="sb-badge-count">{p_count}</span>
+            {_count_badge(p_topics)}
           </summary>
           <div class="sb-sub-list">
             {''.join(sub_btns)}
@@ -167,7 +182,7 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
 
             groups_html.append(f"""
             <div class="group-section" id="{g['id']}">
-              <div class="group-title">📌 {g['name']} ({len(g['topics'])})</div>
+              <div class="group-title">📌 {g['name']} ({_count_title(g['topics'])})</div>
               <div class="group-topics">
                 {''.join(topics_rows)}
               </div>
@@ -284,7 +299,7 @@ __AUTH_AWS_CSS__
     <main>
       <div class="hero-head">
         <h1>__TRACK_ICON__ __PAGE_TITLE__</h1>
-        <p class="sub">__PAGE_SUB__ · <b>__TOTAL_TOPICS__ tópicos</b> organizados para domínio completo.</p>
+        <p class="sub">__PAGE_SUB__ · <b>__TOTAL_TOPICS__ tópicos</b>__EXTRA_TOPICS__ organizados para domínio completo.</p>
       </div>
 
       <!-- RASTREADOR ITERATIVO E DINÂMICO DE METAS -->
@@ -359,10 +374,10 @@ __AUTH_AWS_CSS__
 
       <section class="filter-row">
         <div class="filters">
-          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos (__ALL_TOPICS__)</button>
-          <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero</button>
-          <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar</button>
-          <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído</button>
+          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos __ALL_LABEL__</button>
+          <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero <span class="fil-count" id="fil-count-z"></span></button>
+          <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar <span class="fil-count" id="fil-count-r"></span></button>
+          <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído <span class="fil-count" id="fil-count-e"></span></button>
           <button class="fil-btn" data-f="n" onclick="setFilter('n')">📝 Anotações</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1001,10 +1016,7 @@ async function syncTopicToServer(topicId) {
 // 3. Renderização e Atualização Visual da Tela
 function paint() {
   let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0;
-
-  for (let i = 0; i < TOTAL_TRACK_TOPICS; i++) {
-    const row = document.querySelector(`.topic-row[data-id^="${TRACK_ID}-"]`);
-  }
+  const optCount = { e: 0, r: 0, z: 0 };
 
   const allRows = document.querySelectorAll(`.topic-row`);
   let firstUncompletedRow = null;
@@ -1015,7 +1027,7 @@ function paint() {
     const status = item.s || "z";
     const isOpt = row.hasAttribute("data-opt");   // opcionais: fora dos contadores e da meta
 
-    if (isOpt) { /* não conta */ }
+    if (isOpt) optCount[status === "e" || status === "r" ? status : "z"]++;
     else if (status === "e") doneCount++;
     else if (status === "r") progCount++;
     else zeroCount++;
@@ -1058,6 +1070,13 @@ function paint() {
   if (elProg) elProg.textContent = progCount;
   if (elZero) elZero.textContent = zeroCount;
   if (elNotes) elNotes.textContent = noteCount;
+
+  // Filtros mostram também os opcionais: o número diz quantos (obrigatórios + opcionais)
+  const reqCount = { e: doneCount, r: progCount, z: zeroCount };
+  for (const s in reqCount) {
+    const el = document.getElementById("fil-count-" + s);
+    if (el) el.textContent = optCount[s] ? `${reqCount[s]} +${optCount[s]} opc.` : String(reqCount[s]);
+  }
 
   // Barra de Progresso
   const total = TOTAL_TRACK_TOPICS || 1;
@@ -1251,7 +1270,7 @@ function scrollToNextStep() {
   for (const row of allRows) {
     const tid = row.getAttribute("data-id");
     const item = PR[tid] || { s: "z" };
-    if (item.s !== "e") {
+    if (item.s !== "e" && !row.hasAttribute("data-opt")) {   // o mesmo tópico do "Próximo passo recomendado"
       row.scrollIntoView({ behavior: "smooth", block: "center" });
       row.style.boxShadow = "0 0 0 4px var(--ac)";
       setTimeout(() => { row.style.boxShadow = ""; }, 1800);
@@ -1568,6 +1587,9 @@ if (typeof initSplitResizer === "function") initSplitResizer();
     }
     modal_track_name = modal_track_names.get(track_id, page_title)
 
+    n_opt = all_topics - total_topics
+    all_label = f"{all_topics} ({total_topics} + {n_opt} opcionais)" if n_opt else str(all_topics)
+    extra_topics = f" (+{n_opt} opcionais)" if n_opt else ""
     rendered = (template
         .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
         .replace("__AUTH_AWS_CSS__", AUTH_AWS_SYNC_CSS)
@@ -1579,7 +1601,8 @@ if (typeof initSplitResizer === "function") initSplitResizer();
         .replace("__TRACK_ICON__", track_icon)
         .replace("__TRACK_ID__", track_id)
         .replace("__TOTAL_TOPICS__", str(total_topics))
-        .replace("__ALL_TOPICS__", str(all_topics))
+        .replace("__ALL_LABEL__", all_label)
+        .replace("__EXTRA_TOPICS__", extra_topics)
         .replace("__SHARED_CSS__", shared_css)
         .replace("__FAVICON__", FAVICON_LINK)
         .replace("__ACTIVE_HUB__", active_hub)

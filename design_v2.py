@@ -410,6 +410,7 @@ window.DS_TOPICS = __DS_TOPICS__;
     };
     youAnim = requestAnimationFrame(step);
   };
+  if (window.__dsRouteData) window.dsRoute(window.__dsRouteData);   // cálculo feito antes deste script existir
 
   /* ---------- Paleta de comandos (Ctrl/⌘ + K) ---------- */
   var pal = null, items = [], sel = 0;

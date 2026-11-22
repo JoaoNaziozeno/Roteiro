@@ -183,7 +183,9 @@ details.sb-phase summary::-webkit-details-marker{display:none}
 details.sb-phase summary:hover{background:var(--bg)}
 details.sb-phase.active-phase summary{background:rgba(74,92,106,.25);color:var(--tx)}
 .sb-phase-title{display:flex;align-items:center;gap:6px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sb-badge-count{font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
+.cnt-opt{opacity:.65;font-weight:500}
+.fil-count{opacity:.8;margin-left:3px;font-variant-numeric:tabular-nums}
+.sb-badge-count{white-space:nowrap;font-size:.7rem;padding:1px 6px;border-radius:99px;background:var(--bd);color:var(--mu);font-weight:600;flex-shrink:0}
 
 .sb-sub-list{display:flex;flex-direction:column;gap:2px;padding:4px 0 6px 14px;margin-left:8px;border-left:1px solid var(--bd)}
 .sb-sub-btn{
@@ -3412,7 +3414,7 @@ html::view-transition{background:var(--bg)}
         <details class="sb-phase" open>
           <summary>
             <span class="sb-phase-title">📁 Fase 2</span>
-            <span class="sb-badge-count">25</span>
+            <span class="sb-badge-count" title="23 obrigatórios + 2 opcionais">23 <span class="cnt-opt">+2</span></span>
           </summary>
           <div class="sb-sub-list">
             
@@ -3438,12 +3440,12 @@ html::view-transition{background:var(--bg)}
             
             <button class="sb-sub-btn" onclick="jumpToSub('sec-1-4')">
               <span>Dados na prática</span>
-              <span class="sb-badge-count">5</span>
+              <span class="sb-badge-count" title="4 obrigatórios + 1 opcionais">4 <span class="cnt-opt">+1</span></span>
             </button>
             
             <button class="sb-sub-btn" onclick="jumpToSub('sec-1-5')">
               <span>Boas práticas</span>
-              <span class="sb-badge-count">3</span>
+              <span class="sb-badge-count" title="2 obrigatórios + 1 opcionais">2 <span class="cnt-opt">+1</span></span>
             </button>
             
           </div>
@@ -3494,7 +3496,7 @@ html::view-transition{background:var(--bg)}
         <details class="sb-phase" open>
           <summary>
             <span class="sb-phase-title">📁 Fase 4</span>
-            <span class="sb-badge-count">29</span>
+            <span class="sb-badge-count" title="20 obrigatórios + 9 opcionais">20 <span class="cnt-opt">+9</span></span>
           </summary>
           <div class="sb-sub-list">
             
@@ -3515,17 +3517,17 @@ html::view-transition{background:var(--bg)}
             
             <button class="sb-sub-btn" onclick="jumpToSub('sec-3-3')">
               <span>Mais arquiteturas</span>
-              <span class="sb-badge-count">6</span>
+              <span class="sb-badge-count" title="1 obrigatórios + 5 opcionais">1 <span class="cnt-opt">+5</span></span>
             </button>
             
             <button class="sb-sub-btn" onclick="jumpToSub('sec-3-4')">
               <span>Treino na prática</span>
-              <span class="sb-badge-count">6</span>
+              <span class="sb-badge-count" title="5 obrigatórios + 1 opcionais">5 <span class="cnt-opt">+1</span></span>
             </button>
             
             <button class="sb-sub-btn" onclick="jumpToSub('sec-3-5')">
               <span>Outras ferramentas</span>
-              <span class="sb-badge-count">4</span>
+              <span class="sb-badge-count" title="1 obrigatórios + 3 opcionais">1 <span class="cnt-opt">+3</span></span>
             </button>
             
           </div>
@@ -3623,7 +3625,7 @@ html::view-transition{background:var(--bg)}
     <main>
       <div class="hero-head">
         <h1>🤖 Inteligência Artificial & Programação Python</h1>
-        <p class="sub">Do zero aos fundamentos de Python, Engenharia de Dados, Scikit-learn, PyTorch, Transformers, LLMs, Agentes e MLOps · <b>176 tópicos</b> organizados para domínio completo.</p>
+        <p class="sub">Do zero aos fundamentos de Python, Engenharia de Dados, Scikit-learn, PyTorch, Transformers, LLMs, Agentes e MLOps · <b>176 tópicos</b> (+11 opcionais) organizados para domínio completo.</p>
       </div>
 
       <!-- RASTREADOR ITERATIVO E DINÂMICO DE METAS -->
@@ -3698,10 +3700,10 @@ html::view-transition{background:var(--bg)}
 
       <section class="filter-row">
         <div class="filters">
-          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos (187)</button>
-          <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero</button>
-          <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar</button>
-          <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído</button>
+          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos 187 (176 + 11 opcionais)</button>
+          <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero <span class="fil-count" id="fil-count-z"></span></button>
+          <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar <span class="fil-count" id="fil-count-r"></span></button>
+          <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído <span class="fil-count" id="fil-count-e"></span></button>
           <button class="fil-btn" data-f="n" onclick="setFilter('n')">📝 Anotações</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -4683,7 +4685,7 @@ html::view-transition{background:var(--bg)}
             </div>
             
             <div class="group-section" id="sec-1-4">
-              <div class="group-title">📌 Dados na prática (5)</div>
+              <div class="group-title">📌 Dados na prática (4 + 1 opcional)</div>
               <div class="group-topics">
                 
                 <div class="topic-row topic-optional" data-id="ia-1-4-0" id="top-ia-1-4-0" data-opt="1">
@@ -4760,7 +4762,7 @@ html::view-transition{background:var(--bg)}
             </div>
             
             <div class="group-section" id="sec-1-5">
-              <div class="group-title">📌 Boas práticas (3)</div>
+              <div class="group-title">📌 Boas práticas (2 + 1 opcional)</div>
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ia-1-5-0" id="top-ia-1-5-0">
@@ -5516,7 +5518,7 @@ html::view-transition{background:var(--bg)}
             </div>
             
             <div class="group-section" id="sec-3-3">
-              <div class="group-title">📌 Mais arquiteturas (6)</div>
+              <div class="group-title">📌 Mais arquiteturas (1 + 5 opcionais)</div>
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ia-3-3-0" id="top-ia-3-3-0">
@@ -5607,7 +5609,7 @@ html::view-transition{background:var(--bg)}
             </div>
             
             <div class="group-section" id="sec-3-4">
-              <div class="group-title">📌 Treino na prática (6)</div>
+              <div class="group-title">📌 Treino na prática (5 + 1 opcional)</div>
               <div class="group-topics">
                 
                 <div class="topic-row" data-id="ia-3-4-0" id="top-ia-3-4-0">
@@ -5698,7 +5700,7 @@ html::view-transition{background:var(--bg)}
             </div>
             
             <div class="group-section" id="sec-3-5">
-              <div class="group-title">📌 Outras ferramentas (4)</div>
+              <div class="group-title">📌 Outras ferramentas (1 + 3 opcionais)</div>
               <div class="group-topics">
                 
                 <div class="topic-row topic-optional" data-id="ia-3-5-0" id="top-ia-3-5-0" data-opt="1">
@@ -8026,10 +8028,7 @@ async function syncTopicToServer(topicId) {
 // 3. Renderização e Atualização Visual da Tela
 function paint() {
   let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0;
-
-  for (let i = 0; i < TOTAL_TRACK_TOPICS; i++) {
-    const row = document.querySelector(`.topic-row[data-id^="${TRACK_ID}-"]`);
-  }
+  const optCount = { e: 0, r: 0, z: 0 };
 
   const allRows = document.querySelectorAll(`.topic-row`);
   let firstUncompletedRow = null;
@@ -8040,7 +8039,7 @@ function paint() {
     const status = item.s || "z";
     const isOpt = row.hasAttribute("data-opt");   // opcionais: fora dos contadores e da meta
 
-    if (isOpt) { /* não conta */ }
+    if (isOpt) optCount[status === "e" || status === "r" ? status : "z"]++;
     else if (status === "e") doneCount++;
     else if (status === "r") progCount++;
     else zeroCount++;
@@ -8083,6 +8082,13 @@ function paint() {
   if (elProg) elProg.textContent = progCount;
   if (elZero) elZero.textContent = zeroCount;
   if (elNotes) elNotes.textContent = noteCount;
+
+  // Filtros mostram também os opcionais: o número diz quantos (obrigatórios + opcionais)
+  const reqCount = { e: doneCount, r: progCount, z: zeroCount };
+  for (const s in reqCount) {
+    const el = document.getElementById("fil-count-" + s);
+    if (el) el.textContent = optCount[s] ? `${reqCount[s]} +${optCount[s]} opc.` : String(reqCount[s]);
+  }
 
   // Barra de Progresso
   const total = TOTAL_TRACK_TOPICS || 1;
@@ -8276,7 +8282,7 @@ function scrollToNextStep() {
   for (const row of allRows) {
     const tid = row.getAttribute("data-id");
     const item = PR[tid] || { s: "z" };
-    if (item.s !== "e") {
+    if (item.s !== "e" && !row.hasAttribute("data-opt")) {   // o mesmo tópico do "Próximo passo recomendado"
       row.scrollIntoView({ behavior: "smooth", block: "center" });
       row.style.boxShadow = "0 0 0 4px var(--ac)";
       setTimeout(() => { row.style.boxShadow = ""; }, 1800);
@@ -11803,6 +11809,7 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     };
     youAnim = requestAnimationFrame(step);
   };
+  if (window.__dsRouteData) window.dsRoute(window.__dsRouteData);   // cálculo feito antes deste script existir
 
   /* ---------- Paleta de comandos (Ctrl/⌘ + K) ---------- */
   var pal = null, items = [], sel = 0;

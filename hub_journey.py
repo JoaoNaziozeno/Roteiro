@@ -159,7 +159,7 @@ function resetStartDateToday() { onStartDateChange(new Date().toISOString().slic
 //    + prática curta ≈ 1h. É a referência.
 //  - IA & Código (4): tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
 //    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
-//  - Matemática (6): 43 tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
+//  - Matemática (6): tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
 //    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.
 // Resultado: IA ≈ 68% do esforço total, Matemática ≈ 25%, Inglês ≈ 7%.
 // Não há UI para alterar: valores antigos salvos no navegador (EFFORT_KEY.tracks) são ignorados.
@@ -315,14 +315,14 @@ function calcAndPaint() {
   const nb = jrEl("hub-next-step-btn"); if (nb) { nb.href = nm[least][1]; nb.textContent = "Ir para " + nm[least][0] + " ➔"; }
 
   // Mapa da trilha no topo do Hub (design v2): mesmos números do painel, sem cálculo próprio
-  if (typeof window.dsRoute === "function") {
-    window.dsRoute({
-      overall: wPct,
-      per: { ia: P.per.ia.pts / P.per.ia.ptsTotal * 100, mat: P.per.mat.pts / P.per.mat.ptsTotal * 100,
-             ing: P.per.ing.pts / P.per.ing.ptsTotal * 100, proj: projDone / totalProj * 100 },
-      nextHref: nm[least][1], nextLabel: nm[least][0].replace(/^\S+\s/, "")
-    });
-  }
+  // O primeiro cálculo roda antes de o script do mapa existir: os números ficam guardados e o mapa os lê ao nascer.
+  window.__dsRouteData = {
+    overall: wPct,
+    per: { ia: P.per.ia.pts / P.per.ia.ptsTotal * 100, mat: P.per.mat.pts / P.per.mat.ptsTotal * 100,
+           ing: P.per.ing.pts / P.per.ing.ptsTotal * 100, proj: projDone / totalProj * 100 },
+    nextHref: nm[least][1], nextLabel: nm[least][0].replace(/^\S+\s/, "")
+  };
+  if (typeof window.dsRoute === "function") window.dsRoute(window.__dsRouteData);
 
   // marcos reais (derivados do log de eventos, nunca inventados)
   const cv = RM.curve(ev, eff, logStart, now, P.pts);

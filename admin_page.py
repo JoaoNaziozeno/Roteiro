@@ -22,7 +22,7 @@ def _topic_title(raw):
 
 
 def build_topics(tracks):
-    """{"ia": [{"t": título da fase, "items": [[id, título], ...]}, ...], ...} com os ids do progresso."""
+    """{"ia": [{"t": título da fase, "items": [[id, título, opcional], ...]}, ...], ...} com os ids do progresso."""
     out = {}
     for tr, phases in tracks.items():
         out[tr] = []
@@ -32,7 +32,8 @@ def build_topics(tracks):
                 for t_idx, raw in enumerate(g[1]):
                     import curriculo
                     title = _topic_title(raw) + (" (opcional)" if curriculo.is_optional(raw) else "")
-                    items.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), title])
+                    items.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), title,
+                                  1 if curriculo.is_optional(raw) else 0])
             out[tr].append({"t": p.get("t", f"Fase {p_idx + 1}"), "items": items})
     return out
 
@@ -249,7 +250,43 @@ try{var th=localStorage.getItem("roteiro-theme");if(th)document.documentElement.
 "use strict";
 const TOPICS = __TOPICS__;
 const TRAIL_NAMES = __TRAIL_NAMES__;
-const TOTALS = Object.fromEntries(Object.entries(TOPICS).map(([k, ph]) => [k, ph.reduce((n, p) => n + p.items.length, 0)]));
+// Meta = só obrigatórios; opcionais aparecem à parte (a mesma regra das páginas do aluno)
+const TOTALS = Object.fromEntries(Object.entries(TOPICS).map(([k, ph]) => [k, ph.reduce((n, p) => n + p.items.filter(i => !i[2]).length, 0)]));
+
+function countTrail(trail, statusOf) {
+  const c = { done: 0, started: 0, extra: 0 };
+  for (const p of TOPICS[trail]) for (const [id, , opt] of p.items) {
+    const s = statusOf(id);
+    if (opt) { if (s === "e") c.extra++; }
+    else if (s === "e") c.done++;
+    else if (s === "r") c.started++;
+  }
+  return c;
+}
+function countAll(progress) {
+  return Object.fromEntries(Object.keys(TOPICS).map(tr => [tr, countTrail(tr, id => (progress[id] || {}).s)]));
+}
+
+// O resumo da Lambda soma opcionais e ids antigos (ela não conhece o roteiro). Para quem já concluiu ou
+// começou algo, o painel lê o progresso do aluno (admin_get_user, só leitura) e conta pelo roteiro atual.
+let COUNT_RUN = 0;
+async function loadExactCounts() {
+  const run = ++COUNT_RUN, queue = [];
+  for (const u of USERS) {
+    const any = Object.values(u.progress_summary || {}).some(s => s.done || s.started);
+    if (any) queue.push(u); else u.counts = countAll({});
+  }
+  renderUsers();
+  const worker = async () => {
+    while (queue.length && run === COUNT_RUN && getSession()) {
+      const u = queue.shift();
+      try { u.counts = countAll(((await api("admin_get_user", { email: u.email })).data || {}).progress || {}); }
+      catch (err) { u.counts = null; }
+      if (run === COUNT_RUN) renderUsers();
+    }
+  };
+  await Promise.all([worker(), worker(), worker()]);
+}
 const OFFICIAL_LAMBDA_URL = "https://x37p5anc5yesrwweqfbwxcexsu0dpzdu.lambda-url.us-east-2.on.aws/";
 const SESSION_KEY = "roteiro_admin_session";
 const STATUS_LABEL = { z: "Não iniciado", r: "Em andamento", e: "Concluído" };
@@ -364,9 +401,14 @@ function statusBadge(u) {
 }
 
 function progressCell(u, trail) {
-  const done = ((u.progress_summary || {})[trail] || {}).done || 0;
-  const pct = TOTALS[trail] ? Math.round(done * 100 / TOTALS[trail]) : 0;
-  return `<div class="bar" title="${done} de ${TOTALS[trail]} concluídos"><i style="width:${pct}%"></i></div><span class="pct">${done}/${TOTALS[trail]}</span>`;
+  const total = TOTALS[trail];
+  if (!u.counts) {
+    const why = u.counts === null ? "Não foi possível ler o progresso. Clique em atualizar." : "Contando...";
+    return `<div class="bar" title="${why}"></div><span class="pct">${u.counts === null ? "?" : "…"}/${total}</span>`;
+  }
+  const { done, extra } = u.counts[trail];
+  const pct = total ? Math.round(done * 100 / total) : 0;
+  return `<div class="bar" title="${done} de ${total} obrigatórios concluídos"><i style="width:${pct}%"></i></div><span class="pct">${done}/${total}${extra ? ` +${extra} opc.` : ""}</span>`;
 }
 
 function renderUsers() {
@@ -388,7 +430,7 @@ function renderUsers() {
 async function loadUsers() {
   try {
     USERS = (await api("admin_list_users")).users || [];
-    renderUsers();
+    loadExactCounts();
   } catch (err) {
     $("users-body").innerHTML = `<tr><td colspan="6" class="empty">${esc(err.message)}</td></tr>`;
   }
@@ -459,16 +501,14 @@ function topicStatus(id) {
 function renderTrails() {
   const openNow = new Set([...document.querySelectorAll("details.trail[open]")].map(d => d.dataset.trail));
   $("du-trails").innerHTML = Object.entries(TOPICS).map(([tr, phases]) => {
-    const ids = phases.flatMap(p => p.items.map(i => i[0]));
-    const done = ids.filter(id => topicStatus(id) === "e").length;
-    const started = ids.filter(id => topicStatus(id) === "r").length;
+    const { done, started, extra } = countTrail(tr, topicStatus);
     const body = phases.map(p => `<div class="phase"><h4>${esc(p.t)}</h4>${p.items.map(([id, title]) => {
       const s = topicStatus(id);
       const opts = ["z", "r", "e"].map(v => `<option value="${v}"${v === s ? " selected" : ""}>${STATUS_LABEL[v]}</option>`).join("");
       return `<div class="topic${id in PENDING ? " changed" : ""}"><span>${esc(title)}</span><select data-topic="${id}" aria-label="Situação de ${esc(title)}">${opts}</select></div>`;
     }).join("")}</div>`).join("");
     return `<details class="trail" data-trail="${tr}"${openNow.has(tr) ? " open" : ""}>
-      <summary><span class="grow">${esc(TRAIL_NAMES[tr])}</span><span class="pct">${done}/${ids.length} concluídos · ${started} em andamento</span></summary>
+      <summary><span class="grow">${esc(TRAIL_NAMES[tr])}</span><span class="pct">${done}/${TOTALS[tr]} concluídos · ${started} em andamento${extra ? ` · +${extra} opc.` : ""}</span></summary>
       <div class="phase"><button class="btn danger" data-reset-trail="${tr}">Zerar ${esc(TRAIL_NAMES[tr])}</button></div>${body}</details>`;
   }).join("");
 }
