@@ -93,12 +93,12 @@ body::after{
 kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;border:1px solid var(--ds-line);background:var(--bg);color:var(--mu)}
 
 /* ============================ SUPERFÍCIES ============================ */
-.track-card,.jr-sect,.tracker-box,.progress-card,.phase-card,.market-box,.proj-card,.jr-card,.filter-row .search-input{
+.track-card,.jr-sect,.trail-summary,.phase-card,.market-box,.proj-card,.jr-card,.filter-row .search-input{
   background:var(--ds-surface)!important;border:1px solid var(--ds-line)!important;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--ds-shadow)!important;
 }
 .jr-card{background:var(--ds-surface-2)!important;box-shadow:none!important}
-.jr-sect,.track-card,.tracker-box,.progress-card,.phase-card{border-radius:var(--ds-radius)!important}
+.jr-sect,.track-card,.trail-summary,.phase-card{border-radius:var(--ds-radius)!important}
 
 /* Holofote que segue o cursor (variáveis --mx/--my atualizadas via JS) */
 .ds-spot{position:relative;isolation:isolate}
@@ -188,13 +188,13 @@ kbd,.ds-kbd{font:600 .68rem/1 var(--ds-font);padding:3px 6px;border-radius:6px;b
 .phase-title-text{font-size:1.08rem!important}
 .group-title{color:var(--t,var(--ac))!important;border-bottom-color:var(--ds-line)!important}
 .topic-row{position:relative;background:color-mix(in srgb,var(--card) 55%,transparent)!important;border:1px solid var(--ds-line)!important;transition:transform .25s var(--ds-ease),border-color .2s,background .2s!important}
-.topic-row::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--bd);transition:background .3s,box-shadow .3s}
+.topic-row::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:transparent;transition:background .3s,box-shadow .3s}
 .topic-row.status-r::before{background:#e8a100}
 .topic-row.status-e::before{background:#2fa36b;box-shadow:0 0 10px #2fa36b}
 /* Tópicos opcionais (aprofundamento): fora da meta, levemente apagados e com etiqueta */
 .topic-optional .topic-title-text{opacity:.78}
 .opt-badge{display:inline-block;margin-left:8px;vertical-align:middle;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px dashed var(--ds-line);color:var(--mu);cursor:help}
-.topic-row:hover{transform:translateX(3px);border-color:color-mix(in srgb,var(--t,var(--t-hub)) 40%,transparent)!important;background:color-mix(in srgb,var(--t,var(--t-hub)) 6%,var(--card))!important}
+.topic-row:hover{border-color:color-mix(in srgb,var(--t,var(--t-hub)) 40%,transparent)!important;background:color-mix(in srgb,var(--t,var(--t-hub)) 6%,var(--card))!important}
 .fil-btn.active,.trk-btn.active{background:var(--tx)!important;color:var(--bg)!important;border-color:var(--tx)!important}
 .sidebar{background:color-mix(in srgb,var(--bg) 80%,transparent)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-right:1px solid var(--ds-line)!important}
 
@@ -279,7 +279,6 @@ html::view-transition{background:var(--bg)}
   .ds-route-legend{font-size:.78rem}
   #nav-db-status{display:none!important}
   .jr-sect{padding:18px 14px!important}
-  .topic-row:hover{transform:none}
   .ds-pal{padding-top:8vh}
 }
 
@@ -290,7 +289,7 @@ html::view-transition{background:var(--bg)}
   .phase-card,.track-card,.jr-card,.proj-card,.ds-section-title{animation:none!important}
   .unified-study-box,.ds-pal-box{animation:none!important}
   .ds-route .r-lit,.ds-route .st-ring,.track-progress-fill{transition:none!important}
-  .track-card:hover,.topic-row:hover,.ds-btn-primary:hover{transform:none!important}
+  .track-card:hover,.ds-btn-primary:hover{transform:none!important}
 }
 </style>
 """
@@ -316,7 +315,7 @@ window.DS_TOPICS = __DS_TOPICS__;
 
   /* ---------- Holofote que segue o cursor ---------- */
   function initSpotlight() {
-    var sel = ".track-card,.jr-card,.phase-card,.proj-card,.tracker-box,.progress-card";
+    var sel = ".track-card,.jr-card,.phase-card,.proj-card,.trail-summary";
     $$(sel).forEach(function (el) { el.classList.add("ds-spot"); });
     document.addEventListener("pointermove", function (e) {
       var el = e.target && e.target.closest && e.target.closest(".ds-spot");

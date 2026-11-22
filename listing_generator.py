@@ -4,11 +4,24 @@ Gerador de Páginas de Listagem com Estúdio Unificado de Estudo,
 Auto-Progresso, KaTeX, Estúdio 3D de Vetores e Lousa de Desenho 2D.
 """
 
+import html as html_lib
 import json
+import re
 import curriculo
+from listing_css import LISTING_CSS
 from studio_js import STUDIO_JS
 from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
+
+def _list_title(title):
+    """Nome na lista. Na playlist de Inglês, "Curso de Inglês - Módulo 01" se repete em 73 linhas e o módulo já é
+    o título da seção: fica "Aula 01 · assunto". O nome completo continua no estúdio e na busca."""
+    title = title.replace("\\u0026", "&amp;")   # a playlist traz esse escape como texto
+    m = re.match(r"Curso de Inglês - Módulo \d+ Aula (\d+)\s*[:\-]?\s*(.+)$", title)
+    if m:
+        return f"Aula {int(m.group(1)):02d} · {m.group(2)}"
+    return "Aula Zero" if re.fullmatch(r"Curso de Inglês GRÁTIS - Aula Zero", title) else title
+
 
 def _count_badge(topics):
     req, opt = curriculo.split_count(topics)
@@ -145,38 +158,43 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
             topics_rows = []
             for t in g["topics"]:
                 t_id = t["id"]
-                yt_btn_html = ""
-                if t.get("url"):
-                    t_lbl = t.get("label", "▶ Vídeo")
-                    yt_btn_html = f'<button class="yt-btn" onclick="openStudyModal(\'{t_id}\', false, 1)" title="Assistir 1ª Opção de Videoaula no Estúdio Integrado">{t_lbl}</button>'
+                t_short = _list_title(t["title"])
+                t_name = html_lib.escape(html_lib.unescape(t_short))
+                doc_lbl = (t.get("doc_label") or "").replace("📘 Aula Visual PT-BR:", "📖 Artigo:").replace("📘 Aula Visual:", "📖 Artigo:").replace(" PT-BR", "")
 
-                yt2_btn_html = ""
+                options = []
                 if t.get("url2"):
-                    t2_lbl = t.get("label2", "🎬 2ª Opção")
-                    yt2_btn_html = f'<button class="doc-btn" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.4);color:#f59e0b;cursor:pointer" onclick="openStudyModal(\'{t_id}\', false, 2)" title="Assistir 2ª Opção de Videoaula (Animação Visual 3B1B / StatQuest) no Estúdio Integrado">{t2_lbl}</button>'
-
-                visual_btn_html = ""
+                    t2_lbl = html_lib.escape(t.get("label2") or "2º vídeo")
+                    options.append(f'<button class="row-opt" data-act="video2" title="{t2_lbl}" onclick="openStudyModal(\'{t_id}\', false, 2)">2º vídeo</button>')
                 if t.get("pt_guide"):
-                    visual_btn_html = f'<button class="doc-btn" style="background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.38);color:#10b981;cursor:pointer" onclick="openStudyModal(\'{t_id}\', true, 1)" title="Abrir Aula Visual & Apostila Interativa + Fórmulas + Exemplos + Código Python">📘 Aula Visual</button>'
-
-                doc_btn_html = ""
+                    options.append(f'<button class="row-opt" data-act="guide" onclick="openStudyModal(\'{t_id}\', true, 1)">Aula Visual</button>')
                 if t.get("doc_url"):
-                    doc_lbl_clean = t.get("doc_label", "📖 Material").replace("📘 Aula Visual PT-BR:", "📖 Artigo:").replace("📘 Aula Visual:", "📖 Artigo:").replace(" PT-BR", "")
-                    doc_btn_html = f'<a href="{t["doc_url"]}" target="_blank" rel="noopener" class="doc-btn" title="Acessar material de leitura / exercícios na Khan Academy em nova aba">{doc_lbl_clean} ↗</a>'
+                    doc_name = "Documentação" if track_id == "ia" else "Material de apoio"
+                    options.append(f'<a class="row-opt" data-act="doc" href="{t["doc_url"]}" target="_blank" rel="noopener" title="{html_lib.escape(doc_lbl)}">{doc_name} ↗</a>')
+                options.append(f'<button class="row-opt" data-act="notes" onclick="openTopicNotes(\'{t_id}\')">Anotações</button>')
+
+                # A bolinha não gira o status sozinha: voltar a "Do zero" apaga o % de vídeo e de aula, então é escolha explícita
+                status_options = "".join(
+                    f'<button class="row-opt" data-status="{code}" aria-pressed="false" onclick="chooseTopicStatus(\'{t_id}\', \'{code}\')">{name}</button>'
+                    for code, name in (("z", "Do zero"), ("r", "Em andamento"), ("e", "Concluído")))
+
+                # A busca continua achando pelo nome do vídeo e do material, que saíram da vista
+                search_text = html_lib.escape(" ".join(x for x in (t["title"] if t_short != t["title"] else "", t.get("label"), t.get("label2") if t.get("url2") else "", doc_lbl) if x))
+                play_title = html_lib.escape(t.get("label") or "Abrir a aula")
+                opt_attr = ' data-opt="1"' if t.get("opt") else ""
+                opt_class = " topic-optional" if t.get("opt") else ""
+                opt_badge = f'<span class="opt-badge" title="{html_lib.escape(t.get("opt_note", ""))}">Opcional</span>' if t.get("opt") else ""
 
                 topics_rows.append(f"""
-                <div class="topic-row{' topic-optional' if t.get('opt') else ''}" data-id="{t['id']}" id="top-{t['id']}"{' data-opt="1"' if t.get('opt') else ''}>
-                  <div class="topic-left" onclick="openStudyModal('{t['id']}', false, 1)" style="cursor:pointer" title="Clique para abrir Estúdio de Estudo & Anotações">
-                    <span class="topic-title-text">{t['title']}</span>{f'<span class="opt-badge" title="{t.get("opt_note", "")}">Opcional</span>' if t.get('opt') else ''}
+                <div class="topic-row status-z{opt_class}" data-id="{t_id}" id="top-{t_id}"{opt_attr} data-search="{search_text}">
+                  <button class="row-st" onclick="toggleRowPanel('{t_id}', 'status')" aria-expanded="false" aria-controls="status-{t_id}" aria-label="Situação de {t_name}: Do zero" title="Mudar a situação"><i aria-hidden="true"></i></button>
+                  <div class="topic-left" onclick="openStudyModal('{t_id}', false, 1)">
+                    <span class="topic-title-text">{t_short}</span>{opt_badge}<span class="row-meta"></span>
                   </div>
-                  <div class="topic-actions">
-                    {yt_btn_html}
-                    {yt2_btn_html}
-                    {visual_btn_html}
-                    {doc_btn_html}
-                    <button class="status-btn status-btn-z" onclick="cycleStatus('{t['id']}')" title="Clique para alternar: Do zero ➔ Falta terminar ➔ Concluído">🔴 Do zero</button>
-                    <button class="note-btn" onclick="openStudyModal('{t['id']}', false, 1)" title="Abrir Estúdio de Estudo & Anotações">📝 Anotações & Estudo</button>
-                  </div>
+                  <button class="row-play" onclick="openStudyModal('{t_id}', false, 1)" aria-label="Abrir a aula {t_name}" title="{play_title}">▶</button>
+                  <button class="row-more" onclick="toggleRowPanel('{t_id}', 'more')" aria-expanded="false" aria-controls="more-{t_id}" aria-label="Mais opções de {t_name}" title="Mais opções">⋯</button>
+                  <div class="topic-panel" id="status-{t_id}" hidden>{status_options}</div>
+                  <div class="topic-panel" id="more-{t_id}" hidden>{''.join(options)}</div>
                 </div>
                 """)
 
@@ -196,9 +214,12 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
             <span class="phase-dur">⏱️ {p['dur']}</span>
           </div>
           <div class="phase-body" id="phase-body-{p['idx']}">
-            <div class="phase-callout callout-tip">{p['tip']}</div>
-            <div class="phase-callout callout-proj">🎯 <b>Projeto Prático:</b> {p['proj']}</div>
-            <div class="phase-callout callout-res">📚 <b>Recursos Sugeridos:</b> {p['res']}</div>
+            <details class="phase-about">
+              <summary>Sobre {'esta fase' if track_id == 'ia' else 'este módulo'}: dica, projeto e recursos</summary>
+              <div class="phase-callout callout-tip">{p['tip']}</div>
+              <div class="phase-callout callout-proj">🎯 <b>Projeto Prático:</b> {p['proj']}</div>
+              <div class="phase-callout callout-res">📚 <b>Recursos Sugeridos:</b> {p['res']}</div>
+            </details>
             {''.join(groups_html)}
           </div>
         </div>
@@ -227,6 +248,7 @@ __AUTH_GUARD__
 <style>
 __SHARED_CSS__
 __AUTH_AWS_CSS__
+__LISTING_CSS__
 </style>
 </head>
 <body>
@@ -281,6 +303,7 @@ __AUTH_AWS_CSS__
       <button class="sb-quick-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆ Ir ao Topo</button>
       <button class="sb-quick-btn" onclick="scrollToNextStep()">🎯 Pular para Próximo Passo</button>
       <button class="sb-quick-btn" onclick="setFilter('all')">👁️ Mostrar Todos</button>
+      <button class="sb-quick-btn" id="sb-export" onclick="openExportFromMenu()" title="Exportar Caderno em Markdown, PDF ou JSON">📥 Exportar Caderno</button>
     </div>
 
     <div style="font-size:.76rem;font-weight:750;text-transform:uppercase;color:var(--mu);margin-top:6px;letter-spacing:.04em">
@@ -299,20 +322,28 @@ __AUTH_AWS_CSS__
     <main>
       <div class="hero-head">
         <h1>__TRACK_ICON__ __PAGE_TITLE__</h1>
-        <p class="sub">__PAGE_SUB__ · <b>__TOTAL_TOPICS__ tópicos</b>__EXTRA_TOPICS__ organizados para domínio completo.</p>
       </div>
 
-      <!-- RASTREADOR ITERATIVO E DINÂMICO DE METAS -->
-      <section class="tracker-box" id="tracker-box">
-        <div class="tracker-head">
-          <div class="tracker-title">⏱️ Metas & Ritmo de Estudo</div>
-          <div class="tracker-presets">
-            <button class="trk-btn active" id="btn-pace-std" onclick="setPace('std')">Equilibrado (8-10h/sem)</button>
-            <button class="trk-btn" id="btn-pace-acc" onclick="setPace('acc')">Acelerado (20-25h/sem)</button>
-          </div>
+      <!-- RESUMO DA TRILHA: um card só -->
+      <section class="trail-summary" id="trail-summary">
+        <div class="sum-line">
+          <b id="stat-done">0</b>
+          <span>de __TOTAL_TOPICS__ concluídos<span id="stat-extra"></span></span>
+          <span id="prog-pct-label">0%</span>
         </div>
-
-        <div class="level-banner">
+        <div class="prog-bar" aria-hidden="true">
+          <div class="p-e" id="bar-e" style="width:0%"></div>
+          <div class="p-r" id="bar-r" style="width:0%"></div>
+        </div>
+        <div class="sum-next">
+          <div class="sum-next-info">
+            <span class="next-step-tag" id="next-step-tag">Próxima aula</span>
+            <span class="next-step-title" id="next-step-title">Começar pelo primeiro tópico da trilha</span>
+          </div>
+          <button class="next-step-btn" id="next-step-btn" onclick="continueStudy()">Continuar</button>
+        </div>
+        <details class="sum-more">
+          <summary>Nível e ritmo de estudo</summary>
           <div class="level-info">
             <div class="level-icon" id="lvl-icon">🌱</div>
             <div>
@@ -320,70 +351,23 @@ __AUTH_AWS_CSS__
               <div class="level-desc" id="lvl-desc">Iniciando os primeiros passos da jornada.</div>
             </div>
           </div>
-          <div class="level-xp-wrap">
-            <div class="level-xp-text" id="lvl-xp-txt">0 / __TOTAL_TOPICS__ concluídos (0%)</div>
-            <div class="level-xp-bar"><div class="level-xp-fill" id="lvl-xp-fill" style="width:0%"></div></div>
+          <div class="tracker-presets">
+            <button class="trk-btn active" id="btn-pace-std" onclick="setPace('std')">Equilibrado (8-10h/sem)</button>
+            <button class="trk-btn" id="btn-pace-acc" onclick="setPace('acc')">Acelerado (20-25h/sem)</button>
           </div>
-        </div>
-
-        <div class="pace-status-card pace-ontrack" id="pace-status-card">
-          <span id="pace-status-text">🎯 Cronograma pronto: selecione seus tópicos e registre o progresso</span>
-          <span id="pace-status-tag">Ritmo Ativo</span>
-        </div>
-
-        <div class="next-step-box" id="next-step-box">
-          <div class="next-step-info">
-            <span class="next-step-tag">Próximo Passo Recomendado:</span>
-            <span class="next-step-title" id="next-step-title">Começar pelo primeiro tópico da trilha</span>
-          </div>
-          <button class="next-step-btn" id="next-step-btn" onclick="scrollToNextStep()">▶ Ir para este Tópico</button>
-        </div>
-
-        <div class="pace-stat-row">
-          <div class="pace-stat-card">
-            <span class="pace-stat-num" id="stat-done">0</span>
-            <span class="pace-stat-sub">Tópicos Concluídos (🟢)</span>
-          </div>
-          <div class="pace-stat-card">
-            <span class="pace-stat-num" id="stat-prog">0</span>
-            <span class="pace-stat-sub">Falta Terminar (🟡)</span>
-          </div>
-          <div class="pace-stat-card">
-            <span class="pace-stat-num" id="stat-zero">__TOTAL_TOPICS__</span>
-            <span class="pace-stat-sub">Do Zero (🔴 Default)</span>
-          </div>
-          <div class="pace-stat-card">
-            <span class="pace-stat-num" id="stat-notes">0</span>
-            <span class="pace-stat-sub">Anotações Criadas (📝)</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- BARRA DE PROGRESSO & FILTROS -->
-      <section class="progress-card">
-        <div class="progress-top">
-          <span>Progresso da Trilha</span>
-          <span id="prog-pct-label">0%</span>
-        </div>
-        <div class="prog-bar">
-          <div class="p-e" id="bar-e" style="width:0%"></div>
-          <div class="p-r" id="bar-r" style="width:0%"></div>
-          <div class="p-z" id="bar-z" style="width:100%"></div>
-        </div>
+          <p class="sub">__PAGE_SUB__ · <b>__TOTAL_TOPICS__ tópicos</b>__EXTRA_TOPICS__ organizados para domínio completo.</p>
+        </details>
       </section>
 
       <section class="filter-row">
         <div class="filters">
-          <button class="fil-btn active" data-f="all" onclick="setFilter('all')">Todos __ALL_LABEL__</button>
-          <button class="fil-btn" data-f="z" onclick="setFilter('z')">🔴 Do zero <span class="fil-count" id="fil-count-z"></span></button>
-          <button class="fil-btn" data-f="r" onclick="setFilter('r')">🟡 Falta terminar <span class="fil-count" id="fil-count-r"></span></button>
-          <button class="fil-btn" data-f="e" onclick="setFilter('e')">🟢 Concluído <span class="fil-count" id="fil-count-e"></span></button>
-          <button class="fil-btn" data-f="n" onclick="setFilter('n')">📝 Anotações</button>
+          <button class="fil-btn active" data-f="all" onclick="setFilter('all')" title="Todos: __ALL_LABEL__">Todos</button>
+          <button class="fil-btn" data-f="z" onclick="setFilter('z')"><span class="fil-long">Do zero</span><span class="fil-short">A fazer</span></button>
+          <button class="fil-btn" data-f="r" onclick="setFilter('r')"><span class="fil-long">Em andamento</span><span class="fil-short">Fazendo</span></button>
+          <button class="fil-btn" data-f="e" onclick="setFilter('e')"><span class="fil-long">Concluídos</span><span class="fil-short">Feitos</span></button>
+          <button class="fil-btn" data-f="n" onclick="setFilter('n')"><span class="fil-long">Anotações</span><span class="fil-short">Notas</span></button>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <button class="player-ext-btn" style="padding:6px 14px;border-radius:99px;font-size:.8rem;cursor:pointer" onclick="openExportModal()" title="Exportar Caderno em Markdown/PDF">📥 Exportar Caderno</button>
-          <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
-        </div>
+        <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
       </section>
 
       <!-- LISTAGEM DE FASES -->
@@ -411,7 +395,7 @@ __AUTH_AWS_CSS__
       <div class="note-header-right">
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
-          <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Falta terminar → Concluído">Do zero</button>
+          <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Em andamento → Concluído">Do zero</button>
         </div>
 
         <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
@@ -420,7 +404,7 @@ __AUTH_AWS_CSS__
             <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="13" cy="8" r="1.4"/></svg>
           </summary>
           <div class="m-opts-menu">
-            <label class="auto-prog-wrap" title="Atualiza o status para 'Falta terminar' e 'Concluído' conforme seu tempo de estudo no vídeo e na leitura">
+            <label class="auto-prog-wrap" title="Atualiza o status para 'Em andamento' e 'Concluído' conforme seu tempo de estudo no vídeo e na leitura">
               <span class="m-opts-text"><b>Progresso automático</b><small>Atualiza o status pelo tempo de estudo</small></span>
               <span class="switch">
                 <input type="checkbox" id="modal-auto-prog-check" onchange="toggleAutoProgress(this.checked)">
@@ -902,6 +886,7 @@ __AUTH_AWS_SYNC_JS__
 
 const TRACK_ID = "__TRACK_ID__";
 const TOTAL_TRACK_TOPICS = __TOTAL_TOPICS__;
+let NEXT_TOPIC_ID = null;   // o "Continuar" abre esta aula (definida no paint)
 const TOPICS_MAP = __TOPICS_MAP_JSON__;
 const KEY = "roteiro-ia-v1";
 let PR = {};
@@ -1020,6 +1005,7 @@ function paint() {
 
   const allRows = document.querySelectorAll(`.topic-row`);
   let firstUncompletedRow = null;
+  const STATUS_NAME = { z: "Do zero", r: "Em andamento", e: "Concluído" };
 
   allRows.forEach(row => {
     const tid = row.getAttribute("data-id");
@@ -1034,21 +1020,24 @@ function paint() {
 
     if (item.n && item.n.trim()) noteCount++;
 
-    // Botão de status do tópico
-    const sBtn = row.querySelector(".status-btn");
+    // Situação: bolinha, faixa lateral e a opção marcada no painel
+    const st = status === "e" || status === "r" ? status : "z";
+    row.classList.toggle("status-z", st === "z");
+    row.classList.toggle("status-r", st === "r");
+    row.classList.toggle("status-e", st === "e");
+    const sBtn = row.querySelector(".row-st");
     if (sBtn) {
-      sBtn.className = `status-btn status-btn-${status}`;
-      if (status === "e") sBtn.textContent = "🟢 Concluído";
-      else if (status === "r") sBtn.textContent = "🟡 Falta terminar";
-      else sBtn.textContent = "🔴 Do zero";
+      const label = sBtn.getAttribute("aria-label");
+      sBtn.setAttribute("aria-label", label.slice(0, label.lastIndexOf(":") + 2) + STATUS_NAME[st]);
     }
+    row.querySelectorAll("[data-status]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.status === st)));
 
-    // Botão de anotações
-    const nBtn = row.querySelector(".note-btn");
-    if (nBtn) {
-      const hasNote = item.n && item.n.trim().length > 0;
-      nBtn.className = `note-btn ${hasNote ? 'has-note' : ''}`;
-      nBtn.textContent = hasNote ? "📝 Anotações *" : "📝 Anotações & Estudo";
+    const meta = row.querySelector(".row-meta");
+    if (meta) {
+      const bits = [];
+      if (st === "r") bits.push("Em andamento");
+      if (item.n && item.n.trim()) bits.push("com anotação");
+      meta.textContent = bits.join(" · ");
     }
 
     // Identificar primeiro não concluído para recomendação
@@ -1060,49 +1049,34 @@ function paint() {
     applyRowVisibility(row, status, item.n || "");
   });
 
-  // Atualizar Contadores
-  const elDone = document.getElementById("stat-done");
-  const elProg = document.getElementById("stat-prog");
-  const elZero = document.getElementById("stat-zero");
-  const elNotes = document.getElementById("stat-notes");
-
-  if (elDone) elDone.textContent = doneCount;
-  if (elProg) elProg.textContent = progCount;
-  if (elZero) elZero.textContent = zeroCount;
-  if (elNotes) elNotes.textContent = noteCount;
-
-  // Filtros mostram também os opcionais: o número diz quantos (obrigatórios + opcionais)
-  const reqCount = { e: doneCount, r: progCount, z: zeroCount };
-  for (const s in reqCount) {
-    const el = document.getElementById("fil-count-" + s);
-    if (el) el.textContent = optCount[s] ? `${reqCount[s]} +${optCount[s]} opc.` : String(reqCount[s]);
-  }
-
-  // Barra de Progresso
+  // Resumo da trilha
   const total = TOTAL_TRACK_TOPICS || 1;
   const pctE = Math.round((doneCount / total) * 100);
-  const pctR = Math.round((progCount / total) * 100);
-  const pctZ = Math.max(0, 100 - pctE - pctR);
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  setText("stat-done", doneCount);
+  setText("stat-extra", (progCount ? ` · ${progCount} em andamento` : "") + (optCount.e ? ` · +${optCount.e} opc.` : ""));
+  setText("prog-pct-label", `${pctE}%`);
 
-  const barE = document.getElementById("bar-e");
-  const barR = document.getElementById("bar-r");
-  const barZ = document.getElementById("bar-z");
-  const pctLabel = document.getElementById("prog-pct-label");
+  [["bar-e", doneCount], ["bar-r", progCount]].forEach(([id, n]) => {
+    const bar = document.getElementById(id);
+    if (!bar) return;
+    bar.style.width = `${(n / total) * 100}%`;
+    bar.classList.toggle("has", n > 0);
+  });
 
-  if (barE) barE.style.width = `${pctE}%`;
-  if (barR) barR.style.width = `${pctR}%`;
-  if (barZ) barZ.style.width = `${pctZ}%`;
-  if (pctLabel) pctLabel.textContent = `${pctE}% Concluído (${doneCount}/${total})`;
+  // Os números saíram dos filtros: ficam na dica de cada botão (obrigatórios + opcionais)
+  const reqCount = { e: doneCount, r: progCount, z: zeroCount };
+  for (const s in reqCount) {
+    const el = document.querySelector(`.fil-btn[data-f="${s}"]`);
+    if (el) el.title = STATUS_NAME[s] + ": " + reqCount[s] + (optCount[s] ? ` + ${optCount[s]} opc.` : "");
+  }
+  const notesBtn = document.querySelector('.fil-btn[data-f="n"]');
+  if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
 
-  // Gamificação / Patente de XP
+  // Nível
   const lvlIcon = document.getElementById("lvl-icon");
   const lvlName = document.getElementById("lvl-name");
   const lvlDesc = document.getElementById("lvl-desc");
-  const lvlXpTxt = document.getElementById("lvl-xp-txt");
-  const lvlXpFill = document.getElementById("lvl-xp-fill");
-
-  if (lvlXpTxt) lvlXpTxt.textContent = `${doneCount} / ${total} concluídos (${pctE}%)`;
-  if (lvlXpFill) lvlXpFill.style.width = `${pctE}%`;
 
   if (pctE >= 100) {
     if (lvlIcon) lvlIcon.textContent = "👑";
@@ -1126,42 +1100,22 @@ function paint() {
     if (lvlDesc) lvlDesc.textContent = "Construindo alicerces de ferro do zero absoluto.";
   }
 
-  // Próximo Passo Recomendado
-  const nextTitle = document.getElementById("next-step-title");
-  if (nextTitle) {
-    if (firstUncompletedRow) {
-      const tName = firstUncompletedRow.querySelector(".topic-title-text")?.textContent || "";
-      nextTitle.textContent = tName;
-    } else {
-      nextTitle.textContent = "🎉 Todos os tópicos desta trilha foram concluídos com sucesso!";
-    }
-  }
-
-  // Diagnóstico de Ritmo
-  const statusCard = document.getElementById("pace-status-card");
-  const statusText = document.getElementById("pace-status-text");
-  const statusTag = document.getElementById("pace-status-tag");
-  if (statusCard && statusText && statusTag) {
-    if (pctE > 0) {
-      statusCard.className = "pace-status-card pace-ahead";
-      statusTag.textContent = "🟢 Em Progresso";
-      statusText.innerHTML = `Ritmo Ativo! <b>${doneCount} de ${total} tópicos concluídos</b> (${pctE}%). Continue registrando seu progresso diariamente!`;
-    } else {
-      statusCard.className = "pace-status-card pace-ontrack";
-      statusTag.textContent = "🚀 Ponto de Partida";
-      statusText.innerHTML = `Pronto para começar! Clique em <b>▶ Vídeo</b> ou <b>📝 Anotações & Estudo</b> em qualquer tópico para abrir o estúdio de estudo integrado.`;
-    }
-  }
+  // Próxima aula
+  NEXT_TOPIC_ID = firstUncompletedRow ? firstUncompletedRow.getAttribute("data-id") : null;
+  setText("next-step-title", firstUncompletedRow
+    ? firstUncompletedRow.querySelector(".topic-title-text").textContent
+    : "🎉 Todos os tópicos obrigatórios desta trilha foram concluídos!");
+  const nextBtn = document.getElementById("next-step-btn");
+  if (nextBtn) nextBtn.hidden = !NEXT_TOPIC_ID;
+  const nextTag = document.getElementById("next-step-tag");
+  if (nextTag) nextTag.hidden = !NEXT_TOPIC_ID;
 }
 
-// 4. Alternância de Status
-function cycleStatus(topicId) {
+// 4. Situação do tópico
+function chooseTopicStatus(topicId, next) {
   if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
-  const cur = PR[topicId].s || "z";
-  let next = "z";
-  if (cur === "z") next = "r";
-  else if (cur === "r") next = "e";
-  else next = "z";
+  closeRowPanels();
+  if ((PR[topicId].s || "z") === next) return;
 
   PR[topicId].s = next;
   if (next === "z") {
@@ -1181,7 +1135,7 @@ function updateModalStatusBtn(status) {
   if (!btn) return;
   const s = status === "e" || status === "r" ? status : "z";
   btn.dataset.s = s;
-  btn.textContent = s === "e" ? "Concluído" : s === "r" ? "Falta terminar" : "Do zero";
+  btn.textContent = s === "e" ? "Concluído" : s === "r" ? "Em andamento" : "Do zero";
 }
 
 function toggleModalTopicStatus() {
@@ -1241,7 +1195,7 @@ function applyRowVisibility(row, status, noteText) {
 
   let matchSearch = true;
   if (SEARCH_QUERY) {
-    const text = row.textContent.toLowerCase();
+    const text = (row.querySelector(".topic-left").textContent + " " + (row.dataset.search || "")).toLowerCase();
     matchSearch = text.includes(SEARCH_QUERY);
   }
 
@@ -1277,6 +1231,46 @@ function scrollToNextStep() {
       break;
     }
   }
+}
+
+// Linha da aula: um painel aberto por vez (situação ou mais opções)
+function closeRowPanels() {
+  document.querySelectorAll(".topic-panel:not([hidden])").forEach(p => {
+    p.hidden = true;
+    const btn = document.querySelector(`[aria-controls="${p.id}"]`);
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  });
+}
+
+function toggleRowPanel(topicId, kind) {
+  const panel = document.getElementById(`${kind}-${topicId}`);
+  if (!panel) return;
+  const open = panel.hidden;
+  closeRowPanels();
+  panel.hidden = !open;
+  const btn = document.querySelector(`[aria-controls="${panel.id}"]`);
+  if (btn) btn.setAttribute("aria-expanded", String(open));
+}
+
+function openTopicNotes(topicId) {
+  openStudyModal(topicId, false, 1);
+  setTimeout(() => {
+    const ed = document.getElementById("modal-note-editor");
+    if (!ed || CURRENT_MODAL_TOPIC_ID !== topicId) return;
+    if (!ed.offsetParent) setNoteViewMode("editor");   // estava em "Prévia"
+    ed.scrollIntoView({ block: "center" });
+    ed.focus({ preventScroll: true });
+  }, 450);
+}
+
+function continueStudy() {
+  if (NEXT_TOPIC_ID) openStudyModal(NEXT_TOPIC_ID, false, 1);
+}
+
+function openExportFromMenu() {
+  const sb = document.getElementById("sidebar");
+  if (window.innerWidth < 1040 && sb && sb.classList.contains("open")) toggleSidebar();
+  openExportModal();
 }
 
 function togglePhaseCollapse(idx) {
@@ -1604,6 +1598,7 @@ if (typeof initSplitResizer === "function") initSplitResizer();
         .replace("__ALL_LABEL__", all_label)
         .replace("__EXTRA_TOPICS__", extra_topics)
         .replace("__SHARED_CSS__", shared_css)
+        .replace("__LISTING_CSS__", LISTING_CSS)
         .replace("__FAVICON__", FAVICON_LINK)
         .replace("__ACTIVE_HUB__", active_hub)
         .replace("__ACTIVE_IA__", active_ia)

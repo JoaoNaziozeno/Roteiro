@@ -560,11 +560,6 @@ input:checked + .slider:before { transform: translateX(14px); }
   body .sidebar { top: 0 !important; z-index: 120; }
   body .sb-backdrop { z-index: 115; }
 
-  /* Linhas de tópico: botões quebram linha em vez de vazar para fora da tela */
-  body .topic-row { padding: 10px 12px; }
-  body .topic-left { flex: 1 1 100%; }
-  body .topic-actions { flex: 1 1 100%; min-width: 0; justify-content: flex-start; margin-left: 0; }
-
   /* Hub */
   body .hub-hero h1 { font-size: clamp(1.45rem, 7vw, 1.9rem); line-height: 1.2; }
   body .hub-hero p { font-size: .92rem; }

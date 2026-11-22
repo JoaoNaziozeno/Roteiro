@@ -51,26 +51,23 @@ CONQ_CSS = r"""
 .cq-title{font-size:1.25rem;font-weight:850;color:var(--tx);margin:0}
 .cq-lead{font-size:.92rem;color:var(--mu);margin:6px 0 0;line-height:1.5;max-width:720px}
 .cq-lead b{color:var(--tx)}
-.cq-stats{display:flex;gap:10px;flex-wrap:wrap}
-.cq-stat{background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:10px 14px;min-width:110px}
-.cq-stat b{display:block;font-size:1.45rem;font-weight:850;color:var(--tx);line-height:1.1}
-.cq-stat span{font-size:.72rem;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
-.cq-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:16px}
-@media(max-width:1100px){.cq-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){.cq-grid{grid-template-columns:1fr}.cq-sect{padding:18px 14px}.cq-stats{display:grid;grid-template-columns:1fr 1fr;width:100%}.cq-stat{min-width:0}}
-.cq-card{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s}
-.cq-card:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent);transform:translateY(-2px)}
-.cq-card-top{display:flex;align-items:center;gap:14px}
-.cq-ring{width:86px;height:86px;flex:none}
-.cq-ring .bg{stroke:var(--bd)}
-.cq-ring .fg{stroke:var(--c);transition:stroke-dashoffset 1s cubic-bezier(.2,.8,.2,1)}
-.cq-ring text{fill:var(--tx);font-weight:850;font-size:19px}
-.cq-name{font-weight:800;color:var(--tx);font-size:.98rem}
-.cq-count{font-size:.8rem;color:var(--mu);margin-top:2px;line-height:1.4}
-.cq-count b{color:var(--c)}
+.cq-stats{display:flex;flex:1 1 100%;flex-wrap:wrap;gap:4px 26px}
+.cq-stat{display:flex;align-items:baseline;gap:5px}
+.cq-stat b{font-size:1rem;font-weight:850;color:var(--tx)}
+.cq-stat span{font-size:.75rem;color:var(--mu)}
+.cq-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px}
+@media(max-width:899px){.cq-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.cq-grid{grid-template-columns:minmax(0,1fr);gap:8px}.cq-sect{padding:18px 14px}.cq-stats{gap:4px 14px}}
+.cq-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-content:start;gap:3px 10px;padding:11px 12px;background:var(--bg);border:1px solid var(--bd);border-radius:12px;text-decoration:none;color:inherit;transition:border-color .2s}
+.cq-card:hover{border-color:color-mix(in srgb,var(--c) 55%,transparent)}
+.cq-name{font-weight:800;color:var(--tx);font-size:.92rem}
+.cq-count{font-size:.8rem;color:var(--mu);text-align:right;white-space:nowrap}
+.cq-bar{grid-column:1/-1;height:5px;margin:5px 0 3px;border-radius:99px;background:var(--bd);overflow:hidden}
+.cq-bar i{display:block;height:100%;background:var(--c)}
+.cq-bar i.has{min-width:5px}
+.cq-est{grid-column:1/-1;font-size:.76rem;line-height:1.4;color:var(--mu)}
+.cq-est b{color:var(--tx);font-weight:700}
 .cq-line{font-size:.78rem;color:var(--mu);line-height:1.45}
-.cq-line b{color:var(--tx);font-weight:700}
-.cq-est{font-size:.76rem;font-weight:700;color:var(--tx);background:color-mix(in srgb,var(--c) 12%,transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent);border-radius:10px;padding:7px 10px;line-height:1.4}
 .cq-row2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
 @media(max-width:980px){.cq-row2{grid-template-columns:1fr}}
 .cq-box{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px}
@@ -90,7 +87,6 @@ CONQ_CSS = r"""
 .cq-next b{color:var(--tx)}
 .cq-nextbar{height:7px;background:var(--bd);border-radius:99px;overflow:hidden;margin-top:6px}
 .cq-nextbar i{display:block;height:100%;background:var(--t-hub);border-radius:99px}
-@media (prefers-reduced-motion:reduce){.cq-ring .fg{transition:none}.cq-card:hover{transform:none}}
 """
 
 CONQ_HTML = r"""<section class="cq-sect" id="hub-conquistas" aria-labelledby="cq-title">
@@ -129,12 +125,11 @@ function cqNum(n) { return Math.round(n).toLocaleString("pt-BR"); }
 function cqHours(sec) { const h = sec / 3600; return h < 1 ? Math.round(sec / 60) + " min" : (Math.round(h * 10) / 10).toLocaleString("pt-BR") + " h"; }
 function cqDate(t) { const d = new Date(t); return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0"); }
 
-function cqRing(pct, label) {
-  const r = 36, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, pct)) / 100);
-  return '<svg class="cq-ring" viewBox="0 0 86 86" aria-hidden="true"><circle class="bg" cx="43" cy="43" r="' + r + '" fill="none" stroke-width="8"/>' +
-    '<circle class="fg" cx="43" cy="43" r="' + r + '" fill="none" stroke-width="8" stroke-linecap="round" transform="rotate(-90 43 43)" ' +
-    'stroke-dasharray="' + c.toFixed(2) + '" stroke-dashoffset="' + off.toFixed(2) + '"/>' +
-    '<text x="43" y="49" text-anchor="middle">' + label + "</text></svg>";
+function cqCard(href, color, name, count, pct, note) {
+  return '<a class="cq-card" href="' + href + '" style="--c:var(' + color + ')">' +
+    '<span class="cq-name">' + name + '</span><span class="cq-count">' + count + "</span>" +
+    '<span class="cq-bar" aria-hidden="true"><i' + (pct > 0 ? ' class="has"' : "") + ' style="width:' + Math.min(100, pct) + '%"></i></span>' +
+    (note ? '<span class="cq-est">' + note + "</span>" : "") + "</a>";
 }
 
 function renderConquistas() {
@@ -198,46 +193,24 @@ function renderConquistas() {
   const stats = [[cqNum(totalDone), "tópicos concluídos"], [daysStudied, "dias de estudo"], [totalSec ? cqHours(totalSec) : "–", "estudadas"], [best ? best + (best === 1 ? " dia" : " dias") : "–", "maior sequência"]];
   document.getElementById("cq-stats").innerHTML = stats.map(s => '<div class="cq-stat"><b>' + s[0] + "</b><span>" + s[1] + "</span></div>").join("");
 
-  // Cartões por disciplina
+  // Cartões por disciplina: quanto fez, barra e o bloco mais perto de fechar
   const cards = CQ_TRACKS.map(([tr, name, icon, href, color]) => {
     const ids = Object.keys(topics).filter(id => id.startsWith(tr + "-") && !topics[id][2]);
     const extras = Object.keys(bonus).filter(id => id.startsWith(tr + "-")).length;
-    const total = ids.length, d = ids.filter(id => done[id]).length, r = ids.filter(id => started[id]).length;
-    const pct = total ? d / total * 100 : 0;
-    const mods = Object.keys(modules).filter(m => m.startsWith(tr + "-") && modules[m][1] > 0);
-    const fm = mods.filter(m => (modDone[m] || 0) >= modules[m][1]).length;
-    const phases = {};   // fase -> todos os blocos dela estão completos?
-    mods.forEach(m => { const p = m.slice(0, m.lastIndexOf("-")); phases[p] = (phases[p] !== false) && (modDone[m] || 0) >= modules[m][1]; });
-    const phaseList = Object.values(phases);
-    const lastId = ids.filter(id => doneAt[id]).sort((a, b) => doneAt[b] - doneAt[a])[0];
-    // Meta próxima: o bloco mais perto de terminar (a previsão do roteiro inteiro fica na Jornada)
-    const recent = ids.filter(id => doneAt[id] && doneAt[id] >= now - 28 * CQ_DAY).length;
-    const open = mods.filter(m => (modDone[m] || 0) < modules[m][1])
+    const total = ids.length, d = ids.filter(id => done[id]).length;
+    const open = Object.keys(modules).filter(m => m.startsWith(tr + "-") && (modDone[m] || 0) < modules[m][1])
       .sort((a, b) => ((modDone[b] || 0) / modules[b][1]) - ((modDone[a] || 0) / modules[a][1]) || (a < b ? -1 : 1));
-    let est;
-    if (d >= total) est = "🎓 Disciplina concluída. Que orgulho!";
+    let note = "";
+    if (d >= total) note = "🎓 Disciplina concluída. Que orgulho!";
     else if (open.length) {
       const m = open[0], left = modules[m][1] - (modDone[m] || 0);
-      est = "🎯 Próximo bloco: <b>" + cqEsc(modules[m][0]) + "</b> · falta" + (left > 1 ? "m " + left + " tópicos" : " 1 tópico");
-      if (recent > 0) {
-        const days = Math.max(1, Math.ceil(left / (recent / 28)));
-        est += ". No seu ritmo, você fecha em ~" + days + (days === 1 ? " dia." : " dias.");
-      } else est += ".";
+      note = "Próximo: <b>" + cqEsc(modules[m][0]) + "</b> · falta" + (left > 1 ? "m " : " ") + left + ".";
     }
-    const pctLabel = (pct > 0 && pct < 1 ? "<1" : Math.round(pct)) + "%";
-    return '<a class="cq-card" href="' + href + '" style="--c:var(' + color + ')">' +
-      '<div class="cq-card-top">' + cqRing(pct, pctLabel) + '<div><div class="cq-name">' + icon + " " + name + "</div>" +
-      '<div class="cq-count"><b>' + d + "</b> de " + total + " concluídos" + (r ? " · " + r + " em andamento" : "") + "</div></div></div>" +
-      '<div class="cq-line">' + (tr === "ia" ? "Fases completas" : "Módulos completos") + ': <b>' + phaseList.filter(Boolean).length + " de " + phaseList.length + "</b> · Blocos: <b>" + fm + " de " + mods.length + "</b></div>" +
-      (extras ? '<div class="cq-line">⭐ Bônus: <b>' + extras + " aprofundamento" + (extras === 1 ? "" : "s") + " opcional" + (extras === 1 ? "" : "is") + "</b> concluído" + (extras === 1 ? "" : "s") + "</div>" : "") +
-      (lastId ? '<div class="cq-line">Última conquista: <b>' + cqEsc(topics[lastId][0]) + "</b> (" + cqDate(doneAt[lastId]) + ")</div>" : "") +
-      '<div class="cq-est">' + est + "</div></a>";
+    return cqCard(href, color, icon + " " + name, "<b>" + d + "</b> de " + total + (extras ? " +" + extras + " opc." : ""),
+                  total ? d / total * 100 : 0, note);
   });
-  const pPct = projects.length ? projDone / projects.length * 100 : 0;
-  cards.push('<a class="cq-card" href="projetos.html" style="--c:var(--t-proj)"><div class="cq-card-top">' + cqRing(pPct, Math.round(pPct) + "%") +
-    '<div><div class="cq-name">🛠️ Projetos</div><div class="cq-count"><b>' + projDone + "</b> de " + (projects.length || 6) + " concluídos" +
-    (projects.filter(p => p && p.status === "wip").length ? " · " + projects.filter(p => p && p.status === "wip").length + " em desenvolvimento" : "") + "</div></div></div>" +
-    '<div class="cq-line">Projetos são o que mais pesa num currículo de IA: cada um vira uma prova do que você sabe fazer.</div></a>');
+  cards.push(cqCard("projetos.html", "--t-proj", "🛠️ Projetos", "<b>" + projDone + "</b> de " + (projects.length || 6),
+                    projects.length ? projDone / projects.length * 100 : 0, ""));
   document.getElementById("cq-cards").innerHTML = cards.join("");
 
   // Calendário (12 semanas, colunas = semanas, linhas = dom..sáb)
