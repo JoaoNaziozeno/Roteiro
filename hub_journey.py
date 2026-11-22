@@ -157,7 +157,7 @@ function resetStartDateToday() { onStartDateChange(new Date().toISOString().slic
 // Pesos de esforço calibrados internamente (1 ponto ≈ 1h de estudo efetivo de um tópico "padrão").
 //  - Inglês (1): cada tópico é uma videoaula de ~15-25 min de gramática/vocabulário básico-intermediário
 //    + prática curta ≈ 1h. É a referência.
-//  - IA & Código (4): 173 tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
+//  - IA & Código (4): tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
 //    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
 //  - Matemática (6): 43 tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
 //    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.

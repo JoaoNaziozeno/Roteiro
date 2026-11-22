@@ -231,7 +231,7 @@ print(soma)</code></pre>""",
         "Todo <code>while</code> precisa de algo, dentro dele, que um dia torne a condição falsa.",
         "O treino de um modelo de IA é um laço (épocas) dentro de outro (lotes de dados).",
     ],
-    "proxima": "Funções: empacotar um laço útil num comando com nome, para reaproveitar.",
+    "proxima": "while: repetir enquanto uma condição for verdadeira.",
     "referencias": [
         {"obra": "Curso em Vídeo, Curso Python #013 e #014", "uso": "Explicação e prática dos laços em português."},
         {"obra": "Al Sweigart, Automate the Boring Stuff with Python, cap. 2", "uso": "Exemplos de while, break e continue."},

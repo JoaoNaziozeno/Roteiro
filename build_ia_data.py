@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Gerador de dados completos e enriquecidos para as 6 fases da trilha de IA & Código (173 tópicos).
+Gerador de dados completos e enriquecidos para as 6 fases da trilha de IA & Código.
 Inclui vídeo aulas do Gustavo Guanabara (Curso em Vídeo) na Fase 1 e materiais de ponta nas Fases 2 a 6.
 """
 
-def get_enriched_ia_phases():
+def _base_ia_phases():
     return [
         {
             "t": "Fase 1 · Fundamentos de programação com Python",
@@ -18,29 +18,33 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Instalar Python e usar o terminal",
-                            "video_url": "https://www.youtube.com/watch?v=S9uPNppGsGo",
-                            "video_label": "▶ Guanabara Python #01/03",
+                            "video_url": "https://www.youtube.com/watch?v=VuKvR1J2LQE",
+                            "video_label": "▶ Guanabara #03 · Instalar",
+                            "video2_url": "https://www.youtube.com/watch?v=S9uPNppGsGo",
+                            "video2_label": "🎬 2ª Opção: Guanabara #01",
                             "doc_url": "https://docs.python.org/pt-br/3/using/index.html",
                             "doc_label": "📖 Docs Instalação Python"
                         },
                         {
                             "title": "Variáveis e tipos (int, float, str, bool)",
                             "video_url": "https://www.youtube.com/watch?v=hdDHg1p3YVc",
-                            "video_label": "▶ Guanabara Python #06",
+                            "video_label": "▶ Guanabara #06 · Tipos",
                             "doc_url": "https://docs.python.org/pt-br/3/library/stdtypes.html",
                             "doc_label": "📖 Docs Tipos Python"
                         },
                         {
                             "title": "Entrada e saída de dados",
-                            "video_url": "https://www.youtube.com/watch?v=nIHq1MtJaKs",
-                            "video_label": "▶ Guanabara Python #04 - Entrada & Saída",
+                            "video_url": "https://www.youtube.com/watch?v=31llNGKWDdo",
+                            "video_label": "▶ Guanabara #04 · Comandos",
+                            "video2_url": "https://www.youtube.com/watch?v=nIHq1MtJaKs",
+                            "video2_label": "🎬 2ª Opção: Exercício 001",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/inputoutput.html",
                             "doc_label": "📖 Docs Entrada/Saída"
                         },
                         {
                             "title": "Condicionais (if, elif, else)",
                             "video_url": "https://www.youtube.com/watch?v=K10u3XIf1-Q",
-                            "video_label": "▶ Guanabara Python #10/12",
+                            "video_label": "▶ Guanabara #10 · Condições",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#if-statements",
                             "doc_label": "📖 Docs Condicionais"
                         },
@@ -54,7 +58,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "Funções, parâmetros e retorno",
                             "video_url": "https://www.youtube.com/watch?v=ezfr9d7wd_k",
-                            "video_label": "▶ Guanabara Python #20/21",
+                            "video_label": "▶ Guanabara #20 · Funções",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/controlflow.html#defining-functions",
                             "doc_label": "📖 Docs Funções"
                         }
@@ -98,8 +102,10 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Orientação a objetos (classes, métodos, herança)",
-                            "video_url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dkqe2aR0tQK74m8SFe-aGsY",
-                            "video_label": "▶ Guanabara POO #01-#05",
+                            "video_url": "https://www.youtube.com/watch?v=BQsv_BkoBCU",
+                            "video_label": "▶ Guanabara POO Python #03",
+                            "video2_url": "https://www.youtube.com/watch?v=dJyZmwLpxnE",
+                            "video2_label": "🎬 2ª Opção: POO Python #04",
                             "doc_url": "https://docs.python.org/pt-br/3/tutorial/classes.html",
                             "doc_label": "📖 Docs POO Python"
                         },
@@ -148,7 +154,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "Git: commit, branch, merge",
                             "video_url": "https://www.youtube.com/watch?v=6Czd1Yetaac",
-                            "video_label": "▶ Guanabara Git #01-#06",
+                            "video_label": "▶ Fabio Akita · Entendendo Git",
                             "doc_url": "https://git-scm.com/book/pt-br/v2",
                             "doc_label": "📖 Pro Git Livro Oficial"
                         },
@@ -194,8 +200,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Depuração (debug) e leitura de erros",
-                            "video_url": "https://www.youtube.com/watch?v=ElRd0cbXIv4",
-                            "video_label": "▶ Debugging no VS Code",
+                            "video_url": "https://www.youtube.com/watch?v=5AY6EnC1yWM",
+                            "video_label": "▶ Hashtag · Debug no VS Code",
                             "doc_url": "https://docs.python.org/pt-br/3/library/pdb.html",
                             "doc_label": "📖 Docs Python Debugger"
                         },
@@ -281,8 +287,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "30 exercícios (Beecrowd, HackerRank, Exercism)",
-                            "video_url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dm6wYOIW20NgkL20I47-10X",
-                            "video_label": "▶ Guanabara 100 Exercícios",
+                            "video_url": "https://www.youtube.com/playlist?list=PLHz_AreHm4dm6wYOIW20Nyg12TAjmMGT-",
+                            "video_label": "▶ Guanabara · Exercícios de Python 3",
                             "doc_url": "https://exercism.org/tracks/python",
                             "doc_label": "💻 Exercism Trilha Python"
                         },
@@ -337,8 +343,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Pandas: filtrar, agrupar e juntar (merge)",
-                            "video_url": "https://www.youtube.com/watch?v=ZyhVh-qRZPA",
-                            "video_label": "▶ Pandas Filter, GroupBy & Merge",
+                            "video_url": "https://www.youtube.com/watch?v=3zyZGEJO0wg",
+                            "video_label": "▶ Eduardo Ogasawara · Juntar, filtrar e agrupar",
                             "doc_url": "https://pandas.pydata.org/docs/user_guide/merging.html",
                             "doc_label": "📖 Pandas Merge & GroupBy"
                         },
@@ -370,8 +376,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Análise exploratória de dados (EDA)",
-                            "video_url": "https://www.youtube.com/watch?v=qBigTkBLU6g",
-                            "video_label": "▶ EDA Passo a Passo na Prática",
+                            "video_url": "https://www.youtube.com/watch?v=woObL4Mx9ns",
+                            "video_label": "▶ Patricia Ramos · EDA em Python",
                             "doc_url": "https://www.kaggle.com/learn/data-visualization",
                             "doc_label": "💻 Kaggle Data Visualization"
                         }
@@ -509,8 +515,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Storytelling com dados",
-                            "video_url": "https://www.youtube.com/watch?v=qBigTkBLU6g",
-                            "video_label": "▶ Data Storytelling e Insights",
+                            "video_url": "https://www.youtube.com/watch?v=i1U8Zdoshw0",
+                            "video_label": "▶ Métricas Boss · Storytelling com dados",
                             "doc_url": "https://www.storytellingwithdata.com/",
                             "doc_label": "📖 Storytelling With Data"
                         },
@@ -538,7 +544,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "Aprendizado supervisionado vs. não supervisionado",
                             "video_url": "https://www.youtube.com/watch?v=1FZ0A1QCMWc",
-                            "video_label": "▶ Andrew Ng Supervised vs Unsupervised",
+                            "video_label": "▶ Simplilearn · Supervisionado ou não",
                             "doc_url": "https://scikit-learn.org/stable/getting_started.html",
                             "doc_label": "📖 Sklearn Intro Tutorial"
                         },
@@ -725,22 +731,22 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Seleção de atributos",
-                            "video_url": "https://www.youtube.com/watch?v=bDhvCp3_lYw",
-                            "video_label": "▶ Feature Selection Techniques",
+                            "video_url": "https://www.youtube.com/watch?v=0yM07AURFRY",
+                            "video_label": "▶ Hashtag · Seleção de atributos",
                             "doc_url": "https://scikit-learn.org/stable/modules/feature_selection.html",
                             "doc_label": "📖 Sklearn Feature Selection"
                         },
                         {
                             "title": "Vazamento de dados (data leakage)",
-                            "video_url": "https://www.youtube.com/watch?v=fSytzGwwBVw",
-                            "video_label": "▶ Como Evitar Data Leakage",
+                            "video_url": "https://www.youtube.com/watch?v=9Wlno8DTbYQ",
+                            "video_label": "▶ TileStats · Data Leakage (EN)",
                             "doc_url": "https://www.kaggle.com/learn/data-leakage",
                             "doc_label": "💻 Kaggle Data Leakage"
                         },
                         {
                             "title": "Séries temporais com ML",
-                            "video_url": "https://www.youtube.com/watch?v=UFuo7EHI8zc",
-                            "video_label": "▶ Forecasting com Machine Learning",
+                            "video_url": "https://www.youtube.com/watch?v=vV12dGe_Fho",
+                            "video_label": "▶ Rob Mulla · Séries com XGBoost (EN)",
                             "doc_url": "https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html",
                             "doc_label": "📖 Sklearn: atributos de tempo"
                         }
@@ -751,8 +757,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Importância de atributos",
-                            "video_url": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
-                            "video_label": "▶ Feature Importance no Random Forest",
+                            "video_url": "https://www.youtube.com/watch?v=U-iahfXlSoY",
+                            "video_label": "▶ A Data Odyssey · Permutation Importance (EN)",
                             "doc_url": "https://scikit-learn.org/stable/modules/permutation_importance.html",
                             "doc_label": "📖 Sklearn Permutation Importance"
                         },
@@ -873,22 +879,22 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Datasets e DataLoaders",
-                            "video_url": "https://www.youtube.com/watch?v=VVDHU_TWwUg",
-                            "video_label": "▶ Custom Datasets em PyTorch",
+                            "video_url": "https://www.youtube.com/watch?v=PXOzkkB5eH0",
+                            "video_label": "▶ Patrick Loeber · DataLoader (EN)",
                             "doc_url": "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html",
                             "doc_label": "📖 PyTorch Datasets & DataLoaders"
                         },
                         {
                             "title": "Loop de treino e avaliação",
                             "video_url": "https://www.youtube.com/watch?v=c36lUUr864M",
-                            "video_label": "▶ PyTorch Full Training Loop",
+                            "video_label": "▶ Patrick Loeber · Curso completo de PyTorch (EN)",
                             "doc_url": "https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html",
                             "doc_label": "📖 PyTorch Model Optimization"
                         },
                         {
                             "title": "Treinar em GPU (Colab)",
-                            "video_url": "https://www.youtube.com/watch?v=r7Am-ZGMef8",
-                            "video_label": "▶ Acelerando PyTorch com CUDA na GPU",
+                            "video_url": "https://www.youtube.com/watch?v=obMhoz-Dw2g",
+                            "video_label": "▶ Programador Artificial · GPU no Colab",
                             "doc_url": "https://pytorch.org/docs/stable/cuda.html",
                             "doc_label": "📖 PyTorch CUDA Semantics"
                         }
@@ -899,8 +905,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Autoencoders",
-                            "video_url": "https://www.youtube.com/watch?v=9zKuYvjFFS8",
-                            "video_label": "▶ Autoencoders e Compressão Latente",
+                            "video_url": "https://www.youtube.com/watch?v=ADbPhK5-bvE",
+                            "video_label": "▶ IA Expert · Autoencoders",
                             "doc_url": "https://www.deeplearningbook.org/contents/autoencoders.html",
                             "doc_label": "📖 Deep Learning Book Cap 14"
                         },
@@ -981,8 +987,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Mixed precision",
-                            "video_url": "https://www.youtube.com/watch?v=r7Am-ZGMef8",
-                            "video_label": "▶ Automatic Mixed Precision (AMP)",
+                            "video_url": "https://www.youtube.com/watch?v=ks3oZ7Va8HU",
+                            "video_label": "▶ Aladdin Persson · Mixed Precision (EN)",
                             "doc_url": "https://pytorch.org/docs/stable/amp.html",
                             "doc_label": "📖 PyTorch AMP Tutorial"
                         }
@@ -1015,7 +1021,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "PyTorch Lightning",
                             "video_url": "https://www.youtube.com/watch?v=DbESHcCoWbM",
-                            "video_label": "▶ PyTorch Lightning em 15 Minutos",
+                            "video_label": "▶ Lightning AI · De PyTorch a Lightning (EN)",
                             "doc_url": "https://lightning.ai/docs/pytorch/stable/",
                             "doc_label": "📖 Lightning AI Documentation"
                         }
@@ -1083,7 +1089,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "Engenharia de prompts",
                             "video_url": "https://www.youtube.com/watch?v=jC4v5AS4RIM",
-                            "video_label": "▶ Andrew Ng Prompt Engineering",
+                            "video_label": "▶ Jeff Su · Fórmula de prompt (EN)",
                             "doc_url": "https://www.promptingguide.ai/pt",
                             "doc_label": "📖 Prompt Engineering Guide"
                         },
@@ -1181,8 +1187,8 @@ def get_enriched_ia_phases():
                     [
                         {
                             "title": "Chunking e estratégias de recuperação no RAG",
-                            "video_url": "https://www.youtube.com/watch?v=tcqEUSNCn8I",
-                            "video_label": "▶ Advanced RAG: Chunking & Hybrid Search",
+                            "video_url": "https://www.youtube.com/watch?v=8OJC21T2SL4",
+                            "video_label": "▶ Greg Kamradt · 5 níveis de chunking (EN)",
                             "doc_url": "https://www.pinecone.io/learn/chunking-strategies/",
                             "doc_label": "📖 Pinecone Chunking Strategies"
                         },
@@ -1235,8 +1241,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Alucinações e mitigação",
-                            "video_url": "https://www.youtube.com/watch?v=bZQun8Y4L2A",
-                            "video_label": "▶ Como Prevenir Alucinações de LLM",
+                            "video_url": "https://www.youtube.com/watch?v=YqIToD-GehM",
+                            "video_label": "▶ David Farias · Alucinações em LLMs",
                             "doc_url": "https://arxiv.org/abs/2309.01219",
                             "doc_label": "📄 Survey on Hallucination in LLMs"
                         },
@@ -1359,8 +1365,10 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "READMEs com problema, solução e resultados",
-                            "video_url": "https://www.youtube.com/watch?v=6Czd1Yetaac",
-                            "video_label": "▶ README Incrível para Projetos",
+                            "video_url": "https://www.youtube.com/watch?v=k4Rsy8GbKE0",
+                            "video_label": "▶ Fernanda Kipper · README completo",
+                            "video2_url": "https://www.youtube.com/watch?v=jIa8R69pKh8",
+                            "video2_label": "🎬 2ª Opção: DevSuperior README",
                             "doc_url": "https://docs.github.com/pt/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes",
                             "doc_label": "📖 Guia README GitHub"
                         },
@@ -1373,8 +1381,8 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Inglês técnico",
-                            "video_url": "https://www.youtube.com/watch?v=0HHnezXSKnI",
-                            "video_label": "▶ Playlist Inglês EnglishBay",
+                            "video_url": "https://www.youtube.com/watch?v=XDbUO-dm4jQ",
+                            "video_label": "▶ Inglês Para Devs · Ler documentação",
                             "doc_url": "https://arxiv.org/archive/cs",
                             "doc_label": "📄 arXiv Computer Science"
                         },
@@ -1407,7 +1415,7 @@ def get_enriched_ia_phases():
                         {
                             "title": "Kubernetes (noção)",
                             "video_url": "https://www.youtube.com/watch?v=X48VuDVv0do",
-                            "video_label": "▶ Kubernetes Explicado em 15 Minutos",
+                            "video_label": "▶ TechWorld with Nana · Kubernetes, 4 horas (EN)",
                             "doc_url": "https://kubernetes.io/docs/home/",
                             "doc_label": "📖 Kubernetes Documentation"
                         },
@@ -1420,8 +1428,10 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Redis, Postgres e pgvector",
-                            "video_url": "https://www.youtube.com/watch?v=AKQ3XEDI9Mw",
-                            "video_label": "▶ PostgreSQL com pgvector para IA",
+                            "video_url": "https://www.youtube.com/watch?v=80w4GVlp_qY",
+                            "video_label": "▶ DataWay · Postgres e pgvector",
+                            "video2_url": "https://www.youtube.com/watch?v=1Tfzm7Wfk74",
+                            "video2_label": "🎬 2ª Opção: LuizTools Redis",
                             "doc_url": "https://github.com/pgvector/pgvector",
                             "doc_label": "📖 pgvector Open Source"
                         }
@@ -1439,8 +1449,10 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Front-end básico (HTML e JS)",
-                            "video_url": "https://www.youtube.com/watch?v=Ejkb_YpuHWs",
-                            "video_label": "▶ Guanabara HTML5 e CSS3",
+                            "video_url": "https://www.youtube.com/watch?v=B4FU3NFRTDw",
+                            "video_label": "▶ Guanabara · HTML, CSS e JS",
+                            "video2_url": "https://www.youtube.com/watch?v=Ptbk2af68e8",
+                            "video2_label": "🎬 2ª Opção: Guanabara JS #01",
                             "doc_url": "https://developer.mozilla.org/pt-BR/docs/Learn",
                             "doc_label": "📖 MDN Web Docs"
                         },
@@ -1479,15 +1491,17 @@ def get_enriched_ia_phases():
                         },
                         {
                             "title": "Escrever artigos e posts",
-                            "video_url": "https://www.youtube.com/watch?v=qBigTkBLU6g",
-                            "video_label": "▶ Criando Conteúdo Técnico e Artigos",
+                            "video_url": "https://www.youtube.com/watch?v=YODPgBadj80",
+                            "video_label": "▶ Quincy Larson · Posts técnicos (EN)",
+                            "video2_url": "https://www.youtube.com/watch?v=z37VL3BlY-I",
+                            "video2_label": "🎬 2ª Opção: Lucas Badico",
                             "doc_url": "https://developers.google.com/tech-writing",
                             "doc_label": "📖 Google Technical Writing"
                         },
                         {
                             "title": "Comunidades e eventos",
-                            "video_url": "https://www.youtube.com/watch?v=tiZFewofSLM",
-                            "video_label": "▶ Redes e Comunidades de IA",
+                            "video_url": "https://www.youtube.com/watch?v=UIJ0o0YCgPE",
+                            "video_label": "▶ Felipe Salles · Comunidades",
                             "doc_url": "https://huggingface.co/community",
                             "doc_label": "💬 Hugging Face Community"
                         },
@@ -1503,3 +1517,9 @@ def get_enriched_ia_phases():
             ]
         }
     ]
+
+
+def get_enriched_ia_phases():
+    """Trilha de IA como a página mostra: ids fixos, aulas do Guanabara na ordem do curso (trilha_guanabara.py)."""
+    from trilha_guanabara import organizar
+    return organizar(_base_ia_phases())

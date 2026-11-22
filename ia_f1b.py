@@ -71,14 +71,14 @@ print(soma)
         ]),
     ],
     ["<code>with open(arquivo, modo, encoding=\"utf-8\")</code> abre e fecha com segurança.", "<code>r</code> lê, <code>w</code> sobrescreve, <code>a</code> acrescenta.", "Ao ler, limpe o <code>\\n</code>; ao gravar, inclua-o."],
-    "Tratamento de erros: o programa que não quebra.",
+    "Orientação a objetos: organizar dados e funções juntos.",
     livro=("ATBS:9", "Capítulo 9, “Reading and Writing Files”", "Qual a diferença entre caminho absoluto e relativo segundo o livro?"))
 
 AULAS["Tratamento de erros (try/except)"] = aula(
     35,
     "O usuário digita “dez” onde você esperava 10. A internet cai no meio do download. O arquivo não existe. Programas reais não podem simplesmente morrer: eles precisam <b>tentar</b> e, se der errado, <b>reagir</b>.",
     ["capturar erros com <code>try</code> / <code>except</code>;", "capturar o erro certo, e não todos;", "usar <code>else</code>, <code>finally</code> e <code>raise</code>."],
-    ["Funções e arquivos."],
+    ["Funções."],
     [
         chute("O que esse código imprime?", ["Nada, o programa quebra", "erro e depois fim", "fim"], 1,
               ["Sem o <code>try</code> quebraria. Com ele, o erro é capturado.", "Isso! A divisão por zero pula para o <code>except</code>, e o programa <b>continua</b> depois.", "O <code>except</code> também roda, antes."],
@@ -148,7 +148,7 @@ print(validar_taxa(0.01))
         ]),
     ],
     ["<code>try</code> tenta; <code>except TipoDoErro</code> reage; <code>finally</code> roda sempre.", "Capture erros específicos e nunca os engula em silêncio.", "<code>raise</code> dispara um erro quando a entrada é inválida."],
-    "Ambientes virtuais e pip: instalar bibliotecas sem bagunça.",
+    "Arquivos: ler e gravar dados no disco.",
     livro=("PYDOC:errors", "Seções 8.3 e 8.4 (tratando e levantando exceções)", "Que exemplo o tutorial usa com vários except?"))
 
 AULAS["Ambientes virtuais e pip"] = aula(
@@ -219,7 +219,7 @@ print(ler_requisitos("pandas==2.2.0\\n# dados\\nnumpy==1.26.4\\n"))
         ]),
     ],
     ["Um ambiente virtual por projeto: <code>python -m venv .venv</code>.", "Ative antes de instalar com <code>pip</code>.", "<code>requirements.txt</code> torna o projeto reproduzível."],
-    "Git: uma máquina do tempo para o seu código.",
+    "Python assíncrono: esperar várias respostas ao mesmo tempo.",
     livro=("PYDOC:venv", "Capítulo 12, “Ambientes virtuais e pacotes”", "Como o tutorial explica o problema que os ambientes resolvem?"))
 
 AULAS["Git: commit, branch, merge"] = aula(

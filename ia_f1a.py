@@ -58,7 +58,7 @@ print(2 + 3)
         ]),
     ],
     ["O terminal executa comandos escritos; <code>cd</code> anda entre pastas e <code>ls</code>/<code>dir</code> lista.", "<code>python arquivo.py</code> roda um programa; <code>python</code> sozinho abre o modo interativo.", "No Windows, o Python precisa estar no PATH."],
-    "Variáveis e tipos: como o programa guarda informação.",
+    "Entrada e saída: os primeiros comandos de um programa.",
     livro=("MISSING:course-shell", "Aula 1, “The Shell”", "Quais comandos a aula usa para navegar entre pastas?"))
 
 AULAS["Variáveis e tipos (int, float, str, bool)"] = aula(
@@ -121,14 +121,14 @@ print("Modelo", nome, "com", camadas, "camadas e taxa", taxa)
         ]),
     ],
     ["Variável é um nome que guarda um valor; <code>=</code> guarda, <code>==</code> compara.", "Tipos básicos: <code>int</code>, <code>float</code>, <code>str</code> e <code>bool</code>.", "O mesmo operador se comporta diferente conforme o tipo; converta com <code>int()</code>, <code>float()</code> e <code>str()</code>."],
-    "Entrada e saída de dados: conversar com quem usa o programa.",
+    "Operadores aritméticos: fazer contas na ordem certa.",
     livro=("ATBS:1", "Capítulo 1, “Python Basics”", "Que tipos de dados o capítulo apresenta primeiro?"))
 
 AULAS["Entrada e saída de dados"] = aula(
     30,
     "Um programa que não conversa com ninguém é uma calculadora trancada na gaveta. Com <code>input</code> ele pergunta, com <code>print</code> ele responde.",
     ["ler dados com <code>input()</code> e converter para número;", "montar mensagens com f-strings;", "formatar casas decimais na saída."],
-    ["Variáveis e tipos."],
+    ["Ter rodado seu primeiro <code>print</code>. Variáveis aparecem no vídeo desta aula e são aprofundadas na próxima."],
     [
         chute("O usuário digita <b>10</b>. O que o código imprime?", ["20", "1010", "Dá erro"], 1,
               ["Seria 20 se o valor fosse número.", "Isso! O <code>input</code> sempre devolve <b>texto</b>, e texto vezes 2 é o texto repetido.", "Multiplicar texto por inteiro é permitido: repete o texto."],
@@ -187,7 +187,7 @@ print(f"Total: {total:.2f}")
         ]),
     ],
     ["<code>input()</code> sempre devolve texto: converta com <code>int()</code> ou <code>float()</code>.", "f-strings montam mensagens com lacunas entre chaves.", "<code>{x:.2f}</code> formata com duas casas decimais."],
-    "Condicionais: fazer o programa tomar decisões.",
+    "Variáveis e tipos: como o programa guarda informação.",
     livro=("PYDOC:inputoutput", "Seção 7.1, “Refinando a formatação de saída”", "Que outras formas de formatar texto o tutorial mostra além da f-string?"))
 
 AULAS["Condicionais (if, elif, else)"] = aula(
@@ -220,7 +220,7 @@ AULAS["Condicionais (if, elif, else)"] = aula(
               ['idade = 17', 'if idade >= 18:', '    print("Pode entrar")', 'else:', '    print("Volte em alguns anos")'],
               corpo="<p>Coloque as linhas na ordem certa (o recuo já está pronto).</p>",
               exp="<p>Primeiro a variável, depois o teste. O bloco recuado logo abaixo de cada <code>if</code>/<code>else</code> é o que roda naquele caminho.</p>"),
-        cod("Filtro de confiança", "Um classificador devolveu <code>prob</code> (0 a 1). Imprima <b>spam</b> se for maior ou igual a 0.8, <b>revisar</b> se estiver entre 0.5 e 0.8, e <b>ok</b> caso contrário. A função é testada com vários valores.",
+        cod("Filtro de confiança", "<b>Ainda não viu <code>def</code>?</b> É normal, ele vem na aula de Funções. Aqui a linha já está pronta: o valor entre parênteses chega preenchido e o que vier depois de <code>return</code> é a resposta. Um classificador devolveu <code>prob</code> (0 a 1). Imprima <b>spam</b> se for maior ou igual a 0.8, <b>revisar</b> se estiver entre 0.5 e 0.8, e <b>ok</b> caso contrário. A função é testada com vários valores.",
             '''
 def classificar(prob):
     # use if / elif / else e devolva "spam", "revisar" ou "ok"
@@ -256,14 +256,14 @@ print(classificar(0.9), classificar(0.6), classificar(0.1))
         ]),
     ],
     ["<code>if</code> testa, <code>elif</code> dá alternativas e <code>else</code> pega o resto; só um bloco roda.", "Comparar é <code>==</code>; combine com <code>and</code>, <code>or</code> e <code>not</code>.", "Ordene os testes do mais exigente para o menos exigente."],
-    "Laços: repetir sem copiar e colar.",
+    "Condições aninhadas: vários caminhos com elif.",
     livro=("ATBS:2", "Capítulo 2, “Flow Control”, até “else Statements”", "Como o livro desenha o fluxo de um if/else?"))
 
 AULAS["Funções, parâmetros e retorno"] = aula(
     40,
     "Toda vez que você escreve <code>print(...)</code> está usando uma função que alguém criou. Hoje você passa para o outro lado do balcão: empacotar um pedaço de código, dar um nome a ele e reutilizar para sempre.",
     ["definir funções com <code>def</code> e chamá-las;", "passar parâmetros, inclusive com valor padrão;", "entender a diferença entre <code>return</code> e <code>print</code>."],
-    ["Condicionais e laços."],
+    ["Condicionais, laços e listas."],
     [
         chute("O que esse código imprime?", ["8", "None", "Nada"], 1,
               ["A função até calcula 8, mas não <b>devolve</b> o resultado: falta o <code>return</code>.", "Isso! Sem <code>return</code>, a função devolve <code>None</code> (“nada”). O 8 foi calculado e jogado fora.", "O <code>print</code> de fora roda e mostra o que a função devolveu: <code>None</code>."],
@@ -334,14 +334,14 @@ print(saudar("Leo", "noite"))
         ]),
     ],
     ["<code>def</code> cria a função; ela só roda quando é chamada.", "Parâmetros recebem os valores; <code>return</code> devolve o resultado e encerra.", "Valores padrão tornam parâmetros opcionais."],
-    "Listas: guardar muitos valores numa variável só.",
+    "Funções, parte 2: escopo, parâmetros opcionais e docstrings.",
     livro=("ATBS:3", "Capítulo 3, “Functions”", "Como o livro explica escopo local e global?"))
 
 AULAS["Listas e fatiamento"] = aula(
     40,
     "Uma variável guarda um valor. Mas e as notas de 40 alunos? Os 1.000 preços de um dataset? Listas guardam muitos valores em ordem, e fatiar listas é o gesto mais repetido em ciência de dados.",
     ["criar listas, acessar por índice e alterar itens;", "fatiar com <code>lista[início:fim]</code>;", "usar <code>append</code>, <code>len</code>, <code>in</code> e <code>sort</code>."],
-    ["Laços e funções."],
+    ["Laços, strings e tuplas."],
     [
         chute("O que esse código imprime?", ["a", "b", "Dá erro"], 1,
               ["O primeiro item é o de índice <b>0</b>, não 1.", "Isso! A contagem começa no zero: <code>letras[0]</code> é “a”, <code>letras[1]</code> é “b”.", "O índice 1 existe: a lista tem 3 itens, com índices 0, 1 e 2."],
@@ -417,7 +417,7 @@ print(maior)
         ]),
     ],
     ["Listas guardam itens em ordem; os índices começam em 0.", "<code>v[início:fim]</code> fatia sem incluir o fim e cria uma lista nova.", "<code>append</code>, <code>len</code> e <code>in</code> resolvem a maior parte do dia a dia."],
-    "Dicionários: procurar pelo nome em vez da posição.",
+    "Listas compostas: listas dentro de listas.",
     livro=("ATBS:4", "Capítulo 4, “Lists”", "Que exemplo o livro usa para mostrar referências a listas?"))
 
 AULAS["Dicionários"] = aula(
@@ -445,7 +445,7 @@ AULAS["Dicionários"] = aula(
             ("Para cada palavra do texto: <code>contagem[p] = contagem.get(p, 0) + 1</code>", "Se a palavra é nova, <code>get</code> devolve 0; senão, o total até agora."),
             ("Depois de “a casa a”: <code>{\"a\": 2, \"casa\": 1}</code>", "Cada chave aparece uma vez só, com sua contagem."),
         ], fim="Esse padrão “dicionário como contador” aparece em todo lugar, de análise de texto a tokenizadores."),
-        cod("Contador de palavras", "Complete a função para devolver um dicionário com quantas vezes cada palavra aparece.",
+        cod("Contador de palavras", "<b>Ainda não viu <code>def</code>?</b> É normal, ele vem na aula de Funções. Aqui a linha já está pronta: o valor entre parênteses chega preenchido e o que vier depois de <code>return</code> é a resposta. Complete a função para devolver um dicionário com quantas vezes cada palavra aparece.",
             '''
 def contar(frase):
     contagem = {}
@@ -500,14 +500,14 @@ print(resposta["uso"]["entrada"] + resposta["uso"]["saida"])
         ]),
     ],
     ["Dicionário associa chaves a valores; a busca é pelo nome.", "<code>d[k] = v</code> cria ou altera; <code>d.get(k, padrão)</code> lê com segurança.", "JSON vira dicionários e listas aninhados."],
-    "Tuplas e conjuntos: quando a lista não é a melhor escolha.",
+    "List comprehension: criar listas em uma linha.",
     livro=("ATBS:5", "Capítulo 5, “Dictionaries and Structuring Data”", "Que jogo o livro modela com dicionários?"))
 
 AULAS["Tuplas e conjuntos"] = aula(
     30,
     "Coordenadas de um ponto não deveriam mudar por acidente. E-mails de uma lista de envio não deveriam se repetir. Para esses dois casos, o Python tem ferramentas próprias: tuplas e conjuntos.",
     ["usar tuplas para dados que não mudam e desempacotá-las;", "usar conjuntos para eliminar repetidos;", "fazer união, interseção e diferença."],
-    ["Listas e dicionários."],
+    ["Laços e strings. Listas aparecem de leve aqui e são a próxima aula."],
     [
         chute("O que esse código imprime?", ["5", "3", "Dá erro"], 1,
               ["A lista tem 5 itens, mas o conjunto elimina os repetidos.", "Isso! Um conjunto guarda cada valor <b>uma vez só</b>: {1, 2, 3}.", "<code>set()</code> aceita qualquer lista."],
@@ -527,7 +527,7 @@ AULAS["Tuplas e conjuntos"] = aula(
             ("<code>python - sql</code>", "Só Python: <code>{\"Ana\"}</code>."),
             ("<code>python | sql</code>", "Todos, sem repetir: 4 nomes."),
         ]),
-        cod("Vocabulário de um texto", "Devolva quantas palavras <b>diferentes</b> há na frase, ignorando maiúsculas e minúsculas.",
+        cod("Vocabulário de um texto", "<b>Ainda não viu <code>def</code>?</b> É normal, ele vem na aula de Funções. Aqui a linha já está pronta: o valor entre parênteses chega preenchido e o que vier depois de <code>return</code> é a resposta. Devolva quantas palavras <b>diferentes</b> há na frase, ignorando maiúsculas e minúsculas.",
             '''
 def vocabulario(frase):
     return 0
@@ -541,7 +541,7 @@ def vocabulario(frase):
 
 print(vocabulario("O gato e o rato"))
 ''', ["<code>frase.lower().split()</code> dá a lista de palavras em minúsculas.", "<code>set(...)</code> tira as repetidas; <code>len</code> conta."]),
-        cod("Desempacotando resultados", "A função deve devolver <b>duas coisas</b> de uma vez: o menor e o maior valor da lista, como uma tupla.",
+        cod("Desempacotando resultados", "<b>Ainda não viu <code>def</code>?</b> É normal, ele vem na aula de Funções. Aqui a linha já está pronta: o valor entre parênteses chega preenchido e o que vier depois de <code>return</code> é a resposta. A função deve devolver <b>duas coisas</b> de uma vez: o menor e o maior valor da lista, como uma tupla.",
             '''
 def extremos(valores):
     return 0, 0
@@ -571,7 +571,7 @@ print(menor, maior)
         ]),
     ],
     ["Tupla: sequência imutável, ótima para devolver vários valores.", "Conjunto: sem ordem e sem repetidos, com união, interseção e diferença.", "<code>set(lista)</code> remove duplicatas."],
-    "List comprehension: criar listas em uma linha.",
+    "Listas: guardar muitos valores que podem mudar.",
     livro=("PYDOC:datastructures", "Seções 5.3 e 5.4 (tuplas e conjuntos)", "Que operações de conjunto o tutorial demonstra?"))
 
 AULAS["List comprehension"] = aula(
@@ -643,7 +643,7 @@ print(limpas)
         ]),
     ],
     ["<code>[expressão for item in lista if condição]</code> cria uma lista nova.", "Leia como frase: “o que fazer, para cada quem, se o quê”.", "Lógica longa pede <code>for</code> comum."],
-    "Orientação a objetos: organizar dados e funções juntos.",
+    "Funções: empacotar um trecho de código num comando com nome.",
     livro=("PYDOC:datastructures", "Seção 5.1.3, “Compreensões de lista”", "Que exemplo de comprehension aninhada o tutorial mostra?"))
 
 AULAS["Orientação a objetos (classes, métodos, herança)"] = aula(
@@ -758,7 +758,7 @@ print(Gato("Mimi").falar())
         ]),
     ],
     ["Classe é o molde; objeto é cada exemplar, com seus próprios atributos.", "Métodos recebem <code>self</code> para acessar o estado do objeto.", "Herança reaproveita e especializa código."],
-    "Módulos e pacotes: dividir o programa em arquivos.",
+    "Ambientes virtuais e pip: instalar bibliotecas sem bagunça.",
     livro=("PYDOC:classes", "Seções 9.3 e 9.5 (classes e herança)", "Como o tutorial diferencia variáveis de classe e de instância?"))
 
 AULAS["Módulos e pacotes"] = aula(
@@ -829,5 +829,5 @@ print(distancia(0, 0, 3, 4))
         ]),
     ],
     ["Módulo é um arquivo <code>.py</code>; pacote é uma pasta de módulos.", "<code>import x</code>, <code>from x import y</code> e <code>import x as z</code>.", "Não dê ao seu arquivo o nome de uma biblioteca."],
-    "Arquivos: ler e gravar dados no disco.",
+    "Tratamento de erros: o programa que não quebra.",
     livro=("PYDOC:modules", "Seções 6.1 e 6.4 (módulos e pacotes)", "O que o tutorial diz sobre o arquivo __init__.py?"))
