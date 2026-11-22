@@ -457,7 +457,7 @@ __LISTING_CSS__
             <div class="session-meta">
               <span id="session-progress-text" class="session-time">Sessão 00:00</span>
               <button type="button" id="session-video-pill" class="session-chip" onclick="toggleManualVideoValidated()" title="Progresso do vídeo. Assistiu pelo YouTube? Clique para validar.">Vídeo 0%</button>
-              <button type="button" id="session-guide-pill" class="session-chip" onclick="scrollOrValidatePtGuide()" style="display:none" title="Progresso da aula visual: etapas vistas e tempo de leitura">Aula 0%</button>
+              <button type="button" id="session-guide-pill" class="session-chip" onclick="scrollOrValidatePtGuide()" style="display:none" title="Progresso da aula visual: etapas que você marcou como lidas e tempo de leitura">Aula 0%</button>
             </div>
             <div class="session-end">
               <span id="session-progress-pct" class="session-pct">0%</span>
@@ -1121,6 +1121,7 @@ function chooseTopicStatus(topicId, next) {
   if (next === "z") {
     PR[topicId].vp = 0;
     PR[topicId].gp = 0;
+    delete PR[topicId].gc;
   } else if (next === "e") {
     PR[topicId].vp = 100;
     PR[topicId].gp = 100;

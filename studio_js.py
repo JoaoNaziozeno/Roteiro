@@ -596,6 +596,8 @@ function resetSessionStudyProgress() {
     }
     if (c) c.style.borderColor = "var(--bd)";
   }
+  if (topicId && PR[topicId]) delete PR[topicId].gc;
+  checkPtGuideScrollAndVisibility(false);
   syncSessionStudyProgressUI();
 }
 
@@ -618,24 +620,50 @@ function checkPtGuideScrollAndVisibility(incrementReadSeconds = false) {
     guideReadSeconds++;
   }
 
-  // Verifica quais cards já entraram no campo de visão
+  // O ✓ de cada etapa é só do aluno: rolar a tela não marca nada. Cada etapa ganha no fim um botão
+  // "Marcar etapa como lida". O desenho segue o estado, porque ao reabrir a aula o HTML vem sem marca.
   const totalCards = (typeof ptGuideCardCount === "function") ? ptGuideCardCount(topicInfo.pt_guide) : 4;
   for (let i = 1; i <= totalCards; i++) {
     const card = document.getElementById(`pt-step-card-${i}`);
     if (!card) continue;
-    const r = card.getBoundingClientRect();
-    if (r.top < cRect.bottom - 25 && r.bottom > cRect.top + 15) guideCardsSeen[i] = true;
-    // O ✓ depende do estado, não do instante em que a etapa foi vista: ao reabrir uma aula já lida
-    // o estado volta preenchido, mas o HTML é desenhado de novo, sem marca nenhuma.
-    if ((guideCardsSeen[i] || guideCompleted) && !card.classList.contains("is-seen")) {
-      const badge = document.getElementById(`pt-step-badge-${i}`);
-      if (badge) {
-        badge.textContent = `✓ ${i}/${totalCards}`;
-        badge.classList.add("is-seen");
-      }
-      card.classList.add("is-seen");
+    let btn = card.querySelector(":scope > .pt-step-check");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pt-step-check";
+      btn.onclick = () => togglePtStepRead(i);
+      card.appendChild(btn);
+    }
+    const done = Boolean(guideCardsSeen[i] || guideCompleted);
+    const state = done ? (guideCompleted ? "lock" : "on") : "off";
+    if (btn.dataset.state === state) continue;
+    btn.dataset.state = state;
+    btn.textContent = done ? "✓ Etapa lida" : "Marcar etapa como lida";
+    btn.setAttribute("aria-pressed", String(done));
+    btn.disabled = guideCompleted;
+    btn.title = guideCompleted ? "Aula Visual concluída" : done ? "Toque para desmarcar" : "Marque quando terminar de ler esta etapa";
+    card.classList.toggle("is-seen", done);
+    const badge = document.getElementById(`pt-step-badge-${i}`);
+    if (badge) {
+      badge.textContent = done ? `✓ ${i}/${totalCards}` : `${i}/${totalCards}`;
+      badge.classList.toggle("is-seen", done);
     }
   }
+}
+
+// Marca ou desmarca uma etapa. As etapas marcadas ficam salvas no progresso da aula (campo gc),
+// então continuam marcadas ao reabrir a aula e em outro aparelho.
+function togglePtStepRead(i) {
+  const topicId = CURRENT_MODAL_TOPIC_ID;
+  if (!topicId || guideCompleted) return;
+  guideCardsSeen[i] = !guideCardsSeen[i];
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  const marked = Object.keys(guideCardsSeen).filter(k => guideCardsSeen[k]).map(Number).sort((a, b) => a - b);
+  if (marked.length) PR[topicId].gc = marked;
+  else delete PR[topicId].gc;
+  saveLocal();
+  checkPtGuideScrollAndVisibility(false);
+  syncSessionStudyProgressUI();
 }
 
 function getComputedVideoAndGuideProgress(topicId) {
@@ -760,7 +788,7 @@ function syncSessionStudyProgressUI() {
       valBtn.style.background = "";
       valBtn.style.color = "";
       valBtn.style.borderColor = "";
-      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas vistas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
+      if (valTitle) valTitle.textContent = `📖 Leitura da Aula Visual: ${guidePct}% (${seenCount}/${totalCards} etapas lidas · ${readSecCap}s/${GUIDE_READ_TARGET_SECONDS}s)`;
     }
   }
 
@@ -840,7 +868,7 @@ function scrollOrValidatePtGuide() {
   const gBox = document.getElementById("pt-guide-box");
   if (gBox) {
     gBox.scrollIntoView({ behavior: "smooth", block: "start" });
-    showToast("📘 Role pelas etapas da Aula Visual ou clique no botão verde ao final para validar!");
+    showToast("📘 Marque cada etapa ao terminar de ler, ou use o botão verde no fim da aula.");
   }
 }
 
@@ -877,8 +905,9 @@ function initStudySessionTimer(topicId) {
   guideCompleted = (saved.s === "e" || (saved.gp || 0) >= 100);
   guideReadSeconds = guideCompleted ? GUIDE_READ_TARGET_SECONDS : 0;
   guideCardsSeen = {};
+  const marked = Array.isArray(saved.gc) ? saved.gc : [];
   for (let i = 1; i <= totalCards; i++) {
-    guideCardsSeen[i] = guideCompleted;
+    guideCardsSeen[i] = guideCompleted || marked.includes(i);
   }
   notifiedVideoHalf = ytVideoCompleted;
   notifiedGuideHalf = guideCompleted;
