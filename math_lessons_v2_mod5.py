@@ -90,7 +90,7 @@ GUIDES_MOD5_V2 = {
             "Matrizes como transformações lineares (Tópico 6)"
         ],
         "objetivos": [
-            "compreender o fenômeno da Quase-Ortogonalidade em espaços de alta dimensão ($\mathbb{R}^{4096}$);",
+            "compreender o fenômeno da Quase-Ortogonalidade em espaços de alta dimensão ($\\mathbb{R}^{4096}$);",
             "entender o Lema de Johnson-Lindenstrauss sobre preservação de distâncias relativas;",
             "descobrir como as camadas Feed-Forward (MLP) dos Transformers operam como memórias associativas de chave-valor."
         ],
@@ -148,7 +148,7 @@ assert np.mean(np.abs(cos_4096d)) < 0.02, "Em 4096D os vetores devem ser quase p
             }
         ],
         "resumo": [
-            "Em alta dimensão ($d \ge 4096$), quase todos os vetores aleatórios são mutuamente quase-ortogonais.",
+            "Em alta dimensão ($d \\ge 4096$), quase todos os vetores aleatórios são mutuamente quase-ortogonais.",
             "Essa quase-ortogonalidade permite armazenar milhões de associações semânticas sem interferência cruzada.",
             "Camadas MLP de Transformers funcionam como bancos de dados chave-valor projetando fatos via produto escalar."
         ],
@@ -172,8 +172,8 @@ assert np.mean(np.abs(cos_4096d)) < 0.02, "Em 4096D os vetores devem ser quase p
             "LayerNorm (Tópico 22)"
         ],
         "objetivos": [
-            "compreender as propriedades geométricas de embeddings projetados na esfera unitária $\mathbb{S}^{d-1}$;",
-            "provar a equivalência analítica entre Distância Euclidiana ao quadrado e Cosseno: $\|\mathbf{u} - \mathbf{v}\|^2 = 2 - 2\cos(\theta)$;",
+            "compreender as propriedades geométricas de embeddings projetados na esfera unitária $\\mathbb{S}^{d-1}$;",
+            "provar a equivalência analítica entre Distância Euclidiana ao quadrado e Cosseno: $\\|\\mathbf{u} - \\mathbf{v}\\|^2 = 2 - 2\\cos(\\theta)$;",
             "dominar a fórmula e a vantagem computacional da RMSNorm (Root Mean Square Normalization)."
         ],
         "blocos": [
@@ -232,7 +232,7 @@ print(f"  -> RMS pós-RMSNorm      : {np.sqrt(np.mean(x_rmsnorm**2)):.6f} (rigor
         ],
         "resumo": [
             "Projetar embeddings na hiperesfera unitária converte produtos escalares em medidas puras de similaridade angular de cosseno.",
-            "A distância euclidiana ao quadrado na esfera unitária é diretamente expressa por $2 - 2\cos(\theta)$.",
+            "A distância euclidiana ao quadrado na esfera unitária é diretamente expressa por $2 - 2\\cos(\\theta)$.",
             "A RMSNorm calibra a escala pelo Root Mean Square sem subtrair a média, acelerando o treinamento de LLMs modernos."
         ],
         "proxima": r"Com os embeddings normalizados, como uma palavra se transforma em Query, Key e Value? Vamos dissecar as projeções lineares de pesos no Tópico 40.",
@@ -298,7 +298,7 @@ $$Q = X W_Q, \quad K = X W_K, \quad V = X W_V$$""",
                     },
                     {
                         "faca": r"Projeções separadas criam assimetria: Como $Q = X W_Q$ e $K = X W_K$, a pontuação de atenção é $\mathbf{q}_i^\top \mathbf{k}_j = \mathbf{x}_i^\top (W_Q W_K^\top) \mathbf{x}_j$.",
-                        "porque": "Como $W_Q W_K^\top$ não é uma matriz simétrica, $\mathbf{q}_i^\top \mathbf{k}_j \neq \mathbf{q}_j^\top \mathbf{k}_i$! A assimetria permite atenção direcional perfeita."
+                        "porque": "Como $W_Q W_K^\\top$ não é uma matriz simétrica, $\\mathbf{q}_i^\\top \\mathbf{k}_j \\neq \\mathbf{q}_j^\\top \\mathbf{k}_i$! A assimetria permite atenção direcional perfeita."
                     }
                 ],
                 "conclusao": r"As matrizes $W_Q, W_K, W_V$ conferem total liberdade para o Transformer aprender gramática, sintaxe e relações causais de forma independente em cada camada."
@@ -338,7 +338,7 @@ print(f"Key do token '{tokens[2]}' ('quente'): {K[2].round(3)}")
 afinidade_cafe_quente = np.dot(Q[0], K[2])
 print(f"Afinidade não normalizada (Q_café · K_quente): {afinidade_cafe_quente:.3f}")''',
                 "experimentos": [
-                    "Compare a afinidade $\mathbf{q}_0^\top \mathbf{k}_2$ com $\mathbf{q}_2^\top \mathbf{k}_0$ e comprove que a matriz de afinidade resultante é assimétrica.",
+                    "Compare a afinidade $\\mathbf{q}_0^\\top \\mathbf{k}_2$ com $\\mathbf{q}_2^\\top \\mathbf{k}_0$ e comprove que a matriz de afinidade resultante é assimétrica.",
                     "Entenda como durante o treinamento (backpropagation) os gradientes ajustam diretamente as matrizes $W_Q, W_K, W_V$ para maximizar a assertividade dos tokens."
                 ]
             }
@@ -371,7 +371,7 @@ Por que dividimos rigorosamente pela raiz da dimensão ($\sqrt{d_k}$)? O que aco
         ],
         "objetivos": [
             "dominar a anatomia completa da fórmula de Scaled Dot-Product Attention;",
-            "provar matematicamente por que a variância do produto escalar cresce linearmente com $d_k$, justificando a divisão por $\sqrt{d_k}$;",
+            "provar matematicamente por que a variância do produto escalar cresce linearmente com $d_k$, justificando a divisão por $\\sqrt{d_k}$;",
             "calcular manualmente a matriz de atenção de 2 tokens com passos aritméticos verificados."
         ],
         "blocos": [
@@ -409,15 +409,15 @@ Por que dividimos rigorosamente pela raiz da dimensão ($\sqrt{d_k}$)? O que aco
                     },
                     {
                         "faca": r"Calcule a variância da soma de $d_k$ termos: O produto escalar é $\mathbf{q}^\top \mathbf{k} = \sum_{i=1}^{d_k} q_i k_i$. A variância da soma é a soma das variâncias: $$\text{Var}\left( \sum_{i=1}^{d_k} q_i k_i \right) = \sum_{i=1}^{d_k} 1 = d_k$$",
-                        "porque": "Se $d_k = 64$, a variância do produto escalar é $64$, e seu desvio padrão é $\sqrt{64} = 8$!"
+                        "porque": "Se $d_k = 64$, a variância do produto escalar é $64$, e seu desvio padrão é $\\sqrt{64} = 8$!"
                     },
                     {
                         "faca": r"Veja o perigo de números grandes na Softmax: Se as pontuações atingem valores como $+8$ ou $-8$, a Softmax satura com probabilidades extremas como $0.9999$ e $0.0001$.",
-                        "porque": "Lembra do Módulo 2 (Tópico 15)? A derivada da Softmax satura e vai a zero ($\text{softmax}' \to 0$), <b>matando o gradiente</b> e paralisando o treino!"
+                        "porque": "Lembra do Módulo 2 (Tópico 15)? A derivada da Softmax satura e vai a zero ($\\text{softmax}' \\to 0$), <b>matando o gradiente</b> e paralisando o treino!"
                     },
                     {
                         "faca": r"Divida por $\sqrt{d_k}$: Pela propriedade de variância $\text{Var}(c X) = c^2 \text{Var}(X)$: $$\text{Var}\left( \frac{\mathbf{q}^\top \mathbf{k}}{\sqrt{d_k}} \right) = \left(\frac{1}{\sqrt{d_k}}\right)^2 \text{Var}(\mathbf{q}^\top \mathbf{k}) = \frac{1}{d_k} \times d_k = 1.0$$",
-                        "porque": "A divisão por $\sqrt{d_k}$ traz a variância de volta para exatamente 1.0, mantendo a Softmax em sua zona ativa de gradientes saudáveis!"
+                        "porque": "A divisão por $\\sqrt{d_k}$ traz a variância de volta para exatamente 1.0, mantendo a Softmax em sua zona ativa de gradientes saudáveis!"
                     }
                 ],
                 "conclusao": r"A divisão por $\sqrt{d_k}$ é uma solução estatística genial para o problema do gradiente evanescente na atenção."
@@ -472,7 +472,7 @@ assert np.isclose(np.sum(pesos[0]), 1.0), "Cada linha da matriz de atenção dev
         ],
         "resumo": [
             "A Scaled Dot-Product Attention calcula afinidade via produto escalar e sintetiza informações de valores contextuais.",
-            "A divisão por $\sqrt{d_k}$ estabiliza a variância em 1.0, impedindo o desaparecimento de gradientes na Softmax.",
+            "A divisão por $\\sqrt{d_k}$ estabiliza a variância em 1.0, impedindo o desaparecimento de gradientes na Softmax.",
             "As saídas contextuais são médias ponderadas dos vetores de Value pelas afinidades probabilísticas."
         ],
         "proxima": r"Uma única cabeça de atenção só consegue focar em um padrão por vez. Para enriquecer o modelo, dividimos a atenção em múltiplas cabeças: Multi-Head Attention.",
@@ -516,10 +516,10 @@ $$d_k = d / h$$
                 "titulo": "O que cada cabeça costuma aprender na prática?",
                 "cabecalho": ["Cabeça de Atenção", "Especialização Linguística Aprendida", "Exemplo Prático"],
                 "linhas": [
-                    ["Cabeça Sintática", "Conecta pronomes a substantivos antecedentes", "<i>'ela'</i> $\to$ <i>'atendente'</i>"],
-                    ["Cabeça Causal / Adjetiva", "Conecta causas, emoções e qualificadores", "<i>'bloqueou'</i> $\to$ <i>'fraude'</i>"],
+                    ["Cabeça Sintática", "Conecta pronomes a substantivos antecedentes", "<i>'ela'</i> $\\to$ <i>'atendente'</i>"],
+                    ["Cabeça Causal / Adjetiva", "Conecta causas, emoções e qualificadores", "<i>'bloqueou'</i> $\\to$ <i>'fraude'</i>"],
                     ["Cabeça Posicional Relativa", "Foca sistematicamente na palavra imediatamente anterior", "Token $t$ olha para $t-1$"],
-                    ["Cabeça de Entidades", "Agrupa termos que formam um nome composto", "<i>'Torre'</i> $\to$ <i>'Eiffel'</i>"]
+                    ["Cabeça de Entidades", "Agrupa termos que formam um nome composto", "<i>'Torre'</i> $\\to$ <i>'Eiffel'</i>"]
                 ]
             },
             {
@@ -635,7 +635,7 @@ assert saida_mha.shape == X.shape, "A saída do Multi-Head deve preservar a dime
                 "passos": [
                     {
                         "faca": r"Escreva a matriz de rotação 2D na posição $m$: $$R_m = \begin{bmatrix} \cos(m\theta) & -\sin(m\theta) \\ \sin(m\theta) & \cos(m\theta) \end{bmatrix}$$",
-                        "porque": "Matriz ortogonal clássica de rotação por um ângulo $m\theta$."
+                        "porque": "Matriz ortogonal clássica de rotação por um ângulo $m\\theta$."
                     },
                     {
                         "faca": r"Rotacione a Query na posição $m$ e a Key na posição $n$: $$\tilde{\mathbf{q}}_m = R_m \mathbf{q}, \quad \tilde{\mathbf{k}}_n = R_n \mathbf{k}$$",
@@ -643,11 +643,11 @@ assert saida_mha.shape == X.shape, "A saída do Multi-Head deve preservar a dime
                     },
                     {
                         "faca": r"Calcule o produto escalar entre a Query e a Key rotacionadas: $$\langle \tilde{\mathbf{q}}_m, \tilde{\mathbf{k}}_n \rangle = (R_m \mathbf{q})^\top (R_n \mathbf{k}) = \mathbf{q}^\top (R_m^\top R_n) \mathbf{k}$$",
-                        "porque": "Propriedade da transposta do produto: $(A B)^\top = B^\top A^\top$."
+                        "porque": "Propriedade da transposta do produto: $(A B)^\\top = B^\\top A^\\top$."
                     },
                     {
                         "faca": r"Use a propriedade de grupo das rotações: A transposta de uma rotação é a rotação inversa ($R_m^\top = R_{-m}$). Girar $-m$ e depois $+n$ é girar exatamente $(n - m)$: $$R_m^\top R_n = R_{-m} R_n = R_{n - m}$$",
-                        "porque": "Pelas identidades trigonométricas de subtração de arcos $\cos(a-b)$ e $\sin(a-b)$."
+                        "porque": "Pelas identidades trigonométricas de subtração de arcos $\\cos(a-b)$ e $\\sin(a-b)$."
                     },
                     {
                         "faca": r"Conclua a identidade fundamental: $$\langle \tilde{\mathbf{q}}_m, \tilde{\mathbf{k}}_n \rangle = \mathbf{q}^\top R_{n - m} \mathbf{k}$$",

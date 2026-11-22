@@ -113,7 +113,7 @@ GUIDES_MOD3_V2 = {
         "gancho": r"""Se você sortear uma palavra de um vocabulário, há uma probabilidade exata (ex.: 3%) de sair a palavra <i>"inteligência"</i>. Mas se você medir a altura exata de uma pessoa com precisão atômica ($1.75239481\dots\text{ m}$), a probabilidade matemática de encontrar alguém com essa altura exata é <b>rigorosamente zero</b> ($P(X = x) = 0$). Como a IA lida com essa aparente contradição matemática?""",
         "prerequisitos": [
             "Conceito de limite e área sob a curva (Tópico 12)",
-            "Somatórios ($\sum$) e conjuntos finitos"
+            "Somatórios ($\\sum$) e conjuntos finitos"
         ],
         "objetivos": [
             "compreender o que é uma variável aleatória como função que mapeia eventos em números reais;",
@@ -144,9 +144,9 @@ GUIDES_MOD3_V2 = {
                 "titulo": "Como ler a notação formal dos livros",
                 "corpo": r"""<p>Veja as fórmulas que regem os dois domínios:</p>""",
                 "itens": [
-                    {"simbolo": r"$\text{PMF}: P(X = x)$", "leitura": "função massa de probabilidade", "significado": "Para discretas. A soma de todos os estados possíveis é sempre 100%: $\sum_{i} P(X = x_i) = 1$."},
-                    {"simbolo": r"$\text{PDF}: p(x)$", "leitura": "função densidade de probabilidade", "significado": "Para contínuas. $p(x)$ não é uma probabilidade, é uma <b>densidade</b>! Pode inclusive ser maior que 1. A probabilidade só existe no intervalo: $P(a \le X \le b) = \int_a^b p(x) dx$."},
-                    {"simbolo": r"$P(X = a) = 0$", "leitura": "probabilidade pontual contínua é zero", "significado": "Como a largura de um único ponto geométrico é zero ($dx \to 0$), a área sob a curva naquele ponto específico é rigorosamente zero."},
+                    {"simbolo": r"$\text{PMF}: P(X = x)$", "leitura": "função massa de probabilidade", "significado": "Para discretas. A soma de todos os estados possíveis é sempre 100%: $\\sum_{i} P(X = x_i) = 1$."},
+                    {"simbolo": r"$\text{PDF}: p(x)$", "leitura": "função densidade de probabilidade", "significado": "Para contínuas. $p(x)$ não é uma probabilidade, é uma <b>densidade</b>! Pode inclusive ser maior que 1. A probabilidade só existe no intervalo: $P(a \\le X \\le b) = \\int_a^b p(x) dx$."},
+                    {"simbolo": r"$P(X = a) = 0$", "leitura": "probabilidade pontual contínua é zero", "significado": "Como a largura de um único ponto geométrico é zero ($dx \\to 0$), a área sob a curva naquele ponto específico é rigorosamente zero."},
                 ],
             },
             {
@@ -217,7 +217,7 @@ print("\n5 sorteios da distribuição com T=1.0:", list(sorteios))''',
         "duracao": 30,
         "gancho": r"""Se Bill Gates entrar em um restaurante com 99 pessoas comuns, a <i>renda média</i> do local salta instantaneamente para mais de 10 milhões de reais por pessoa. Mas ninguém ali ficou um centavo mais rico! Por que a <b>média</b> é tão vulnerável a outliers, por que a <b>mediana</b> resiste e por que a fórmula da variância divide por $n-1$ em vez de $n$?""",
         "prerequisitos": [
-            "Somatórios ($\sum$) e álgebra fundamental (Tópico 12)",
+            "Somatórios ($\\sum$) e álgebra fundamental (Tópico 12)",
             "Variáveis aleatórias (Tópico 21)"
         ],
         "objetivos": [
@@ -319,9 +319,9 @@ print(f"Desvio pós-norm: {np.std(x_norm):.6f} (efetivamente 1.0)")''',
             "Produto escalar e cosseno de vetores (Tópicos 3 e 5)"
         ],
         "objetivos": [
-            "compreender a Esperança Matemática ($\mathbb{E}[X]$) como o retorno médio ponderado no longo prazo;",
+            "compreender a Esperança Matemática ($\\mathbb{E}[X]$) como o retorno médio ponderado no longo prazo;",
             "entender a Covariância como o produto cruzado de desvios simultâneos;",
-            "dominar a Correlação de Pearson $\rho \in [-1, 1]$ e sua profunda equivalência geométrica com a Similaridade de Cosseno."
+            "dominar a Correlação de Pearson $\\rho \\in [-1, 1]$ e sua profunda equivalência geométrica com a Similaridade de Cosseno."
         ],
         "blocos": [
             {
@@ -355,9 +355,9 @@ $$\rho_{X, Y} = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \in [-1, +1]$$""",
 $$\cos(\theta) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\| \|\mathbf{v}\|}$$
 <p>Se você pegar duas listas de dados $X$ e $Y$, subtrair a média de cada uma para centrá-las em zero ($\mathbf{u} = X - \bar{X}$ e $\mathbf{v} = Y - \bar{Y}$), o coeficiente de Pearson é <b>exatamente o cosseno do ângulo entre os dois vetores de dados</b>!</p>""",
                 "itens": [
-                    {"simbolo": r"$\rho = +1$", "leitura": "correlação linear positiva perfeita", "significado": "Cosseno = 1 ($\theta = 0^\circ$). Os dois vetores apontam exatamente na mesma direção semântica."},
-                    {"simbolo": r"$\rho = 0$", "leitura": "correlação linear nula", "significado": "Cosseno = 0 ($\theta = 90^\circ$). Os dois vetores de dados são estritamente <b>ortogonais</b> (não compartilham informação linear)."},
-                    {"simbolo": r"$\rho = -1$", "leitura": "correlação linear negativa perfeita", "significado": "Cosseno = -1 ($\theta = 180^\circ$). Um vetor aponta exatamente no sentido oposto do outro."},
+                    {"simbolo": r"$\rho = +1$", "leitura": "correlação linear positiva perfeita", "significado": "Cosseno = 1 ($\\theta = 0^\\circ$). Os dois vetores apontam exatamente na mesma direção semântica."},
+                    {"simbolo": r"$\rho = 0$", "leitura": "correlação linear nula", "significado": "Cosseno = 0 ($\\theta = 90^\\circ$). Os dois vetores de dados são estritamente <b>ortogonais</b> (não compartilham informação linear)."},
+                    {"simbolo": r"$\rho = -1$", "leitura": "correlação linear negativa perfeita", "significado": "Cosseno = -1 ($\\theta = 180^\\circ$). Um vetor aponta exatamente no sentido oposto do outro."},
                 ],
             },
             {
@@ -392,7 +392,7 @@ print(f"NumPy corrcoef    : {np.corrcoef(tempo_espera, nota_cliente)[0, 1]:.4f}"
 assert np.isclose(rho_manual, cos_vetores), "Pearson deve ser rigorosamente igual ao Cosseno!"
 print("Identidade comprovada com sucesso!")''',
                 "experimentos": [
-                    "Experimente mudar a nota para uma relação não linear, como $Y = X^2$ com $X \in [-5, 5]$. Observe como o Pearson pode dar 0.0 mesmo havendo uma dependência perfeita (pois Pearson mede apenas alinhamento linear!).",
+                    "Experimente mudar a nota para uma relação não linear, como $Y = X^2$ com $X \\in [-5, 5]$. Observe como o Pearson pode dar 0.0 mesmo havendo uma dependência perfeita (pois Pearson mede apenas alinhamento linear!).",
                     "Gere uma matriz de covariância de dados de alta dimensão com <code>np.cov</code> e observe como ela é a base do PCA (Análise de Componentes Principais)."
                 ]
             }
@@ -426,7 +426,7 @@ print("Identidade comprovada com sucesso!")''',
             "Média e desvio padrão (Tópico 22)"
         ],
         "objetivos": [
-            "compreender a anatomia matemática da equação da Distribuição Normal $\mathcal{N}(\mu, \sigma^2)$;",
+            "compreender a anatomia matemática da equação da Distribuição Normal $\\mathcal{N}(\\mu, \\sigma^2)$;",
             "dominar a Regra Empírica 68-95-99.7 dos desvios padrão;",
             "distinguir categoricamente Probabilidade de Verossimilhança (Likelihood), o pilar da calibração de modelos."
         ],
@@ -456,8 +456,8 @@ $$p(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi}} \exp\left(-\frac{(x - \mu)^2}
                 "titulo": "Probabilidade vs. Verossimilhança (Likelihood)",
                 "corpo": r"""<p>Essa é a distinção conceitual mais importante de toda a inferência estatística moderna:</p>""",
                 "itens": [
-                    {"simbolo": r"$\text{Probabilidade}: P(\text{Dados} \mid \theta)$", "leitura": "probabilidade dos dados dado o parâmetro theta", "significado": "Os parâmetros do modelo $\theta = (\mu, \sigma)$ são <b>conhecidos e fixos</b>. Calculamos a chance de novos dados futuros caírem em certa faixa."},
-                    {"simbolo": r"$\text{Verossimilhança}: L(\theta \mid \text{Dados})$", "leitura": "verossimilhança de theta dados os dados coletados", "significado": "Os dados já foram coletados no mundo real e são <b>fixos e imutáveis</b>. Variamos os parâmetros $\theta$ para descobrir quais parâmetros tornam os dados observados o mais plausíveis possível!"},
+                    {"simbolo": r"$\text{Probabilidade}: P(\text{Dados} \mid \theta)$", "leitura": "probabilidade dos dados dado o parâmetro theta", "significado": "Os parâmetros do modelo $\\theta = (\\mu, \\sigma)$ são <b>conhecidos e fixos</b>. Calculamos a chance de novos dados futuros caírem em certa faixa."},
+                    {"simbolo": r"$\text{Verossimilhança}: L(\theta \mid \text{Dados})$", "leitura": "verossimilhança de theta dados os dados coletados", "significado": "Os dados já foram coletados no mundo real e são <b>fixos e imutáveis</b>. Variamos os parâmetros $\\theta$ para descobrir quais parâmetros tornam os dados observados o mais plausíveis possível!"},
                 ],
             },
             {
@@ -487,13 +487,13 @@ print(f"Likelihood do Modelo A (mu=5.0) : {likelihood_A:.6f}")
 print(f"Likelihood do Modelo B (mu=10.0): {likelihood_B:.2e}")
 print(f"O Modelo A é {likelihood_A / (likelihood_B + 1e-15):,.0f}x mais verossímil que o Modelo B!")''',
                 "experimentos": [
-                    "Varie o parâmetro $\mu$ de 3.0 até 7.0 em passos de 0.1 e plote a curva de Likelihood. Veja como ela atinge o pico exatamente na média dos dados ($5.0$).",
+                    "Varie o parâmetro $\\mu$ de 3.0 até 7.0 em passos de 0.1 e plote a curva de Likelihood. Veja como ela atinge o pico exatamente na média dos dados ($5.0$).",
                     "Entenda por que multiplicamos as densidades: sob a premissa de dados independentes (i.i.d.), a probabilidade conjunta é o produto das densidades individuais."
                 ]
             }
         ],
         "resumo": [
-            "A curva Gaussiana descreve fenômenos naturais agregados com simetria perfeita em torno da média $\mu$.",
+            "A curva Gaussiana descreve fenômenos naturais agregados com simetria perfeita em torno da média $\\mu$.",
             "A regra 68-95-99.7 oferece limites rápidos para detecção de anomalias e intervalos empíricos.",
             "Probabilidade projeta dados a partir de parâmetros fixos; Verossimilhança (Likelihood) busca os melhores parâmetros para dados observados fixos."
         ],
@@ -517,7 +517,7 @@ print(f"O Modelo A é {likelihood_A / (likelihood_B + 1e-15):,.0f}x mais veross�
         ],
         "objetivos": [
             "compreender o enunciado do Teorema do Limite Central (TLC);",
-            "dominar a fórmula do Erro Padrão da Média ($\text{SE} = \frac{\sigma}{\sqrt{n}}$);",
+            "dominar a fórmula do Erro Padrão da Média ($\\text{SE} = \\frac{\\sigma}{\\sqrt{n}}$);",
             "entender por que o Mini-batch SGD converge para o gradiente real graças ao TLC."
         ],
         "blocos": [
@@ -536,7 +536,7 @@ $$\bar{X}_n \sim \mathcal{N}\left(\mu, \frac{\sigma^2}{n}\right)$$
                 "corpo": r"""<p>Não confunda Desvio Padrão com Erro Padrão:</p>""",
                 "itens": [
                     {"simbolo": r"$\sigma$ (Desvio Padrão)", "leitura": "sigma", "significado": "Mede a dispersão individual e natural entre os indivíduos da população (não diminui se você coletar mais dados)."},
-                    {"simbolo": r"$\text{SE} = \frac{\sigma}{\sqrt{n}}$ (Erro Padrão)", "leitura": "erro padrão da média", "significado": "Mede a incerteza estatística sobre a nossa estimativa da média. Diminui na taxa de $\sqrt{n}$ conforme aumentamos a amostra!"},
+                    {"simbolo": r"$\text{SE} = \frac{\sigma}{\sqrt{n}}$ (Erro Padrão)", "leitura": "erro padrão da média", "significado": "Mede a incerteza estatística sobre a nossa estimativa da média. Diminui na taxa de $\\sqrt{n}$ conforme aumentamos a amostra!"},
                 ],
             },
             {
@@ -581,7 +581,7 @@ assert abs(np.std(medias_amostrais) - se_teorico) < 0.03, "O TLC comprovou a con
         ],
         "resumo": [
             "O Teorema do Limite Central garante que médias de amostras independentes convergem para a distribuição normal.",
-            "O erro da média cai com a raiz quadrada da amostra ($\text{SE} = \sigma / \sqrt{n}$).",
+            "O erro da média cai com a raiz quadrada da amostra ($\\text{SE} = \\sigma / \\sqrt{n}$).",
             "O gradiente estimado de mini-batches em IA herda a estabilidade do TLC para permitir otimização rápida e confiável."
         ],
         "proxima": r"Com o erro padrão em mãos, como saber se a diferença de performance entre dois modelos de IA é real ou mera sorte? Vamos estudar Intervalos de Confiança e Testes de Hipótese.",
@@ -633,7 +633,7 @@ $$IC_{95\%} = \left[ \bar{x} - 1.96 \cdot \text{SE}, \quad \bar{x} + 1.96 \cdot 
                 "tipo": "armadilhas",
                 "titulo": "A Falácia Universal do p-valor",
                 "itens": [
-                    {"erro": "Achar que p = 0.03 significa que há 97% de chance de o modelo ser melhor.", "correcao": "O p-valor NÃO é $P(H_1 \mid \text{Dados})$. O p-valor é $P(\text{Dados extremos} \mid H_0)$. Ele mede quão bizarros seriam os dados se não houvesse efeito nenhum."},
+                    {"erro": "Achar que p = 0.03 significa que há 97% de chance de o modelo ser melhor.", "correcao": "O p-valor NÃO é $P(H_1 \\mid \\text{Dados})$. O p-valor é $P(\\text{Dados extremos} \\mid H_0)$. Ele mede quão bizarros seriam os dados se não houvesse efeito nenhum."},
                     {"erro": "Confundir significância estatística com significância prática.", "correcao": "Com 10 milhões de dados, um ganho minúsculo de 0.001% pode ter $p < 0.0001$, mas na prática não traz nenhum benefício perceptível ao usuário."}
                 ]
             },
@@ -693,7 +693,7 @@ else:
         "gancho": r"""Como um modelo de inteligência artificial define o que são 'pesos perfeitos'? A resposta é um dos princípios mais brilhantes de toda a história da Estatística: a <b>Máxima Verossimilhança (MLE)</b>. Por que minimizar a função de perda de <b>Cross-Entropy</b> em redes neurais e LLMs é rigorosamente idêntico a maximizar a probabilidade de o modelo gerar o mundo real?""",
         "prerequisitos": [
             "Funções de verossimilhança (Tópico 25)",
-            "Logaritmo natural $\ln(x)$ e derivadas (Tópicos 12 e 13)"
+            "Logaritmo natural $\\ln(x)$ e derivadas (Tópicos 12 e 13)"
         ],
         "objetivos": [
             "compreender o princípio da Máxima Verossimilhança (MLE);",
@@ -717,7 +717,7 @@ $$\theta_{\text{MLE}} = \arg\max_\theta \prod_{i=1}^n P(x_i \mid \theta)$$
                 "passos": [
                     {
                         "faca": r"Identifique o perigo do Underflow Numérico: Se multiplicarmos 1.000 probabilidades típicas como $0.05 \times 0.02 \times \dots$, o resultado é da ordem de $10^{-500}$.",
-                        "porque": "Processadores de 64 bits não conseguem representar números menores que $\approx 10^{-308}$ e arredondam tudo para zero absoluto (`underflow`)."
+                        "porque": "Processadores de 64 bits não conseguem representar números menores que $\\approx 10^{-308}$ e arredondam tudo para zero absoluto (`underflow`)."
                     },
                     {
                         "faca": r"Aplique o logaritmo natural $\ln$ em ambos os lados: $$\ln \left( \prod_{i=1}^n P(x_i \mid \theta) \right) = \sum_{i=1}^n \ln P(x_i \mid \theta)$$",
@@ -755,7 +755,7 @@ print(f"Parâmetro analítico k/n       : {k/n:.4f}")
 print(f"Parâmetro ótimo encontrado MLE: {p_otimo:.4f}")
 assert abs(p_otimo - 0.8) < 0.02, "MLE deveria convergir para 0.8!"''',
                 "experimentos": [
-                    "Verifique que o ponto onde a perda NLL é mínima corresponde ao ponto onde a derivada $-\frac{k}{p} + \frac{n-k}{1-p} = 0$, cuja solução é $p = k/n$.",
+                    "Verifique que o ponto onde a perda NLL é mínima corresponde ao ponto onde a derivada $-\\frac{k}{p} + \\frac{n-k}{1-p} = 0$, cuja solução é $p = k/n$.",
                     "Entenda como a MLE justifica teoricamente por que a média amostral é a melhor estimativa sob a hipótese gaussiana."
                 ]
             }
@@ -784,7 +784,7 @@ assert abs(p_otimo - 0.8) < 0.02, "MLE deveria convergir para 0.8!"''',
             "Descida do Gradiente e funções de perda (Tópicos 18 e 28)"
         ],
         "objetivos": [
-            "deduzir a decomposição matemática do erro em $\text{Viés}^2 + \text{Variância} + \text{Ruído Irredutível}$;",
+            "deduzir a decomposição matemática do erro em $\\text{Viés}^2 + \\text{Variância} + \\text{Ruído Irredutível}$;",
             "identificar os sintomas clássicos de Underfitting (alto viés) e Overfitting (alta variância);",
             "conhecer as armas modernas de regularização: Weight Decay, Dropout e Early Stopping."
         ],
@@ -810,7 +810,7 @@ $$\mathbb{E}\left[ (y - \hat{f}(x))^2 \right] = \underbrace{\left( \mathbb{E}[\h
                 "linhas": [
                     ["Alto Viés (Underfitting)", "Modelo rígido demais; não consegue aprender a complexidade dos dados", "Erro de treino alto e erro de validação igualmente alto", "Aumentar tamanho do modelo, adicionar mais camadas, usar features mais ricas"],
                     ["Alta Variância (Overfitting)", "Modelo memorizou o ruído e particularidades específicas do treino", "Erro de treino quase zero, mas erro de validação alto (gap enorme)", "Mais dados de treino, Regularização L2 (Weight Decay), Dropout, Early Stopping"],
-                    ["Ruído Irredutível ($\sigma^2$)", "Limitação física e ruído dos próprios sensores/dados", "Erro mínimo teórico inultrapassável (Bayes Error)", "Coletar sensores melhores ou dados com maior resolução"]
+                    ["Ruído Irredutível ($\\sigma^2$)", "Limitação física e ruído dos próprios sensores/dados", "Erro mínimo teórico inultrapassável (Bayes Error)", "Coletar sensores melhores ou dados com maior resolução"]
                 ]
             },
             {

@@ -140,11 +140,11 @@ GUIDES_MOD2_V2 = {
         "gancho": r"""Como medir a velocidade exata de um carro de corrida em um <b>único milésimo de segundo</b> se, no instante exato, o tempo parou e a distância percorrida é zero ($\frac{0}{0}$)? Toda a matemática do aprendizado de máquina nasce da solução elegante para essa divisão impossível: a <b>taxa de variação instantânea</b>.""",
         "prerequisitos": [
             "Álgebra básica (fatoração de polinômios)",
-            "Coordenadas cartesianas e inclinação de retas ($m = \frac{\Delta y}{\Delta x}$)"
+            "Coordenadas cartesianas e inclinação de retas ($m = \\frac{\\Delta y}{\\Delta x}$)"
         ],
         "objetivos": [
             "compreender a intuição do limite como uma aproximação contínua sem necessidade de tocar o infinito;",
-            "derivar algebricamente a taxa instantânea de variação usando o limite da reta secante quando $h \to 0$;",
+            "derivar algebricamente a taxa instantânea de variação usando o limite da reta secante quando $h \\to 0$;",
             "entender por que em IA usamos derivadas numéricas como verificação de gradiente (Gradient Checking)."
         ],
         "blocos": [
@@ -251,13 +251,13 @@ print("Gradient check passou com sucesso!")''',
                 "titulo": "Armadilhas comuns com limites e derivadas",
                 "itens": [
                     {"erro": "Achar que a derivada é a divisão de zero por zero.", "correcao": "O limite analisa a razão de grandezas infinitesimais antes que atinjam zero. A razão converge para um número finito perfeitamente determinado."},
-                    {"erro": "Usar h = 1e-20 na diferenciação numérica achando que fica mais preciso.", "correcao": "Em computadores de 64 bits, números menores que 1e-16 sofrem de 'cancelamento catastrófico' na subtração de ponto flutuante. O valor ideal é tipicamente $h \approx 10^{-5}$ a $10^{-7}$."}
+                    {"erro": "Usar h = 1e-20 na diferenciação numérica achando que fica mais preciso.", "correcao": "Em computadores de 64 bits, números menores que 1e-16 sofrem de 'cancelamento catastrófico' na subtração de ponto flutuante. O valor ideal é tipicamente $h \\approx 10^{-5}$ a $10^{-7}$."}
                 ]
             }
         ],
         "resumo": [
             "A derivada mede a sensibilidade instantânea de uma função: quanto $f(x)$ muda quando $x$ recebe uma leve perturbação.",
-            "O limite $\lim_{h \to 0} \frac{f(x+h)-f(x)}{h}$ transforma a inclinação de uma secante na inclinação exata da reta tangente.",
+            "O limite $\\lim_{h \\to 0} \\frac{f(x+h)-f(x)}{h}$ transforma a inclinação de uma secante na inclinação exata da reta tangente.",
             "Em IA, a taxa de variação diz se devemos aumentar ou diminuir um peso para reduzir o erro da rede."
         ],
         "proxima": r"Agora que entendemos como limites geram derivadas, vamos aprender as regras fundamentais de derivação para não precisarmos calcular limites longos a cada função.",
@@ -374,7 +374,7 @@ print(f"Novo peso w: {w_novo:.4f}")
 print(f"Nova loss: {loss_nova:.4f} (redução de {(1 - loss_nova/loss)*100:.1f}%)")
 assert loss_nova < loss, "A loss deveria ter diminuído!"''',
                 "experimentos": [
-                    "Altere <code>w = 1.0</code> (fazendo a predição subestimar o valor real, com $\hat{y} = 2.0$). Observe o sinal negativo do gradiente e veja como o peso é aumentado.",
+                    "Altere <code>w = 1.0</code> (fazendo a predição subestimar o valor real, com $\\hat{y} = 2.0$). Observe o sinal negativo do gradiente e veja como o peso é aumentado.",
                     "Experimente com uma taxa de aprendizado muito alta (ex.: <code>eta = 0.6</code>) e observe a loss explodir devido a passos descalibrados."
                 ]
             },
@@ -397,7 +397,7 @@ assert loss_nova < loss, "A loss deveria ter diminuído!"''',
         "resumo": [
             "Regras de derivação decompõem funções complexas em combinações de regras triviais (potência, soma, produto).",
             "A regra do produto $(uv)' = u'v + uv'$ surge da expansão de duas faces de uma área geométrica retangular.",
-            "O gradiente do erro quadrático é proporcional ao resíduo $(\hat{y} - y)$ multiplicado pela entrada $x$."
+            "O gradiente do erro quadrático é proporcional ao resíduo $(\\hat{y} - y)$ multiplicado pela entrada $x$."
         ],
         "proxima": r"Agora que sabemos derivar funções isoladas, como derivamos funções aninhadas uma dentro da outra? Esse é o papel da Regra da Cadeia, o coração do Backpropagation.",
         "referencias": [
@@ -423,7 +423,7 @@ assert loss_nova < loss, "A loss deveria ter diminuído!"''',
             "Função exponencial $e^x$"
         ],
         "objetivos": [
-            "derivar analiticamente a função Sigmoide e compreender sua propriedade elegante $\sigma'(z) = \sigma(z)(1 - \sigma(z))$;",
+            "derivar analiticamente a função Sigmoide e compreender sua propriedade elegante $\\sigma'(z) = \\sigma(z)(1 - \\sigma(z))$;",
             "entender geometricamente o problema do Vanishing Gradient (gradiente evanescente);",
             "comparar as vantagens e limitações de Sigmoide, Tanh, ReLU, Leaky ReLU e GeLU na arquitetura de LLMs."
         ],
@@ -457,11 +457,11 @@ assert loss_nova < loss, "A loss deveria ter diminuído!"''',
                     },
                     {
                         "faca": r"Separe a fração em dois fatores inteligentes: $$\frac{e^{-z}}{(1 + e^{-z})^2} = \left(\frac{1}{1 + e^{-z}}\right) \left(\frac{e^{-z}}{1 + e^{-z}}\right)$$",
-                        "porque": "O primeiro fator é exatamente a própria definição de $\sigma(z)$!"
+                        "porque": "O primeiro fator é exatamente a própria definição de $\\sigma(z)$!"
                     },
                     {
                         "faca": r"Some e subtraia 1 no numerador do segundo fator: $$\frac{e^{-z}}{1 + e^{-z}} = \frac{1 + e^{-z} - 1}{1 + e^{-z}} = 1 - \frac{1}{1 + e^{-z}} = 1 - \sigma(z)$$",
-                        "porque": "Reescrevemos o segundo fator totalmente em termos de $\sigma(z)$."
+                        "porque": "Reescrevemos o segundo fator totalmente em termos de $\\sigma(z)$."
                     },
                     {
                         "faca": r"Junte os dois fatores: $$\sigma'(z) = \sigma(z) \cdot (1 - \sigma(z))$$",
@@ -531,7 +531,7 @@ print(f"Atenuação da Sigmoide: o sinal é {grad_relu / (grad_sigmoide + 1e-12)
         ],
         "resumo": [
             "Não-linearidades são essenciais para que redes neurais empilhem capacidade de representação além de matrizes lineares.",
-            "A derivada da sigmoide $\sigma(1-\sigma)$ tem teto em 0.25, gerando o colapso por gradiente evanescente em redes profundas.",
+            "A derivada da sigmoide $\\sigma(1-\\sigma)$ tem teto em 0.25, gerando o colapso por gradiente evanescente em redes profundas.",
             "GeLU e ReLU resolveram esse estrangulamento e formam a base das arquiteturas modernas de Transformers."
         ],
         "proxima": r"Agora que dominamos derivadas de uma variável, como lidamos com funções de múltiplos parâmetros? Entra em cena o vetor Gradiente.",
@@ -549,12 +549,12 @@ print(f"Atenuação da Sigmoide: o sinal é {grad_relu / (grad_sigmoide + 1e-12)
         "duracao": 30,
         "gancho": r"""Imagine estar vendado em uma montanha nebulosa cheia de vales e colinas em 360 graus. Como seus pés podem sentir, em uma fração de segundo, a <b>direção exata</b> que desce o morro mais rápido? O <b>vetor Gradiente ($\nabla f$)</b> é a bússola geométrica que guia todo algoritmo de Machine Learning.""",
         "prerequisitos": [
-            "Vetores em $\mathbb{R}^n$ (Tópico 1)",
+            "Vetores em $\\mathbb{R}^n$ (Tópico 1)",
             "Derivadas fundamentais e regra da potência (Tópico 13)"
         ],
         "objetivos": [
             "compreender derivadas parciais como a inclinação obtida ao congelar todas as outras variáveis exceto uma;",
-            "montar o vetor gradiente $\nabla f$ e provar geometricamente por que ele aponta na direção de máxima subida;",
+            "montar o vetor gradiente $\\nabla f$ e provar geometricamente por que ele aponta na direção de máxima subida;",
             "visualizar o gradiente como um vetor perpendicular às curvas de nível de uma superfície de erro."
         ],
         "blocos": [
@@ -572,7 +572,7 @@ print(f"Atenuação da Sigmoide: o sinal é {grad_relu / (grad_sigmoide + 1e-12)
                 "corpo": r"""<p>Quando agrupamos todas as derivadas parciais individuais em uma única lista vertical, formamos o <b>vetor Gradiente</b>:</p>
 $$\nabla f(\mathbf{x}) = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\ \frac{\partial f}{\partial x_2} \\ \vdots \\ \frac{\partial f}{\partial x_d} \end{bmatrix} \in \mathbb{R}^d$$""",
                 "itens": [
-                    {"simbolo": r"$\nabla$ (Nabla)", "leitura": "nabla f (ou gradiente de f)", "significado": "O operador vetorial diferencial. Transforma uma função escalar (que cospe um único número de erro) em um vetor completo de direção em $\mathbb{R}^d$."},
+                    {"simbolo": r"$\nabla$ (Nabla)", "leitura": "nabla f (ou gradiente de f)", "significado": "O operador vetorial diferencial. Transforma uma função escalar (que cospe um único número de erro) em um vetor completo de direção em $\\mathbb{R}^d$."},
                     {"simbolo": r"$\frac{\partial f}{\partial x_i}$", "leitura": "derivada parcial de f em relação a x índice i", "significado": "A taxa de variação da função ao andar exclusivamente na direção do eixo $x_i$."},
                     {"simbolo": r"$-\nabla f$", "leitura": "menos gradiente", "significado": "O vetor que aponta para a <b>direção de máxima descida</b>. É o passo que damos para minimizar o erro!"},
                 ],
@@ -607,7 +607,7 @@ $$\nabla f(\mathbf{x}) = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\ \fra
                     },
                     {
                         "faca": r"Calcule a magnitude e o vetor de descida: $$\|-\nabla L\| = \sqrt{(-8)^2 + (-6)^2} = \sqrt{64 + 36} = 10$$",
-                        "porque": "A direção ótima de descida é o vetor $[-8, -6]^\top$."
+                        "porque": "A direção ótima de descida é o vetor $[-8, -6]^\\top$."
                     }
                 ],
                 "conclusao": r"Se dermos um passo com taxa de aprendizado $\eta = 0.1$, o novo ponto será $(w_1, w_2) = (2, 1) - 0.1 \times [8, 6] = (2 - 0.8, 1 - 0.6) = (1.2, 0.4)$. A perda cairá de $2(2^2) + 3(1^2) = 11.0$ para $2(1.2^2) + 3(0.4^2) = 2.88 + 0.48 = 3.36$ (uma queda colossal de 70% em um único passo!)."
@@ -649,8 +649,8 @@ assert loss < 0.5, "Deveria ter convergido próximo ao mínimo (0,0)!"''',
         ],
         "resumo": [
             "Derivadas parciais medem a sensibilidade de uma função multidimensional ao mover um parâmetro de cada vez mantendo os outros fixos.",
-            "O vetor gradiente $\nabla f$ agrupa todas as derivadas parciais e aponta geometricamente para a direção de maior subida.",
-            "O algoritmo de otimização move os pesos na direção do oposto do gradiente ($-\nabla f$) para descer o relevo do erro."
+            "O vetor gradiente $\\nabla f$ agrupa todas as derivadas parciais e aponta geometricamente para a direção de maior subida.",
+            "O algoritmo de otimização move os pesos na direção do oposto do gradiente ($-\\nabla f$) para descer o relevo do erro."
         ],
         "proxima": r"O gradiente resume a primeira derivada de uma função vetorial. Mas o que acontece se tivermos funções que recebem vetores e cospem vetores? Entram a matriz Jacobiana e a curvatura da Hessiana.",
         "referencias": [
@@ -713,7 +713,7 @@ $$H_{ij} = \frac{\partial^2 L}{\partial w_i \partial w_j}$$
                 "passos": [
                     {
                         "faca": r"Calcule o vetor gradiente de 1ª ordem: $$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x} \\ \frac{\partial f}{\partial y} \end{bmatrix} = \begin{bmatrix} 2x \\ -2y \end{bmatrix}$$",
-                        "porque": "No ponto $(0, 0)$, $\nabla f = [0, 0]^\top$. É um ponto estacionário."
+                        "porque": "No ponto $(0, 0)$, $\\nabla f = [0, 0]^\\top$. É um ponto estacionário."
                     },
                     {
                         "faca": r"Calcule as segundas derivadas parciais: $$\frac{\partial^2 f}{\partial x^2} = 2, \quad \frac{\partial^2 f}{\partial y^2} = -2, \quad \frac{\partial^2 f}{\partial x \partial y} = 0$$",
@@ -721,7 +721,7 @@ $$H_{ij} = \frac{\partial^2 L}{\partial w_i \partial w_j}$$
                     },
                     {
                         "faca": r"Monte a matriz Hessiana: $$H = \begin{bmatrix} 2 & 0 \\ 0 & -2 \end{bmatrix}$$",
-                        "porque": "Organizamos os termos na matriz simétrica $2 \times 2$."
+                        "porque": "Organizamos os termos na matriz simétrica $2 \\times 2$."
                     },
                     {
                         "faca": r"Extraia os autovalores de $H$: Como $H$ é diagonal, seus autovalores são os próprios elementos diagonais: $$\lambda_1 = +2, \quad \lambda_2 = -2$$",
@@ -771,7 +771,7 @@ else:
     print("Classificação: PONTO DE SELA (Saddle Point)! Sinais mistos detectados.")''',
                 "experimentos": [
                     "Modifique a Hessiana para uma tigela com $H = [[4.0, 1.0], [1.0, 3.0]]$. Verifique se ambos os autovalores ficam positivos.",
-                    "Experimente calcular o determinante de $H$ ($\det(H) = \lambda_1 \lambda_2$). Em 2D, $\det(H) < 0$ é a assinatura garantida de um ponto de sela!"
+                    "Experimente calcular o determinante de $H$ ($\\det(H) = \\lambda_1 \\lambda_2$). Em 2D, $\\det(H) < 0$ é a assinatura garantida de um ponto de sela!"
                 ]
             }
         ],
@@ -795,11 +795,11 @@ else:
         "duracao": 30,
         "gancho": r"""Toda a inteligência do ChatGPT, do Gemini e dos carros autônomos se resume a uma única equação matemática repetida bilhões de vezes: $\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla L$. Como essa linha de código aparentemente singela consegue ajustar bilhões de conexões sinápticas artificiais para aprender conceitos humanos complexos?""",
         "prerequisitos": [
-            "Vetor gradiente $\nabla f$ (Tópico 16)",
+            "Vetor gradiente $\\nabla f$ (Tópico 16)",
             "Multiplicação de vetor por escalar (Tópico 1)"
         ],
         "objetivos": [
-            "compreender o algoritmo de Descida do Gradiente passo a passo e seu hiperparâmetro $\eta$ (learning rate);",
+            "compreender o algoritmo de Descida do Gradiente passo a passo e seu hiperparâmetro $\\eta$ (learning rate);",
             "comparar as três variantes práticas: Batch GD, Stochastic GD (SGD) e Mini-batch GD;",
             "entender por que GPUs e Tensor Cores tornaram o Mini-batch GD o padrão da indústria de IA."
         ],
@@ -847,7 +847,7 @@ $$\mathbf{w}_{t+1} = \mathbf{w}_t - \eta \nabla L(\mathbf{w}_t)$$
                     },
                     {
                         "faca": r"Passo 3: Em $w_2 = 1.92$, o gradiente é $2(1.92 - 3) = -2.16$. $$w_3 = 1.92 - 0.2(-2.16) = 1.92 + 0.432 = 2.352$$ Nova perda $L(2.352) = (2.352 - 3)^2 = (-0.648)^2 = 0.4199$.",
-                        "porque": "A cada passo o erro cai dramaticamente: $9.0 \to 3.24 \to 1.17 \to 0.42$!"
+                        "porque": "A cada passo o erro cai dramaticamente: $9.0 \\to 3.24 \\to 1.17 \\to 0.42$!"
                     }
                 ],
                 "conclusao": r"Em apenas 3 passos simples, o peso saltou de $0.0$ para $2.352$, aproximando-se velozmente do alvo perfeito $3.0$ sem nenhum raciocínio mágico: pura aritmética vetorial!"
@@ -955,11 +955,11 @@ assert abs(w.item() - 3.0) < 0.1, "O peso w deveria ter convergido próximo de 3
                 "passos": [
                     {
                         "faca": r"Etapa 1: Adicionar Inércia Física (Momentum) $$\mathbf{v}_t = \beta_1 \mathbf{v}_{t-1} + (1 - \beta_1) \mathbf{g}_t, \quad \mathbf{w}_{t+1} = \mathbf{w}_t - \eta \mathbf{v}_t$$",
-                        "porque": "Como os gradientes perpendiculares alternam de sinal (+ e -), sua média móvel $\mathbf{v}_t$ se cancela para zero! Já os gradientes ao longo do vale têm sempre o mesmo sinal e se somam com força."
+                        "porque": "Como os gradientes perpendiculares alternam de sinal (+ e -), sua média móvel $\\mathbf{v}_t$ se cancela para zero! Já os gradientes ao longo do vale têm sempre o mesmo sinal e se somam com força."
                     },
                     {
                         "faca": r"Etapa 2: Escalonamento Adaptativo por Coordenada (RMSprop) $$\mathbf{s}_t = \beta_2 \mathbf{s}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2, \quad \mathbf{w}_{t+1} = \mathbf{w}_t - \frac{\eta}{\sqrt{\mathbf{s}_t} + \epsilon} \mathbf{g}_t$$",
-                        "porque": "Se uma coordenada tem gradientes gigantescos, dividimos por $\sqrt{\mathbf{s}_t}$ para acalmar o passo. Se tem gradientes tímidos, dividimos por um número minúsculo para amplificar o passo!"
+                        "porque": "Se uma coordenada tem gradientes gigantescos, dividimos por $\\sqrt{\\mathbf{s}_t}$ para acalmar o passo. Se tem gradientes tímidos, dividimos por um número minúsculo para amplificar o passo!"
                     },
                     {
                         "faca": r"Etapa 3: A Fusão Suprema (Adam - Adaptive Moment Estimation) $$\mathbf{m}_t = \beta_1 \mathbf{m}_{t-1} + (1 - \beta_1) \mathbf{g}_t \quad (\text{1º momento: direção com inércia})$$ $$\mathbf{v}_t = \beta_2 \mathbf{v}_{t-1} + (1 - \beta_2) \mathbf{g}_t^2 \quad (\text{2º momento: escala de curvatura})$$",
@@ -967,7 +967,7 @@ assert abs(w.item() - 3.0) < 0.1, "O peso w deveria ter convergido próximo de 3
                     },
                     {
                         "faca": r"Etapa 4: Correção de Viés Inicial (Bias Correction) $$\hat{\mathbf{m}}_t = \frac{\mathbf{m}_t}{1 - \beta_1^t}, \quad \hat{\mathbf{v}}_t = \frac{\mathbf{v}_t}{1 - \beta_2^t}$$ $$\mathbf{w}_{t+1} = \mathbf{w}_t - \frac{\eta}{\sqrt{\hat{\mathbf{v}}_t} + \epsilon} \hat{\mathbf{m}}_t$$",
-                        "porque": "Como $\mathbf{m}_0$ e $\mathbf{v}_0$ começam em zero, nos primeiros passos eles são artificialmente puxados para zero. Dividir por $(1 - \beta^t)$ corrige perfeitamente esse viés nas primeiras iterações!"
+                        "porque": "Como $\\mathbf{m}_0$ e $\\mathbf{v}_0$ começam em zero, nos primeiros passos eles são artificialmente puxados para zero. Dividir por $(1 - \\beta^t)$ corrige perfeitamente esse viés nas primeiras iterações!"
                     }
                 ],
                 "conclusao": r"Os hiperparâmetros padrão propostos por Kingma & Ba (2014) são usados até hoje no treinamento dos maiores LLMs do mundo: $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 10^{-8}$."
@@ -1014,7 +1014,7 @@ print(f"Perda final: {perda_final:.6f} (quase zero absoluto!)")
 assert perda_final < 0.05, "Adam deveria ter descido a ravina com facilidade!"''',
                 "experimentos": [
                     "Compare o resultado desativando a inércia (fazendo <code>beta1 = 0.0</code>) e veja como a coordenada $x$ plana demora muito mais para convergir.",
-                    "Experimente remover o termo $\epsilon = 10^{-8}$ e observe o perigo iminente de divisão por zero quando o gradiente é estritamente nulo."
+                    "Experimente remover o termo $\\epsilon = 10^{-8}$ e observe o perigo iminente de divisão por zero quando o gradiente é estritamente nulo."
                 ]
             }
         ],
