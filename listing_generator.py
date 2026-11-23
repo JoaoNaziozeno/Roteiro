@@ -909,20 +909,29 @@ function loadLocal() {
     const raw = localStorage.getItem(KEY);
     if (raw) PR = JSON.parse(raw);
   } catch(e) {}
+  // A foto dos status nasce ao abrir a página, ANTES de qualquer mudança: assim a primeira conclusão
+  // depois de entrar num navegador limpo (ou de sair da conta) já vira evento com data.
+  // Quando o progresso vem da nuvem, o sync atualiza a foto junto (awsSetStatusSnapshot).
+  try { if (!localStorage.getItem("roteiro-snap-v1")) localStorage.setItem("roteiro-snap-v1", JSON.stringify(statusSnapshot(PR))); } catch(e) {}
 }
+
+function statusSnapshot(p){ const cur = {}; for (const k in p) cur[k] = (p[k] && p[k].s) || "z"; return cur; }
 
 function diffAndLogEvents(){
   try{
-    const cur = {}; for (const k in PR) cur[k] = PR[k].s || "z";
+    const cur = statusSnapshot(PR);
     const raw = localStorage.getItem("roteiro-snap-v1");
     if (!raw){
+      // Sem foto (não deveria acontecer depois de loadLocal): não inventa eventos, só começa a acompanhar
       localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur));
-      localStorage.setItem("roteiro-log-start", String(Date.now()));
+      if (!localStorage.getItem("roteiro-log-start")) localStorage.setItem("roteiro-log-start", String(Date.now()));
       return;
     }
     const snap = JSON.parse(raw), now = Date.now(), ev = [];
     for (const k in cur){ const f = snap[k] || "z"; if (f !== cur[k]) ev.push({t:now, id:k, f, to:cur[k]}); }
     if (!ev.length) return;
+    // O registro (ritmo e previsão) começa no primeiro evento de verdade
+    if (!localStorage.getItem("roteiro-log-start")) localStorage.setItem("roteiro-log-start", String(now));
     const src = window.__evSrc || (ev.length > 5 ? "bulk" : "ui"); window.__evSrc = null;
     ev.forEach(e => e.src = src);
     const log = JSON.parse(localStorage.getItem("roteiro-events-v1") || "[]").concat(ev).slice(-5000);

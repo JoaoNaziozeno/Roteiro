@@ -4205,6 +4205,14 @@ function getAdminRev() { return parseInt(localStorage.getItem("roteiro-admin-rev
 // Progresso como estava na última sincronização: serve para saber o que o aluno mudou desde então.
 function setSyncBase(progress) { try { localStorage.setItem("roteiro-sync-base", JSON.stringify(progress || {})); } catch (e) {} }
 
+// A foto dos status (roteiro-snap-v1) acompanha o progresso que veio da nuvem. O histórico desse progresso
+// já está nos eventos da nuvem: sem isso, a próxima mudança registraria tudo como "concluído agora".
+function awsSetStatusSnapshot(progress) {
+  const cur = {};
+  for (const k in progress) cur[k] = (progress[k] && progress[k].s) || "z";
+  try { localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur)); } catch (e) {}
+}
+
 function localChangesSinceSync() {
   const base = awsReadJson("roteiro-sync-base", {}), cur = awsReadJson("roteiro-ia-v1", {}), out = {};
   for (const k in cur) if (JSON.stringify(cur[k]) !== JSON.stringify(base[k])) out[k] = cur[k];
@@ -4241,6 +4249,7 @@ async function awsRealtimePushToDynamoDB(silent = true, retry = true) {
       if (Object.keys(mine).length) {
         const cur = Object.assign(awsReadJson("roteiro-ia-v1", {}), mine);
         try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(cur)); } catch (e) {}
+        awsSetStatusSnapshot(cur);   // essas mudanças já foram registradas quando o aluno as fez
         if (typeof PR !== "undefined") Object.assign(PR, mine);
         if (typeof paint === "function") paint();
       }
@@ -4275,11 +4284,13 @@ async function awsRealtimePullFromDynamoDB() {
     // senão tópicos zerados pelo admin voltariam deste aparelho.
     const fresh = (cloud.progress && typeof cloud.progress === "object") ? cloud.progress : {};
     try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(fresh)); } catch (e) {}
+    awsSetStatusSnapshot(fresh);
     if (typeof PR !== "undefined") { for (const k in PR) delete PR[k]; Object.assign(PR, fresh); }
     try { localStorage.setItem("roteiro-admin-rev", String(cloudRev)); } catch (e) {}
   } else if (cloud.progress && typeof cloud.progress === "object") {
     const merged = Object.assign({}, awsReadJson("roteiro-ia-v1", {}), cloud.progress);
     try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged)); } catch (e) {}
+    awsSetStatusSnapshot(merged);
     if (typeof PR !== "undefined") for (const k in merged) PR[k] = merged[k];
   }
   if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
