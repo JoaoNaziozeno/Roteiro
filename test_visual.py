@@ -45,7 +45,7 @@ class Visual(unittest.TestCase):
                 painel = linha[linha.index(f'id="more-{tid}"'):]
                 painel = painel[:painel.index("</div>")]
                 esperado = [nome for nome, tem in (("video2", t["url2"]), ("guide", t["pt_guide"]),
-                                                   ("doc", t["doc_url"]), ("notes", True)) if tem]
+                                                   ("doc", t["doc_url"]), ("notes", True), ("review", True)) if tem]
                 self.assertEqual(re.findall(r'data-act="(\w+)"', painel), esperado, tid)
                 if t["doc_url"]:
                     self.assertIn(f'href="{t["doc_url"]}"', painel, tid)
@@ -84,6 +84,26 @@ class Visual(unittest.TestCase):
             self.assertIn("togglePtStepRead(i)", corpo, tr)
             self.assertIn("function togglePtStepRead(", s, tr)
             self.assertIn("saved.gc", s, tr)
+
+    def test_lista_de_revisao_nas_trilhas(self):
+        for tr, s in self.pag.items():
+            self.assertIn('data-f="v" onclick="setFilter(\'v\')"', s, tr)
+            self.assertIn('id="modal-review-btn"', s, tr)
+            self.assertIn('else if (FILTER === "v") matchFilter = Boolean(inReview);', s, tr)
+            # a marca de revisão não mexe na situação da aula
+            ini = s.index("function toggleTopicReview(")
+            corpo = s[ini:s.index("\n}\n", ini)]
+            self.assertNotIn(".s =", corpo, tr)
+            self.assertNotIn("“Revisar”", s, tr)
+
+    def test_lista_de_revisao_no_hub(self):
+        self.assertIn('id="cq-rev" hidden', self.hub)
+        self.assertIn("function cqRenderReview(", self.hub)
+        self.assertIn('"?aula="', self.hub)
+        ini = self.hub.index("function cqReviewDone(")
+        corpo = self.hub[ini:self.hub.index("\n}\n", ini)]
+        self.assertIn("delete saved[id].rv", corpo)
+        self.assertNotIn(".s =", corpo)
 
     def test_hub_sem_anel(self):
         self.assertNotIn("function cqRing", self.hub)

@@ -39,9 +39,9 @@ main [hidden],main .topic-panel[hidden]{display:none!important}
 
 /* Filtros e busca */
 .filter-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
-.filters{display:flex;flex-wrap:nowrap;gap:4px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.filters{display:flex;flex-wrap:nowrap;gap:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
-.filters .fil-btn{flex:0 0 auto;white-space:nowrap;min-height:34px;padding:5px 9px;font-size:.75rem;transition:color .15s,background .15s,border-color .15s}
+.filters .fil-btn{flex:0 0 auto;white-space:nowrap;min-height:34px;padding:5px 7px;font-size:.75rem;transition:color .15s,background .15s,border-color .15s}
 .fil-long{display:none}
 
 /* Sobre a fase */

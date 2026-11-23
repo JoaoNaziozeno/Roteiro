@@ -2467,9 +2467,9 @@ main [hidden],main .topic-panel[hidden]{display:none!important}
 
 /* Filtros e busca */
 .filter-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
-.filters{display:flex;flex-wrap:nowrap;gap:4px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.filters{display:flex;flex-wrap:nowrap;gap:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
-.filters .fil-btn{flex:0 0 auto;white-space:nowrap;min-height:34px;padding:5px 9px;font-size:.75rem;transition:color .15s,background .15s,border-color .15s}
+.filters .fil-btn{flex:0 0 auto;white-space:nowrap;min-height:34px;padding:5px 7px;font-size:.75rem;transition:color .15s,background .15s,border-color .15s}
 .fil-long{display:none}
 
 /* Sobre a fase */
@@ -2860,6 +2860,14 @@ html::view-transition{background:var(--bg)}
 #note-modal .note-status-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--m-bad)}
 #note-modal .note-status-pill[data-s="r"]::before{background:var(--m-warn)}
 #note-modal .note-status-pill[data-s="e"]::before{background:var(--m-ok)}
+/* Lista de revisão: marca à parte do status */
+#note-modal .note-review-pill{
+  display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border-radius:99px;
+  border:1px solid var(--m-line);background:transparent;color:var(--m-mu);
+  font:500 var(--m-fs-sm)/1 var(--ds-font,inherit);cursor:pointer;transition:background .15s,border-color .15s,color .15s;
+}
+#note-modal .note-review-pill:hover{background:var(--m-hover);color:var(--m-tx)}
+#note-modal .note-review-pill[aria-pressed="true"]{color:var(--m-warn);border-color:color-mix(in srgb,var(--m-warn) 50%,transparent);background:color-mix(in srgb,var(--m-warn) 10%,transparent)}
 
 /* Opções da aula (progresso automático + meta) num menu */
 .m-opts{position:relative}
@@ -3182,6 +3190,8 @@ html::view-transition{background:var(--bg)}
   #note-modal .note-header-right{width:100%;justify-content:flex-start;gap:6px}
   #note-modal .note-header-right .note-close-btn{position:absolute;top:10px;right:8px}
   #note-modal .note-next-btn{margin-left:auto}
+  #note-modal .note-review-pill{padding:0 10px}
+  #note-modal .note-review-pill .rv-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .m-opts-menu{position:fixed;left:10px;right:10px;top:auto;bottom:10px;width:auto}
   #note-modal .study-player-topbar{padding:6px 10px}
   #note-modal .session-progress-bar-wrap{padding:8px 12px 10px}
@@ -3550,6 +3560,7 @@ html::view-transition{background:var(--bg)}
           <button class="fil-btn" data-f="r" onclick="setFilter('r')"><span class="fil-long">Em andamento</span><span class="fil-short">Fazendo</span></button>
           <button class="fil-btn" data-f="e" onclick="setFilter('e')"><span class="fil-long">Concluídos</span><span class="fil-short">Feitos</span></button>
           <button class="fil-btn" data-f="n" onclick="setFilter('n')"><span class="fil-long">Anotações</span><span class="fil-short">Notas</span></button>
+          <button class="fil-btn" data-f="v" onclick="setFilter('v')"><span class="fil-long">↻ Revisar</span><span class="fil-short">Revisar</span></button>
         </div>
         <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
       </section>
@@ -3582,7 +3593,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-0-0', false, 1)" aria-label="Abrir a aula Aula Zero" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-0-0-0" aria-label="Mais opções de Aula Zero" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-0-1" id="top-ing-0-0-1" data-search="Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas ▶ YouTube 📖 Material">
@@ -3593,7 +3604,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-0-1', false, 1)" aria-label="Abrir a aula Aula 01 · Cumprimentos, apresentações e despedidas" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-0-0-1" aria-label="Mais opções de Aula 01 · Cumprimentos, apresentações e despedidas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-0-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-0-2" id="top-ing-0-0-2" data-search="Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação ▶ YouTube 📖 Material">
@@ -3604,7 +3615,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-0-2', false, 1)" aria-label="Abrir a aula Aula 02 · Idade, Nacionalidade e Ocupação" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-0-2', 'more')" aria-expanded="false" aria-controls="more-ing-0-0-2" aria-label="Mais opções de Aula 02 · Idade, Nacionalidade e Ocupação" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-0-2')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-0-3" id="top-ing-0-0-3" data-search="Curso de Inglês - Módulo 01 Aula 03 - Aula Prática ▶ YouTube 📖 Material">
@@ -3615,7 +3626,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-0-3', false, 1)" aria-label="Abrir a aula Aula 03 · Aula Prática" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-0-3', 'more')" aria-expanded="false" aria-controls="more-ing-0-0-3" aria-label="Mais opções de Aula 03 · Aula Prática" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-0-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-3')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-0-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-0-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-0-3')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3633,7 +3644,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-1-0', false, 1)" aria-label="Abrir a aula Aula 04 · A Estrutura Básica da Língua Inglesa" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-0-1-0" aria-label="Mais opções de Aula 04 · A Estrutura Básica da Língua Inglesa" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-1-1" id="top-ing-0-1-1" data-search="Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100 ▶ YouTube 📖 Material">
@@ -3644,7 +3655,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-1-1', false, 1)" aria-label="Abrir a aula Aula 05 · Números em inglês de 0 à 100" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-0-1-1" aria-label="Mais opções de Aula 05 · Números em inglês de 0 à 100" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-1-2" id="top-ing-0-1-2" data-search="Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS) ▶ YouTube 📖 Material">
@@ -3655,7 +3666,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-1-2', false, 1)" aria-label="Abrir a aula Aula 06 · Adjetivos (ATIVE A LEGENDA EM INGLÊS)" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-0-1-2" aria-label="Mais opções de Aula 06 · Adjetivos (ATIVE A LEGENDA EM INGLÊS)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3673,7 +3684,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-2-0', false, 1)" aria-label="Abrir a aula Aula 07 · Hobbies e Favoritos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-0-2-0" aria-label="Mais opções de Aula 07 · Hobbies e Favoritos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-2-1" id="top-ing-0-2-1" data-search="Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto ▶ YouTube 📖 Material">
@@ -3684,7 +3695,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-2-1', false, 1)" aria-label="Abrir a aula Aula 08 · Outras Maneiras de dizer Eu gosto e Eu não gosto" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-0-2-1" aria-label="Mais opções de Aula 08 · Outras Maneiras de dizer Eu gosto e Eu não gosto" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-2-2" id="top-ing-0-2-2" data-search="Curso de Inglês - Módulo 01 Aula 09 - Small Talk ▶ YouTube 📖 Material">
@@ -3695,7 +3706,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-2-2', false, 1)" aria-label="Abrir a aula Aula 09 · Small Talk" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-0-2-2" aria-label="Mais opções de Aula 09 · Small Talk" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3713,7 +3724,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-3-0', false, 1)" aria-label="Abrir a aula Aula 10 · Family Tree" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-0-3-0" aria-label="Mais opções de Aula 10 · Family Tree" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-3-1" id="top-ing-0-3-1" data-search="Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02 ▶ YouTube 📖 Material">
@@ -3724,7 +3735,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-3-1', false, 1)" aria-label="Abrir a aula Aula 11 · Gramática Básica Parte 02" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-0-3-1" aria-label="Mais opções de Aula 11 · Gramática Básica Parte 02" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-0-3-2" id="top-ing-0-3-2" data-search="Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês ▶ YouTube 📖 Material">
@@ -3735,7 +3746,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-0-3-2', false, 1)" aria-label="Abrir a aula Aula 12 · Os 25 verbos mais utilizados em inglês" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-0-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-0-3-2" aria-label="Mais opções de Aula 12 · Os 25 verbos mais utilizados em inglês" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-0-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-0-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-0-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-0-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-0-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-0-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-0-3-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3770,7 +3781,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-0-0', false, 1)" aria-label="Abrir a aula Aula 01 · Falando da Família" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-1-0-0" aria-label="Mais opções de Aula 01 · Falando da Família" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-0-1" id="top-ing-1-0-1" data-search="Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An ▶ YouTube 📖 Material">
@@ -3781,7 +3792,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-0-1', false, 1)" aria-label="Abrir a aula Aula 02 · Artigos Indefinidos A e An" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-1-0-1" aria-label="Mais opções de Aula 02 · Artigos Indefinidos A e An" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-0-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-0-2" id="top-ing-1-0-2" data-search="Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária ▶ YouTube 📖 Material">
@@ -3792,7 +3803,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-0-2', false, 1)" aria-label="Abrir a aula Aula 03 · Rotina Diária" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-0-2', 'more')" aria-expanded="false" aria-controls="more-ing-1-0-2" aria-label="Mais opções de Aula 03 · Rotina Diária" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-0-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3810,7 +3821,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-1-0', false, 1)" aria-label="Abrir a aula Aula 04 · Pronomes Demonstrativos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-1-1-0" aria-label="Mais opções de Aula 04 · Pronomes Demonstrativos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-1-1" id="top-ing-1-1-1" data-search="Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT ▶ YouTube 📖 Material">
@@ -3821,7 +3832,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-1-1', false, 1)" aria-label="Abrir a aula Aula 05 · Preposições IN ON AT" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-1-1-1" aria-label="Mais opções de Aula 05 · Preposições IN ON AT" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-1-2" id="top-ing-1-1-2" data-search="Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês ▶ YouTube 📖 Material">
@@ -3832,7 +3843,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-1-2', false, 1)" aria-label="Abrir a aula Aula 06 · As 25 Preposições Mais Usadas em Inglês" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-1-1-2" aria-label="Mais opções de Aula 06 · As 25 Preposições Mais Usadas em Inglês" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3850,7 +3861,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-2-0', false, 1)" aria-label="Abrir a aula Aula 07 · Com que frequência" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-1-2-0" aria-label="Mais opções de Aula 07 · Com que frequência" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-2-1" id="top-ing-1-2-1" data-search="Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas ▶ YouTube 📖 Material">
@@ -3861,7 +3872,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-2-1', false, 1)" aria-label="Abrir a aula Aula 08 · Como Dizer Datas" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-1-2-1" aria-label="Mais opções de Aula 08 · Como Dizer Datas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-2-2" id="top-ing-1-2-2" data-search="Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo? ▶ YouTube 📖 Material">
@@ -3872,7 +3883,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-2-2', false, 1)" aria-label="Abrir a aula Aula 09 · O que você está fazendo?" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-1-2-2" aria-label="Mais opções de Aula 09 · O que você está fazendo?" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3890,7 +3901,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-3-0', false, 1)" aria-label="Abrir a aula Aula 10 · Como Dizer As Horas" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-1-3-0" aria-label="Mais opções de Aula 10 · Como Dizer As Horas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-3-1" id="top-ing-1-3-1" data-search="Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver ▶ YouTube 📖 Material">
@@ -3901,7 +3912,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-3-1', false, 1)" aria-label="Abrir a aula Aula 11 · Verbo Haver" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-1-3-1" aria-label="Mais opções de Aula 11 · Verbo Haver" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-1-3-2" id="top-ing-1-3-2" data-search="Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês ▶ YouTube 📖 Material">
@@ -3912,7 +3923,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-1-3-2', false, 1)" aria-label="Abrir a aula Aula 12 · Os 25 Adjetivos Mais Usados em Inglês" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-1-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-1-3-2" aria-label="Mais opções de Aula 12 · Os 25 Adjetivos Mais Usados em Inglês" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-1-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-1-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-1-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-1-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-1-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-1-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-1-3-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3947,7 +3958,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-0-0', false, 1)" aria-label="Abrir a aula Aula 01 · Eu posso!" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-2-0-0" aria-label="Mais opções de Aula 01 · Eu posso!" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-0-1" id="top-ing-2-0-1" data-search="Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns ▶ YouTube 📖 Material">
@@ -3958,7 +3969,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-0-1', false, 1)" aria-label="Abrir a aula Aula 02 · Object Pronouns" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-2-0-1" aria-label="Mais opções de Aula 02 · Object Pronouns" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-0-1')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3976,7 +3987,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-1-0', false, 1)" aria-label="Abrir a aula Aula 03 · Eu deveria" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-2-1-0" aria-label="Mais opções de Aula 03 · Eu deveria" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-1-1" id="top-ing-2-1-1" data-search="Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos ▶ YouTube 📖 Material">
@@ -3987,7 +3998,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-1-1', false, 1)" aria-label="Abrir a aula Aula 04 · Pronomes Reflexivos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-2-1-1" aria-label="Mais opções de Aula 04 · Pronomes Reflexivos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-1-2" id="top-ing-2-1-2" data-search="Curso de Inglês - Módulo 03 Aula 05 - Eu devo ▶ YouTube 📖 Material">
@@ -3998,7 +4009,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-1-2', false, 1)" aria-label="Abrir a aula Aula 05 · Eu devo" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-2-1-2" aria-label="Mais opções de Aula 05 · Eu devo" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4016,7 +4027,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-2-0', false, 1)" aria-label="Abrir a aula Aula 06 · Perguntas Confusas" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-2-2-0" aria-label="Mais opções de Aula 06 · Perguntas Confusas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-2-1" id="top-ing-2-2-1" data-search="Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will ▶ YouTube 📖 Material">
@@ -4027,7 +4038,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-2-1', false, 1)" aria-label="Abrir a aula Aula 07 · Falando do Futuro com Will" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-2-2-1" aria-label="Mais opções de Aula 07 · Falando do Futuro com Will" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-2-2" id="top-ing-2-2-2" data-search="Curso de Inglês - Módulo 03 Aula 08 - Advérbios ▶ YouTube 📖 Material">
@@ -4038,7 +4049,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-2-2', false, 1)" aria-label="Abrir a aula Aula 08 · Advérbios" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-2-2-2" aria-label="Mais opções de Aula 08 · Advérbios" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4056,7 +4067,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-3-0', false, 1)" aria-label="Abrir a aula Aula 09 · Falando do Futuro com Going To" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-2-3-0" aria-label="Mais opções de Aula 09 · Falando do Futuro com Going To" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-3-1" id="top-ing-2-3-1" data-search="Curso de Inglês - Módulo 03 Aula 10 - Do or Make? ▶ YouTube 📖 Material">
@@ -4067,7 +4078,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-3-1', false, 1)" aria-label="Abrir a aula Aula 10 · Do or Make?" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-2-3-1" aria-label="Mais opções de Aula 10 · Do or Make?" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-3-2" id="top-ing-2-3-2" data-search="Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades ▶ YouTube 📖 Material">
@@ -4078,7 +4089,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-3-2', false, 1)" aria-label="Abrir a aula Aula 11 · Expressando Possibilidades" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-2-3-2" aria-label="Mais opções de Aula 11 · Expressando Possibilidades" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-3-2')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-2-3-3" id="top-ing-2-3-3" data-search="Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos ▶ YouTube 📖 Material">
@@ -4089,7 +4100,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-2-3-3', false, 1)" aria-label="Abrir a aula Aula 12 · Como utilizar os textos com áudio e vídeos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-2-3-3', 'more')" aria-expanded="false" aria-controls="more-ing-2-3-3" aria-label="Mais opções de Aula 12 · Como utilizar os textos com áudio e vídeos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-2-3-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-2-3-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-2-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-3')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-2-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-2-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-2-3-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-2-3-3')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4124,7 +4135,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-0-0', false, 1)" aria-label="Abrir a aula Aula 01 · Eu gostaria" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-3-0-0" aria-label="Mais opções de Aula 01 · Eu gostaria" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-0-1" id="top-ing-3-0-1" data-search="Curso de Inglês - Módulo 04 Aula 02 - Comparativos ▶ YouTube 📖 Material">
@@ -4135,7 +4146,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-0-1', false, 1)" aria-label="Abrir a aula Aula 02 · Comparativos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-3-0-1" aria-label="Mais opções de Aula 02 · Comparativos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-0-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-0-2" id="top-ing-3-0-2" data-search="Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que ▶ YouTube 📖 Material">
@@ -4146,7 +4157,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-0-2', false, 1)" aria-label="Abrir a aula Aula 03 · Eu quero que  Eu preciso que" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-0-2', 'more')" aria-expanded="false" aria-controls="more-ing-3-0-2" aria-label="Mais opções de Aula 03 · Eu quero que  Eu preciso que" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-0-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4164,7 +4175,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-1-0', false, 1)" aria-label="Abrir a aula Aula 04 · Superlativos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-3-1-0" aria-label="Mais opções de Aula 04 · Superlativos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-1-1" id="top-ing-3-1-1" data-search="Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be ▶ YouTube 📖 Material">
@@ -4175,7 +4186,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-1-1', false, 1)" aria-label="Abrir a aula Aula 05 · Passado do Verbo To Be" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-3-1-1" aria-label="Mais opções de Aula 05 · Passado do Verbo To Be" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-1-2" id="top-ing-3-1-2" data-search="Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade ▶ YouTube 📖 Material">
@@ -4186,7 +4197,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-1-2', false, 1)" aria-label="Abrir a aula Aula 06 · Comparativo de Igualdade" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-3-1-2" aria-label="Mais opções de Aula 06 · Comparativo de Igualdade" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4204,7 +4215,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-2-0', false, 1)" aria-label="Abrir a aula Aula 07 · Passado Simples (Verbos Regulares e Irregulares)" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-3-2-0" aria-label="Mais opções de Aula 07 · Passado Simples (Verbos Regulares e Irregulares)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-2-1" id="top-ing-3-2-1" data-search="Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados ▶ YouTube 📖 Material">
@@ -4215,7 +4226,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-2-1', false, 1)" aria-label="Abrir a aula Aula 08 · 25 Verbos Irregulares Mais Usados" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-3-2-1" aria-label="Mais opções de Aula 08 · 25 Verbos Irregulares Mais Usados" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-2-2" id="top-ing-3-2-2" data-search="Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia ▶ YouTube 📖 Material">
@@ -4226,7 +4237,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-2-2', false, 1)" aria-label="Abrir a aula Aula 09 · Eu podia_Eu poderia" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-3-2-2" aria-label="Mais opções de Aula 09 · Eu podia_Eu poderia" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4244,7 +4255,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-3-0', false, 1)" aria-label="Abrir a aula Aula 10 · Possessive Pronouns" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-3-3-0" aria-label="Mais opções de Aula 10 · Possessive Pronouns" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-3-1" id="top-ing-3-3-1" data-search="Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados ▶ YouTube 📖 Material">
@@ -4255,7 +4266,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-3-1', false, 1)" aria-label="Abrir a aula Aula 11 · Falando de Hábitos Passados" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-3-3-1" aria-label="Mais opções de Aula 11 · Falando de Hábitos Passados" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-3-3-2" id="top-ing-3-3-2" data-search="Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria ▶ YouTube 📖 Material">
@@ -4266,7 +4277,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-3-3-2', false, 1)" aria-label="Abrir a aula Aula 12 · Havia / Haverá / Haveria" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-3-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-3-3-2" aria-label="Mais opções de Aula 12 · Havia / Haverá / Haveria" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-3-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-3-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-3-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-3-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-3-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-3-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-3-3-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4301,7 +4312,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-0-0', false, 1)" aria-label="Abrir a aula Aula 01 · Quanto tempo leva" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-4-0-0" aria-label="Mais opções de Aula 01 · Quanto tempo leva" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-0-1" id="top-ing-4-0-1" data-search="Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares ▶ YouTube 📖 Material">
@@ -4312,7 +4323,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-0-1', false, 1)" aria-label="Abrir a aula Aula 02 · Perguntas sem Auxiliares" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-4-0-1" aria-label="Mais opções de Aula 02 · Perguntas sem Auxiliares" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-0-1')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4330,7 +4341,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-1-0', false, 1)" aria-label="Abrir a aula Aula 03 · E se..." title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-4-1-0" aria-label="Mais opções de Aula 03 · E se..." title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-1-1" id="top-ing-4-1-1" data-search="Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares ▶ YouTube 📖 Material">
@@ -4341,7 +4352,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-1-1', false, 1)" aria-label="Abrir a aula Aula 04 · Frases Afirmativas com Auxiliares" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-4-1-1" aria-label="Mais opções de Aula 04 · Frases Afirmativas com Auxiliares" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-1-2" id="top-ing-4-1-2" data-search="Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse ▶ YouTube 📖 Material">
@@ -4352,7 +4363,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-1-2', false, 1)" aria-label="Abrir a aula Aula 05 · Eu iria se eu pudesse" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-4-1-2" aria-label="Mais opções de Aula 05 · Eu iria se eu pudesse" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4370,7 +4381,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-2-0', false, 1)" aria-label="Abrir a aula Aula 06 · Prefixes" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-4-2-0" aria-label="Mais opções de Aula 06 · Prefixes" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-2-1" id="top-ing-4-2-1" data-search="Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando ▶ YouTube 📖 Material">
@@ -4381,7 +4392,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-2-1', false, 1)" aria-label="Abrir a aula Aula 07 · Eu estava estudando quando" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-4-2-1" aria-label="Mais opções de Aula 07 · Eu estava estudando quando" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-2-2" id="top-ing-4-2-2" data-search="Curso de Inglês - Módulo 05 Aula 08 - Suffixes ▶ YouTube 📖 Material">
@@ -4392,7 +4403,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-2-2', false, 1)" aria-label="Abrir a aula Aula 08 · Suffixes" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-4-2-2" aria-label="Mais opções de Aula 08 · Suffixes" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4410,7 +4421,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-3-0', false, 1)" aria-label="Abrir a aula Aula 09 · Ofertas &amp; Pedidos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-4-3-0" aria-label="Mais opções de Aula 09 · Ofertas &amp; Pedidos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-3-1" id="top-ing-4-3-1" data-search="Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas ▶ YouTube 📖 Material">
@@ -4421,7 +4432,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-3-1', false, 1)" aria-label="Abrir a aula Aula 10 · Perguntas Indiretas" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-4-3-1" aria-label="Mais opções de Aula 10 · Perguntas Indiretas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-3-2" id="top-ing-4-3-2" data-search="Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se ▶ YouTube 📖 Material">
@@ -4432,7 +4443,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-3-2', false, 1)" aria-label="Abrir a aula Aula 11 · Ser Acostumado e Acostumar-se" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-4-3-2" aria-label="Mais opções de Aula 11 · Ser Acostumado e Acostumar-se" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-3-2')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-4-3-3" id="top-ing-4-3-3" data-search="Curso de Inglês - Módulo 05 Aula 12 - Quantificadores ▶ YouTube 📖 Material">
@@ -4443,7 +4454,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-4-3-3', false, 1)" aria-label="Abrir a aula Aula 12 · Quantificadores" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-4-3-3', 'more')" aria-expanded="false" aria-controls="more-ing-4-3-3" aria-label="Mais opções de Aula 12 · Quantificadores" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-4-3-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-4-3-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-4-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-3')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-4-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-4-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-4-3-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-4-3-3')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4478,7 +4489,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-0-0', false, 1)" aria-label="Abrir a aula Aula 01 · Eu tenho estudado inglês" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-5-0-0" aria-label="Mais opções de Aula 01 · Eu tenho estudado inglês" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-0-1" id="top-ing-5-0-1" data-search="Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio ▶ YouTube 📖 Material">
@@ -4489,7 +4500,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-0-1', false, 1)" aria-label="Abrir a aula Aula 02 · Verbos seguidos do Infinitivo ou do Gerúndio" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-5-0-1" aria-label="Mais opções de Aula 02 · Verbos seguidos do Infinitivo ou do Gerúndio" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-0-1')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4507,7 +4518,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-1-0', false, 1)" aria-label="Abrir a aula Aula 03 · Eu já e eu nunca" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-5-1-0" aria-label="Mais opções de Aula 03 · Eu já e eu nunca" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-1-1" id="top-ing-5-1-1" data-search="Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo ▶ YouTube 📖 Material">
@@ -4518,7 +4529,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-1-1', false, 1)" aria-label="Abrir a aula Aula 04 · Verbos seguidos SOMENTE pelo Infinitivo" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-5-1-1" aria-label="Mais opções de Aula 04 · Verbos seguidos SOMENTE pelo Infinitivo" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-1-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-1-2" id="top-ing-5-1-2" data-search="Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando ▶ YouTube 📖 Material">
@@ -4529,7 +4540,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-1-2', false, 1)" aria-label="Abrir a aula Aula 05 · Eu tenho estado estudando" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-1-2', 'more')" aria-expanded="false" aria-controls="more-ing-5-1-2" aria-label="Mais opções de Aula 05 · Eu tenho estado estudando" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-1-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-1-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-1-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4547,7 +4558,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-2-0', false, 1)" aria-label="Abrir a aula Aula 06 · Verbos seguidos SOMENTE pelo Gerúndio" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-5-2-0" aria-label="Mais opções de Aula 06 · Verbos seguidos SOMENTE pelo Gerúndio" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-2-1" id="top-ing-5-2-1" data-search="Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado ▶ YouTube 📖 Material">
@@ -4558,7 +4569,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-2-1', false, 1)" aria-label="Abrir a aula Aula 07 · Eu tinha estudado" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-5-2-1" aria-label="Mais opções de Aula 07 · Eu tinha estudado" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-2-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-2-2" id="top-ing-5-2-2" data-search="Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva ▶ YouTube 📖 Material">
@@ -4569,7 +4580,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-2-2', false, 1)" aria-label="Abrir a aula Aula 08 · Voz Passiva" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-2-2', 'more')" aria-expanded="false" aria-controls="more-ing-5-2-2" aria-label="Mais opções de Aula 08 · Voz Passiva" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-2-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-2-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-2-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-2-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-2-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-2-2')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4587,7 +4598,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-3-0', false, 1)" aria-label="Abrir a aula Aula 09 · Se eu tivesse sabido disso antes" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-3-0', 'more')" aria-expanded="false" aria-controls="more-ing-5-3-0" aria-label="Mais opções de Aula 09 · Se eu tivesse sabido disso antes" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-3-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-3-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-3-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-3-1" id="top-ing-5-3-1" data-search="Curso de Inglês - Módulo 06 Aula 10 - Reported Speech ▶ YouTube 📖 Material">
@@ -4598,7 +4609,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-3-1', false, 1)" aria-label="Abrir a aula Aula 10 · Reported Speech" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-3-1', 'more')" aria-expanded="false" aria-controls="more-ing-5-3-1" aria-label="Mais opções de Aula 10 · Reported Speech" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-3-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-3-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-3-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-3-2" id="top-ing-5-3-2" data-search="Curso de Inglês - Módulo 06 Aula 11 - Três Desejos ▶ YouTube 📖 Material">
@@ -4609,7 +4620,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-3-2', false, 1)" aria-label="Abrir a aula Aula 11 · Três Desejos" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-3-2', 'more')" aria-expanded="false" aria-controls="more-ing-5-3-2" aria-label="Mais opções de Aula 11 · Três Desejos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-3-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-3-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-3-2')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-5-3-3" id="top-ing-5-3-3" data-search="Curso de Inglês - Módulo 06 Aula 12 - Tag Questions ▶ YouTube 📖 Material">
@@ -4620,7 +4631,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-5-3-3', false, 1)" aria-label="Abrir a aula Aula 12 · Tag Questions" title="▶ YouTube">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-5-3-3', 'more')" aria-expanded="false" aria-controls="more-ing-5-3-3" aria-label="Mais opções de Aula 12 · Tag Questions" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-5-3-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-5-3-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-5-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-3')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-5-3-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-5-3-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-5-3-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-5-3-3')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4655,7 +4666,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-0-0', false, 1)" aria-label="Abrir a aula Inglês no trabalho 01 · Ler documentação técnica" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-0-0', 'more')" aria-expanded="false" aria-controls="more-ing-6-0-0" aria-label="Mais opções de Inglês no trabalho 01 · Ler documentação técnica" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-0-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-0-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-6-0-1" id="top-ing-6-0-1" data-search="▶ YouTube (EN) 📖 Material">
@@ -4666,7 +4677,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-0-1', false, 1)" aria-label="Abrir a aula Inglês no trabalho 02 · Ler artigos de Machine Learning" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-0-1', 'more')" aria-expanded="false" aria-controls="more-ing-6-0-1" aria-label="Mais opções de Inglês no trabalho 02 · Ler artigos de Machine Learning" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-0-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-0-1')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-6-0-2" id="top-ing-6-0-2" data-search="▶ YouTube (EN) 📖 Material">
@@ -4677,7 +4688,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-0-2', false, 1)" aria-label="Abrir a aula Inglês no trabalho 03 · Escrever o README do seu projeto" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-0-2', 'more')" aria-expanded="false" aria-controls="more-ing-6-0-2" aria-label="Mais opções de Inglês no trabalho 03 · Escrever o README do seu projeto" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-2')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-0-2" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-2', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-0-2')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-6-0-3" id="top-ing-6-0-3" data-search="▶ YouTube (EN) 📖 Material">
@@ -4688,7 +4699,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-0-3', false, 1)" aria-label="Abrir a aula Inglês no trabalho 04 · Pull requests e code review" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-0-3', 'more')" aria-expanded="false" aria-controls="more-ing-6-0-3" aria-label="Mais opções de Inglês no trabalho 04 · Pull requests e code review" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-0-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-3')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-0-3" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-0-3', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-0-3')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4706,7 +4717,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-1-0', false, 1)" aria-label="Abrir a aula Inglês no trabalho 05 · E-mails e mensagens de trabalho" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-1-0', 'more')" aria-expanded="false" aria-controls="more-ing-6-1-0" aria-label="Mais opções de Inglês no trabalho 05 · E-mails e mensagens de trabalho" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-1-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-1-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-1-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-1-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-6-1-1" id="top-ing-6-1-1" data-search="▶ YouTube (EN) 📖 Material">
@@ -4717,7 +4728,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-1-1', false, 1)" aria-label="Abrir a aula Inglês no trabalho 06 · Daily stand-up e reuniões" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-1-1', 'more')" aria-expanded="false" aria-controls="more-ing-6-1-1" aria-label="Mais opções de Inglês no trabalho 06 · Daily stand-up e reuniões" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-1-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-1-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-1-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-1-1')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4735,7 +4746,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-2-0', false, 1)" aria-label="Abrir a aula Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-2-0', 'more')" aria-expanded="false" aria-controls="more-ing-6-2-0" aria-label="Mais opções de Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-2-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-2-0')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-2-0" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-2-0', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-2-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-2-0')">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="ing-6-2-1" id="top-ing-6-2-1" data-search="▶ YouTube (EN) 📖 Material">
@@ -4746,7 +4757,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('ing-6-2-1', false, 1)" aria-label="Abrir a aula Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais" title="▶ YouTube (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('ing-6-2-1', 'more')" aria-expanded="false" aria-controls="more-ing-6-2-1" aria-label="Mais opções de Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-ing-6-2-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('ing-6-2-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-ing-6-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-2-1')">Anotações</button></div>
+                  <div class="topic-panel" id="more-ing-6-2-1" hidden><button class="row-opt" data-act="guide" onclick="openStudyModal('ing-6-2-1', true, 1)">Aula Visual</button><button class="row-opt" data-act="notes" onclick="openTopicNotes('ing-6-2-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('ing-6-2-1')">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4778,6 +4789,7 @@ html::view-transition{background:var(--bg)}
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
           <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Em andamento → Concluído">Do zero</button>
+          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" onclick="toggleTopicReview(CURRENT_MODAL_TOPIC_ID)" title="Colocar esta aula na lista de revisão (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
         </div>
 
         <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
@@ -6108,7 +6120,7 @@ async function syncTopicToServer(topicId) {
 
 // 3. Renderização e Atualização Visual da Tela
 function paint() {
-  let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0;
+  let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0, reviewCount = 0;
   const optCount = { e: 0, r: 0, z: 0 };
 
   const allRows = document.querySelectorAll(`.topic-row`);
@@ -6127,6 +6139,12 @@ function paint() {
     else zeroCount++;
 
     if (item.n && item.n.trim()) noteCount++;
+    if (item.rv) reviewCount++;
+    const rvBtn = row.querySelector('[data-act="review"]');
+    if (rvBtn) {
+      rvBtn.setAttribute("aria-pressed", String(Boolean(item.rv)));
+      rvBtn.textContent = item.rv ? "✓ Na revisão" : "↻ Revisar";
+    }
 
     // Situação: bolinha, faixa lateral e a opção marcada no painel
     const st = status === "e" || status === "r" ? status : "z";
@@ -6145,6 +6163,7 @@ function paint() {
       const bits = [];
       if (st === "r") bits.push("Em andamento");
       if (item.n && item.n.trim()) bits.push("com anotação");
+      if (item.rv) bits.push("↻ para revisar");
       meta.textContent = bits.join(" · ");
     }
 
@@ -6154,7 +6173,7 @@ function paint() {
     }
 
     // Aplicar Filtro e Busca
-    applyRowVisibility(row, status, item.n || "");
+    applyRowVisibility(row, status, item.n || "", Boolean(item.rv));
   });
 
   // Resumo da trilha
@@ -6180,6 +6199,8 @@ function paint() {
   }
   const notesBtn = document.querySelector('.fil-btn[data-f="n"]');
   if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
+  const reviewBtn = document.querySelector('.fil-btn[data-f="v"]');
+  if (reviewBtn) reviewBtn.title = "Para revisar: " + reviewCount;
 
   // Nível
   const lvlIcon = document.getElementById("lvl-icon");
@@ -6239,6 +6260,29 @@ function chooseTopicStatus(topicId, next) {
   syncTopicToServer(topicId);
 }
 
+// Lista de revisão: marca à parte (campo rv = quando entrou na lista). A situação, os contadores,
+// as conquistas e o ritmo não mudam. Vai para a nuvem junto com o resto do progresso.
+function toggleTopicReview(topicId) {
+  if (!topicId) return;
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  const add = !PR[topicId].rv;
+  if (add) PR[topicId].rv = Date.now();
+  else delete PR[topicId].rv;
+  saveLocal();
+  paint();
+  updateModalReviewBtn();
+  if (typeof showToast === "function") showToast(add ? "↻ Aula na lista de revisão. A situação dela não muda." : "Aula retirada da lista de revisão.");
+}
+
+function updateModalReviewBtn() {
+  const btn = document.getElementById("modal-review-btn");
+  if (!btn) return;
+  const on = Boolean(CURRENT_MODAL_TOPIC_ID && PR[CURRENT_MODAL_TOPIC_ID] && PR[CURRENT_MODAL_TOPIC_ID].rv);
+  btn.setAttribute("aria-pressed", String(on));
+  btn.querySelector(".rv-txt").textContent = on ? "Na revisão" : "Revisar";
+  btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
+}
+
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
   if (!btn) return;
@@ -6295,12 +6339,13 @@ function onSearchInput(val) {
   paint();
 }
 
-function applyRowVisibility(row, status, noteText) {
+function applyRowVisibility(row, status, noteText, inReview) {
   let matchFilter = true;
   if (FILTER === "z") matchFilter = status === "z";
   else if (FILTER === "r") matchFilter = status === "r";
   else if (FILTER === "e") matchFilter = status === "e";
   else if (FILTER === "n") matchFilter = noteText.trim().length > 0;
+  else if (FILTER === "v") matchFilter = Boolean(inReview);
 
   let matchSearch = true;
   if (SEARCH_QUERY) {
@@ -6988,6 +7033,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
   const v = PR[topicId] || {};
   const s = v.s || "z";
   updateModalStatusBtn(s);
+  if (typeof updateModalReviewBtn === "function") updateModalReviewBtn();
 
   const dateInput = document.getElementById("modal-date-input");
   if (dateInput) dateInput.value = v.d || "";
@@ -8928,7 +8974,7 @@ function lv2Block(b, i, n) {
         inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Profundidade · leitura guiada (opcional)</div>` + b.profundidade.map(it =>
           `<div class="lv2-src"><a href="${it.url}" target="_blank" rel="noopener">${it.obra} ↗</a><div class="lv2-src-meta">${it.secao || ""}</div>` +
           (it.perguntas && it.perguntas.length ? `<div>Leia procurando responder:</div><ol>${it.perguntas.map(p => `<li>${p}</li>`).join("")}</ol>` : "") +
-          `<div style="font-size:.8rem;color:var(--mu)">✍️ Depois, escreva no caderno 3 frases traduzindo o que leu para a linguagem desta aula. Se não conseguir, marque o tópico como “Revisar”.</div></div>`).join("") + `</div>`;
+          `<div style="font-size:.8rem;color:var(--mu)">✍️ Depois, escreva no caderno 3 frases traduzindo o que leu para a linguagem desta aula. Se não conseguir, coloque a aula na lista de revisão (↻ Revisar).</div></div>`).join("") + `</div>`;
       }
       if (b.revisao && b.revisao.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Para o dia da revisão · outra explicação</div>${b.revisao.map(src).join("")}</div>`;
       inner += `</div></div>`;
@@ -9171,7 +9217,7 @@ function lv2ShowReview(root, rec) {
   const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || !rec.next) return;
   const pend = rec.next.filter(t => t > (rec.done || 0));
   box.insertAdjacentHTML("beforeend", `<div class="lv2-review">🔁 Revisões agendadas: ${rec.next.map(t => (pend.includes(t) ? "" : "✓ ") + lv2Date(t)).join(" · ")}. ` +
-    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, volte o tópico para “Revisar”.</div>`);
+    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, coloque a aula na lista de revisão (↻ Revisar).</div>`);
 }
 
 function lv2Unlock(root) { root.querySelectorAll(".lv2-layers").forEach(l => l.dataset.locked = "0"); }

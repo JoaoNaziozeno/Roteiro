@@ -400,7 +400,7 @@ function lv2Block(b, i, n) {
         inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Profundidade · leitura guiada (opcional)</div>` + b.profundidade.map(it =>
           `<div class="lv2-src"><a href="${it.url}" target="_blank" rel="noopener">${it.obra} ↗</a><div class="lv2-src-meta">${it.secao || ""}</div>` +
           (it.perguntas && it.perguntas.length ? `<div>Leia procurando responder:</div><ol>${it.perguntas.map(p => `<li>${p}</li>`).join("")}</ol>` : "") +
-          `<div style="font-size:.8rem;color:var(--mu)">✍️ Depois, escreva no caderno 3 frases traduzindo o que leu para a linguagem desta aula. Se não conseguir, marque o tópico como “Revisar”.</div></div>`).join("") + `</div>`;
+          `<div style="font-size:.8rem;color:var(--mu)">✍️ Depois, escreva no caderno 3 frases traduzindo o que leu para a linguagem desta aula. Se não conseguir, coloque a aula na lista de revisão (↻ Revisar).</div></div>`).join("") + `</div>`;
       }
       if (b.revisao && b.revisao.length) inner += `<div class="lv2-layer"><div class="lv2-layer-tag">Para o dia da revisão · outra explicação</div>${b.revisao.map(src).join("")}</div>`;
       inner += `</div></div>`;
@@ -643,7 +643,7 @@ function lv2ShowReview(root, rec) {
   const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || !rec.next) return;
   const pend = rec.next.filter(t => t > (rec.done || 0));
   box.insertAdjacentHTML("beforeend", `<div class="lv2-review">🔁 Revisões agendadas: ${rec.next.map(t => (pend.includes(t) ? "" : "✓ ") + lv2Date(t)).join(" · ")}. ` +
-    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, volte o tópico para “Revisar”.</div>`);
+    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, coloque a aula na lista de revisão (↻ Revisar).</div>`);
 }
 
 function lv2Unlock(root) { root.querySelectorAll(".lv2-layers").forEach(l => l.dataset.locked = "0"); }
