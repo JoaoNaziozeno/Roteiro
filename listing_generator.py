@@ -172,6 +172,8 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     doc_name = "Documentação" if track_id == "ia" else "Material de apoio"
                     options.append(f'<a class="row-opt" data-act="doc" href="{t["doc_url"]}" target="_blank" rel="noopener" title="{html_lib.escape(doc_lbl)}">{doc_name} ↗</a>')
                 options.append(f'<button class="row-opt" data-act="notes" onclick="openTopicNotes(\'{t_id}\')">Anotações</button>')
+                # Revisão é uma marca à parte: não muda a situação da aula nem os contadores
+                options.append(f'<button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview(\'{t_id}\')">↻ Revisar</button>')
 
                 # A bolinha não gira o status sozinha: voltar a "Do zero" apaga o % de vídeo e de aula, então é escolha explícita
                 status_options = "".join(
@@ -366,6 +368,7 @@ __LISTING_CSS__
           <button class="fil-btn" data-f="r" onclick="setFilter('r')"><span class="fil-long">Em andamento</span><span class="fil-short">Fazendo</span></button>
           <button class="fil-btn" data-f="e" onclick="setFilter('e')"><span class="fil-long">Concluídos</span><span class="fil-short">Feitos</span></button>
           <button class="fil-btn" data-f="n" onclick="setFilter('n')"><span class="fil-long">Anotações</span><span class="fil-short">Notas</span></button>
+          <button class="fil-btn" data-f="v" onclick="setFilter('v')"><span class="fil-long">↻ Revisar</span><span class="fil-short">Revisar</span></button>
         </div>
         <input type="search" class="search-input" id="search-box" placeholder="🔍 Filtrar tópicos..." oninput="onSearchInput(this.value)">
       </section>
@@ -396,6 +399,7 @@ __LISTING_CSS__
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
           <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Em andamento → Concluído">Do zero</button>
+          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" onclick="toggleTopicReview(CURRENT_MODAL_TOPIC_ID)" title="Colocar esta aula na lista de revisão (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
         </div>
 
         <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
@@ -1000,7 +1004,7 @@ async function syncTopicToServer(topicId) {
 
 // 3. Renderização e Atualização Visual da Tela
 function paint() {
-  let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0;
+  let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0, reviewCount = 0;
   const optCount = { e: 0, r: 0, z: 0 };
 
   const allRows = document.querySelectorAll(`.topic-row`);
@@ -1019,6 +1023,12 @@ function paint() {
     else zeroCount++;
 
     if (item.n && item.n.trim()) noteCount++;
+    if (item.rv) reviewCount++;
+    const rvBtn = row.querySelector('[data-act="review"]');
+    if (rvBtn) {
+      rvBtn.setAttribute("aria-pressed", String(Boolean(item.rv)));
+      rvBtn.textContent = item.rv ? "✓ Na revisão" : "↻ Revisar";
+    }
 
     // Situação: bolinha, faixa lateral e a opção marcada no painel
     const st = status === "e" || status === "r" ? status : "z";
@@ -1037,6 +1047,7 @@ function paint() {
       const bits = [];
       if (st === "r") bits.push("Em andamento");
       if (item.n && item.n.trim()) bits.push("com anotação");
+      if (item.rv) bits.push("↻ para revisar");
       meta.textContent = bits.join(" · ");
     }
 
@@ -1046,7 +1057,7 @@ function paint() {
     }
 
     // Aplicar Filtro e Busca
-    applyRowVisibility(row, status, item.n || "");
+    applyRowVisibility(row, status, item.n || "", Boolean(item.rv));
   });
 
   // Resumo da trilha
@@ -1072,6 +1083,8 @@ function paint() {
   }
   const notesBtn = document.querySelector('.fil-btn[data-f="n"]');
   if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
+  const reviewBtn = document.querySelector('.fil-btn[data-f="v"]');
+  if (reviewBtn) reviewBtn.title = "Para revisar: " + reviewCount;
 
   // Nível
   const lvlIcon = document.getElementById("lvl-icon");
@@ -1131,6 +1144,29 @@ function chooseTopicStatus(topicId, next) {
   syncTopicToServer(topicId);
 }
 
+// Lista de revisão: marca à parte (campo rv = quando entrou na lista). A situação, os contadores,
+// as conquistas e o ritmo não mudam. Vai para a nuvem junto com o resto do progresso.
+function toggleTopicReview(topicId) {
+  if (!topicId) return;
+  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
+  const add = !PR[topicId].rv;
+  if (add) PR[topicId].rv = Date.now();
+  else delete PR[topicId].rv;
+  saveLocal();
+  paint();
+  updateModalReviewBtn();
+  if (typeof showToast === "function") showToast(add ? "↻ Aula na lista de revisão. A situação dela não muda." : "Aula retirada da lista de revisão.");
+}
+
+function updateModalReviewBtn() {
+  const btn = document.getElementById("modal-review-btn");
+  if (!btn) return;
+  const on = Boolean(CURRENT_MODAL_TOPIC_ID && PR[CURRENT_MODAL_TOPIC_ID] && PR[CURRENT_MODAL_TOPIC_ID].rv);
+  btn.setAttribute("aria-pressed", String(on));
+  btn.querySelector(".rv-txt").textContent = on ? "Na revisão" : "Revisar";
+  btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
+}
+
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
   if (!btn) return;
@@ -1187,12 +1223,13 @@ function onSearchInput(val) {
   paint();
 }
 
-function applyRowVisibility(row, status, noteText) {
+function applyRowVisibility(row, status, noteText, inReview) {
   let matchFilter = true;
   if (FILTER === "z") matchFilter = status === "z";
   else if (FILTER === "r") matchFilter = status === "r";
   else if (FILTER === "e") matchFilter = status === "e";
   else if (FILTER === "n") matchFilter = noteText.trim().length > 0;
+  else if (FILTER === "v") matchFilter = Boolean(inReview);
 
   let matchSearch = true;
   if (SEARCH_QUERY) {

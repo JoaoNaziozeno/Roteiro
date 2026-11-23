@@ -71,6 +71,16 @@ CONQ_CSS = r"""
 .cq-row2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
 @media(max-width:980px){.cq-row2{grid-template-columns:1fr}}
 .cq-box{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px}
+.cq-rev{margin-bottom:14px;padding:12px 16px}
+.cq-rev-list{list-style:none;margin:6px 0 0;padding:0}
+.cq-rev-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--bd)}
+.cq-rev-item:first-child{border-top:0}
+.cq-rev-item i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.cq-rev-item a{flex:1;min-width:0;color:var(--tx);text-decoration:none;font-size:.88rem;font-weight:600;line-height:1.3}
+.cq-rev-item a:hover{text-decoration:underline}
+.cq-rev-item small{display:block;font-weight:400;font-size:.74rem;color:var(--mu)}
+.cq-rev-ok{flex:none;font:inherit;font-size:.78rem;min-height:34px;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer}
+.cq-rev-ok:hover{border-color:#2fa36b;color:#2fa36b}
 .cq-h{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .cq-heat{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(10px,20px);gap:4px;justify-content:start}
 .cq-heat i{display:block;aspect-ratio:1;border-radius:4px;background:var(--bd);opacity:.55}
@@ -98,6 +108,7 @@ CONQ_HTML = r"""<section class="cq-sect" id="hub-conquistas" aria-labelledby="cq
       <div class="cq-stats" id="cq-stats"></div>
     </div>
     <div class="cq-grid" id="cq-cards"></div>
+    <div class="cq-box cq-rev" id="cq-rev" hidden></div>
     <div class="cq-row2">
       <div class="cq-box">
         <div class="cq-h"><span>📅 Seus dias de estudo (últimas 12 semanas)</span><span id="cq-streak"></span></div>
@@ -253,5 +264,40 @@ function renderConquistas() {
     document.getElementById("cq-next").innerHTML = "Próximo selo: <b>" + next.ic + " " + cqEsc(next.label) + "</b> · falta" + (falta > 1 ? "m " : " ") + faltaTxt +
       '<div class="cq-nextbar"><i style="width:' + Math.round(next.frac * 100) + '%"></i></div>';
   } else document.getElementById("cq-next").textContent = "Você conquistou todos os selos. Lenda!";
+
+  cqRenderReview(prog);
+}
+
+// Lista de revisão: aulas que o aluno marcou com ↻ (campo rv), das três disciplinas, a mais antiga primeiro.
+// Só a marca entra e sai: a situação da aula (concluída etc.) não muda.
+function cqRenderReview(prog) {
+  const box = document.getElementById("cq-rev");
+  if (!box) return;
+  const topics = CQ_INDEX.topics, track = {};
+  CQ_TRACKS.forEach(([tr, name, icon, href, color]) => { track[tr] = { name, href, color }; });
+  const ids = Object.keys(prog).filter(id => prog[id] && prog[id].rv && topics[id] && track[id.split("-")[0]])
+    .sort((a, b) => prog[a].rv - prog[b].rv);
+  box.hidden = !ids.length;
+  if (!ids.length) { box.innerHTML = ""; return; }
+  box.innerHTML = '<div class="cq-h"><span>↻ Para revisar</span><span>' + ids.length + (ids.length === 1 ? " aula" : " aulas") + "</span></div>" +
+    '<ul class="cq-rev-list">' + ids.map(id => {
+      const t = track[id.split("-")[0]];
+      return '<li class="cq-rev-item" style="--c:var(' + t.color + ')"><i aria-hidden="true"></i>' +
+        '<a href="' + t.href + "?aula=" + encodeURIComponent(id) + '">' + cqEsc(topics[id][0]) +
+        "<small>" + cqEsc(t.name) + " · marcada em " + cqDate(prog[id].rv) + "</small></a>" +
+        '<button type="button" class="cq-rev-ok" onclick="cqReviewDone(\'' + id + '\')" title="Tirar da lista de revisão">Revisei ✓</button></li>';
+    }).join("") + "</ul>";
+}
+
+function cqReviewDone(id) {
+  // Lê o salvo na hora e muda só esta aula: nunca regrava uma cópia antiga do progresso
+  const saved = cqRead("roteiro-ia-v1", {});
+  if (saved[id]) {
+    delete saved[id].rv;
+    try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(saved)); } catch (e) {}
+  }
+  if (typeof PR !== "undefined" && PR && PR[id]) delete PR[id].rv;
+  if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
+  renderConquistas();
 }
 """

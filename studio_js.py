@@ -332,6 +332,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
   const v = PR[topicId] || {};
   const s = v.s || "z";
   updateModalStatusBtn(s);
+  if (typeof updateModalReviewBtn === "function") updateModalReviewBtn();
 
   const dateInput = document.getElementById("modal-date-input");
   if (dateInput) dateInput.value = v.d || "";
