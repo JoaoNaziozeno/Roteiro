@@ -7157,6 +7157,14 @@ function getAdminRev() { return parseInt(localStorage.getItem("roteiro-admin-rev
 // Progresso como estava na última sincronização: serve para saber o que o aluno mudou desde então.
 function setSyncBase(progress) { try { localStorage.setItem("roteiro-sync-base", JSON.stringify(progress || {})); } catch (e) {} }
 
+// A foto dos status (roteiro-snap-v1) acompanha o progresso que veio da nuvem. O histórico desse progresso
+// já está nos eventos da nuvem: sem isso, a próxima mudança registraria tudo como "concluído agora".
+function awsSetStatusSnapshot(progress) {
+  const cur = {};
+  for (const k in progress) cur[k] = (progress[k] && progress[k].s) || "z";
+  try { localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur)); } catch (e) {}
+}
+
 function localChangesSinceSync() {
   const base = awsReadJson("roteiro-sync-base", {}), cur = awsReadJson("roteiro-ia-v1", {}), out = {};
   for (const k in cur) if (JSON.stringify(cur[k]) !== JSON.stringify(base[k])) out[k] = cur[k];
@@ -7193,6 +7201,7 @@ async function awsRealtimePushToDynamoDB(silent = true, retry = true) {
       if (Object.keys(mine).length) {
         const cur = Object.assign(awsReadJson("roteiro-ia-v1", {}), mine);
         try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(cur)); } catch (e) {}
+        awsSetStatusSnapshot(cur);   // essas mudanças já foram registradas quando o aluno as fez
         if (typeof PR !== "undefined") Object.assign(PR, mine);
         if (typeof paint === "function") paint();
       }
@@ -7227,11 +7236,13 @@ async function awsRealtimePullFromDynamoDB() {
     // senão tópicos zerados pelo admin voltariam deste aparelho.
     const fresh = (cloud.progress && typeof cloud.progress === "object") ? cloud.progress : {};
     try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(fresh)); } catch (e) {}
+    awsSetStatusSnapshot(fresh);
     if (typeof PR !== "undefined") { for (const k in PR) delete PR[k]; Object.assign(PR, fresh); }
     try { localStorage.setItem("roteiro-admin-rev", String(cloudRev)); } catch (e) {}
   } else if (cloud.progress && typeof cloud.progress === "object") {
     const merged = Object.assign({}, awsReadJson("roteiro-ia-v1", {}), cloud.progress);
     try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(merged)); } catch (e) {}
+    awsSetStatusSnapshot(merged);
     if (typeof PR !== "undefined") for (const k in merged) PR[k] = merged[k];
   }
   if (Array.isArray(cloud.projects) && cloud.projects.length > 0) {
@@ -7283,20 +7294,29 @@ function loadLocal() {
     const raw = localStorage.getItem(KEY);
     if (raw) PR = JSON.parse(raw);
   } catch(e) {}
+  // A foto dos status nasce ao abrir a página, ANTES de qualquer mudança: assim a primeira conclusão
+  // depois de entrar num navegador limpo (ou de sair da conta) já vira evento com data.
+  // Quando o progresso vem da nuvem, o sync atualiza a foto junto (awsSetStatusSnapshot).
+  try { if (!localStorage.getItem("roteiro-snap-v1")) localStorage.setItem("roteiro-snap-v1", JSON.stringify(statusSnapshot(PR))); } catch(e) {}
 }
+
+function statusSnapshot(p){ const cur = {}; for (const k in p) cur[k] = (p[k] && p[k].s) || "z"; return cur; }
 
 function diffAndLogEvents(){
   try{
-    const cur = {}; for (const k in PR) cur[k] = PR[k].s || "z";
+    const cur = statusSnapshot(PR);
     const raw = localStorage.getItem("roteiro-snap-v1");
     if (!raw){
+      // Sem foto (não deveria acontecer depois de loadLocal): não inventa eventos, só começa a acompanhar
       localStorage.setItem("roteiro-snap-v1", JSON.stringify(cur));
-      localStorage.setItem("roteiro-log-start", String(Date.now()));
+      if (!localStorage.getItem("roteiro-log-start")) localStorage.setItem("roteiro-log-start", String(Date.now()));
       return;
     }
     const snap = JSON.parse(raw), now = Date.now(), ev = [];
     for (const k in cur){ const f = snap[k] || "z"; if (f !== cur[k]) ev.push({t:now, id:k, f, to:cur[k]}); }
     if (!ev.length) return;
+    // O registro (ritmo e previsão) começa no primeiro evento de verdade
+    if (!localStorage.getItem("roteiro-log-start")) localStorage.setItem("roteiro-log-start", String(now));
     const src = window.__evSrc || (ev.length > 5 ? "bulk" : "ui"); window.__evSrc = null;
     ev.forEach(e => e.src = src);
     const log = JSON.parse(localStorage.getItem("roteiro-events-v1") || "[]").concat(ev).slice(-5000);
