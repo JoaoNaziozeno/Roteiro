@@ -128,7 +128,10 @@ const RM = (() => {
     return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
   }
 
-  return { TRACK_TOTAL, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+  // Peso de cada trilha em pontos de esforço (ver TRACK_WEIGHTS no Python): o hub e as aulas usam este mesmo valor
+  const TRACK_WEIGHTS = Object.freeze({"ia": 4, "mat": 6, "ing": 1});
+
+  return { TRACK_TOTAL, TRACK_WEIGHTS, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
            planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;

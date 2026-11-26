@@ -331,6 +331,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
   const v = PR[topicId] || {};
   const s = v.s || "z";
+  if (typeof lessonPointsNewVisit === "function") lessonPointsNewVisit();   // frase de pontos nova a cada abertura
   updateModalStatusBtn(s);
   if (typeof updateModalReviewBtn === "function") updateModalReviewBtn();
 
@@ -837,6 +838,9 @@ function syncSessionStudyProgressUI() {
         : "🟢 Vídeo finalizado (100%)! Tópico concluído automaticamente!");
     }
   }
+
+  // Pontos da aula no topo acompanham o estudo (crédito parcial sobe com o vídeo e a leitura)
+  if (typeof renderLessonPoints === "function") renderLessonPoints();
 }
 
 function markPtGuideReadNow(silent = false) {

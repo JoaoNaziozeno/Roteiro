@@ -136,11 +136,28 @@ const RM = (() => {
     return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
   }
 
-  return { TRACK_TOTAL, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+  // Peso de cada trilha em pontos de esforço (ver TRACK_WEIGHTS no Python): o hub e as aulas usam este mesmo valor
+  const TRACK_WEIGHTS = Object.freeze(__TRACK_WEIGHTS__);
+
+  return { TRACK_TOTAL, TRACK_WEIGHTS, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
            planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;
 """
+
+# Pesos de esforço calibrados internamente (1 ponto ≈ 1h de estudo efetivo de um tópico "padrão").
+#  - Inglês (1): cada tópico é uma videoaula de ~15-25 min de gramática/vocabulário básico-intermediário
+#    + prática curta ≈ 1h. É a referência.
+#  - IA & Código (4): tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
+#    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
+#  - Matemática (6): tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
+#    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.
+# Resultado: IA ≈ 68% do esforço total, Matemática ≈ 25%, Inglês ≈ 7%.
+# Fonte única: a Jornada do hub e o aviso de pontos de cada aula leem RM.TRACK_WEIGHTS.
+TRACK_WEIGHTS = {"ia": 4, "mat": 6, "ing": 1}
+
+import json as _json
+METRICS_JS = METRICS_JS.replace("__TRACK_WEIGHTS__", _json.dumps(TRACK_WEIGHTS))
 
 if __name__ == "__main__":
     with open("metrics.js", "w", encoding="utf-8") as f:
