@@ -2867,6 +2867,24 @@ html::view-transition{background:var(--bg)}
   font:500 var(--m-fs-sm)/1 var(--ds-font,inherit);cursor:pointer;transition:background .15s,border-color .15s,color .15s;
 }
 #note-modal .note-review-pill:hover{background:var(--m-hover);color:var(--m-tx)}
+/* Pontos da aula: quanto ela vale na Jornada (entre o título e os botões) */
+#note-modal .note-points{
+  flex:0 0 auto;min-width:0;max-width:min(360px,30vw);display:flex;align-items:center;gap:8px;
+  font-size:var(--m-fs-sm);line-height:1.35;color:var(--m-mu);text-wrap:pretty;
+}
+#note-modal .note-points[hidden]{display:none}
+#note-modal .note-points b{color:var(--m-acc);font-weight:650;white-space:nowrap}
+#note-modal .note-points[data-state="done"] b,#note-modal .note-points[data-state="full"] b{color:var(--m-ok)}
+#note-modal .note-points .pts-ico{flex:none;font-size:1rem;line-height:1}
+#note-modal .note-points.pts-pop{animation:pts-pop .6s ease}
+@keyframes pts-pop{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#note-modal .note-points.pts-pop{animation:none}}
+@media (min-width:761px) and (max-width:1100px){
+  /* sem espaço ao lado do título: a frase desce para uma linha própria embaixo do cabeçalho */
+  #note-modal .note-modal-header{flex-wrap:wrap;row-gap:4px}
+  #note-modal .note-header-left{flex:1 1 0}
+  #note-modal .note-points{order:3;flex:1 1 100%;max-width:none}
+}
 #note-modal .note-review-pill[aria-pressed="true"]{color:var(--m-warn);border-color:color-mix(in srgb,var(--m-warn) 50%,transparent);background:color-mix(in srgb,var(--m-warn) 10%,transparent)}
 
 /* Opções da aula (progresso automático + meta) num menu */
@@ -3191,6 +3209,8 @@ html::view-transition{background:var(--bg)}
   #note-modal .note-header-right .note-close-btn{position:absolute;top:10px;right:8px}
   #note-modal .note-next-btn{margin-left:auto}
   #note-modal .note-review-pill{padding:0 10px}
+  #note-modal .note-points{order:1;flex:1 1 100%;max-width:none;font-size:.8rem}
+  #note-modal .note-header-right{order:2}
   #note-modal .note-review-pill .rv-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .m-opts-menu{position:fixed;left:10px;right:10px;top:auto;bottom:10px;width:auto}
   #note-modal .study-player-topbar{padding:6px 10px}
@@ -6043,6 +6063,8 @@ html::view-transition{background:var(--bg)}
         <div class="note-breadcrumb" id="modal-breadcrumb">Inteligência Artificial</div>
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
+      <!-- PONTOS DA AULA: quanto ela vale na Jornada do hub, com uma frase sorteada a cada visita -->
+      <div class="note-points" id="modal-points" hidden></div>
       <div class="note-header-right">
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
@@ -7273,6 +7295,147 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
+const RM = (() => {
+  const DAY = 86400000, WEEK = 7 * DAY;
+  const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };   // substituído por configure() com os obrigatórios
+  const OPTIONAL = new Set();                            // tópicos opcionais: fora da meta e dos percentuais
+  const REQUIRED = new Set();                            // ids obrigatórios do roteiro atual (vazio = sem catálogo)
+  const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
+  // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
+  // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
+  const isTopic = k => typeof k === "string" && /^(ia|mat|ing)-/.test(k) && !OPTIONAL.has(k) && (!REQUIRED.size || REQUIRED.has(k));
+  function configure(c) {
+    if (c && c.totals) for (const t in c.totals) TRACK_TOTAL[t] = c.totals[t];
+    if (c && Array.isArray(c.optional)) { OPTIONAL.clear(); c.optional.forEach(k => OPTIONAL.add(k)); }
+    if (c && Array.isArray(c.required)) { REQUIRED.clear(); c.required.forEach(k => REQUIRED.add(k)); }
+  }
+  const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
+  const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
+
+  // Esforço total do roteiro, em "pontos" (1 ponto = tópico de peso 1)
+  function totals(eff) {
+    let topics = 0, points = 0;
+    for (const t in TRACK_TOTAL) { topics += TRACK_TOTAL[t]; points += TRACK_TOTAL[t] * trackW(eff, t); }
+    for (const k in (eff.topics || {})) if (isTopic(k) && eff.topics[k] > 0) points += eff.topics[k] - trackW(eff, trackOf(k));
+    return { topics, points };
+  }
+
+  // Estrutural = tópicos concluídos. Ponderado = peso dos concluídos + crédito parcial dos "falta terminar"
+  // (crédito parcial = média do % de vídeo (vp) e % de aula visual (gp) já registrados no tópico).
+  function progress(PR, eff) {
+    const per = {};
+    for (const t in TRACK_TOTAL) per[t] = { done: 0, pts: 0, total: TRACK_TOTAL[t], ptsTotal: TRACK_TOTAL[t] * trackW(eff, t) };
+    let structDone = 0, pts = 0;
+    for (const k in PR) {
+      if (!isTopic(k)) continue;
+      const it = PR[k] || {}, t = trackOf(k), w = weightOf(k, eff);
+      let c = 0;
+      if (it.s === "e") { c = w; structDone++; per[t].done++; }
+      else if (it.s === "r") c = w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200);
+      per[t].pts += c; pts += c;
+    }
+    return { structDone, pts, per };
+  }
+
+  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}
+  const evNet = (e, eff) => {
+    if (!isTopic(e.id)) return 0;
+    const w = weightOf(e.id, eff);
+    return (e.to === "e" && e.f !== "e") ? w : (e.f === "e" && e.to !== "e") ? -w : 0;
+  };
+
+  // Esforço concluído por semana (janelas de 7 dias terminando agora; só semanas COMPLETAS após o início do registro).
+  // Eventos "bulk" (importação em lote) não entram: não representam ritmo real.
+  function weeklySeries(ev, now, logStart, eff, maxWeeks) {
+    const out = [], n = maxWeeks || 8;
+    for (let k = 0; k < n; k++) {
+      const a = now - (k + 1) * WEEK, b = now - k * WEEK;
+      if (!logStart || a < logStart) break;
+      let s = 0;
+      for (const e of ev) if (e.src !== "bulk" && e.t >= a && e.t < b) s += evNet(e, eff);
+      out.push(Math.max(0, s));
+    }
+    return out; // índice 0 = semana mais recente
+  }
+
+  // Previsão em faixa. Com poucos dados NÃO devolve data.
+  function forecast(remaining, series) {
+    const n = series.length;
+    if (remaining <= 0) return { level: "done" };
+    if (n < 2) return { level: "insufficient", n, need: 2 };
+    const s = series.slice().sort((a, b) => a - b);
+    const q = p => { const i = (s.length - 1) * p, lo = Math.floor(i), hi = Math.ceil(i); return s[lo] + (s[hi] - s[lo]) * (i - lo); };
+    const mean = series.reduce((a, b) => a + b, 0) / n;
+    const sd = Math.sqrt(series.reduce((a, b) => a + (b - mean) ** 2, 0) / n);
+    const cv = mean > 0 ? sd / mean : 9;
+    const med = q(0.5), slow = n < 4 ? s[0] : q(0.25), fast = n < 4 ? s[n - 1] : q(0.75);
+    let conf = n >= 6 ? "alta" : n >= 4 ? "média" : "baixa";
+    if (cv > 0.8 && conf !== "baixa") conf = conf === "alta" ? "média" : "baixa";
+    const days = p => (p > 0 && remaining / (p / 7) < 1500) ? Math.ceil(remaining / (p / 7)) : null;
+    return { level: n >= 4 ? "ok" : "preliminary", conf, n, med, slow, fast, cv,
+             dMed: days(med), dSlow: days(slow), dFast: days(fast) };
+  }
+
+  const planned = (total, start, deadline, now) =>
+    deadline ? total * Math.min(1, Math.max(0, (now - start) / (deadline - start))) : null;
+
+  // Situação vs plano (esforço, não contagem de tópicos). Tolerância: 5% do esforço total.
+  function status(done, plannedNow, total, elapsedDays) {
+    if (plannedNow == null) return { k: "neutral" };
+    if (elapsedDays < 7) return { k: "nodata" };
+    const d = done - plannedNow, tol = 0.05 * total;
+    const k = d > tol ? "ahead" : d >= -tol ? "ontrack" : d >= -2 * tol ? "attention" : "late";
+    return { k, delta: d };
+  }
+
+  function requiredPace(remaining, now, deadline) {
+    const weeks = (deadline - now) / WEEK;
+    return weeks > 0 ? remaining / weeks : null;
+  }
+
+  // Curva acumulada real. Antes do início do registro só há o "baseline" (não inventamos histórico).
+  function curve(ev, eff, logStart, now, pts) {
+    if (!logStart) return [];
+    const sorted = ev.slice().sort((a, b) => a.t - b.t);
+    const net = sorted.reduce((a, e) => a + evNet(e, eff), 0);
+    let run = Math.max(0, pts - net);
+    const out = [{ t: logStart, v: run }];
+    for (const e of sorted) { const d = evNet(e, eff); if (d !== 0) { run += d; out.push({ t: e.t, v: Math.max(0, run) }); } }
+    out.push({ t: now, v: pts });
+    return out;
+  }
+
+  const STEPS = [10, 25, 50, 75, 100];
+  function milestones(cv, total) {
+    const done = [];
+    for (const th of STEPS) {
+      const i = cv.findIndex(p => p.v / total * 100 >= th);
+      if (i >= 0) done.push({ th, t: i === 0 ? null : cv[i].t });
+    }
+    return done;
+  }
+  const nextStep = pct => STEPS.find(s => s > pct) || null;
+
+  // Horas por ponto de esforço, só com dados suficientes (>=3h registradas e >=3 pontos concluídos no período)
+  function hoursPerPoint(sessions, ev, eff, logStart) {
+    if (!logStart) return null;
+    const sec = sessions.filter(s => s.t >= logStart).reduce((a, s) => a + (s.sec || 0), 0);
+    const pts = ev.filter(e => e.src !== "bulk").reduce((a, e) => a + evNet(e, eff), 0);
+    return (sec >= 3 * 3600 && pts >= 3) ? (sec / 3600) / pts : null;
+  }
+
+  // Peso de cada trilha em pontos de esforço (ver TRACK_WEIGHTS no Python): o hub e as aulas usam este mesmo valor
+  const TRACK_WEIGHTS = Object.freeze({"ia": 4, "mat": 6, "ing": 1});
+
+  return { TRACK_TOTAL, TRACK_WEIGHTS, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
+           planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
+})();
+if (typeof module !== "undefined") module.exports = RM;
+
+RM.configure({"totals": {"ia": 176, "mat": 41, "ing": 81}, "optional": ["ia-1-4-0", "ia-1-5-2", "ia-3-3-1", "ia-3-3-2", "ia-3-3-3", "ia-3-3-4", "ia-3-3-5", "ia-3-4-5", "ia-3-5-0", "ia-3-5-2", "ia-3-5-3", "mat-0-1-3", "mat-1-1-1", "mat-2-1-1"], "required": ["ia-0-0-0", "ia-0-0-1", "ia-0-0-2", "ia-0-0-3", "ia-0-0-4", "ia-0-0-5", "ia-0-0-g07", "ia-0-0-g08", "ia-0-0-g09", "ia-0-0-g12", "ia-0-0-g14", "ia-0-0-g15", "ia-0-1-0", "ia-0-1-1", "ia-0-1-2", "ia-0-1-3", "ia-0-1-g18", "ia-0-1-g21", "ia-0-2-0", "ia-0-2-1", "ia-0-2-2", "ia-0-2-3", "ia-0-2-4", "ia-0-2-5", "ia-0-3-0", "ia-0-3-1", "ia-0-3-2", "ia-0-3-3", "ia-0-4-0", "ia-0-4-1", "ia-0-4-2", "ia-0-4-3", "ia-0-4-4", "ia-0-4-5", "ia-0-4-6", "ia-0-4-7", "ia-0-5-0", "ia-0-5-1", "ia-0-5-2", "ia-0-5-3", "ia-0-5-4", "ia-0-6-0", "ia-0-6-1", "ia-0-6-2", "ia-0-6-3", "ia-1-0-0", "ia-1-0-1", "ia-1-0-2", "ia-1-0-3", "ia-1-1-0", "ia-1-1-1", "ia-1-1-2", "ia-1-2-0", "ia-1-2-1", "ia-1-2-2", "ia-1-3-0", "ia-1-3-1", "ia-1-3-2", "ia-1-3-3", "ia-1-3-4", "ia-1-3-5", "ia-1-3-6", "ia-1-4-1", "ia-1-4-2", "ia-1-4-3", "ia-1-4-4", "ia-1-5-0", "ia-1-5-1", "ia-2-0-0", "ia-2-0-1", "ia-2-0-2", "ia-2-0-3", "ia-2-0-4", "ia-2-1-0", "ia-2-1-1", "ia-2-1-2", "ia-2-1-3", "ia-2-1-4", "ia-2-1-5", "ia-2-1-6", "ia-2-2-0", "ia-2-2-1", "ia-2-2-2", "ia-2-2-3", "ia-2-3-0", "ia-2-3-1", "ia-2-3-2", "ia-2-3-3", "ia-2-3-4", "ia-2-3-5", "ia-2-4-0", "ia-2-4-1", "ia-2-4-2", "ia-2-4-3", "ia-2-4-4", "ia-2-5-0", "ia-2-5-1", "ia-2-5-2", "ia-2-5-3", "ia-3-0-0", "ia-3-0-1", "ia-3-0-2", "ia-3-0-3", "ia-3-0-4", "ia-3-0-5", "ia-3-1-0", "ia-3-1-1", "ia-3-1-2", "ia-3-2-0", "ia-3-2-1", "ia-3-2-2", "ia-3-2-3", "ia-3-3-0", "ia-3-4-0", "ia-3-4-1", "ia-3-4-2", "ia-3-4-3", "ia-3-4-4", "ia-3-5-1", "ia-4-0-0", "ia-4-0-1", "ia-4-0-2", "ia-4-0-3", "ia-4-1-0", "ia-4-1-1", "ia-4-1-2", "ia-4-1-3", "ia-4-2-0", "ia-4-2-1", "ia-4-2-2", "ia-4-2-3", "ia-4-3-0", "ia-4-3-1", "ia-4-3-2", "ia-4-3-3", "ia-4-3-4", "ia-4-3-5", "ia-4-4-0", "ia-4-4-1", "ia-4-4-2", "ia-4-4-3", "ia-4-4-4", "ia-4-4-5", "ia-4-5-0", "ia-4-5-1", "ia-4-5-2", "ia-4-5-3", "ia-4-5-4", "ia-4-5-5", "ia-5-0-0", "ia-5-0-1", "ia-5-0-2", "ia-5-0-3", "ia-5-0-4", "ia-5-1-0", "ia-5-1-1", "ia-5-1-2", "ia-5-2-0", "ia-5-2-1", "ia-5-2-2", "ia-5-2-3", "ia-5-2-4", "ia-5-3-0", "ia-5-3-1", "ia-5-3-2", "ia-5-3-3", "ia-5-3-4", "ia-5-4-0", "ia-5-4-1", "ia-5-4-2", "ia-5-4-3", "ia-5-5-0", "ia-5-5-1", "ia-5-5-2", "ia-5-5-3", "ia-5-5-4", "ing-0-0-0", "ing-0-0-1", "ing-0-0-2", "ing-0-0-3", "ing-0-1-0", "ing-0-1-1", "ing-0-1-2", "ing-0-2-0", "ing-0-2-1", "ing-0-2-2", "ing-0-3-0", "ing-0-3-1", "ing-0-3-2", "ing-1-0-0", "ing-1-0-1", "ing-1-0-2", "ing-1-1-0", "ing-1-1-1", "ing-1-1-2", "ing-1-2-0", "ing-1-2-1", "ing-1-2-2", "ing-1-3-0", "ing-1-3-1", "ing-1-3-2", "ing-2-0-0", "ing-2-0-1", "ing-2-1-0", "ing-2-1-1", "ing-2-1-2", "ing-2-2-0", "ing-2-2-1", "ing-2-2-2", "ing-2-3-0", "ing-2-3-1", "ing-2-3-2", "ing-2-3-3", "ing-3-0-0", "ing-3-0-1", "ing-3-0-2", "ing-3-1-0", "ing-3-1-1", "ing-3-1-2", "ing-3-2-0", "ing-3-2-1", "ing-3-2-2", "ing-3-3-0", "ing-3-3-1", "ing-3-3-2", "ing-4-0-0", "ing-4-0-1", "ing-4-1-0", "ing-4-1-1", "ing-4-1-2", "ing-4-2-0", "ing-4-2-1", "ing-4-2-2", "ing-4-3-0", "ing-4-3-1", "ing-4-3-2", "ing-4-3-3", "ing-5-0-0", "ing-5-0-1", "ing-5-1-0", "ing-5-1-1", "ing-5-1-2", "ing-5-2-0", "ing-5-2-1", "ing-5-2-2", "ing-5-3-0", "ing-5-3-1", "ing-5-3-2", "ing-5-3-3", "ing-6-0-0", "ing-6-0-1", "ing-6-0-2", "ing-6-0-3", "ing-6-1-0", "ing-6-1-1", "ing-6-2-0", "ing-6-2-1", "mat-0-0-0", "mat-0-0-1", "mat-0-0-2", "mat-0-0-3", "mat-0-0-4", "mat-0-1-0", "mat-0-1-1", "mat-0-1-2", "mat-0-1-4", "mat-0-1-5", "mat-1-0-0", "mat-1-0-1", "mat-1-0-2", "mat-1-0-3", "mat-1-1-0", "mat-1-1-2", "mat-1-1-3", "mat-1-1-4", "mat-2-0-0", "mat-2-0-1", "mat-2-0-2", "mat-2-0-3", "mat-2-1-0", "mat-2-1-2", "mat-2-1-3", "mat-2-1-4", "mat-2-1-5", "mat-3-0-0", "mat-3-0-1", "mat-3-0-2", "mat-3-0-3", "mat-3-1-0", "mat-3-1-1", "mat-3-1-2", "mat-3-1-3", "mat-4-0-0", "mat-4-0-1", "mat-4-0-2", "mat-4-1-0", "mat-4-1-1", "mat-4-1-2"]});
+
+
 const TRACK_ID = "ia";
 const TOTAL_TRACK_TOPICS = 176;
 let NEXT_TOPIC_ID = null;   // o "Continuar" abre esta aula (definida no paint)
@@ -7561,12 +7724,153 @@ function updateModalReviewBtn() {
   btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
 }
 
+// =========================================================================
+// PONTOS DA AULA (topo do estúdio)
+// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM):
+// concluída = peso inteiro; em andamento = crédito parcial (média do % de vídeo e de aula); opcional = fora da meta.
+// A frase é sorteada a cada vez que a aula abre (sem repetir a última do mesmo grupo) e os números
+// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir, com um "pop").
+// Tokens: {mais} "+4 pontos" (o que falta somar) · {resta} "4 pontos" · {vale} peso da aula ·
+// {feito} crédito já garantido · {jAntes}/{jAgora} % da Jornada agora · {jDepois} % ao concluir.
+// =========================================================================
+const LESSON_PTS_PHRASES = {
+  todo: [   // ainda não começou (ou começou sem crédito)
+    "Finalize esta aula e some {mais}!",
+    "{mais} esperando por você no fim desta aula.",
+    "Mais um tijolo na obra: esta aula vale {vale}.",
+    "Concluiu, somou: {mais} na sua Jornada.",
+    "Termine esta aula e sua Jornada sobe de {jAntes} para {jDepois}.",
+    "Seu eu do futuro agradece: {mais} por esta aula.",
+    "Uma aula de cada vez. Esta aqui rende {mais}.",
+    "Quem constrói um pouco todo dia chega lá. Esta aula: {mais}.",
+    "Estudo de hoje, oportunidade de amanhã. Conclua e leve {mais}.",
+    "Level up à vista: conclua e ganhe {mais}.",
+    "Bora? Tem {mais} no fim desta aula.",
+    "Foco nesta aqui: ela leva sua Jornada para {jDepois}.",
+    "Sem pressa e sem pausa: {mais} ao concluir."
+  ],
+  doing: [  // em andamento, já com crédito parcial
+    "Você já garantiu {feito} aqui. Conclua e leve o resto: {mais}!",
+    "Bom ritmo! Termine e some {mais}.",
+    "Começou, agora é seguir: o resto vale {resta}.",
+    "Não para agora: {mais} para fechar esta aula.",
+    "A obra está de pé, falta o acabamento: {mais}.",
+    "Concluindo, sua Jornada vai para {jDepois}. Bora?",
+    "Já tem {feito} no bolso. Bora buscar o resto?",
+    "Termine o que começou: {mais} e mais um ✓ na lista.",
+    "Cada minuto aqui conta: só {resta} para completar.",
+    "Combo em andamento: {feito} no bolso, {resta} para fechar."
+  ],
+  full: [   // em andamento com vídeo e aula completos: os pontos já contam, falta o ✓
+    "Tudo visto! Esta aula já conta {vale} na Jornada. Marque como concluída para fechar.",
+    "Você já somou {vale} com esta aula. Falta só o ✓ de Concluído.",
+    "Pontos no bolso ({vale}). Agora é marcar como concluída!"
+  ],
+  won: [    // no instante em que a aula é concluída (com o estúdio aberto)
+    "Concluída! Sua Jornada subiu para {jAgora}.",
+    "Mandou bem! Esta aula fechou com {vale} na sua conta.",
+    "É isso! Acabou de entrar na Jornada: {ganhou}.",
+    "Aula concluída! Respira, comemora e vem para a próxima.",
+    "Mais uma pronta! A Jornada agora está em {jAgora}.",
+    "Tijolo no lugar! Esta aula agora soma {vale} na obra.",
+    "GG! Aula concluída e {vale} no placar."
+  ],
+  done: [   // ao reabrir uma aula já concluída
+    "Aula concluída: {vale} na sua conta!",
+    "Missão cumprida: esta aula já rendeu {vale}.",
+    "Isto ninguém tira de você: {vale} na conta.",
+    "Tijolo assentado: {vale} a mais na sua obra.",
+    "Revisar também é crescer, e esta aula já está na conta: {vale}.",
+    "Já foi! Sua Jornada está em {jAgora}, e esta aula ajudou.",
+    "Aula no papo: {vale} para a Jornada. Partiu a próxima?",
+    "Feito é melhor que perfeito, e esta aqui está feita: {vale}.",
+    "GG! Mais {vale} no placar da Jornada.",
+    "Voltou para revisar? Respeito. Esta aula já te rendeu {vale}."
+  ],
+  opt: [    // opcionais ficam fora da meta (como no hub)
+    "Aula opcional: não entra nos pontos da meta, mas soma conhecimento.",
+    "Bônus de curiosidade: fora da meta, dentro do seu futuro.",
+    "Esta é extra: sem pontos na Jornada, com pontos no cérebro.",
+    "Opcional, mas quem vai além chega mais longe.",
+    "Aula bônus: estude sem pressão, ela não conta na meta.",
+    "Side quest! Não vale pontos, vale experiência."
+  ]
+};
+const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", won: "🎉", done: "✅", opt: "🧠" };
+const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0 };
+
+// Números da aula pelo cálculo do hub. null = sem o cálculo na página (aviso escondido).
+function lessonPointsInfo(topicId) {
+  if (typeof RM === "undefined" || !topicId) return null;
+  let raw = {};
+  try { raw = JSON.parse(localStorage.getItem("roteiro-effort-v1") || "{}") || {}; } catch (e) {}
+  const eff = { tracks: Object.assign({}, RM.TRACK_WEIGHTS), topics: raw.topics || {} };   // igual à Jornada do hub
+  if (!RM.isTopic(topicId)) return { group: "opt" };
+  const it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
+  const s = it.s === "e" || it.s === "r" ? it.s : "z";
+  const got = s === "e" ? w : s === "r" ? w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
+  const rest = Math.max(0, w - got);
+  const T = RM.totals(eff), P = RM.progress(PR, eff);
+  const group = s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : s === "r" && got >= 0.05 ? "doing" : "todo";
+  return { group, w, got, rest, jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
+}
+
+const lessonPtsRound = v => Math.round(v * 10) / 10;
+
+// Uma frase só serve se fizer sentido com os números de agora
+function lessonPointsUsable(tpl, x) {
+  if (tpl.includes("{feito}") && !(x.got >= 0.05)) return false;
+  if (tpl.includes("{ganhou}") && !(x.ganhou >= 0.05)) return false;
+  if (/\{j(Antes|Depois)\}/.test(tpl) && lessonPtsRound(x.jNow) === lessonPtsRound(x.jAfter)) return false;
+  return true;
+}
+
+function lessonPointsFill(tpl, x) {
+  const num = v => lessonPtsRound(v).toLocaleString("pt-BR");
+  const pts = v => num(v) + (lessonPtsRound(v) === 1 ? " ponto" : " pontos");
+  const map = { mais: "+" + pts(x.rest), resta: pts(x.rest), vale: pts(x.w), feito: pts(x.got), ganhou: "+" + pts(x.ganhou || 0),
+                jAntes: num(x.jNow) + "%", jAgora: num(x.jNow) + "%", jDepois: num(x.jAfter) + "%" };
+  return tpl.replace(/\{(\w+)\}/g, (m, k) => (k in map ? "<b>" + map[k] + "</b>" : m));
+}
+
+// Cada abertura da aula sorteia uma frase nova
+function lessonPointsNewVisit() { LESSON_PTS.id = null; }
+
+function renderLessonPoints() {
+  const el = document.getElementById("modal-points");
+  if (!el) return;
+  const id = CURRENT_MODAL_TOPIC_ID, x = id ? lessonPointsInfo(id) : null;
+  if (!x) { el.hidden = true; return; }
+  const st = LESSON_PTS, same = st.id === id;
+  const fam = g => (g === "todo" || g === "doing" ? "active" : g);   // começar a estudar não troca a frase
+  const celebrate = same && st.group !== "done" && x.group === "done";
+  if (!same) st.ganhou = 0;
+  if (celebrate) st.ganhou = st.rest;          // o que faltava somar antes de concluir acabou de entrar
+  x.ganhou = st.ganhou;
+  if (celebrate || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
+    const key = celebrate ? "won" : x.group;
+    const pool = LESSON_PTS_PHRASES[key], ok = pool.filter(t => lessonPointsUsable(t, x));
+    let opts = ok.filter(t => t !== st.last[key]);
+    if (!opts.length) opts = ok.length ? ok : pool;
+    st.tpl = opts[Math.floor(Math.random() * opts.length)];
+    st.last[key] = st.tpl;
+    st.pool = key;
+  }
+  st.id = id; st.group = x.group; st.rest = x.rest;
+  const html = '<span class="pts-ico" aria-hidden="true">' + LESSON_PTS_ICON[st.pool] + "</span><span>" + lessonPointsFill(st.tpl, x) + "</span>";
+  if (html !== st.html) { el.innerHTML = html; st.html = html; }
+  el.dataset.state = x.group;
+  el.hidden = false;
+  if (celebrate) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
+}
+
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
   if (!btn) return;
   const s = status === "e" || status === "r" ? status : "z";
   btn.dataset.s = s;
   btn.textContent = s === "e" ? "Concluído" : s === "r" ? "Em andamento" : "Do zero";
+  renderLessonPoints();
 }
 
 function toggleModalTopicStatus() {
@@ -8310,6 +8614,7 @@ function openStudyModal(topicId, focusGuide = false, videoOpt = 1) {
 
   const v = PR[topicId] || {};
   const s = v.s || "z";
+  if (typeof lessonPointsNewVisit === "function") lessonPointsNewVisit();   // frase de pontos nova a cada abertura
   updateModalStatusBtn(s);
   if (typeof updateModalReviewBtn === "function") updateModalReviewBtn();
 
@@ -8816,6 +9121,9 @@ function syncSessionStudyProgressUI() {
         : "🟢 Vídeo finalizado (100%)! Tópico concluído automaticamente!");
     }
   }
+
+  // Pontos da aula no topo acompanham o estudo (crédito parcial sobe com o vídeo e a leitura)
+  if (typeof renderLessonPoints === "function") renderLessonPoints();
 }
 
 function markPtGuideReadNow(silent = false) {

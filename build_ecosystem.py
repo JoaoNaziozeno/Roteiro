@@ -514,7 +514,8 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
         phases=phases,
         out_path=out_path,
         shared_css=shared_css,
-        is_english=is_english
+        is_english=is_english,
+        rm_config=RM_CONFIG   # o mesmo cálculo da Jornada do hub: pontos de cada aula batem com os do hub
     )
 
 print("Listing page generator pronto (conectado ao listing_generator modular).")

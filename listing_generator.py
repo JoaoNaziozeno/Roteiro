@@ -10,6 +10,7 @@ import re
 import curriculo
 from listing_css import LISTING_CSS
 from studio_js import STUDIO_JS
+from metrics_js import METRICS_JS
 from favicon import FAVICON_LINK
 from auth_aws_sync import AUTH_GUARD_HEAD_SCRIPT, AUTH_AWS_SYNC_CSS, CHANGE_CREDENTIALS_MODAL_HTML, AUTH_AWS_SYNC_JS
 
@@ -38,7 +39,9 @@ def _count_title(topics):
     return f"{req} + {opt} {'opcional' if opt == 1 else 'opcionais'}"
 
 
-def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False):
+def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, out_path, shared_css="", is_english=False, rm_config=None):
+    """rm_config: a mesma configuração do cálculo da Jornada do hub (RM.configure), para os pontos de cada aula
+    baterem com os do hub. Sem ela (testes antigos), o aviso de pontos fica escondido."""
     total_topics = 0      # só obrigatórios (meta e percentuais)
     all_topics = 0        # todos, inclusive opcionais (filtro "Todos")
     phase_items = []
@@ -395,6 +398,8 @@ __LISTING_CSS__
         <div class="note-breadcrumb" id="modal-breadcrumb">__MODAL_TRACK_NAME__</div>
         <h2 class="note-topic-title" id="modal-topic-title">Título do Tópico</h2>
       </div>
+      <!-- PONTOS DA AULA: quanto ela vale na Jornada do hub, com uma frase sorteada a cada visita -->
+      <div class="note-points" id="modal-points" hidden></div>
       <div class="note-header-right">
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
@@ -888,6 +893,8 @@ __CHANGE_CREDENTIALS_MODAL__
 <script>
 __AUTH_AWS_SYNC_JS__
 
+__RM_JS__
+
 const TRACK_ID = "__TRACK_ID__";
 const TOTAL_TRACK_TOPICS = __TOTAL_TOPICS__;
 let NEXT_TOPIC_ID = null;   // o "Continuar" abre esta aula (definida no paint)
@@ -1176,12 +1183,153 @@ function updateModalReviewBtn() {
   btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
 }
 
+// =========================================================================
+// PONTOS DA AULA (topo do estúdio)
+// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM):
+// concluída = peso inteiro; em andamento = crédito parcial (média do % de vídeo e de aula); opcional = fora da meta.
+// A frase é sorteada a cada vez que a aula abre (sem repetir a última do mesmo grupo) e os números
+// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir, com um "pop").
+// Tokens: {mais} "+4 pontos" (o que falta somar) · {resta} "4 pontos" · {vale} peso da aula ·
+// {feito} crédito já garantido · {jAntes}/{jAgora} % da Jornada agora · {jDepois} % ao concluir.
+// =========================================================================
+const LESSON_PTS_PHRASES = {
+  todo: [   // ainda não começou (ou começou sem crédito)
+    "Finalize esta aula e some {mais}!",
+    "{mais} esperando por você no fim desta aula.",
+    "Mais um tijolo na obra: esta aula vale {vale}.",
+    "Concluiu, somou: {mais} na sua Jornada.",
+    "Termine esta aula e sua Jornada sobe de {jAntes} para {jDepois}.",
+    "Seu eu do futuro agradece: {mais} por esta aula.",
+    "Uma aula de cada vez. Esta aqui rende {mais}.",
+    "Quem constrói um pouco todo dia chega lá. Esta aula: {mais}.",
+    "Estudo de hoje, oportunidade de amanhã. Conclua e leve {mais}.",
+    "Level up à vista: conclua e ganhe {mais}.",
+    "Bora? Tem {mais} no fim desta aula.",
+    "Foco nesta aqui: ela leva sua Jornada para {jDepois}.",
+    "Sem pressa e sem pausa: {mais} ao concluir."
+  ],
+  doing: [  // em andamento, já com crédito parcial
+    "Você já garantiu {feito} aqui. Conclua e leve o resto: {mais}!",
+    "Bom ritmo! Termine e some {mais}.",
+    "Começou, agora é seguir: o resto vale {resta}.",
+    "Não para agora: {mais} para fechar esta aula.",
+    "A obra está de pé, falta o acabamento: {mais}.",
+    "Concluindo, sua Jornada vai para {jDepois}. Bora?",
+    "Já tem {feito} no bolso. Bora buscar o resto?",
+    "Termine o que começou: {mais} e mais um ✓ na lista.",
+    "Cada minuto aqui conta: só {resta} para completar.",
+    "Combo em andamento: {feito} no bolso, {resta} para fechar."
+  ],
+  full: [   // em andamento com vídeo e aula completos: os pontos já contam, falta o ✓
+    "Tudo visto! Esta aula já conta {vale} na Jornada. Marque como concluída para fechar.",
+    "Você já somou {vale} com esta aula. Falta só o ✓ de Concluído.",
+    "Pontos no bolso ({vale}). Agora é marcar como concluída!"
+  ],
+  won: [    // no instante em que a aula é concluída (com o estúdio aberto)
+    "Concluída! Sua Jornada subiu para {jAgora}.",
+    "Mandou bem! Esta aula fechou com {vale} na sua conta.",
+    "É isso! Acabou de entrar na Jornada: {ganhou}.",
+    "Aula concluída! Respira, comemora e vem para a próxima.",
+    "Mais uma pronta! A Jornada agora está em {jAgora}.",
+    "Tijolo no lugar! Esta aula agora soma {vale} na obra.",
+    "GG! Aula concluída e {vale} no placar."
+  ],
+  done: [   // ao reabrir uma aula já concluída
+    "Aula concluída: {vale} na sua conta!",
+    "Missão cumprida: esta aula já rendeu {vale}.",
+    "Isto ninguém tira de você: {vale} na conta.",
+    "Tijolo assentado: {vale} a mais na sua obra.",
+    "Revisar também é crescer, e esta aula já está na conta: {vale}.",
+    "Já foi! Sua Jornada está em {jAgora}, e esta aula ajudou.",
+    "Aula no papo: {vale} para a Jornada. Partiu a próxima?",
+    "Feito é melhor que perfeito, e esta aqui está feita: {vale}.",
+    "GG! Mais {vale} no placar da Jornada.",
+    "Voltou para revisar? Respeito. Esta aula já te rendeu {vale}."
+  ],
+  opt: [    // opcionais ficam fora da meta (como no hub)
+    "Aula opcional: não entra nos pontos da meta, mas soma conhecimento.",
+    "Bônus de curiosidade: fora da meta, dentro do seu futuro.",
+    "Esta é extra: sem pontos na Jornada, com pontos no cérebro.",
+    "Opcional, mas quem vai além chega mais longe.",
+    "Aula bônus: estude sem pressão, ela não conta na meta.",
+    "Side quest! Não vale pontos, vale experiência."
+  ]
+};
+const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", won: "🎉", done: "✅", opt: "🧠" };
+const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0 };
+
+// Números da aula pelo cálculo do hub. null = sem o cálculo na página (aviso escondido).
+function lessonPointsInfo(topicId) {
+  if (typeof RM === "undefined" || !topicId) return null;
+  let raw = {};
+  try { raw = JSON.parse(localStorage.getItem("roteiro-effort-v1") || "{}") || {}; } catch (e) {}
+  const eff = { tracks: Object.assign({}, RM.TRACK_WEIGHTS), topics: raw.topics || {} };   // igual à Jornada do hub
+  if (!RM.isTopic(topicId)) return { group: "opt" };
+  const it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
+  const s = it.s === "e" || it.s === "r" ? it.s : "z";
+  const got = s === "e" ? w : s === "r" ? w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
+  const rest = Math.max(0, w - got);
+  const T = RM.totals(eff), P = RM.progress(PR, eff);
+  const group = s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : s === "r" && got >= 0.05 ? "doing" : "todo";
+  return { group, w, got, rest, jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
+}
+
+const lessonPtsRound = v => Math.round(v * 10) / 10;
+
+// Uma frase só serve se fizer sentido com os números de agora
+function lessonPointsUsable(tpl, x) {
+  if (tpl.includes("{feito}") && !(x.got >= 0.05)) return false;
+  if (tpl.includes("{ganhou}") && !(x.ganhou >= 0.05)) return false;
+  if (/\{j(Antes|Depois)\}/.test(tpl) && lessonPtsRound(x.jNow) === lessonPtsRound(x.jAfter)) return false;
+  return true;
+}
+
+function lessonPointsFill(tpl, x) {
+  const num = v => lessonPtsRound(v).toLocaleString("pt-BR");
+  const pts = v => num(v) + (lessonPtsRound(v) === 1 ? " ponto" : " pontos");
+  const map = { mais: "+" + pts(x.rest), resta: pts(x.rest), vale: pts(x.w), feito: pts(x.got), ganhou: "+" + pts(x.ganhou || 0),
+                jAntes: num(x.jNow) + "%", jAgora: num(x.jNow) + "%", jDepois: num(x.jAfter) + "%" };
+  return tpl.replace(/\{(\w+)\}/g, (m, k) => (k in map ? "<b>" + map[k] + "</b>" : m));
+}
+
+// Cada abertura da aula sorteia uma frase nova
+function lessonPointsNewVisit() { LESSON_PTS.id = null; }
+
+function renderLessonPoints() {
+  const el = document.getElementById("modal-points");
+  if (!el) return;
+  const id = CURRENT_MODAL_TOPIC_ID, x = id ? lessonPointsInfo(id) : null;
+  if (!x) { el.hidden = true; return; }
+  const st = LESSON_PTS, same = st.id === id;
+  const fam = g => (g === "todo" || g === "doing" ? "active" : g);   // começar a estudar não troca a frase
+  const celebrate = same && st.group !== "done" && x.group === "done";
+  if (!same) st.ganhou = 0;
+  if (celebrate) st.ganhou = st.rest;          // o que faltava somar antes de concluir acabou de entrar
+  x.ganhou = st.ganhou;
+  if (celebrate || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
+    const key = celebrate ? "won" : x.group;
+    const pool = LESSON_PTS_PHRASES[key], ok = pool.filter(t => lessonPointsUsable(t, x));
+    let opts = ok.filter(t => t !== st.last[key]);
+    if (!opts.length) opts = ok.length ? ok : pool;
+    st.tpl = opts[Math.floor(Math.random() * opts.length)];
+    st.last[key] = st.tpl;
+    st.pool = key;
+  }
+  st.id = id; st.group = x.group; st.rest = x.rest;
+  const html = '<span class="pts-ico" aria-hidden="true">' + LESSON_PTS_ICON[st.pool] + "</span><span>" + lessonPointsFill(st.tpl, x) + "</span>";
+  if (html !== st.html) { el.innerHTML = html; st.html = html; }
+  el.dataset.state = x.group;
+  el.hidden = false;
+  if (celebrate) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
+}
+
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
   if (!btn) return;
   const s = status === "e" || status === "r" ? status : "z";
   btn.dataset.s = s;
   btn.textContent = s === "e" ? "Concluído" : s === "r" ? "Em andamento" : "Do zero";
+  renderLessonPoints();
 }
 
 function toggleModalTopicStatus() {
@@ -1656,6 +1804,9 @@ if (typeof initSplitResizer === "function") initSplitResizer();
         .replace("__TOPICS_MAP_JSON__", topics_map_json)
         .replace("__STUDIO_JS__", STUDIO_JS)
     )
+    # Cálculo da Jornada (o mesmo do hub): só entra com a configuração do hub, senão os números não bateriam
+    rm_js = (METRICS_JS + "\nRM.configure(" + json.dumps(rm_config) + ");\n") if rm_config else ""
+    rendered = rendered.replace("__RM_JS__", rm_js)
 
     from design_v2 import apply_design
     rendered = apply_design(rendered, track_id)

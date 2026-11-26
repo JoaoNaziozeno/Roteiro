@@ -3052,6 +3052,24 @@ html::view-transition{background:var(--bg)}
   font:500 var(--m-fs-sm)/1 var(--ds-font,inherit);cursor:pointer;transition:background .15s,border-color .15s,color .15s;
 }
 #note-modal .note-review-pill:hover{background:var(--m-hover);color:var(--m-tx)}
+/* Pontos da aula: quanto ela vale na Jornada (entre o título e os botões) */
+#note-modal .note-points{
+  flex:0 0 auto;min-width:0;max-width:min(360px,30vw);display:flex;align-items:center;gap:8px;
+  font-size:var(--m-fs-sm);line-height:1.35;color:var(--m-mu);text-wrap:pretty;
+}
+#note-modal .note-points[hidden]{display:none}
+#note-modal .note-points b{color:var(--m-acc);font-weight:650;white-space:nowrap}
+#note-modal .note-points[data-state="done"] b,#note-modal .note-points[data-state="full"] b{color:var(--m-ok)}
+#note-modal .note-points .pts-ico{flex:none;font-size:1rem;line-height:1}
+#note-modal .note-points.pts-pop{animation:pts-pop .6s ease}
+@keyframes pts-pop{0%{transform:scale(1)}35%{transform:scale(1.06)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){#note-modal .note-points.pts-pop{animation:none}}
+@media (min-width:761px) and (max-width:1100px){
+  /* sem espaço ao lado do título: a frase desce para uma linha própria embaixo do cabeçalho */
+  #note-modal .note-modal-header{flex-wrap:wrap;row-gap:4px}
+  #note-modal .note-header-left{flex:1 1 0}
+  #note-modal .note-points{order:3;flex:1 1 100%;max-width:none}
+}
 #note-modal .note-review-pill[aria-pressed="true"]{color:var(--m-warn);border-color:color-mix(in srgb,var(--m-warn) 50%,transparent);background:color-mix(in srgb,var(--m-warn) 10%,transparent)}
 
 /* Opções da aula (progresso automático + meta) num menu */
@@ -3376,6 +3394,8 @@ html::view-transition{background:var(--bg)}
   #note-modal .note-header-right .note-close-btn{position:absolute;top:10px;right:8px}
   #note-modal .note-next-btn{margin-left:auto}
   #note-modal .note-review-pill{padding:0 10px}
+  #note-modal .note-points{order:1;flex:1 1 100%;max-width:none;font-size:.8rem}
+  #note-modal .note-header-right{order:2}
   #note-modal .note-review-pill .rv-txt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .m-opts-menu{position:fixed;left:10px;right:10px;top:auto;bottom:10px;width:auto}
   #note-modal .study-player-topbar{padding:6px 10px}

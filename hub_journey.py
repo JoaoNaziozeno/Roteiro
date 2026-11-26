@@ -159,16 +159,10 @@ function setHubPace(k) {
 }
 function onStartDateChange(v) { if (!v) return; currentStartDate = v; try { localStorage.setItem(START_KEY, v); } catch (e) {} triggerPulse(); calcAndPaint(); }
 function resetStartDateToday() { onStartDateChange(new Date().toISOString().slice(0, 10)); const i = jrEl("hub-start-date"); if (i) i.value = currentStartDate; }
-// Pesos de esforço calibrados internamente (1 ponto ≈ 1h de estudo efetivo de um tópico "padrão").
-//  - Inglês (1): cada tópico é uma videoaula de ~15-25 min de gramática/vocabulário básico-intermediário
-//    + prática curta ≈ 1h. É a referência.
-//  - IA & Código (4): tópicos muito heterogêneos (de "docstrings" a "Transformer", "RAG", "deploy",
-//    projetos completos). Mediana realista para quem parte do zero ≈ 4h por tópico (ler + codar + depurar).
-//  - Matemática (6): tópicos densos e abstratos (SVD, Jacobiana/Hessiana, MLE, KL, atenção), cada um com
-//    derivação, exemplo resolvido e código. Exige reler, praticar exercícios e consolidar ≈ 6h por tópico.
-// Resultado: IA ≈ 68% do esforço total, Matemática ≈ 25%, Inglês ≈ 7%.
+// Pesos de esforço de cada trilha: vêm de TRACK_WEIGHTS (metrics_js.py, com a calibração explicada lá),
+// os mesmos que o aviso de pontos de cada aula usa.
 // Não há UI para alterar: valores antigos salvos no navegador (EFFORT_KEY.tracks) são ignorados.
-const JR_TRACK_WEIGHTS = Object.freeze({ ia: 4, mat: 6, ing: 1 });
+const JR_TRACK_WEIGHTS = RM.TRACK_WEIGHTS;
 function updateWhatIf() {
   const sl = jrEl("hub-whatif-slider"); if (!sl) return;
   const boost = parseInt(sl.value, 10) || 0, { remaining, fc, hpp } = window.__jr, now = window.__jr.now;
@@ -259,14 +253,15 @@ function calcAndPaint() {
   const B = { ahead: ["pace-ahead", "🟢 ADIANTADO"], ontrack: ["pace-ontrack", "🔵 NO RITMO"], attention: ["pace-attn", "🟡 ATENÇÃO"],
               late: ["pace-late", "🟠 ABAIXO DA META"], nodata: ["pace-nodata", "⚪ SEM DADOS SUFICIENTES"], neutral: ["pace-nodata", "⚪ SEM META DEFINIDA"] }[st.k];
   // Texto em duas partes: a frase principal (em destaque) e a explicação com os números, em linguagem simples.
-  // "Pontos" = esforço: cada aula vale conforme a dificuldade (JR_TRACK_WEIGHTS: Inglês 1, IA 4, Matemática 6).
+  // "Pontos" = esforço: cada aula vale conforme a dificuldade (JR_TRACK_WEIGHTS, de metrics_js.TRACK_WEIGHTS).
   let msg;
   const perDay = deadline ? T.points / ((deadline - start) / DAY) : 0;
   const n0 = x => Math.round(x).toLocaleString("pt-BR");
   const plural = (n, um, varios) => n + " " + (n === 1 ? um : varios);
   const metaNome = "meta de " + preset.months + " meses";
   const fim = deadline ? formatDateBR(new Date(deadline)) : "";
-  const PONTOS = '<span class="jr-banner-sub">Os pontos medem o esforço: cada aula vale conforme a dificuldade (Inglês 1, IA 4, Matemática 6).</span>';
+  const PONTOS = '<span class="jr-banner-sub">Os pontos medem o esforço: cada aula vale conforme a dificuldade (Inglês ' +
+    JR_TRACK_WEIGHTS.ing + ", IA " + JR_TRACK_WEIGHTS.ia + ", Matemática " + JR_TRACK_WEIGHTS.mat + ").</span>";
   const ritmoHoje = curPace != null
     ? "Nas últimas " + plural(Math.min(4, series.length), "semana", "semanas") + ", você fez em média <b>" + jrF(curPace) + " pontos por semana</b>. "
     : "";
