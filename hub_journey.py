@@ -27,6 +27,11 @@ JOURNEY_CSS = r"""
 .speed-diagnosis-card.pace-attn{background:rgba(232,161,0,.12);border:1px solid rgba(232,161,0,.4);color:#b77f00}
 .speed-diagnosis-card.pace-late{background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.35);color:#c2410c}
 .speed-diagnosis-card.pace-nodata{background:var(--bg);border:1px solid var(--bd);color:var(--mu)}
+#jr-banner-text{flex:1 1 260px!important;min-width:0}
+#jr-banner-text b{font-weight:750}
+#jr-banner-text>b:first-child{display:block;font-size:.95rem}
+.jr-banner-sub{display:block;margin-top:4px;font-size:.84rem;font-weight:500;line-height:1.55;color:var(--tx)}
+.jr-banner-sub+.jr-banner-sub{margin-top:6px;font-size:.76rem;color:var(--mu)}
 """
 
 JOURNEY_HTML = r"""<section class="jr-sect" id="hub-tracker-sect">
@@ -253,15 +258,39 @@ function calcAndPaint() {
   // faixa de situação (5 estados)
   const B = { ahead: ["pace-ahead", "🟢 ADIANTADO"], ontrack: ["pace-ontrack", "🔵 NO RITMO"], attention: ["pace-attn", "🟡 ATENÇÃO"],
               late: ["pace-late", "🟠 ABAIXO DA META"], nodata: ["pace-nodata", "⚪ SEM DADOS SUFICIENTES"], neutral: ["pace-nodata", "⚪ SEM META DEFINIDA"] }[st.k];
+  // Texto em duas partes: a frase principal (em destaque) e a explicação com os números, em linguagem simples.
+  // "Pontos" = esforço: cada aula vale conforme a dificuldade (JR_TRACK_WEIGHTS: Inglês 1, IA 4, Matemática 6).
   let msg;
   const perDay = deadline ? T.points / ((deadline - start) / DAY) : 0;
-  if (st.k === "neutral") msg = "Sem data-alvo: acompanhando seu ritmo sem comparar com plano. Escolha uma meta acima se quiser um referencial.";
-  else if (st.k === "nodata") msg = "Dia " + elapsed + " da jornada. A comparação com o plano começa após 7 dias, antes disso o número seria ruído.";
+  const n0 = x => Math.round(x).toLocaleString("pt-BR");
+  const plural = (n, um, varios) => n + " " + (n === 1 ? um : varios);
+  const metaNome = "meta de " + preset.months + " meses";
+  const fim = deadline ? formatDateBR(new Date(deadline)) : "";
+  const PONTOS = '<span class="jr-banner-sub">Os pontos medem o esforço: cada aula vale conforme a dificuldade (Inglês 1, IA 4, Matemática 6).</span>';
+  const ritmoHoje = curPace != null
+    ? "Nas últimas " + plural(Math.min(4, series.length), "semana", "semanas") + ", você fez em média <b>" + jrF(curPace) + " pontos por semana</b>. "
+    : "";
+  // Ritmo necessário traduzido em aulas: é o que dá para planejar na semana
+  const emAulas = r => " (por exemplo, " + plural(Math.ceil(r / JR_TRACK_WEIGHTS.ia), "aula", "aulas") + " de IA ou " +
+    plural(Math.ceil(r / JR_TRACK_WEIGHTS.mat), "aula", "aulas") + " de Matemática por semana)";
+  if (st.k === "neutral") msg = "<b>Você está sem meta de prazo.</b>" +
+    '<span class="jr-banner-sub">O painel mostra seu ritmo, mas não compara com um plano. Se quiser uma data para mirar, escolha 4, 6 ou 14 meses acima.</span>';
+  else if (st.k === "nodata") msg = "<b>" + (elapsed === 0 ? "Hoje começa a sua jornada." : "Você está no dia " + elapsed + " da jornada.") + "</b>" +
+    '<span class="jr-banner-sub">A comparação com o plano começa no 7º dia. Antes disso, uns poucos dias bons ou ruins mudariam muito o resultado.</span>';
   else {
-    const d = Math.abs(st.delta), dd = perDay ? Math.round(d / perDay) : 0;
-    if (st.k === "ahead") msg = "Você está " + jrF(d) + " pontos de esforço à frente do plano (≈ " + dd + " dia(s)).";
-    else if (st.k === "ontrack") msg = "Dentro do ritmo esperado: diferença de " + jrF(st.delta) + " pontos em relação ao plano.";
-    else msg = "Você está " + jrF(d) + " pontos abaixo do plano (≈ " + dd + " dia(s))." + (req ? " Para voltar ao plano: ~" + jrF(req) + " pontos/semana" + (curPace != null ? " (hoje: " + jrF(curPace) + ")." : ".") : "");
+    const d = Math.abs(st.delta), dd = perDay ? Math.max(1, Math.round(d / perDay)) : 0;
+    const pelo = "Pela " + metaNome + ", hoje você já deveria ter uns <b>" + n0(planned) + " pontos</b>, e você tem <b>" + jrF(P.pts) + "</b>. ";
+    if (st.k === "ahead") msg = "<b>Você está uns " + plural(dd, "dia", "dias") + " adiantado em relação à " + metaNome + ". 🎉</b>" +
+      '<span class="jr-banner-sub">' + pelo + ritmoHoje + "A meta termina em " + fim + ". Continue assim!</span>" + PONTOS;
+    else if (st.k === "ontrack") msg = "<b>Você está no ritmo da " + metaNome + ".</b>" +
+      '<span class="jr-banner-sub">' + pelo +
+      (st.delta < 0 ? "A diferença de " + n0(d) + " pontos ainda está dentro da folga do plano (até " + n0(0.05 * T.points) + " pontos, 5% do total). "
+                    : d >= 1 ? "Você está " + n0(d) + " pontos à frente. " : "") +
+      ritmoHoje + "A meta termina em " + fim + ".</span>" + PONTOS;
+    else msg = "<b>Você está uns " + plural(dd, "dia", "dias") + " atrasado em relação à " + metaNome + ".</b>" +
+      '<span class="jr-banner-sub">' + pelo + "Faltam " + n0(d) + " pontos para alcançar o plano. " + ritmoHoje +
+      (req ? "Para terminar tudo até " + fim + ", o ritmo precisa subir para uns <b>" + n0(req) + " pontos por semana</b>" + emAulas(req) + "." : "") +
+      "</span>" + PONTOS;
   }
   const bn = jrEl("jr-banner"); if (bn) bn.className = "speed-diagnosis-card " + B[0];
   jrSet("jr-banner-text", msg); jrSet("jr-banner-badge", B[1]);
