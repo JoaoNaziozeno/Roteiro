@@ -1234,6 +1234,8 @@ async function awsRealtimePullFromDynamoDB() {
   if (typeof calcAndPaint === "function") calcAndPaint();
   if (typeof renderHubDashboard === "function") renderHubDashboard();
   if (typeof renderProjects === "function") renderProjects();
+  // A agenda de revisões pode ter mudado (outro aparelho): menu, listas e página Revisões se atualizam
+  try { window.dispatchEvent(new CustomEvent("rv:change")); } catch (e) {}
   if (extraChanged && user) scheduleAwsRealtimeSync();
   return true;
 }

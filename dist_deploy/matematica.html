@@ -2560,7 +2560,7 @@ main [hidden],main .topic-panel[hidden]{display:none!important}
 }
 body[data-track="ia"]{--t:var(--t-ia)} body[data-track="mat"]{--t:var(--t-mat)}
 body[data-track="ing"]{--t:var(--t-ing)} body[data-track="proj"]{--t:var(--t-proj)}
-body[data-track="hub"]{--t:var(--t-hub)}
+body[data-track="hub"]{--t:var(--t-hub)} body[data-track="rev"]{--t:var(--t-hub)}
 
 /* ============================ BASE ============================ */
 body{font-family:var(--ds-font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:var(--bg)}
@@ -3236,6 +3236,325 @@ html::view-transition{background:var(--bg)}
 }
 </style>
 
+<style>
+/* ===== Agenda de revisões: menu "Quando revisar?", aviso e contador do menu ===== */
+.nav-rv-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;margin-left:6px;padding:0 5px;border-radius:9px;
+  background:var(--t-hub);color:#04201d;font-size:.68rem;font-weight:800;line-height:1;vertical-align:1px}
+.nav-rv-badge.late{background:#ef6b5b;color:#fff}
+.nav-rv-badge[hidden]{display:none}
+.rv-menu{position:fixed;z-index:100000;width:320px;max-width:calc(100vw - 20px);padding:12px;border-radius:14px;
+  border:1px solid var(--bd);background:var(--card);color:var(--tx);box-shadow:0 24px 60px rgba(0,0,0,.45);font-size:.85rem}
+.rv-menu h6{margin:0 0 2px;font-size:.9rem;font-weight:700}
+.rv-menu .rv-sub{margin:0 0 10px;font-size:.76rem;color:var(--mu);line-height:1.4}
+.rv-menu .rv-lbl{margin:10px 0 6px;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.rv-menu .rv-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.rv-menu .rv-grade{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx);font:inherit;font-size:.76rem;cursor:pointer;line-height:1.25}
+.rv-menu .rv-grade span{font-size:1.15rem}
+.rv-menu .rv-grade small{color:var(--mu);font-size:.68rem}
+.rv-menu .rv-grade:hover,.rv-menu .rv-chip:hover{border-color:var(--t-hub)}
+.rv-menu .rv-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rv-menu .rv-chip{min-height:32px;padding:5px 11px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;font-size:.78rem;cursor:pointer}
+.rv-menu .rv-chip.on{border-color:var(--t-hub);color:var(--t-hub);font-weight:700}
+.rv-menu input[type=date]{min-height:32px;padding:4px 8px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;font-size:.78rem;color-scheme:dark light}
+.rv-menu .rv-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);font-size:.72rem;color:var(--mu)}
+.rv-menu .rv-off{border:0;background:none;color:#ef6b5b;font:inherit;font-size:.76rem;cursor:pointer;padding:4px 0}
+@media (max-width:600px){.rv-menu{left:10px!important;right:10px;top:auto!important;bottom:10px;width:auto}}
+.rv-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100001;display:flex;align-items:center;gap:12px;
+  max-width:calc(100vw - 24px);padding:10px 16px;border-radius:12px;background:#0f1d27;color:#e8eef1;border:1px solid #2c4350;
+  box-shadow:0 16px 40px rgba(0,0,0,.4);font-size:.85rem}
+.rv-toast button{border:0;background:none;color:var(--t-hub,#5eead4);font:inherit;font-weight:700;cursor:pointer;padding:2px 4px}
+</style>
+<script>
+
+const RV = (() => {
+  const KEY = "roteiro-review-v1", PKEY = "roteiro-ia-v1", DAY = 86400000;
+  const STEPS = [1, 3, 7, 21, 60];   // dias até a próxima revisão: sobe quando você lembra fácil
+  const pad = n => String(n).padStart(2, "0");
+  const dateOf = t => { const d = new Date(t); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); };
+  const today = now => dateOf(now == null ? Date.now() : now);
+  const parse = ds => { const p = String(ds).split("-").map(Number); return new Date(p[0], p[1] - 1, p[2], 12); };
+  const addDays = (ds, n) => { const d = parse(ds); d.setDate(d.getDate() + n); return dateOf(d.getTime()); };
+  const between = (a, b) => Math.round((parse(b) - parse(a)) / DAY);   // dias de a até b (meio-dia evita o horário de verão)
+  const fmt = ds => { const p = String(ds).split("-"); return p[2] + "/" + p[1]; };
+  const read = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v && typeof v === "object" ? v : d; } catch (e) { return d; } };
+  const readAll = () => read(KEY, {});
+  const clampStep = s => Math.max(0, Math.min(STEPS.length - 1, s | 0));
+
+  // Revisão marcada de uma aula: {due, step, src} ou null (fora da agenda)
+  function stateOf(rec) {
+    if (!rec || typeof rec !== "object") return null;
+    if ("due" in rec) return rec.due ? { due: String(rec.due), step: clampStep(rec.step), src: rec.src === "manual" ? "manual" : "quiz" } : null;
+    // formato antigo do quiz: revisões 1, 3, 7 e 21 dias depois de passar; "done" = última revisão feita
+    const nx = Array.isArray(rec.next) ? rec.next.map(Number).filter(t => t > 0).sort((a, b) => a - b) : [];
+    const i = nx.findIndex(t => t > (Number(rec.done) || 0));
+    return i < 0 ? null : { due: dateOf(nx[i]), step: clampStep(i), src: "quiz" };
+  }
+
+  // Todas as revisões marcadas, da mais antiga para a mais nova: [{id, due, step, src, n, since?}]
+  function agenda(now) {
+    const recs = readAll(), prog = read(PKEY, {}), t = today(now), out = [];
+    for (const id in recs) {
+      const st = stateOf(recs[id]);
+      if (st) out.push({ id, due: st.due, step: st.step, src: st.src, n: (Array.isArray(recs[id].hist) ? recs[id].hist.length : 0) + 1 });
+    }
+    // marca "↻ Revisar" do formato anterior (sem data): fica para hoje até você agendar, revisar ou tirar
+    for (const id in prog) {
+      const p = prog[id], r = recs[id];
+      if (!p || !p.rv || (r && ("due" in r || stateOf(r)))) continue;
+      out.push({ id, due: t, step: 0, src: "manual", n: 1, since: Number(p.rv) || null });
+    }
+    return out.sort((a, b) => (a.due < b.due ? -1 : a.due > b.due ? 1 : a.id < b.id ? -1 : 1));
+  }
+
+  function byId(now) { const m = {}; agenda(now).forEach(it => { m[it.id] = it; }); return m; }
+
+  function counts(now) {
+    const t = today(now), week = addDays(t, 7);
+    let late = 0, hoje = 0, soon = 0, total = 0;
+    agenda(now).forEach(it => { total++; if (it.due < t) late++; else if (it.due === t) hoje++; else if (it.due <= week) soon++; });
+    return { late, hoje, due: late + hoje, soon, total };
+  }
+
+  // "hoje", "amanhã", "em 3 dias", "atrasada desde 25/11", "30/12"
+  function when(due, now) {
+    const n = between(today(now), due);
+    if (n < 0) return n === -1 ? "atrasada desde ontem" : "atrasada desde " + fmt(due);
+    return n === 0 ? "hoje" : n === 1 ? "amanhã" : n < 7 ? "em " + n + " dias" : fmt(due);
+  }
+
+  // Data da próxima revisão se você disser que foi fácil / com esforço / não lembrei (sem gravar)
+  function preview(id, grade, now) {
+    const rec = readAll()[id] || {}, st = stateOf(rec);
+    let step = st ? st.step : clampStep(rec.step);
+    step = grade === "f" ? step + 1 : grade === "z" ? 0 : step;
+    return step >= STEPS.length ? null : addDays(today(now), STEPS[step]);   // null = aula dominada
+  }
+
+  function write(all) {
+    try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) {}
+    if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
+  }
+
+  // A marca antiga sai do progresso quando a aula passa a ter agenda de verdade. Devolve se havia marca.
+  function dropFlag(id) {
+    const prog = read(PKEY, null);
+    let had = false;
+    if (prog && prog[id] && prog[id].rv) {
+      had = true;
+      delete prog[id].rv;
+      try { localStorage.setItem(PKEY, JSON.stringify(prog)); } catch (e) {}
+    }
+    try { if (typeof PR !== "undefined" && PR && PR[id] && PR[id].rv) { had = true; delete PR[id].rv; } } catch (e) {}
+    return had;
+  }
+
+  function changed(id) {
+    try { if (typeof window !== "undefined" && window.dispatchEvent) window.dispatchEvent(new CustomEvent("rv:change", { detail: { id } })); } catch (e) {}
+  }
+
+  // Grava uma alteração (sempre com "last" novo) e devolve como era antes, para "desfazer":
+  // {rec: registro anterior (ou null), flag: se a aula tinha a marca antiga "↻ Revisar"}
+  function save(id, mutate, now) {
+    now = now == null ? Date.now() : now;
+    const all = readAll(), before = all[id] ? JSON.parse(JSON.stringify(all[id])) : null;
+    const rec = Object.assign({}, all[id] || {}), st = stateOf(rec);
+    if (!("due" in rec)) { rec.due = st ? st.due : null; rec.step = st ? st.step : 0; if (st) rec.src = st.src; }
+    rec.next = [];   // formato antigo convertido: a agenda passa a valer só por "due"
+    mutate(rec, st, today(now), now);
+    rec.last = now;
+    all[id] = rec;
+    write(all);
+    const flag = dropFlag(id);
+    changed(id);
+    return { rec: before, flag };
+  }
+
+  // Agenda (ou muda) a data da revisão. Uma aula nova na agenda conta como "marcada por você".
+  const schedule = (id, due, now) => save(id, (r, st) => { r.due = String(due); if (!st) { r.src = "manual"; r.step = clampStep(r.step); } delete r.mastered; }, now);
+  const remove = (id, now) => save(id, r => { r.due = null; }, now);
+
+  // Desfaz uma alteração com o que save() devolveu: volta o registro de antes, com "last" novo
+  // (senão a nuvem traria de volta a versão desfeita)
+  function restore(id, token, now) {
+    now = now == null ? Date.now() : now;
+    const tk = token || {};
+    if (tk.flag && !(tk.rec && stateOf(tk.rec))) return schedule(id, today(now), now);   // era a marca antiga: volta para hoje
+    const all = readAll();
+    all[id] = tk.rec ? Object.assign({}, tk.rec, { last: now }) : { due: null, step: 0, next: [], last: now };
+    write(all);
+    changed(id);
+    return null;
+  }
+
+  // Revisão feita. Nota: "z" não lembrei (volta amanhã), "m" com esforço (mesmo intervalo), "f" fácil (intervalo maior).
+  // Fácil no último intervalo (60 dias) = aula dominada: sai da agenda.
+  function complete(id, grade, now) {
+    return save(id, (r, st, t, ts) => {
+      let step = st ? st.step : clampStep(r.step);
+      step = grade === "f" ? step + 1 : grade === "z" ? 0 : step;
+      r.hist = (Array.isArray(r.hist) ? r.hist : []).concat([[ts, grade]]).slice(-12);
+      r.done = ts;
+      if (step >= STEPS.length) { r.due = null; r.step = STEPS.length - 1; r.mastered = ts; }
+      else { r.step = step; r.due = addDays(t, STEPS[step]); delete r.mastered; }
+    }, now);
+  }
+
+  // Quiz da aula aprovado. 1ª aprovação: primeira revisão amanhã (se você ainda não tinha marcado uma data).
+  // Refazer o quiz no dia da revisão (ou depois) conta como revisão feita: tudo certo = fácil, senão = com esforço.
+  function quizPassed(id, score, total, now) {
+    now = now == null ? Date.now() : now;
+    const rec0 = readAll()[id] || {}, st0 = stateOf(rec0);
+    if (rec0.passedAt && st0 && st0.due <= today(now)) complete(id, score >= total ? "f" : "m", now);
+    save(id, (r, st, t) => {
+      r.score = score; r.total = total;
+      if (!r.passedAt) {
+        r.passedAt = now;
+        if (!st) { r.due = addDays(t, STEPS[0]); r.step = 0; r.src = "quiz"; }
+      }
+    }, now);
+    return readAll()[id];
+  }
+
+  // Números da página Revisões: últimos 7 dias, dias seguidos revisando, aulas que mais custaram, dominadas
+  function stats(now) {
+    now = now == null ? Date.now() : now;
+    const recs = readAll(), week = now - 7 * DAY, days = new Set(), hard = [];
+    let feitas = 0, f = 0, m = 0, z = 0, dominadas = 0;
+    for (const id in recs) {
+      const r = recs[id] || {}, h = Array.isArray(r.hist) ? r.hist : [];
+      if (r.mastered) dominadas++;
+      let zz = 0;
+      h.forEach(e => {
+        const ts = Number(e && e[0]), g = e && e[1];
+        if (!ts) return;
+        days.add(today(ts));
+        if (g === "z") zz++;
+        if (ts >= week) { feitas++; if (g === "f") f++; else if (g === "m") m++; else if (g === "z") z++; }
+      });
+      if (zz) hard.push([id, zz]);
+    }
+    let streak = 0, d = today(now);
+    if (!days.has(d)) d = addDays(d, -1);   // ainda não revisou hoje: a sequência de ontem continua valendo
+    while (days.has(d)) { streak++; d = addDays(d, -1); }
+    hard.sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
+    return { feitas, f, m, z, streak, dominadas, hard: hard.slice(0, 3) };
+  }
+
+  return { KEY, STEPS, today, addDays, between, fmt, when, stateOf, agenda, byId, counts, preview,
+           schedule, remove, restore, complete, quizPassed, stats };
+})();
+if (typeof module !== "undefined") module.exports = RV;
+
+
+// =================== MENU "QUANDO REVISAR?" (aula, lista da trilha, hub e página Revisões) ===================
+const RV_TRACKS = { ia: { nome: "IA & Código", pagina: "ia.html" }, mat: { nome: "Matemática", pagina: "matematica.html" },
+                    ing: { nome: "Inglês", pagina: "ingles.html" } };
+function rvTrackOf(id) { return String(id).startsWith("mat-") ? "mat" : String(id).startsWith("ing-") ? "ing" : "ia"; }
+// Data para frases: "hoje", "amanhã", "30/11 (em 3 dias)", "04/12"
+function rvDueText(ds) {
+  const n = RV.between(RV.today(), ds);
+  return n <= 1 ? RV.when(ds) : n < 7 ? RV.fmt(ds) + " (" + RV.when(ds) + ")" : RV.fmt(ds);
+}
+function rvEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+let RV_MENU = null;
+function closeReviewMenu() {
+  if (!RV_MENU) return;
+  RV_MENU.el.remove();
+  document.removeEventListener("pointerdown", RV_MENU.out, true);
+  document.removeEventListener("keydown", RV_MENU.key, true);
+  RV_MENU = null;
+}
+
+function rvToast(msg, undo) {
+  let t = document.getElementById("rv-toast");
+  if (t) t.remove();
+  t = document.createElement("div");
+  t.id = "rv-toast"; t.className = "rv-toast"; t.setAttribute("role", "status");
+  t.innerHTML = "<span>" + msg + "</span>" + (undo ? '<button type="button">Desfazer</button>' : "");
+  if (undo) t.querySelector("button").onclick = () => { undo(); t.remove(); };
+  document.body.appendChild(t);
+  clearTimeout(rvToast.timer);
+  rvToast.timer = setTimeout(() => t.remove(), undo ? 6000 : 3500);
+}
+
+// mode: "all" (datas + "já revisei") · "grade" (só "como foi?") · "date" (só datas)
+function openReviewMenu(id, anchor, mode) {
+  if (!id || typeof RV === "undefined") return;
+  if (RV_MENU && RV_MENU.id === id && RV_MENU.anchor === anchor) { closeReviewMenu(); return; }
+  closeReviewMenu();
+  mode = mode || "all";
+  const st = RV.byId()[id], t = RV.today();
+  const el = document.createElement("div");
+  el.className = "rv-menu"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "Revisão da aula");
+  const n0 = st ? RV.between(t, st.due) : 0;
+  let h = st ? "<h6>Revisão " + rvEsc(n0 < 0 ? RV.when(st.due) : rvDueText(st.due)) + "</h6>"
+             : "<h6>Quando revisar esta aula?</h6>";
+  h += '<p class="rv-sub">' + (st ? (st.src === "quiz" ? "Agendada pelo quiz da aula" : "Agendada por você") + " · " + st.n + "ª revisão"
+                                 : "Entra na página Revisões. A situação da aula e os pontos não mudam.") + "</p>";
+  if (mode !== "date") {
+    const nx = g => { const d = RV.preview(id, g); return d ? "próxima " + RV.when(d) : "aula dominada"; };
+    h += '<div class="rv-lbl">' + (st ? "Já revisou? Como foi para lembrar" : "Revisei agora. Como foi") + "</div>" +
+      '<div class="rv-grades">' +
+      '<button type="button" class="rv-grade" data-g="z"><span>😵</span>Não lembrei<small>' + nx("z") + "</small></button>" +
+      '<button type="button" class="rv-grade" data-g="m"><span>🙂</span>Com esforço<small>' + nx("m") + "</small></button>" +
+      '<button type="button" class="rv-grade" data-g="f"><span>😌</span>Fácil<small>' + nx("f") + "</small></button></div>";
+  }
+  if (mode !== "grade") {
+    const ch = [["Hoje", 0], ["Amanhã", 1], ["Em 3 dias", 3], ["Em 1 semana", 7]];
+    h += '<div class="rv-lbl">' + (st ? "Mudar a data" : "Agendar para") + "</div><div class=\"rv-chips\">" +
+      ch.map(([n, d]) => { const ds = RV.addDays(t, d); return '<button type="button" class="rv-chip' + (st && st.due === ds ? " on" : "") + '" data-d="' + ds + '">' + n + "</button>"; }).join("") +
+      '<input type="date" aria-label="Escolher data" min="' + t + '" value="' + (st ? st.due : "") + '"></div>';
+  }
+  h += '<div class="rv-foot"><span>' + (st ? "" : "Dica: o quiz da aula também agenda sozinho.") + "</span>" +
+       (st ? '<button type="button" class="rv-off">Tirar da agenda</button>' : "") + "</div>";
+  el.innerHTML = h;
+  document.body.appendChild(el);
+
+  const done = (msg, undoFrom) => { closeReviewMenu(); rvToast(msg, undoFrom === undefined ? null : () => RV.restore(id, undoFrom)); };
+  el.querySelectorAll(".rv-grade").forEach(b => b.onclick = () => {
+    const g = b.dataset.g, before = RV.complete(id, g), it = RV.byId()[id];
+    done(it ? "Revisão registrada. Próxima: " + rvDueText(it.due) + "." : "🏆 Aula dominada! Ela sai da agenda.", before);
+  });
+  el.querySelectorAll(".rv-chip").forEach(b => b.onclick = () => {
+    const before = RV.schedule(id, b.dataset.d);
+    done("Revisão marcada para " + rvDueText(b.dataset.d) + ".", before);
+  });
+  const inp = el.querySelector("input[type=date]");
+  if (inp) inp.onchange = () => { if (!inp.value) return; const before = RV.schedule(id, inp.value); done("Revisão marcada para " + rvDueText(inp.value) + ".", before); };
+  const off = el.querySelector(".rv-off");
+  if (off) off.onclick = () => { const before = RV.remove(id); done("Aula tirada da agenda.", before); };
+
+  // posição: embaixo do botão (ou em cima, se não couber); no celular o CSS vira uma folha no rodapé
+  const r = anchor && anchor.getBoundingClientRect ? anchor.getBoundingClientRect() : { left: 20, right: 20, top: 80, bottom: 80 };
+  const w = el.offsetWidth, hh = el.offsetHeight;
+  let left = Math.min(Math.max(10, r.right - w), innerWidth - w - 10);
+  let top = r.bottom + 8;
+  if (top + hh > innerHeight - 10) top = Math.max(10, r.top - hh - 8);
+  el.style.left = left + "px"; el.style.top = top + "px";
+
+  const out = e => { if (!el.contains(e.target) && !(anchor && anchor.contains && anchor.contains(e.target))) closeReviewMenu(); };
+  const key = e => { if (e.key === "Escape") { e.stopPropagation(); closeReviewMenu(); } };
+  document.addEventListener("pointerdown", out, true);
+  document.addEventListener("keydown", key, true);
+  RV_MENU = { id, anchor, el, out, key };
+  const first = el.querySelector("button,input"); if (first) first.focus({ preventScroll: true });
+}
+
+// Contador do item "Revisões" no menu: revisões de hoje + atrasadas (vermelho se houver atrasada)
+function rvNavBadge() {
+  const b = document.getElementById("nav-rv-badge");
+  if (!b || typeof RV === "undefined") return;
+  const c = RV.counts();
+  b.textContent = c.due;
+  b.hidden = !c.due;
+  b.classList.toggle("late", c.late > 0);
+  b.title = c.late ? c.late + " atrasada(s) e " + c.hoje + " para hoje" : c.hoje + " para hoje";
+}
+if (typeof window !== "undefined") window.addEventListener("rv:change", () => { try { rvNavBadge(); } catch (e) {} });
+
+</script>
 </head>
 <body data-track="mat">
 
@@ -3247,8 +3566,9 @@ html::view-transition{background:var(--bg)}
       <a href="index.html" class="nav-link ">🏠 Hub Central</a>
       <a href="ia.html" class="nav-link ">🤖 IA & Código</a>
       <a href="matematica.html" class="nav-link active">📐 Matemática</a>
-      <a href="ingles.html" class="nav-link ">🇺🇸 Inglês EnglishBay</a>
-      <a href="projetos.html" class="nav-link">🛠️ Projetos & Portfólio</a>
+      <a href="ingles.html" class="nav-link ">🇺🇸 Inglês</a>
+      <a href="projetos.html" class="nav-link">🛠️ Projetos</a>
+      <a href="revisoes.html" class="nav-link" id="nav-rv-link">↻ Revisões<span class="nav-rv-badge" id="nav-rv-badge" hidden></span></a>
     </nav>
     <div class="nav-right">
 <button type="button" class="ds-k-btn" title="Buscar páginas e tópicos (Ctrl + K)"><span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd></button>
@@ -3278,6 +3598,7 @@ html::view-transition{background:var(--bg)}
   </div>
 </header>
 <script>
+try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões de hoje + atrasadas)
 (function () {
   try {
     var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
@@ -3506,7 +3827,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-0-0', false, 1)" aria-label="Abrir a aula Equações, inequações e gráficos de funções aplicadas" title="▶ Khan · Equações e gráficos">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-0-0', 'more')" aria-expanded="false" aria-controls="more-mat-3-0-0" aria-label="Mais opções de Equações, inequações e gráficos de funções aplicadas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Inequações" onclick="openStudyModal('mat-3-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations/x2f8bb11595b61c86:intro-to-slope-intercept-form/v/slope-intercept-form" target="_blank" rel="noopener" title="📖 Artigo: Funções &amp; Reta">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-0-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Inequações" onclick="openStudyModal('mat-3-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/algebra/x2f8bb11595b61c86:forms-of-linear-equations/x2f8bb11595b61c86:intro-to-slope-intercept-form/v/slope-intercept-form" target="_blank" rel="noopener" title="📖 Artigo: Funções &amp; Reta">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-0-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-0-1" id="top-mat-3-0-1" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Número de Euler e 📖 Artigo: Exp &amp; Log">
@@ -3517,7 +3838,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-0-1', false, 1)" aria-label="Abrir a aula Exponenciais e logaritmos na modelagem de IA" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-0-1', 'more')" aria-expanded="false" aria-controls="more-mat-3-0-1" aria-label="Mais opções de Exponenciais e logaritmos na modelagem de IA" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Número de Euler e" onclick="openStudyModal('mat-3-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:logs/x2ec2f6f830c9fb89:log-intro/v/logarithms" target="_blank" rel="noopener" title="📖 Artigo: Exp &amp; Log">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-0-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Número de Euler e" onclick="openStudyModal('mat-3-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:logs/x2ec2f6f830c9fb89:log-intro/v/logarithms" target="_blank" rel="noopener" title="📖 Artigo: Exp &amp; Log">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-0-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-0-2" id="top-mat-3-0-2" data-search="▶ Khan Academy 🎬 2ª Opção: Soma e produto (EN) 📖 Artigo: Notação Sigma">
@@ -3528,7 +3849,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-0-2', false, 1)" aria-label="Abrir a aula Somatório, produtório e notação matemática em papers" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-0-2', 'more')" aria-expanded="false" aria-controls="more-mat-3-0-2" aria-label="Mais opções de Somatório, produtório e notação matemática em papers" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Soma e produto (EN)" onclick="openStudyModal('mat-3-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-integration-new/ab-6-3/v/sigma-notation-for-sums" target="_blank" rel="noopener" title="📖 Artigo: Notação Sigma">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-0-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Soma e produto (EN)" onclick="openStudyModal('mat-3-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-integration-new/ab-6-3/v/sigma-notation-for-sums" target="_blank" rel="noopener" title="📖 Artigo: Notação Sigma">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-0-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-0-3" id="top-mat-3-0-3" data-search="▶ Khan · Fórmula da distância 🎬 2ª Opção: sentdex Distância 📖 Artigo: Distâncias">
@@ -3539,7 +3860,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-0-3', false, 1)" aria-label="Abrir a aula Geometria analítica e distância Euclidiana vs Manhattan" title="▶ Khan · Fórmula da distância">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-0-3', 'more')" aria-expanded="false" aria-controls="more-mat-3-0-3" aria-label="Mais opções de Geometria analítica e distância Euclidiana vs Manhattan" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: sentdex Distância" onclick="openStudyModal('mat-3-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/geometry/hs-geo-analytic-geometry/hs-geo-distance-and-midpoints/v/distance-formula" target="_blank" rel="noopener" title="📖 Artigo: Distâncias">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-0-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: sentdex Distância" onclick="openStudyModal('mat-3-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/geometry/hs-geo-analytic-geometry/hs-geo-distance-and-midpoints/v/distance-formula" target="_blank" rel="noopener" title="📖 Artigo: Distâncias">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-0-3', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3574,7 +3895,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-0-0', false, 1)" aria-label="Abrir a aula Vetores e espaços vetoriais: intuição geométrica" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-0-0', 'more')" aria-expanded="false" aria-controls="more-mat-0-0-0" aria-label="Mais opções de Vetores e espaços vetoriais: intuição geométrica" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Vetores" onclick="openStudyModal('mat-0-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/vectors/v/vector-introduction-linear-algebra" target="_blank" rel="noopener" title="📖 Artigo: Vetores">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-0-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Vetores" onclick="openStudyModal('mat-0-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/vectors/v/vector-introduction-linear-algebra" target="_blank" rel="noopener" title="📖 Artigo: Vetores">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-0-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-0-1" id="top-mat-0-0-1" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Span &amp; Bases 📖 Artigo: Span &amp; Bases">
@@ -3585,7 +3906,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-0-1', false, 1)" aria-label="Abrir a aula Combinações lineares, espaço gerado (span) e bases" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-0-1', 'more')" aria-expanded="false" aria-controls="more-mat-0-0-1" aria-label="Mais opções de Combinações lineares, espaço gerado (span) e bases" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Span &amp; Bases" onclick="openStudyModal('mat-0-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/linear-combinations/v/linear-combinations-and-span" target="_blank" rel="noopener" title="📖 Artigo: Span &amp; Bases">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-0-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Span &amp; Bases" onclick="openStudyModal('mat-0-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/linear-combinations/v/linear-combinations-and-span" target="_blank" rel="noopener" title="📖 Artigo: Span &amp; Bases">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-0-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-0-2" id="top-mat-0-0-2" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Dot Product 📖 Artigo: Produto Escalar">
@@ -3596,7 +3917,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-0-2', false, 1)" aria-label="Abrir a aula Produto escalar (Dot Product) e projeções" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-0-2', 'more')" aria-expanded="false" aria-controls="more-mat-0-0-2" aria-label="Mais opções de Produto escalar (Dot Product) e projeções" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Dot Product" onclick="openStudyModal('mat-0-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/vector-dot-product-and-vector-length" target="_blank" rel="noopener" title="📖 Artigo: Produto Escalar">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-0-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Dot Product" onclick="openStudyModal('mat-0-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/vector-dot-product-and-vector-length" target="_blank" rel="noopener" title="📖 Artigo: Produto Escalar">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-0-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-0-3" id="top-mat-0-0-3" data-search="▶ Khan Academy 🎬 2ª Opção: Roan · Normas L1 e L2 📖 Artigo: Normas L1 e L2">
@@ -3607,7 +3928,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-0-3', false, 1)" aria-label="Abrir a aula Norma de vetores (L1, L2 Euclidiana) e distâncias" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-0-3', 'more')" aria-expanded="false" aria-controls="more-mat-0-0-3" aria-label="Mais opções de Norma de vetores (L1, L2 Euclidiana) e distâncias" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Roan · Normas L1 e L2" onclick="openStudyModal('mat-0-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors/x9e81a4f98389efdf:vector-magnitude/v/finding-vector-magnitude-from-components" target="_blank" rel="noopener" title="📖 Artigo: Normas L1 e L2">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-0-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Roan · Normas L1 e L2" onclick="openStudyModal('mat-0-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors/x9e81a4f98389efdf:vector-magnitude/v/finding-vector-magnitude-from-components" target="_blank" rel="noopener" title="📖 Artigo: Normas L1 e L2">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-0-3', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-0-4" id="top-mat-0-0-4" data-search="▶ Khan Academy 🎬 2ª Opção: StatQuest Cosseno 📖 Artigo: Cosseno">
@@ -3618,7 +3939,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-0-4', false, 1)" aria-label="Abrir a aula Ângulo entre vetores e Similaridade de Cosseno" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-0-4', 'more')" aria-expanded="false" aria-controls="more-mat-0-0-4" aria-label="Mais opções de Ângulo entre vetores e Similaridade de Cosseno" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-0-4" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-4', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-4', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-0-4', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-0-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Cosseno" onclick="openStudyModal('mat-0-0-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/defining-the-angle-between-vectors" target="_blank" rel="noopener" title="📖 Artigo: Cosseno">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-0-4')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-0-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Cosseno" onclick="openStudyModal('mat-0-0-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-0-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/dot-cross-products/v/defining-the-angle-between-vectors" target="_blank" rel="noopener" title="📖 Artigo: Cosseno">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-0-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-0-4', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3636,7 +3957,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-0', false, 1)" aria-label="Abrir a aula Matrizes como transformações lineares no espaço" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-0', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-0" aria-label="Mais opções de Matrizes como transformações lineares no espaço" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Matrizes" onclick="openStudyModal('mat-0-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/linear-transformations/v/linear-transformations" target="_blank" rel="noopener" title="📖 Artigo: Transformações">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Matrizes" onclick="openStudyModal('mat-0-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/linear-transformations/v/linear-transformations" target="_blank" rel="noopener" title="📖 Artigo: Transformações">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-1-1" id="top-mat-0-1-1" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Mult. Matrizes 📖 Artigo: Mult. Matrizes">
@@ -3647,7 +3968,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-1', false, 1)" aria-label="Abrir a aula Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-1', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-1" aria-label="Mais opções de Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Mult. Matrizes" onclick="openStudyModal('mat-0-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/v/matrix-multiplication-intro" target="_blank" rel="noopener" title="📖 Artigo: Mult. Matrizes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Mult. Matrizes" onclick="openStudyModal('mat-0-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/v/matrix-multiplication-intro" target="_blank" rel="noopener" title="📖 Artigo: Mult. Matrizes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-1-2" id="top-mat-0-1-2" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Determinante 📖 Artigo: Determinantes">
@@ -3658,7 +3979,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-2', false, 1)" aria-label="Abrir a aula Sistemas de equações lineares e determinantes" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-2', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-2" aria-label="Mais opções de Sistemas de equações lineares e determinantes" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Determinante" onclick="openStudyModal('mat-0-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:determinant-of-a-2x2-matrix/v/finding-the-determinant-of-a-2x2-matrix" target="_blank" rel="noopener" title="📖 Artigo: Determinantes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Determinante" onclick="openStudyModal('mat-0-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:determinant-of-a-2x2-matrix/v/finding-the-determinant-of-a-2x2-matrix" target="_blank" rel="noopener" title="📖 Artigo: Determinantes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z topic-optional" data-id="mat-0-1-3" id="top-mat-0-1-3" data-opt="1" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Inversa &amp; Colunas 📖 Artigo: Matriz Inversa">
@@ -3669,7 +3990,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-3', false, 1)" aria-label="Abrir a aula Inversa de matriz e pseudoinversa de Moore-Penrose" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-3', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-3" aria-label="Mais opções de Inversa de matriz e pseudoinversa de Moore-Penrose" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Inversa &amp; Colunas" onclick="openStudyModal('mat-0-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:intro-to-matrix-inverses/v/inverse-matrix-part-1" target="_blank" rel="noopener" title="📖 Artigo: Matriz Inversa">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Inversa &amp; Colunas" onclick="openStudyModal('mat-0-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:intro-to-matrix-inverses/v/inverse-matrix-part-1" target="_blank" rel="noopener" title="📖 Artigo: Matriz Inversa">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-3', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-1-4" id="top-mat-0-1-4" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Autovalores 📖 Artigo: Autovetores">
@@ -3680,7 +4001,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-4', false, 1)" aria-label="Abrir a aula Autovalores e Autovetores (Eigenvalues &amp; Eigenvectors)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-4', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-4" aria-label="Mais opções de Autovalores e Autovetores (Eigenvalues &amp; Eigenvectors)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-4" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-4', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-4', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-4', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Autovalores" onclick="openStudyModal('mat-0-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/eigen-everything/v/linear-algebra-introduction-to-eigenvalues-and-eigenvectors" target="_blank" rel="noopener" title="📖 Artigo: Autovetores">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-4')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Autovalores" onclick="openStudyModal('mat-0-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/eigen-everything/v/linear-algebra-introduction-to-eigenvalues-and-eigenvectors" target="_blank" rel="noopener" title="📖 Artigo: Autovetores">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-4', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-0-1-5" id="top-mat-0-1-5" data-search="▶ Fabricio Murai · SVD 🎬 2ª Opção: SVD visual (EN) 📖 Artigo: SVD &amp; PCA">
@@ -3691,7 +4012,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-0-1-5', false, 1)" aria-label="Abrir a aula Decomposição em Valores Singulares (SVD) e PCA" title="▶ Fabricio Murai · SVD">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-0-1-5', 'more')" aria-expanded="false" aria-controls="more-mat-0-1-5" aria-label="Mais opções de Decomposição em Valores Singulares (SVD) e PCA" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-0-1-5" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-5', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-5', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-0-1-5', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-0-1-5" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: SVD visual (EN)" onclick="openStudyModal('mat-0-1-5', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-5', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/eigen-everything/v/linear-algebra-eigenvalues-of-a-2x2-matrix" target="_blank" rel="noopener" title="📖 Artigo: SVD &amp; PCA">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-5')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-0-1-5')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-0-1-5" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: SVD visual (EN)" onclick="openStudyModal('mat-0-1-5', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-0-1-5', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/eigen-everything/v/linear-algebra-eigenvalues-of-a-2x2-matrix" target="_blank" rel="noopener" title="📖 Artigo: SVD &amp; PCA">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-0-1-5')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-0-1-5', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3726,7 +4047,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-0-0', false, 1)" aria-label="Abrir a aula Limites e taxa de variação instantânea (ideia geral)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-0-0', 'more')" aria-expanded="false" aria-controls="more-mat-1-0-0" aria-label="Mais opções de Limites e taxa de variação instantânea (ideia geral)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Essência do Cálculo" onclick="openStudyModal('mat-1-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/AP-calculus-ab/ab-limits-new/ab-1-2/v/introduction-to-limits-hd" target="_blank" rel="noopener" title="📖 Artigo: Limites &amp; Taxa">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-0-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Essência do Cálculo" onclick="openStudyModal('mat-1-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/AP-calculus-ab/ab-limits-new/ab-1-2/v/introduction-to-limits-hd" target="_blank" rel="noopener" title="📖 Artigo: Limites &amp; Taxa">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-0-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-0-1" id="top-mat-1-0-1" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Derivadas Geométricas 📖 Artigo: Regras Derivação">
@@ -3737,7 +4058,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-0-1', false, 1)" aria-label="Abrir a aula Derivadas fundamentais e regras básicas (potência, produto, soma)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-0-1', 'more')" aria-expanded="false" aria-controls="more-mat-1-0-1" aria-label="Mais opções de Derivadas fundamentais e regras básicas (potência, produto, soma)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Derivadas Geométricas" onclick="openStudyModal('mat-1-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new/ab-2-5/v/power-rule" target="_blank" rel="noopener" title="📖 Artigo: Regras Derivação">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-0-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Derivadas Geométricas" onclick="openStudyModal('mat-1-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new/ab-2-5/v/power-rule" target="_blank" rel="noopener" title="📖 Artigo: Regras Derivação">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-0-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-0-2" id="top-mat-1-0-2" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Regra da Cadeia 📖 Artigo: Regra da Cadeia">
@@ -3748,7 +4069,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-0-2', false, 1)" aria-label="Abrir a aula Regra da Cadeia (Chain Rule) - o motor do Backpropagation" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-0-2', 'more')" aria-expanded="false" aria-controls="more-mat-1-0-2" aria-label="Mais opções de Regra da Cadeia (Chain Rule) - o motor do Backpropagation" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Regra da Cadeia" onclick="openStudyModal('mat-1-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new/ab-3-1a/v/chain-rule-introduction" target="_blank" rel="noopener" title="📖 Artigo: Regra da Cadeia">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-0-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Regra da Cadeia" onclick="openStudyModal('mat-1-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new/ab-3-1a/v/chain-rule-introduction" target="_blank" rel="noopener" title="📖 Artigo: Regra da Cadeia">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-0-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-0-3" id="top-mat-1-0-3" data-search="▶ ML para humanos · Ativações e derivadas 🎬 2ª Opção: 3B1B Redes Neurais 📖 Artigo: Ativações">
@@ -3759,7 +4080,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-0-3', false, 1)" aria-label="Abrir a aula Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)" title="▶ ML para humanos · Ativações e derivadas">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-0-3', 'more')" aria-expanded="false" aria-controls="more-mat-1-0-3" aria-label="Mais opções de Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Redes Neurais" onclick="openStudyModal('mat-1-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new/ab-2-1/v/derivative-as-a-concept" target="_blank" rel="noopener" title="📖 Artigo: Ativações">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-0-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Redes Neurais" onclick="openStudyModal('mat-1-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new/ab-2-1/v/derivative-as-a-concept" target="_blank" rel="noopener" title="📖 Artigo: Ativações">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-0-3', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3777,7 +4098,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-1-0', false, 1)" aria-label="Abrir a aula Derivadas parciais e o vetor Gradiente (nabla f)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-1-0', 'more')" aria-expanded="false" aria-controls="more-mat-1-1-0" aria-label="Mais opções de Derivadas parciais e o vetor Gradiente (nabla f)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Gradiente Descendente" onclick="openStudyModal('mat-1-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivative-and-gradient-articles/a/the-gradient" target="_blank" rel="noopener" title="📖 Artigo: Vetor Gradiente">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-1-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Gradiente Descendente" onclick="openStudyModal('mat-1-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/partial-derivative-and-gradient-articles/a/the-gradient" target="_blank" rel="noopener" title="📖 Artigo: Vetor Gradiente">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-1-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z topic-optional" data-id="mat-1-1-1" id="top-mat-1-1-1" data-opt="1" data-search="▶ DataMListic · Jacobiana (EN) 🎬 2ª Opção: Khan Hessiana (EN) 📖 Artigo: Jacobiana &amp; Hessiana">
@@ -3788,7 +4109,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-1-1', false, 1)" aria-label="Abrir a aula Matriz Jacobiana e Matriz Hessiana (curvatura da loss)" title="▶ DataMListic · Jacobiana (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-1-1', 'more')" aria-expanded="false" aria-controls="more-mat-1-1-1" aria-label="Mais opções de Matriz Jacobiana e Matriz Hessiana (curvatura da loss)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Hessiana (EN)" onclick="openStudyModal('mat-1-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/jacobian/v/computing-a-jacobian-matrix" target="_blank" rel="noopener" title="📖 Artigo: Jacobiana &amp; Hessiana">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-1-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Hessiana (EN)" onclick="openStudyModal('mat-1-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/jacobian/v/computing-a-jacobian-matrix" target="_blank" rel="noopener" title="📖 Artigo: Jacobiana &amp; Hessiana">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-1-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-1-2" id="top-mat-1-1-2" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Gradiente 📖 Artigo: Gradiente Descendente">
@@ -3799,7 +4120,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-1-2', false, 1)" aria-label="Abrir a aula Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-1-2', 'more')" aria-expanded="false" aria-controls="more-mat-1-1-2" aria-label="Mais opções de Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Gradiente" onclick="openStudyModal('mat-1-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/gradient-and-directional-derivatives/v/gradient" target="_blank" rel="noopener" title="📖 Artigo: Gradiente Descendente">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-1-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Gradiente" onclick="openStudyModal('mat-1-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/gradient-and-directional-derivatives/v/gradient" target="_blank" rel="noopener" title="📖 Artigo: Gradiente Descendente">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-1-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-1-3" id="top-mat-1-1-3" data-search="▶ Daniel Dalip · Adam e RMSProp 🎬 2ª Opção: DeepBean (EN) 📖 Artigo: Otimizador Adam">
@@ -3810,7 +4131,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-1-3', false, 1)" aria-label="Abrir a aula Otimizadores modernos: Momentum, RMSprop e Adam" title="▶ Daniel Dalip · Adam e RMSProp">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-1-3', 'more')" aria-expanded="false" aria-controls="more-mat-1-1-3" aria-label="Mais opções de Otimizadores modernos: Momentum, RMSprop e Adam" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-1-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: DeepBean (EN)" onclick="openStudyModal('mat-1-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/multivariable-chain-rule/v/multivariable-chain-rule" target="_blank" rel="noopener" title="📖 Artigo: Otimizador Adam">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-1-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: DeepBean (EN)" onclick="openStudyModal('mat-1-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/multivariable-derivatives/multivariable-chain-rule/v/multivariable-chain-rule" target="_blank" rel="noopener" title="📖 Artigo: Otimizador Adam">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-1-3', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-1-1-4" id="top-mat-1-1-4" data-search="▶ Tutoriais de Programação · Learning rate 🎬 2ª Opção: StatQuest Learning Rate 📖 Artigo: Learning Rate">
@@ -3821,7 +4142,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-1-1-4', false, 1)" aria-label="Abrir a aula Taxa de aprendizado (Learning Rate), convergência e pontos de sela" title="▶ Tutoriais de Programação · Learning rate">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-1-1-4', 'more')" aria-expanded="false" aria-controls="more-mat-1-1-4" aria-label="Mais opções de Taxa de aprendizado (Learning Rate), convergência e pontos de sela" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-1-1-4" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-4', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-4', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-1-1-4', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-1-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Learning Rate" onclick="openStudyModal('mat-1-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/optimizing-multivariable-functions/a/maximums-minimums-and-saddle-points" target="_blank" rel="noopener" title="📖 Artigo: Learning Rate">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-1-1-4')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-1-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Learning Rate" onclick="openStudyModal('mat-1-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-1-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/multivariable-calculus/applications-of-multivariable-derivatives/optimizing-multivariable-functions/a/maximums-minimums-and-saddle-points" target="_blank" rel="noopener" title="📖 Artigo: Learning Rate">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-1-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-1-1-4', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3856,7 +4177,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-0-0', false, 1)" aria-label="Abrir a aula Variáveis aleatórias discretas e contínuas" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-0-0', 'more')" aria-expanded="false" aria-controls="more-mat-2-0-0" aria-label="Mais opções de Variáveis aleatórias discretas e contínuas" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Discretas (EN)" onclick="openStudyModal('mat-2-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-discrete/v/random-variables" target="_blank" rel="noopener" title="📖 Artigo: Var. Aleatórias">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-0-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Khan Discretas (EN)" onclick="openStudyModal('mat-2-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-discrete/v/random-variables" target="_blank" rel="noopener" title="📖 Artigo: Var. Aleatórias">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-0-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-0-1" id="top-mat-2-0-1" data-search="▶ Khan Academy 🎬 2ª Opção: StatQuest Variância 📖 Artigo: Variância &amp; Desvio">
@@ -3867,7 +4188,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-0-1', false, 1)" aria-label="Abrir a aula Média, mediana, variância e desvio padrão" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-0-1', 'more')" aria-expanded="false" aria-controls="more-mat-2-0-1" aria-label="Mais opções de Média, mediana, variância e desvio padrão" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Variância" onclick="openStudyModal('mat-2-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-population/v/range-variance-and-standard-deviation-as-measures-of-dispersion" target="_blank" rel="noopener" title="📖 Artigo: Variância &amp; Desvio">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-0-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Variância" onclick="openStudyModal('mat-2-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/variance-standard-deviation-population/v/range-variance-and-standard-deviation-as-measures-of-dispersion" target="_blank" rel="noopener" title="📖 Artigo: Variância &amp; Desvio">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-0-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-0-2" id="top-mat-2-0-2" data-search="▶ Khan Academy 🎬 2ª Opção: StatQuest Covariância 📖 Artigo: Correlação">
@@ -3878,7 +4199,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-0-2', false, 1)" aria-label="Abrir a aula Esperança matemática, covariância e correlação" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-0-2', 'more')" aria-expanded="false" aria-controls="more-mat-2-0-2" aria-label="Mais opções de Esperança matemática, covariância e correlação" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Covariância" onclick="openStudyModal('mat-2-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-discrete/v/expected-value-of-a-discrete-random-variable" target="_blank" rel="noopener" title="📖 Artigo: Correlação">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-0-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Covariância" onclick="openStudyModal('mat-2-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-discrete/v/expected-value-of-a-discrete-random-variable" target="_blank" rel="noopener" title="📖 Artigo: Correlação">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-0-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-0-3" id="top-mat-2-0-3" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Teorema de Bayes 📖 Artigo: Teorema de Bayes">
@@ -3889,7 +4210,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-0-3', false, 1)" aria-label="Abrir a aula Probabilidade condicional e Teorema de Bayes" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-0-3', 'more')" aria-expanded="false" aria-controls="more-mat-2-0-3" aria-label="Mais opções de Probabilidade condicional e Teorema de Bayes" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-0-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-0-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Teorema de Bayes" onclick="openStudyModal('mat-2-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/probability-library/conditional-probability-independence/v/calculating-conditional-probability" target="_blank" rel="noopener" title="📖 Artigo: Teorema de Bayes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-0-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-0-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Teorema de Bayes" onclick="openStudyModal('mat-2-0-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-0-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/probability-library/conditional-probability-independence/v/calculating-conditional-probability" target="_blank" rel="noopener" title="📖 Artigo: Teorema de Bayes">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-0-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-0-3', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3907,7 +4228,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-0', false, 1)" aria-label="Abrir a aula Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-0', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-0" aria-label="Mais opções de Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Dist. Normal" onclick="openStudyModal('mat-2-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library/v/introduction-to-the-normal-distribution" target="_blank" rel="noopener" title="📖 Artigo: Curva Normal">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Dist. Normal" onclick="openStudyModal('mat-2-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/normal-distributions-library/v/introduction-to-the-normal-distribution" target="_blank" rel="noopener" title="📖 Artigo: Curva Normal">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z topic-optional" data-id="mat-2-1-1" id="top-mat-2-1-1" data-opt="1" data-search="▶ Khan Academy 🎬 2ª Opção: StatQuest Limite Central 📖 Artigo: Limite Central">
@@ -3918,7 +4239,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-1', false, 1)" aria-label="Abrir a aula Teorema do Limite Central e amostragem" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-1', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-1" aria-label="Mais opções de Teorema do Limite Central e amostragem" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Limite Central" onclick="openStudyModal('mat-2-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/sampling-distributions-library/sample-means/v/central-limit-theorem" target="_blank" rel="noopener" title="📖 Artigo: Limite Central">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Limite Central" onclick="openStudyModal('mat-2-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/sampling-distributions-library/sample-means/v/central-limit-theorem" target="_blank" rel="noopener" title="📖 Artigo: Limite Central">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-1-2" id="top-mat-2-1-2" data-search="▶ Khan Academy 🎬 2ª Opção: StatQuest Confiança 📖 Artigo: Confiança &amp; p-valor">
@@ -3929,7 +4250,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-2', false, 1)" aria-label="Abrir a aula Intervalos de confiança e teste de hipóteses (noção)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-2', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-2" aria-label="Mais opções de Intervalos de confiança e teste de hipóteses (noção)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Confiança" onclick="openStudyModal('mat-2-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/confidence-intervals-one-sample/introduction-to-confidence-intervals/v/confidence-intervals-and-margin-of-error" target="_blank" rel="noopener" title="📖 Artigo: Confiança &amp; p-valor">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Confiança" onclick="openStudyModal('mat-2-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/confidence-intervals-one-sample/introduction-to-confidence-intervals/v/confidence-intervals-and-margin-of-error" target="_blank" rel="noopener" title="📖 Artigo: Confiança &amp; p-valor">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-1-3" id="top-mat-2-1-3" data-search="▶ A Escola de Exatas · Verossimilhança 🎬 2ª Opção: StatQuest MLE 📖 Artigo: MLE">
@@ -3940,7 +4261,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-3', false, 1)" aria-label="Abrir a aula Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)" title="▶ A Escola de Exatas · Verossimilhança">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-3', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-3" aria-label="Mais opções de Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest MLE" onclick="openStudyModal('mat-2-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-continuous/v/probability-density-functions" target="_blank" rel="noopener" title="📖 Artigo: MLE">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest MLE" onclick="openStudyModal('mat-2-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/random-variables-stats-library/random-variables-continuous/v/probability-density-functions" target="_blank" rel="noopener" title="📖 Artigo: MLE">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-3', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-1-4" id="top-mat-2-1-4" data-search="▶ Apoena Stack · Bias e Variância 🎬 2ª Opção: StatQuest Viés vs Variância 📖 Artigo: Viés vs Variância">
@@ -3951,7 +4272,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-4', false, 1)" aria-label="Abrir a aula Trade-off Viés vs. Variância (Bias-Variance Dilemma)" title="▶ Apoena Stack · Bias e Variância">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-4', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-4" aria-label="Mais opções de Trade-off Viés vs. Variância (Bias-Variance Dilemma)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-4" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-4', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-4', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-4', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Viés vs Variância" onclick="openStudyModal('mat-2-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data/introduction-to-trend-lines/v/fitting-a-line-to-data" target="_blank" rel="noopener" title="📖 Artigo: Viés vs Variância">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-4')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-4" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Viés vs Variância" onclick="openStudyModal('mat-2-1-4', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-4', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data/introduction-to-trend-lines/v/fitting-a-line-to-data" target="_blank" rel="noopener" title="📖 Artigo: Viés vs Variância">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-4')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-4', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-2-1-5" id="top-mat-2-1-5" data-search="▶ Comunidade DS · Teste A/B 🎬 2ª Opção: StatQuest Bootstrapping 📘 Khan Academy: Testes de significância">
@@ -3962,7 +4283,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-2-1-5', false, 1)" aria-label="Abrir a aula Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)" title="▶ Comunidade DS · Teste A/B">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-2-1-5', 'more')" aria-expanded="false" aria-controls="more-mat-2-1-5" aria-label="Mais opções de Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-2-1-5" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-5', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-5', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-2-1-5', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-2-1-5" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Bootstrapping" onclick="openStudyModal('mat-2-1-5', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-5', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/significance-tests-one-sample" target="_blank" rel="noopener" title="📘 Khan Academy: Testes de significância">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-5')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-2-1-5')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-2-1-5" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Bootstrapping" onclick="openStudyModal('mat-2-1-5', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-2-1-5', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/significance-tests-one-sample" target="_blank" rel="noopener" title="📘 Khan Academy: Testes de significância">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-2-1-5')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-2-1-5', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -3980,7 +4301,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-1-0', false, 1)" aria-label="Abrir a aula Entropia de Shannon (medida de incerteza da informação)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-1-0', 'more')" aria-expanded="false" aria-controls="more-mat-3-1-0" aria-label="Mais opções de Entropia de Shannon (medida de incerteza da informação)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Entropia de Shannon" onclick="openStudyModal('mat-3-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/computing/computer-science/informationtheory/moderninfotheory/v/information-entropy" target="_blank" rel="noopener" title="📖 Artigo: Entropia Shannon">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-1-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Entropia de Shannon" onclick="openStudyModal('mat-3-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/computing/computer-science/informationtheory/moderninfotheory/v/information-entropy" target="_blank" rel="noopener" title="📖 Artigo: Entropia Shannon">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-1-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-1-1" id="top-mat-3-1-1" data-search="▶ Daniel Krei · Cross Entropy (EN) 🎬 2ª Opção: StatQuest Cross-Entropy 📖 Artigo: Softmax &amp; Cross-Entropy">
@@ -3991,7 +4312,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-1-1', false, 1)" aria-label="Abrir a aula Entropia Cruzada (Cross-Entropy Loss) e função Softmax" title="▶ Daniel Krei · Cross Entropy (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-1-1', 'more')" aria-expanded="false" aria-controls="more-mat-3-1-1" aria-label="Mais opções de Entropia Cruzada (Cross-Entropy Loss) e função Softmax" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Cross-Entropy" onclick="openStudyModal('mat-3-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/computing/computer-science/informationtheory" target="_blank" rel="noopener" title="📖 Artigo: Softmax &amp; Cross-Entropy">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-1-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: StatQuest Cross-Entropy" onclick="openStudyModal('mat-3-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/computing/computer-science/informationtheory" target="_blank" rel="noopener" title="📖 Artigo: Softmax &amp; Cross-Entropy">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-1-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-1-2" id="top-mat-3-1-2" data-search="▶ DataMListic · KL (EN) 🎬 2ª Opção: Adian Liusie KL 📖 Artigo: Divergência KL">
@@ -4002,7 +4323,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-1-2', false, 1)" aria-label="Abrir a aula Divergência de Kullback-Leibler (KL Divergence)" title="▶ DataMListic · KL (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-1-2', 'more')" aria-expanded="false" aria-controls="more-mat-3-1-2" aria-label="Mais opções de Divergência de Kullback-Leibler (KL Divergence)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Adian Liusie KL" onclick="openStudyModal('mat-3-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/z-scores/v/ck12-org-normal-distribution-problems-z-score" target="_blank" rel="noopener" title="📖 Artigo: Divergência KL">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-1-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Adian Liusie KL" onclick="openStudyModal('mat-3-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/modeling-distributions-of-data/z-scores/v/ck12-org-normal-distribution-problems-z-score" target="_blank" rel="noopener" title="📖 Artigo: Divergência KL">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-1-2', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-3-1-3" id="top-mat-3-1-3" data-search="▶ Khan Academy 🎬 2ª Opção: CodeEmporium Perdas (EN) 📖 Artigo: MSE, MAE &amp; Huber">
@@ -4013,7 +4334,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-3-1-3', false, 1)" aria-label="Abrir a aula Funções de perda de regressão (MSE, MAE, Huber) e classificação" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-3-1-3', 'more')" aria-expanded="false" aria-controls="more-mat-3-1-3" aria-label="Mais opções de Funções de perda de regressão (MSE, MAE, Huber) e classificação" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-3-1-3" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-3', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-3', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-3-1-3', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-3-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: CodeEmporium Perdas (EN)" onclick="openStudyModal('mat-3-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data/more-on-regression/v/residual-plots" target="_blank" rel="noopener" title="📖 Artigo: MSE, MAE &amp; Huber">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-3-1-3')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-3-1-3" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: CodeEmporium Perdas (EN)" onclick="openStudyModal('mat-3-1-3', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-3-1-3', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/statistics-probability/describing-relationships-quantitative-data/more-on-regression/v/residual-plots" target="_blank" rel="noopener" title="📖 Artigo: MSE, MAE &amp; Huber">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-3-1-3')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-3-1-3', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4048,7 +4369,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-0-0', false, 1)" aria-label="Abrir a aula Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs" title="▶ Gabriel Zago · Maldição da dimensionalidade">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-0-0', 'more')" aria-expanded="false" aria-controls="more-mat-4-0-0" aria-label="Mais opções de Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-0-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Fatos em LLMs" onclick="openStudyModal('mat-4-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/subspaces-and-the-basis-for-a-subspace/v/linear-subspaces" target="_blank" rel="noopener" title="📖 Artigo: Alta Dimensão">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-0-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-0-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Fatos em LLMs" onclick="openStudyModal('mat-4-0-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/vectors-and-spaces/subspaces-and-the-basis-for-a-subspace/v/linear-subspaces" target="_blank" rel="noopener" title="📖 Artigo: Alta Dimensão">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-0-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-4-0-1" id="top-mat-4-0-1" data-search="▶ Khan Academy 🎬 2ª Opção: Vida com IA 📖 Artigo: Norm. Embeddings">
@@ -4059,7 +4380,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-0-1', false, 1)" aria-label="Abrir a aula Normalização de embeddings e geometria do espaço semântico" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-0-1', 'more')" aria-expanded="false" aria-controls="more-mat-4-0-1" aria-label="Mais opções de Normalização de embeddings e geometria do espaço semântico" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-0-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Vida com IA" onclick="openStudyModal('mat-4-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors/x9e81a4f98389efdf:unit-vectors/v/intro-unit-vector-notation" target="_blank" rel="noopener" title="📖 Artigo: Norm. Embeddings">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-0-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-0-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: Vida com IA" onclick="openStudyModal('mat-4-0-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:vectors/x9e81a4f98389efdf:unit-vectors/v/intro-unit-vector-notation" target="_blank" rel="noopener" title="📖 Artigo: Norm. Embeddings">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-0-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-4-0-2" id="top-mat-4-0-2" data-search="▶ Khan Academy 🎬 2ª Opção: 3B1B Atenção em Transformers 📖 Artigo: Matrizes Q, K, V">
@@ -4070,7 +4391,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-0-2', false, 1)" aria-label="Abrir a aula Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)" title="▶ Khan Academy">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-0-2', 'more')" aria-expanded="false" aria-controls="more-mat-4-0-2" aria-label="Mais opções de Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-0-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-0-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Atenção em Transformers" onclick="openStudyModal('mat-4-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/orthogonal-projections/v/linear-algebra-projections-onto-subspaces" target="_blank" rel="noopener" title="📖 Artigo: Matrizes Q, K, V">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-0-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-0-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Atenção em Transformers" onclick="openStudyModal('mat-4-0-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-0-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/alternate-bases/orthogonal-projections/v/linear-algebra-projections-onto-subspaces" target="_blank" rel="noopener" title="📖 Artigo: Matrizes Q, K, V">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-0-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-0-2', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4088,7 +4409,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-1-0', false, 1)" aria-label="Abrir a aula Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V" title="▶ Aprendiz do Futuro · Self-Attention">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-1-0', 'more')" aria-expanded="false" aria-controls="more-mat-4-1-0" aria-label="Mais opções de Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-1-0" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-0', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-0', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-0', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Fórmula da Atenção" onclick="openStudyModal('mat-4-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/a/multiplying-matrices" target="_blank" rel="noopener" title="📖 Artigo: Fórmula da Atenção">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-1-0')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-1-0" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Fórmula da Atenção" onclick="openStudyModal('mat-4-1-0', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-0', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/precalculus/x9e81a4f98389efdf:matrices/x9e81a4f98389efdf:multiplying-matrices-by-matrices/a/multiplying-matrices" target="_blank" rel="noopener" title="📖 Artigo: Fórmula da Atenção">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-0')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-1-0', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-4-1-1" id="top-mat-4-1-1" data-search="▶ Visual AI · Multi-Head (EN) 🎬 2ª Opção: 3B1B Multi-Head 📖 Artigo: Multi-Head Attention">
@@ -4099,7 +4420,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-1-1', false, 1)" aria-label="Abrir a aula Mecanismo Multi-Head Attention: divisão de dimensões e concatenação" title="▶ Visual AI · Multi-Head (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-1-1', 'more')" aria-expanded="false" aria-controls="more-mat-4-1-1" aria-label="Mais opções de Mecanismo Multi-Head Attention: divisão de dimensões e concatenação" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-1-1" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-1', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-1', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-1', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Multi-Head" onclick="openStudyModal('mat-4-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/composition-of-transformations/v/linear-algebra-compositions-of-linear-transformations-1" target="_blank" rel="noopener" title="📖 Artigo: Multi-Head Attention">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-1-1')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-1-1" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: 3B1B Multi-Head" onclick="openStudyModal('mat-4-1-1', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-1', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/composition-of-transformations/v/linear-algebra-compositions-of-linear-transformations-1" target="_blank" rel="noopener" title="📖 Artigo: Multi-Head Attention">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-1')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-1-1', this)">↻ Revisar</button></div>
                 </div>
                 
                 <div class="topic-row status-z" data-id="mat-4-1-2" id="top-mat-4-1-2" data-search="▶ BrainDrain · Positional Encoding (EN) 🎬 2ª Opção: ExplainingAI (EN) 📖 Artigo: Positional &amp; RoPE">
@@ -4110,7 +4431,7 @@ html::view-transition{background:var(--bg)}
                   <button class="row-play" onclick="openStudyModal('mat-4-1-2', false, 1)" aria-label="Abrir a aula Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)" title="▶ BrainDrain · Positional Encoding (EN)">▶</button>
                   <button class="row-more" onclick="toggleRowPanel('mat-4-1-2', 'more')" aria-expanded="false" aria-controls="more-mat-4-1-2" aria-label="Mais opções de Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)" title="Mais opções">⋯</button>
                   <div class="topic-panel" id="status-mat-4-1-2" hidden><button class="row-opt" data-status="z" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-2', 'z')">Do zero</button><button class="row-opt" data-status="r" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-2', 'r')">Em andamento</button><button class="row-opt" data-status="e" aria-pressed="false" onclick="chooseTopicStatus('mat-4-1-2', 'e')">Concluído</button></div>
-                  <div class="topic-panel" id="more-mat-4-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: ExplainingAI (EN)" onclick="openStudyModal('mat-4-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/lin-trans-examples/v/linear-transformation-examples-rotations-in-r2" target="_blank" rel="noopener" title="📖 Artigo: Positional &amp; RoPE">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview('mat-4-1-2')">↻ Revisar</button></div>
+                  <div class="topic-panel" id="more-mat-4-1-2" hidden><button class="row-opt" data-act="video2" title="🎬 2ª Opção: ExplainingAI (EN)" onclick="openStudyModal('mat-4-1-2', false, 2)">2º vídeo</button><button class="row-opt" data-act="guide" onclick="openStudyModal('mat-4-1-2', true, 1)">Aula Visual</button><a class="row-opt" data-act="doc" href="https://pt.khanacademy.org/math/linear-algebra/matrix-transformations/lin-trans-examples/v/linear-transformation-examples-rotations-in-r2" target="_blank" rel="noopener" title="📖 Artigo: Positional &amp; RoPE">Material de apoio ↗</a><button class="row-opt" data-act="notes" onclick="openTopicNotes('mat-4-1-2')">Anotações</button><button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu('mat-4-1-2', this)">↻ Revisar</button></div>
                 </div>
                 
               </div>
@@ -4144,7 +4465,7 @@ html::view-transition{background:var(--bg)}
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
           <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Em andamento → Concluído">Do zero</button>
-          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" onclick="toggleTopicReview(CURRENT_MODAL_TOPIC_ID)" title="Colocar esta aula na lista de revisão (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
+          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu(CURRENT_MODAL_TOPIC_ID, this)" title="Agendar a revisão desta aula (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
         </div>
 
         <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
@@ -5359,6 +5680,8 @@ async function awsRealtimePullFromDynamoDB() {
   if (typeof calcAndPaint === "function") calcAndPaint();
   if (typeof renderHubDashboard === "function") renderHubDashboard();
   if (typeof renderProjects === "function") renderProjects();
+  // A agenda de revisões pode ter mudado (outro aparelho): menu, listas e página Revisões se atualizam
+  try { window.dispatchEvent(new CustomEvent("rv:change")); } catch (e) {}
   if (extraChanged && user) scheduleAwsRealtimeSync();
   return true;
 }
@@ -5638,6 +5961,7 @@ async function syncTopicToServer(topicId) {
 function paint() {
   let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0, reviewCount = 0;
   const optCount = { e: 0, r: 0, z: 0 };
+  const rvMap = typeof RV !== "undefined" ? RV.byId() : {};   // revisões marcadas (agenda única)
 
   const allRows = document.querySelectorAll(`.topic-row`);
   let firstUncompletedRow = null;
@@ -5655,11 +5979,12 @@ function paint() {
     else zeroCount++;
 
     if (item.n && item.n.trim()) noteCount++;
-    if (item.rv) reviewCount++;
+    const rvItem = rvMap[tid];
+    if (rvItem) reviewCount++;
     const rvBtn = row.querySelector('[data-act="review"]');
     if (rvBtn) {
-      rvBtn.setAttribute("aria-pressed", String(Boolean(item.rv)));
-      rvBtn.textContent = item.rv ? "✓ Na revisão" : "↻ Revisar";
+      rvBtn.setAttribute("aria-pressed", String(Boolean(rvItem)));
+      rvBtn.textContent = rvItem ? "↻ " + rvShortLabel(rvItem.due) : "↻ Revisar";
     }
 
     // Situação: bolinha, faixa lateral e a opção marcada no painel
@@ -5679,7 +6004,7 @@ function paint() {
       const bits = [];
       if (st === "r") bits.push("Em andamento");
       if (item.n && item.n.trim()) bits.push("com anotação");
-      if (item.rv) bits.push("↻ para revisar");
+      if (rvItem) bits.push("↻ revisão " + RV.when(rvItem.due));
       meta.textContent = bits.join(" · ");
     }
 
@@ -5689,7 +6014,7 @@ function paint() {
     }
 
     // Aplicar Filtro e Busca
-    applyRowVisibility(row, status, item.n || "", Boolean(item.rv));
+    applyRowVisibility(row, status, item.n || "", Boolean(rvItem));
   });
 
   // Resumo da trilha
@@ -5716,7 +6041,7 @@ function paint() {
   const notesBtn = document.querySelector('.fil-btn[data-f="n"]');
   if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
   const reviewBtn = document.querySelector('.fil-btn[data-f="v"]');
-  if (reviewBtn) reviewBtn.title = "Para revisar: " + reviewCount;
+  if (reviewBtn) reviewBtn.title = "Com revisão marcada: " + reviewCount;
 
   // Nível
   const lvlIcon = document.getElementById("lvl-icon");
@@ -5776,28 +6101,26 @@ function chooseTopicStatus(topicId, next) {
   syncTopicToServer(topicId);
 }
 
-// Lista de revisão: marca à parte (campo rv = quando entrou na lista). A situação, os contadores,
-// as conquistas e o ritmo não mudam. Vai para a nuvem junto com o resto do progresso.
-function toggleTopicReview(topicId) {
-  if (!topicId) return;
-  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
-  const add = !PR[topicId].rv;
-  if (add) PR[topicId].rv = Date.now();
-  else delete PR[topicId].rv;
-  saveLocal();
-  paint();
-  updateModalReviewBtn();
-  if (typeof showToast === "function") showToast(add ? "↻ Aula na lista de revisão. A situação dela não muda." : "Aula retirada da lista de revisão.");
+// Revisão da aula: vem da agenda única (RV, página Revisões). O botão ↻ abre o menu "Quando revisar?"
+// (openReviewMenu). A situação da aula, os contadores, as conquistas e os pontos não mudam.
+// Rótulo curto para botões: "Revisar hoje", "Revisão amanhã", "Revisão 30/11", "Revisão atrasada"
+function rvShortLabel(due) {
+  const n = RV.between(RV.today(), due);
+  return n < 0 ? "Revisão atrasada" : n === 0 ? "Revisar hoje" : n === 1 ? "Revisão amanhã" : "Revisão " + RV.fmt(due);
 }
 
 function updateModalReviewBtn() {
   const btn = document.getElementById("modal-review-btn");
   if (!btn) return;
-  const on = Boolean(CURRENT_MODAL_TOPIC_ID && PR[CURRENT_MODAL_TOPIC_ID] && PR[CURRENT_MODAL_TOPIC_ID].rv);
-  btn.setAttribute("aria-pressed", String(on));
-  btn.querySelector(".rv-txt").textContent = on ? "Na revisão" : "Revisar";
-  btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
+  const it = (CURRENT_MODAL_TOPIC_ID && typeof RV !== "undefined") ? RV.byId()[CURRENT_MODAL_TOPIC_ID] : null;
+  btn.setAttribute("aria-pressed", String(Boolean(it)));
+  btn.dataset.late = it && it.due < RV.today() ? "1" : "";
+  btn.querySelector(".rv-txt").textContent = it ? rvShortLabel(it.due) : "Revisar";
+  btn.title = it ? "Revisão marcada (" + RV.when(it.due) + "). Toque para registrar, mudar a data ou tirar." : "Agendar a revisão desta aula (a situação não muda)";
 }
+
+// Agenda mudou (nesta página, em outra aba ou vinda da nuvem): lista e botão da aula acompanham
+window.addEventListener("rv:change", () => { try { paint(); updateModalReviewBtn(); } catch (e) {} });
 
 // =========================================================================
 // PONTOS DA AULA (topo do estúdio)
@@ -8429,8 +8752,7 @@ const LV2_META = {
   quiz:        { icon: "✅", label: "Quiz de saída" },
   camadas:     { icon: "📚", label: "Vá mais fundo" }
 };
-const LV2_REVIEW_KEY = "roteiro-review-v1";
-const LV2_REVIEW_DAYS = [1, 3, 7, 21];
+const LV2_REVIEW_KEY = "roteiro-review-v1";   // agenda única de revisões (ver review_js.py / RV)
 const lv2Fmt = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
 
 /* Trechos de vídeo: o parâmetro end= do YouTube só para a reprodução uma vez e
@@ -8476,13 +8798,7 @@ window.addEventListener("message", ev => {
     if (clip.note) clip.note.hidden = true;
   }
 });
-const lv2Date = t => { const d = new Date(t); return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0"); };
 function lv2ReadReview() { try { return JSON.parse(localStorage.getItem(LV2_REVIEW_KEY) || "{}") || {}; } catch (e) { return {}; } }
-function lv2WriteReview(o) {
-  try { localStorage.setItem(LV2_REVIEW_KEY, JSON.stringify(o)); } catch (e) {}
-  // Revisões fazem parte do progresso: vão para a nuvem junto com o resto (campo "extra" no DynamoDB)
-  if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
-}
 
 function isPtGuideV2(g) { return Boolean(g && g.v === 2 && Array.isArray(g.blocos)); }
 function ptGuideCardCount(g) { return isPtGuideV2(g) ? g.blocos.length : 4; }
@@ -8660,11 +8976,8 @@ function renderPtGuideV2Body(g, topicId) {
   if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
   if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
   if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
-  const rv = topicId ? lv2ReadReview()[topicId] : null;
-  if (rv && rv.next && rv.next.length) {
-    const due = rv.next.find(t => t > (rv.done || 0));
-    if (due && due <= Date.now()) chips.push("revisão de hoje");
-  }
+  const rvSt = (topicId && typeof RV !== "undefined") ? RV.stateOf(lv2ReadReview()[topicId]) : null;
+  if (rvSt && rvSt.due <= RV.today()) chips.push(rvSt.due < RV.today() ? "revisão atrasada" : "revisão de hoje");
 
   let html = `<div class="lv2" data-topic="${topicId || ""}"><div class="lv2-hero">` +
     `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
@@ -8862,23 +9175,27 @@ function lv2ParseNums(s) {
   return String(s).replace(/[\[\]()]/g, " ").split(/[;\s]+/).filter(Boolean).map(x => parseFloat(x.replace(",", ".")));
 }
 
+// Quiz aprovado: a agenda única (RV) cuida das revisões. 1ª aprovação agenda a primeira revisão para amanhã;
+// refazer o quiz no dia da revisão (ou depois) conta como revisão feita.
 function lv2ScheduleReview(topicId, score, total) {
-  if (!topicId) return null;
-  const all = lv2ReadReview(), now = Date.now(), DAY = 86400000;
-  const prev = all[topicId] || {};
-  const firstPass = !prev.passedAt;
-  const rec = Object.assign({}, prev, { score, total, last: now });
-  if (firstPass) { rec.passedAt = now; rec.next = LV2_REVIEW_DAYS.map(d => now + d * DAY); }
-  else rec.done = now; // refazer o quiz conta como uma revisão concluída
-  all[topicId] = rec; lv2WriteReview(all);
-  return rec;
+  if (!topicId || typeof RV === "undefined") return null;
+  return RV.quizPassed(topicId, score, total);
 }
 
 function lv2ShowReview(root, rec) {
-  const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || !rec.next) return;
-  const pend = rec.next.filter(t => t > (rec.done || 0));
-  box.insertAdjacentHTML("beforeend", `<div class="lv2-review">🔁 Revisões agendadas: ${rec.next.map(t => (pend.includes(t) ? "" : "✓ ") + lv2Date(t)).join(" · ")}. ` +
-    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, coloque a aula na lista de revisão (↻ Revisar).</div>`);
+  const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || typeof RV === "undefined") return;
+  const st = RV.stateOf(rec);
+  let msg;
+  if (st) {
+    const n = RV.between(RV.today(), st.due), quando = RV.when(st.due) + (n >= 2 ? ` (${RV.fmt(st.due)})` : "");
+    msg = `🔁 Próxima revisão: <b>${quando}</b>. Nesse dia, refaça este quiz e um exercício 🟡 de cabeça: lembrando bem, o intervalo cresce (3, 7, 21 e 60 dias). ` +
+          `A agenda completa fica na página <a href="revisoes.html">Revisões</a>.`;
+  } else if (rec.mastered) {
+    msg = `🏆 Aula dominada: você lembrou bem em todas as revisões, então ela saiu da agenda.`;
+  } else {
+    msg = `Sem revisão agendada. Use o ↻ Revisar, no topo da aula, para agendar uma.`;
+  }
+  box.insertAdjacentHTML("beforeend", `<div class="lv2-review">${msg}</div>`);
 }
 
 function lv2Unlock(root) { root.querySelectorAll(".lv2-layers").forEach(l => l.dataset.locked = "0"); }
@@ -9537,7 +9854,8 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     { t: "IA & Código", d: "Python, dados, Machine Learning, Deep Learning e LLMs", href: "ia.html", ico: "🤖", k: "ia" },
     { t: "Matemática para IA", d: "Álgebra linear, cálculo, probabilidade e atenção", href: "matematica.html", ico: "📐", k: "mat" },
     { t: "Inglês", d: "Do básico aos tempos verbais avançados", href: "ingles.html", ico: "🗣️", k: "ing" },
-    { t: "Projetos & Portfólio", d: "Projetos práticos para o seu GitHub", href: "projetos.html", ico: "🛠️", k: "proj" }
+    { t: "Projetos & Portfólio", d: "Projetos práticos para o seu GitHub", href: "projetos.html", ico: "🛠️", k: "proj" },
+    { t: "Revisões", d: "Sua agenda de revisões: hoje, atrasadas e próximas", href: "revisoes.html", ico: "↻", k: "rev" }
   ];
 
   /* ---------- Holofote que segue o cursor ---------- */
