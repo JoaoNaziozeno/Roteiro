@@ -509,10 +509,13 @@ window.DS_TOPICS = __DS_TOPICS__;
     if (!tr) document.body.setAttribute("data-track", /ia\.html/.test(location.pathname) ? "ia" : "hub");
     tagTrackCards(); initSpotlight(); addNavButton(); buildRoute();
     // Link direto para uma aula (vindo da busca em outra página): pagina.html?aula=<id>
+    // &video=2 abre direto no 2º vídeo (o "outra explicação" do reforço da Revisão ativa)
     try {
-      var aula = new URLSearchParams(location.search).get("aula");
+      var qs = new URLSearchParams(location.search), aula = qs.get("aula");
+      var vid = qs.get("video") === "2" ? 2 : 1;
       if (aula && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[aula] && typeof openStudyModal === "function") {
-        setTimeout(function () { openStudyModal(aula, Boolean(TOPICS_MAP[aula].pt_guide), 1); }, 350);
+        if (vid === 2 && !TOPICS_MAP[aula].url2) vid = 1;
+        setTimeout(function () { openStudyModal(aula, vid === 1 && Boolean(TOPICS_MAP[aula].pt_guide), vid); }, 350);
         history.replaceState(null, "", location.pathname);
       }
     } catch (e) {}
