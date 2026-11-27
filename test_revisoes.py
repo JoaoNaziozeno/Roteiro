@@ -68,12 +68,17 @@ out.flag = P()["mat-3-0-1"].rv === undefined;
 out.status = P()["mat-3-0-1"].s;
 RV.restore("mat-3-0-1", token, NOW + 1000);
 out.desfeito = RV.agenda(NOW);
+limpa();
+store["roteiro-ia-v1"] = JSON.stringify({ "mat-3-0-2": { s: "e", rv: NOW - DAY } });
+RV.complete("mat-3-0-2", "m", NOW);                         // revisou direto a aula da marca antiga
+out.origem = RV.stateOf(R()["mat-3-0-2"]).src;
 """)
         self.assertEqual([(i["id"], i["due"], i["src"]) for i in r["antes"]], [("mat-3-0-1", "2026-11-27", "manual")])
         self.assertEqual([(i["id"], i["due"], i["src"]) for i in r["depois"]], [("mat-3-0-1", "2026-11-30", "manual")])
         self.assertTrue(r["flag"])
         self.assertEqual(r["status"], "e")   # a situação da aula não muda
         self.assertEqual([(i["id"], i["due"]) for i in r["desfeito"]], [("mat-3-0-1", "2026-11-27")])
+        self.assertEqual(r["origem"], "manual")   # continua "agendada por você", não "pelo quiz"
 
     def test_intervalos_crescem_e_a_aula_fica_dominada(self):
         r = rodar("""

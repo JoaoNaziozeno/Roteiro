@@ -2117,7 +2117,8 @@ RM_CONFIG = {"totals": {t: c["req"] for t, c in CURR_COUNTS.items()}, "optional"
 from design_v2 import set_topic_index
 set_topic_index({"ia": ia_phases, "mat": mat_phases, "ing": ing_phases})
 
-generate_listing_page(
+_TOPIC_MAPS = {}   # mapa de cada trilha: alimenta os cartões da Revisão ativa
+_TOPIC_MAPS["ia"] = generate_listing_page(
     track_id="ia",
     page_title="Inteligência Artificial & Programação Python",
     page_sub="Do zero aos fundamentos de Python, Engenharia de Dados, Scikit-learn, PyTorch, Transformers, LLMs, Agentes e MLOps",
@@ -2127,7 +2128,7 @@ generate_listing_page(
     is_english=False
 )
 
-generate_listing_page(
+_TOPIC_MAPS["mat"] = generate_listing_page(
     track_id="mat",
     page_title="Matemática Essencial para IA",
     page_sub="Álgebra Linear, Tensores, Cálculo Diferencial, Gradientes, Backpropagation, Probabilidade Bayesiana e Matemática dos Transformers",
@@ -2137,7 +2138,7 @@ generate_listing_page(
     is_english=False
 )
 
-generate_listing_page(
+_TOPIC_MAPS["ing"] = generate_listing_page(
     track_id="ing",
     page_title="Curso de Inglês EnglishBay (Playlist Oficial)",
     page_sub=(f"As {CURR_COUNTS['ing']['req'] - _N_M7} vídeo-aulas da playlist oficial + {_N_M7} de inglês para trabalhar com IA, "
@@ -2154,6 +2155,12 @@ generate_projects_page(out_proj, SHARED_CSS)
 import design_v2 as _dv2
 from revisoes_page import generate_review_page
 generate_review_page(out_rev, SHARED_CSS, _dv2._TOPIC_INDEX_JSON)
+
+# Cartões da Revisão ativa (baixados só quando uma revisão começa), montados do conteúdo das aulas
+from review_cards import write_decks
+out_cards = os.path.join(BASE_DIR, "revisao_cartoes.json")
+_decks = write_decks(_TOPIC_MAPS, out_cards)
+print(f"Gerado: {out_cards} ({len(_decks)} aulas com cartões de revisão)")
 
 generate_hub_page(out_hub)
 generate_hub_page(out_mirror)
@@ -2174,6 +2181,7 @@ deploy_files = [
     (out_ing, "ingles.html"),
     (out_proj, "projetos.html"),
     (out_rev, "revisoes.html"),
+    (out_cards, "revisao_cartoes.json"),
     (out_hub, "index.html"),
     (out_mirror, "Roteiro de Estudo_ do zero à IA.html"),
     (out_admin, "admin.html")

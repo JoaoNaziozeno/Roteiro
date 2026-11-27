@@ -3259,6 +3259,9 @@ html::view-transition{background:var(--bg)}
 .rv-menu input[type=date]{min-height:32px;padding:4px 8px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;font-size:.78rem;color-scheme:dark light}
 .rv-menu .rv-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);font-size:.72rem;color:var(--mu)}
 .rv-menu .rv-off{border:0;background:none;color:#ef6b5b;font:inherit;font-size:.76rem;cursor:pointer;padding:4px 0}
+.rv-menu .rv-go{display:block;margin:0 0 4px;padding:9px 12px;border-radius:12px;background:var(--t-hub);color:#04201d;font-weight:700;font-size:.84rem;text-decoration:none}
+.rv-menu .rv-go small{display:block;font-weight:500;font-size:.7rem;opacity:.8;margin-top:1px}
+.rv-menu .rv-go:hover{filter:brightness(1.06)}
 @media (max-width:600px){.rv-menu{left:10px!important;right:10px;top:auto!important;bottom:10px;width:auto}}
 .rv-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100001;display:flex;align-items:center;gap:12px;
   max-width:calc(100vw - 24px);padding:10px 16px;border-radius:12px;background:#0f1d27;color:#e8eef1;border:1px solid #2c4350;
@@ -3360,6 +3363,7 @@ const RV = (() => {
     const all = readAll(), before = all[id] ? JSON.parse(JSON.stringify(all[id])) : null;
     const rec = Object.assign({}, all[id] || {}), st = stateOf(rec);
     if (!("due" in rec)) { rec.due = st ? st.due : null; rec.step = st ? st.step : 0; if (st) rec.src = st.src; }
+    if (!rec.src) rec.src = "manual";   // sem origem no quiz (ex.: a marca antiga "↻ Revisar"): é sua
     rec.next = [];   // formato antigo convertido: a agenda passa a valer só por "due"
     mutate(rec, st, today(now), now);
     rec.last = now;
@@ -3441,8 +3445,19 @@ const RV = (() => {
     return { feitas, f, m, z, streak, dominadas, hard: hard.slice(0, 3) };
   }
 
+  // Acrescenta texto (Markdown) ao caderno de uma aula: usado pela Revisão ativa para anotar os pontos fracos
+  function appendNote(id, md) {
+    const prog = read(PKEY, {}), it = Object.assign({ s: "z", n: "", d: "" }, prog[id] || {});
+    it.n = (it.n || "") + md;
+    prog[id] = it;
+    try { localStorage.setItem(PKEY, JSON.stringify(prog)); } catch (e) {}
+    try { if (typeof PR !== "undefined" && PR) { PR[id] = PR[id] || { s: "z", n: "", d: "" }; PR[id].n = it.n; } } catch (e) {}
+    if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
+    return it.n;
+  }
+
   return { KEY, STEPS, today, addDays, between, fmt, when, stateOf, agenda, byId, counts, preview,
-           schedule, remove, restore, complete, quizPassed, stats };
+           schedule, remove, restore, complete, quizPassed, stats, appendNote };
 })();
 if (typeof module !== "undefined") module.exports = RV;
 
@@ -3494,6 +3509,9 @@ function openReviewMenu(id, anchor, mode) {
   h += '<p class="rv-sub">' + (st ? (st.src === "quiz" ? "Agendada pelo quiz da aula" : "Agendada por você") + " · " + st.n + "ª revisão"
                                  : "Entra na página Revisões. A situação da aula e os pontos não mudam.") + "</p>";
   if (mode !== "date") {
+    h += '<a class="rv-go" href="revisoes.html?ativa=' + encodeURIComponent(id) + '">▶ Fazer a revisão ativa<small>Cartões da aula, de 5 a 10 min. O site agenda a próxima.</small></a>';
+  }
+  if (mode !== "date") {
     const nx = g => { const d = RV.preview(id, g); return d ? "próxima " + RV.when(d) : "aula dominada"; };
     h += '<div class="rv-lbl">' + (st ? "Já revisou? Como foi para lembrar" : "Revisei agora. Como foi") + "</div>" +
       '<div class="rv-grades">' +
@@ -3513,6 +3531,8 @@ function openReviewMenu(id, anchor, mode) {
   document.body.appendChild(el);
 
   const done = (msg, undoFrom) => { closeReviewMenu(); rvToast(msg, undoFrom === undefined ? null : () => RV.restore(id, undoFrom)); };
+  const go = el.querySelector(".rv-go");
+  if (go && typeof rvStartActive === "function") go.onclick = e => { e.preventDefault(); closeReviewMenu(); rvStartActive(id); };   // já na página Revisões
   el.querySelectorAll(".rv-grade").forEach(b => b.onclick = () => {
     const g = b.dataset.g, before = RV.complete(id, g), it = RV.byId()[id];
     done(it ? "Revisão registrada. Próxima: " + rvDueText(it.due) + "." : "🏆 Aula dominada! Ela sai da agenda.", before);
@@ -10720,10 +10740,13 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     if (!tr) document.body.setAttribute("data-track", /ia\.html/.test(location.pathname) ? "ia" : "hub");
     tagTrackCards(); initSpotlight(); addNavButton(); buildRoute();
     // Link direto para uma aula (vindo da busca em outra página): pagina.html?aula=<id>
+    // &video=2 abre direto no 2º vídeo (o "outra explicação" do reforço da Revisão ativa)
     try {
-      var aula = new URLSearchParams(location.search).get("aula");
+      var qs = new URLSearchParams(location.search), aula = qs.get("aula");
+      var vid = qs.get("video") === "2" ? 2 : 1;
       if (aula && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[aula] && typeof openStudyModal === "function") {
-        setTimeout(function () { openStudyModal(aula, Boolean(TOPICS_MAP[aula].pt_guide), 1); }, 350);
+        if (vid === 2 && !TOPICS_MAP[aula].url2) vid = 1;
+        setTimeout(function () { openStudyModal(aula, vid === 1 && Boolean(TOPICS_MAP[aula].pt_guide), vid); }, 350);
         history.replaceState(null, "", location.pathname);
       }
     } catch (e) {}

@@ -24,6 +24,10 @@
 })();
 </script>
 
+<!-- KaTeX: fórmulas dos cartões de Matemática -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 <style>
 
 :root{
@@ -2447,6 +2451,10 @@ input:checked + .slider:before { transform: translateX(14px); }
 .rvp-today div>b{display:block;font-size:1.15rem}
 .rvp-today div>span{display:block;margin-top:3px;font-size:.85rem;color:var(--mu);line-height:1.45}
 .rvp-today div>span b{color:var(--tx)}
+.rvp-today>div{flex:1;min-width:0}
+.rvp-go{flex-direction:column;gap:0;min-height:44px;padding:7px 18px;font-size:.88rem}
+.rvp-go small{font-weight:600;font-size:.7rem;opacity:.75}
+@media (max-width:640px){.rvp-today{flex-wrap:wrap}.rvp-go{width:100%}}
 .rvp-search{margin-bottom:14px;padding:14px;border:1px solid var(--bd);border-radius:14px;background:var(--card)}
 .rvp-search[hidden]{display:none}
 .rvp-search input{width:100%;min-height:40px;padding:8px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-size:.9rem}
@@ -2494,6 +2502,86 @@ input:checked + .slider:before { transform: translateX(14px); }
 .rvp-rule{display:flex;gap:10px;padding:5px 0;font-size:.84rem;line-height:1.45}
 .rvp-rule span:first-child{flex:none;width:20px;text-align:center}
 .rvp-muted{color:var(--mu)}
+
+
+/* ===== Revisão ativa (sessão em cartões) ===== */
+.ra{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ra[hidden]{display:none}
+body.ra-on{overflow:hidden}
+.ra-box{width:min(680px,100%);max-height:100%;display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:22px;
+  background:var(--card);box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden}
+.ra-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}
+.ra-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer;font:inherit}
+.ra-top span{min-width:36px;text-align:right;color:var(--mu);font-size:.85rem;font-variant-numeric:tabular-nums}
+.ra-prog{height:4px;background:var(--bd)}
+.ra-prog i{display:block;height:100%;width:0;background:var(--t-hub);transition:width .25s}
+.ra-body{padding:18px 20px 22px;overflow:auto}
+.ra-wait{padding:40px 10px;text-align:center;color:var(--mu);line-height:1.6}
+.ra-chip{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:.82rem;color:var(--mu)}
+.ra-chip i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.ra-chip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ra-chip small{margin-left:auto;flex:none;font-size:.74rem}
+.ra-card{padding:18px;border-radius:18px;border:1px solid color-mix(in srgb,var(--t-hub) 28%,var(--bd));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--t-hub) 7%,var(--card)),var(--card))}
+.ra-kick{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f5a524}
+.ra-q{margin-top:8px;font-size:1.12rem;font-weight:650;line-height:1.45}
+.ra-sub{display:block;margin-top:6px;font-size:.86rem;font-weight:500;color:var(--mu)}
+.ra-top-sub{margin:0 0 6px}
+.ra-sym{font-size:1.2em}
+.ra-hint{margin-top:10px;font-size:.84rem;font-weight:500;color:var(--mu)}
+.ra-hint summary{cursor:pointer}
+.ra-a{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:.95rem;line-height:1.6}
+.ra-a ul{margin:.3em 0 0;padding-left:1.2em}
+.ra-a.ok b{color:#2fa36b}.ra-a.no b{color:#ef6b5b}
+.ra code,.ra-a code{background:rgba(74,92,106,.22);padding:1px 5px;border-radius:4px;font-size:.88em}
+.ra-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.ra-opt{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);
+  color:var(--tx);font:inherit;font-size:.92rem;text-align:left;cursor:pointer}
+.ra-opt kbd{flex:none;font:700 .7rem Inter,system-ui;opacity:.55;margin-top:3px}
+.ra-opt:hover:not([disabled]){border-color:var(--t-hub)}
+.ra-opt[disabled]{cursor:default}
+.ra-opt.ok{border-color:#2fa36b;background:color-mix(in srgb,#2fa36b 14%,var(--bg))}
+.ra-opt.no{border-color:#ef6b5b;background:color-mix(in srgb,#ef6b5b 12%,var(--bg))}
+.ra-actions{display:flex;justify-content:center;margin-top:16px}
+.ra-btn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:9px 20px;border-radius:99px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
+.ra-btn.pri{background:var(--t-hub);border-color:var(--t-hub);color:#04201d}
+.ra-btn kbd,.ra-grade kbd{font:600 .66rem Inter,system-ui;opacity:.6}
+.ra-tip{margin:12px 0 0;text-align:center;font-size:.8rem;color:var(--mu)}
+.ra-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ra-grade{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:14px;border:1px solid var(--bd);
+  background:var(--bg);color:var(--tx);font:inherit;font-size:.84rem;cursor:pointer}
+.ra-grade span{font-size:1.4rem}
+.ra-grade:hover{border-color:var(--t-hub)}
+.ra-res-head{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.ra-res-head h3{margin:0;font-size:1.15rem;line-height:1.35}
+.ra-res-head p{margin:4px 0 0;color:var(--mu);font-size:.88rem}
+.ra-ring{--p:0;flex:none;width:88px;height:88px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--t-hub) calc(var(--p) * 1%),var(--bd) 0)}
+.ra-ring b{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:var(--card);font-size:1.15rem}
+.ra-list{list-style:none;margin:8px 0;padding:0;font-size:.88rem;line-height:1.6}
+.ra-list .ok{color:#2fa36b}.ra-list .no{color:#ef6b5b}
+.ra-ref{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid color-mix(in srgb,#e8a100 40%,var(--bd));
+  background:color-mix(in srgb,#e8a100 8%,var(--card));font-size:.88rem}
+.ra-ref ul{margin:6px 0 0;padding-left:1.1em}
+.ra-ref li{margin:5px 0}
+.ra-ref a{color:var(--t-hub)}
+.ra-ref summary{cursor:pointer}
+.ra-kid{margin-top:6px;font-size:.86rem;line-height:1.55}
+.ra-h4{margin:16px 0 6px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.ra-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ra-pg{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:12px;border:1px solid var(--bd);
+  background:var(--bg);color:var(--tx);font:inherit;font-size:.8rem;cursor:pointer;line-height:1.25}
+.ra-pg span{font-size:1.15rem}
+.ra-pg small{font-size:.68rem;color:var(--mu)}
+.ra-pg.on{border-color:var(--t-hub);box-shadow:inset 0 0 0 1px var(--t-hub)}
+.ra-row{padding:12px 0;border-top:1px solid var(--bd)}
+.ra-row-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:.9rem}
+.ra-weak{margin:0 0 8px;font-size:.8rem;color:#ef6b5b}
+.ra-weak a{color:var(--t-hub)}
+.ra-check{display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:.86rem;color:var(--mu)}
+@media (max-width:600px){.ra{padding:0}.ra-box{height:100%;max-height:none;border-radius:0;border:0}.ra-q{font-size:1.02rem}.ra-body{padding:14px 14px 20px}}
 
 </style>
 
@@ -3231,6 +3319,9 @@ html::view-transition{background:var(--bg)}
 .rv-menu input[type=date]{min-height:32px;padding:4px 8px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);font:inherit;font-size:.78rem;color-scheme:dark light}
 .rv-menu .rv-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--bd);font-size:.72rem;color:var(--mu)}
 .rv-menu .rv-off{border:0;background:none;color:#ef6b5b;font:inherit;font-size:.76rem;cursor:pointer;padding:4px 0}
+.rv-menu .rv-go{display:block;margin:0 0 4px;padding:9px 12px;border-radius:12px;background:var(--t-hub);color:#04201d;font-weight:700;font-size:.84rem;text-decoration:none}
+.rv-menu .rv-go small{display:block;font-weight:500;font-size:.7rem;opacity:.8;margin-top:1px}
+.rv-menu .rv-go:hover{filter:brightness(1.06)}
 @media (max-width:600px){.rv-menu{left:10px!important;right:10px;top:auto!important;bottom:10px;width:auto}}
 .rv-toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:100001;display:flex;align-items:center;gap:12px;
   max-width:calc(100vw - 24px);padding:10px 16px;border-radius:12px;background:#0f1d27;color:#e8eef1;border:1px solid #2c4350;
@@ -3332,6 +3423,7 @@ const RV = (() => {
     const all = readAll(), before = all[id] ? JSON.parse(JSON.stringify(all[id])) : null;
     const rec = Object.assign({}, all[id] || {}), st = stateOf(rec);
     if (!("due" in rec)) { rec.due = st ? st.due : null; rec.step = st ? st.step : 0; if (st) rec.src = st.src; }
+    if (!rec.src) rec.src = "manual";   // sem origem no quiz (ex.: a marca antiga "↻ Revisar"): é sua
     rec.next = [];   // formato antigo convertido: a agenda passa a valer só por "due"
     mutate(rec, st, today(now), now);
     rec.last = now;
@@ -3413,8 +3505,19 @@ const RV = (() => {
     return { feitas, f, m, z, streak, dominadas, hard: hard.slice(0, 3) };
   }
 
+  // Acrescenta texto (Markdown) ao caderno de uma aula: usado pela Revisão ativa para anotar os pontos fracos
+  function appendNote(id, md) {
+    const prog = read(PKEY, {}), it = Object.assign({ s: "z", n: "", d: "" }, prog[id] || {});
+    it.n = (it.n || "") + md;
+    prog[id] = it;
+    try { localStorage.setItem(PKEY, JSON.stringify(prog)); } catch (e) {}
+    try { if (typeof PR !== "undefined" && PR) { PR[id] = PR[id] || { s: "z", n: "", d: "" }; PR[id].n = it.n; } } catch (e) {}
+    if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
+    return it.n;
+  }
+
   return { KEY, STEPS, today, addDays, between, fmt, when, stateOf, agenda, byId, counts, preview,
-           schedule, remove, restore, complete, quizPassed, stats };
+           schedule, remove, restore, complete, quizPassed, stats, appendNote };
 })();
 if (typeof module !== "undefined") module.exports = RV;
 
@@ -3466,6 +3569,9 @@ function openReviewMenu(id, anchor, mode) {
   h += '<p class="rv-sub">' + (st ? (st.src === "quiz" ? "Agendada pelo quiz da aula" : "Agendada por você") + " · " + st.n + "ª revisão"
                                  : "Entra na página Revisões. A situação da aula e os pontos não mudam.") + "</p>";
   if (mode !== "date") {
+    h += '<a class="rv-go" href="revisoes.html?ativa=' + encodeURIComponent(id) + '">▶ Fazer a revisão ativa<small>Cartões da aula, de 5 a 10 min. O site agenda a próxima.</small></a>';
+  }
+  if (mode !== "date") {
     const nx = g => { const d = RV.preview(id, g); return d ? "próxima " + RV.when(d) : "aula dominada"; };
     h += '<div class="rv-lbl">' + (st ? "Já revisou? Como foi para lembrar" : "Revisei agora. Como foi") + "</div>" +
       '<div class="rv-grades">' +
@@ -3485,6 +3591,8 @@ function openReviewMenu(id, anchor, mode) {
   document.body.appendChild(el);
 
   const done = (msg, undoFrom) => { closeReviewMenu(); rvToast(msg, undoFrom === undefined ? null : () => RV.restore(id, undoFrom)); };
+  const go = el.querySelector(".rv-go");
+  if (go && typeof rvStartActive === "function") go.onclick = e => { e.preventDefault(); closeReviewMenu(); rvStartActive(id); };   // já na página Revisões
   el.querySelectorAll(".rv-grade").forEach(b => b.onclick = () => {
     const g = b.dataset.g, before = RV.complete(id, g), it = RV.byId()[id];
     done(it ? "Revisão registrada. Próxima: " + rvDueText(it.due) + "." : "🏆 Aula dominada! Ela sai da agenda.", before);
@@ -3669,6 +3777,19 @@ try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões 
   </div>
 </div>
 
+
+<!-- REVISÃO ATIVA: a sessão em cartões (uma aula ou a revisão do dia) -->
+<div class="ra" id="ra" hidden role="dialog" aria-modal="true" aria-labelledby="ra-title">
+  <div class="ra-box">
+    <div class="ra-top">
+      <button type="button" class="ra-x" onclick="raClose(true)" aria-label="Sair da revisão" title="Sair (Esc)">✕</button>
+      <b id="ra-title">Revisão ativa</b>
+      <span id="ra-count"></span>
+    </div>
+    <div class="ra-prog"><i id="ra-bar"></i></div>
+    <div class="ra-body" id="ra-body"></div>
+  </div>
+</div>
 
 <script>
 
@@ -4365,6 +4486,270 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
+// =================== REVISÃO ATIVA: escolha dos cartões, nota e caderno (sem tela; testado no Node) ===================
+const RA = (() => {
+  const LABEL = { mem: "Puxe da memória", arm: "Armadilha comum", not: "Notação", pen: "Pense", pas: "Por que este passo?",
+                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago" };
+  const PTS = { f: 1, m: 0.5, z: 0 };
+  function shuffle(arr, rnd) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 do quiz
+  function pick(deck, rnd) {
+    rnd = rnd || Math.random;
+    const c = (deck && deck.c) || [];
+    const mem = c.filter(x => x.k === "mem").slice(0, 1);
+    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3);
+    const tipos = {};
+    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
+    const flash = [];
+    for (let r = 0; flash.length < 3; r++) {
+      let pegou = false;
+      for (const k in tipos) if (flash.length < 3 && tipos[k][r]) { flash.push(tipos[k][r]); pegou = true; }
+      if (!pegou) break;
+    }
+    return mem.concat(shuffle(flash, rnd), quiz);
+  }
+  function score(res) { const n = res.length, s = res.reduce((a, r) => a + (PTS[r] || 0), 0); return { n, s, pct: n ? s / n : 0 }; }
+  // Nota sugerida para a agenda: 85% ou mais = fácil; 50% ou mais = com esforço; abaixo = não lembrei
+  function suggest(res) { const p = score(res).pct; return p >= 0.85 ? "f" : p >= 0.5 ? "m" : "z"; }
+  // Revisão do dia: rodadas alternando as aulas (misturar matérias fixa mais); cada aula começa pela memória
+  function interleave(lessons, max) {
+    const out = [];
+    for (let r = 0; out.length < max; r++) {
+      let any = false;
+      for (const L of lessons) if (r < L.cards.length && out.length < max) { out.push({ id: L.id, card: L.cards[r] }); any = true; }
+      if (!any) break;
+    }
+    return out;
+  }
+  // Tira o HTML: quebras de linha e itens viram espaço; marcações no meio do texto (<code>, <b>) só somem
+  const strip = h => String(h == null ? "" : h).replace(/<(br|\/p|\/li|\/div|\/h\d)\b[^>]*>/gi, " ").replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
+  const short = (s, n) => { s = strip(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; };
+  function labelOf(c) {
+    if (c.k === "mem") return "Ideias-chave da aula";
+    if (c.k === "not") return "O que significa " + strip(c.q);
+    if (c.k === "exp") return "Explicar: " + short(c.q, 80);
+    if (c.k === "pon") return "Onde isso aparece na IA" + (c.q ? " (" + short(c.q, 60) + ")" : "");
+    return short(c.q, 90);
+  }
+  function answerOf(c) {
+    if (c.k === "quiz") return short(c.o[c.c], 160);
+    if (c.k === "not") return short((c.l ? c.l + ": " : "") + (c.a || ""), 160);
+    if (c.k === "mem" || c.k === "obj") return "";
+    return short(c.a, 160);
+  }
+  // Texto para o caderno da aula (Markdown), com os cartões que você não lembrou
+  function noteText(weak, dia) {
+    if (!weak || !weak.length) return "";
+    return "\n\n## 🔁 Revisão ativa de " + dia + ": pontos para reforçar\n" +
+      weak.map(c => { const a = answerOf(c); return "- " + labelOf(c) + (a ? " → " + a : ""); }).join("\n") + "\n";
+  }
+  return { LABEL, shuffle, pick, score, suggest, interleave, strip, labelOf, answerOf, noteText };
+})();
+if (typeof module !== "undefined") module.exports = RA;
+
+
+
+// =================== REVISÃO ATIVA: a sessão em cartões ===================
+let RA_DECKS = null, RA_S = null;
+async function raLoadDecks() {
+  if (RA_DECKS) return RA_DECKS;
+  const r = await fetch("revisao_cartoes.json", { cache: "no-cache" });
+  if (!r.ok) throw new Error("erro " + r.status);
+  RA_DECKS = await r.json();
+  return RA_DECKS;
+}
+function raMath(el) {
+  if (!window.renderMathInElement) return;
+  try {
+    window.renderMathInElement(el, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false },
+      { left: "\\[", right: "\\]", display: true }, { left: "\\(", right: "\\)", display: false }], throwOnError: false });
+  } catch (e) {}
+}
+function raSet(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
+function raClose(ask) {
+  if (ask && RA_S && RA_S.i > 0 && RA_S.i < RA_S.items.length && !confirm("Sair da revisão? Os cartões que você já respondeu não serão salvos.")) return;
+  document.getElementById("ra").hidden = true;
+  document.body.classList.remove("ra-on");
+  RA_S = null;
+}
+
+// ids: aulas da sessão · mode: "one" (uma aula) ou "day" (revisão do dia, aulas misturadas)
+async function raStart(ids, mode) {
+  const box = document.getElementById("ra"), body = document.getElementById("ra-body");
+  box.hidden = false; document.body.classList.add("ra-on");
+  raSet("ra-title", mode === "day" ? "Revisão do dia" : "Revisão ativa"); raSet("ra-count", "");
+  document.getElementById("ra-bar").style.width = "0%";
+  body.innerHTML = '<div class="ra-wait">Preparando os cartões…</div>';
+  let decks;
+  try { decks = await raLoadDecks(); }
+  catch (e) { body.innerHTML = '<div class="ra-wait">Não consegui carregar os cartões (' + rvEsc(e.message) + "). Confira a conexão e tente de novo.</div>"; return; }
+  const lessons = ids.filter(id => decks[id] && RV_TOPICS[id]).map(id => ({ id, cards: RA.pick(decks[id]) })).filter(L => L.cards.length);
+  if (!lessons.length) {
+    body.innerHTML = '<div class="ra-wait">Esta aula ainda não tem cartões de revisão. Revise pela própria aula e use o <b>⋯ → Já revisou?</b> para registrar.</div>';
+    return;
+  }
+  const items = mode === "day" ? RA.interleave(lessons, 24) : lessons[0].cards.map(card => ({ id: lessons[0].id, card }));
+  RA_S = { mode, items, i: 0, shown: false, answered: null, res: {}, weak: {}, grade: {},
+           ids: lessons.map(L => L.id).filter(id => items.some(x => x.id === id)) };
+  raRender();
+}
+function rvStartActive(id) { raStart([id], "one"); }   // o "▶ Fazer a revisão ativa" do menu, já nesta página
+function raStartDay() {
+  const hoje = RV.today();
+  raStart(RV.agenda().filter(it => it.due <= hoje && RV_TOPICS[it.id]).slice(0, 5).map(it => it.id), "day");
+}
+
+function raFaces(it) {
+  const c = it.card, deck = RA_DECKS[it.id] || {}, li = a => "<ul>" + a.map(x => "<li>" + x + "</li>").join("") + "</ul>";
+  switch (c.k) {
+    case "mem": return { f: "Sem olhar: quais são as ideias-chave desta aula? Tente lembrar pelo menos duas antes de virar." +
+                           (c.h && c.h.length ? '<details class="ra-hint"><summary>Dica: o que a aula prometia ensinar</summary>' + li(c.h) + "</details>" : ""),
+                         b: li(c.a) };
+    case "arm": return { f: "Erro comum: " + c.q + '<span class="ra-sub">O que está errado e qual é o jeito certo?</span>', b: c.a };
+    case "not": return { f: 'O que significa <span class="ra-sym">' + c.q + "</span>?", b: (c.l ? "<b>" + c.l + "</b><br>" : "") + (c.a || "") };
+    case "pas": return { f: (c.t ? '<span class="ra-sub ra-top-sub">' + c.t + "</span>" : "") + "Por que este passo? " + c.q, b: c.a };
+    case "exp": return { f: "Explique com suas palavras: <b>" + c.q + "</b>", b: c.a };
+    case "pon": return { f: "Onde isso aparece na IA?" + (c.q ? '<span class="ra-sub">' + c.q + "</span>" : ""), b: c.a };
+    case "obj": { const mem = (deck.c || []).find(x => x.k === "mem");
+                  return { f: "Consegue explicar isto de cabeça? " + c.q, b: "Compare com as ideias-chave:" + (mem ? li(mem.a) : "") }; }
+    default: return { f: c.q, b: c.a || "" };
+  }
+}
+
+function raRender() {
+  const S = RA_S; if (!S) return;
+  if (S.i >= S.items.length) return raResult();
+  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id), faces = raFaces(it);
+  raSet("ra-count", (S.i + 1) + " / " + S.items.length);
+  document.getElementById("ra-bar").style.width = (S.i / S.items.length * 100) + "%";
+  let h = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>" +
+          '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
+  if (c.k === "quiz") {
+    const a = S.answered;
+    h += '<div class="ra-opts">' + c.o.map((o, i) => '<button type="button" class="ra-opt' +
+         (a != null ? (i === c.c ? " ok" : i === a ? " no" : "") : "") + '" data-o="' + i + '"' + (a != null ? " disabled" : "") +
+         "><kbd>" + (i + 1) + "</kbd>" + o + "</button>").join("") + "</div>";
+    if (a != null) h += '<div class="ra-a ' + (a === c.c ? "ok" : "no") + '"><b>' + (a === c.c ? "✓ Isso!" : "✗ Não foi dessa vez.") + "</b> " + (c.e || "") + "</div>";
+    h += "</div>" + (a != null ? '<div class="ra-actions"><button type="button" class="ra-btn pri" data-next>Continuar →</button></div>'
+                                : '<p class="ra-tip">Escolha uma opção (ou tecle o número).</p>');
+  } else {
+    if (S.shown) h += '<div class="ra-a">' + faces.b + "</div>";
+    h += "</div>";
+    h += S.shown
+      ? '<p class="ra-tip">Como foi para lembrar?</p><div class="ra-grades">' +
+        '<button type="button" class="ra-grade" data-g="z"><span>😵</span>Não lembrei<kbd>1</kbd></button>' +
+        '<button type="button" class="ra-grade" data-g="m"><span>🙂</span>Com esforço<kbd>2</kbd></button>' +
+        '<button type="button" class="ra-grade" data-g="f"><span>😌</span>Lembrei fácil<kbd>3</kbd></button></div>'
+      : '<div class="ra-actions"><button type="button" class="ra-btn pri" data-show>Mostrar resposta<kbd>espaço</kbd></button></div>' +
+        '<p class="ra-tip">Tente responder de cabeça (ou em voz alta) antes de virar.</p>';
+  }
+  const body = document.getElementById("ra-body");
+  body.innerHTML = h; body.scrollTop = 0; raMath(body);
+  const show = body.querySelector("[data-show]"); if (show) show.onclick = () => { S.shown = true; raRender(); };
+  body.querySelectorAll("[data-g]").forEach(b => b.onclick = () => raGrade(b.dataset.g));
+  body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
+  const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
+}
+function raRecord(id, g, card) {
+  (RA_S.res[id] = RA_S.res[id] || []).push(g);
+  if (g === "z") (RA_S.weak[id] = RA_S.weak[id] || []).push(card);
+}
+function raGrade(g) { const it = RA_S.items[RA_S.i]; raRecord(it.id, g, it.card); raAdvance(); }
+function raAnswer(i) {
+  const S = RA_S, it = S.items[S.i];
+  if (S.answered != null) return;
+  S.answered = i;
+  raRecord(it.id, i === it.card.c ? "f" : "z", it.card);
+  raRender();
+}
+function raAdvance() { RA_S.i++; RA_S.shown = false; RA_S.answered = null; raRender(); }
+
+function raReforco(id) {
+  const r = (RA_DECKS[id] || {}).r || {}, link = rvpLink(id);
+  let h = '<div class="ra-ref"><b>🎯 Reforço sugerido</b><ul>';
+  if (r.v2) h += '<li>🎬 Outra explicação: <a href="' + link + '&video=2">' + rvEsc(r.v2) + "</a></li>";
+  if (r.kid) h += '<li><details><summary>🧒 Explicação bem simples</summary><div class="ra-kid">' + r.kid + "</div></details></li>";
+  (r.src || []).forEach(s => { h += '<li>📚 <a href="' + rvEsc(s.url) + '" target="_blank" rel="noopener">' + rvEsc(s.nome) + "</a>" + (s.tempo ? " · " + rvEsc(s.tempo) : "") + "</li>"; });
+  return h + '<li>📘 <a href="' + link + '">Rever na aula</a> os pontos marcados com ✗</li></ul></div>';
+}
+function raPicker(id) {
+  return '<div class="ra-pick" data-id="' + id + '">' + [["z", "😵", "Não lembrei"], ["m", "🙂", "Com esforço"], ["f", "😌", "Fácil"]].map(([g, e, n]) => {
+    const d = RV.preview(id, g);
+    return '<button type="button" class="ra-pg' + (RA_S.grade[id] === g ? " on" : "") + '" data-g="' + g + '"><span>' + e + "</span>" + n +
+           "<small>" + (d ? "próxima " + rvDueText(d) : "aula dominada") + "</small></button>";
+  }).join("") + "</div>";
+}
+
+function raResult() {
+  const S = RA_S, body = document.getElementById("ra-body");
+  raSet("ra-count", "Resultado");
+  document.getElementById("ra-bar").style.width = "100%";
+  S.ids.forEach(id => { if (!S.grade[id]) S.grade[id] = RA.suggest(S.res[id] || []); });
+  const anyWeak = S.ids.some(id => (S.weak[id] || []).length);
+  let h = "";
+  if (S.ids.length === 1) {
+    const id = S.ids[0], sc = RA.score(S.res[id] || []), pct = Math.round(sc.pct * 100), weak = S.weak[id] || [];
+    const firmes = S.items.filter(x => x.id === id && weak.indexOf(x.card) < 0);
+    h += '<div class="ra-res-head"><div class="ra-ring" style="--p:' + pct + '"><b>' + pct + "%</b></div><div><h3>" +
+         (sc.pct >= 0.85 ? "Mandou bem! Ficou firme." : sc.pct >= 0.5 ? "Boa revisão! Alguns pontos pedem reforço." : "Essa custou, e tudo bem: é assim que fixa.") +
+         "</h3><p>" + rvEsc(RV_TOPICS[id][1]) + "</p></div></div>";
+    h += '<ul class="ra-list">' + firmes.map(x => '<li class="ok">✓ ' + rvEsc(RA.labelOf(x.card)) + "</li>").join("") +
+         weak.map(c => '<li class="no">✗ ' + rvEsc(RA.labelOf(c)) + "</li>").join("") + "</ul>";
+    if (weak.length || S.grade[id] === "z") h += raReforco(id);
+    h += '<div class="ra-h4">Como foi, no geral? (sugerimos pela sua nota)</div>' + raPicker(id);
+  } else {
+    h += '<div class="ra-res-head"><div><h3>Revisão do dia concluída 🎉</h3><p>' + S.items.length + " cartões de " + S.ids.length + " aulas</p></div></div>";
+    S.ids.forEach(id => {
+      const sc = RA.score(S.res[id] || []), weak = S.weak[id] || [];
+      h += '<div class="ra-row"><div class="ra-row-h"><b>' + rvEsc(RV_TOPICS[id][1]) + "</b><span>" + Math.round(sc.pct * 100) + "%</span></div>" +
+           (weak.length ? '<p class="ra-weak">✗ ' + weak.map(c => rvEsc(RA.labelOf(c))).join(" · ") +
+                          ' · <a href="' + rvpLink(id) + '">rever na aula</a></p>' : "") + raPicker(id) + "</div>";
+    });
+  }
+  if (anyWeak) h += '<label class="ra-check"><input type="checkbox" id="ra-anotar" checked> Anotar no caderno da aula os pontos para reforçar</label>';
+  h += '<div class="ra-actions"><button type="button" class="ra-btn pri" data-fim>Concluir e agendar</button></div>';
+  body.innerHTML = h; body.scrollTop = 0; raMath(body);
+  body.querySelectorAll(".ra-pick").forEach(p => p.querySelectorAll(".ra-pg").forEach(b => b.onclick = () => {
+    S.grade[p.dataset.id] = b.dataset.g;
+    p.querySelectorAll(".ra-pg").forEach(x => x.classList.toggle("on", x === b));
+  }));
+  body.querySelector("[data-fim]").onclick = raFinish;
+}
+
+function raFinish() {
+  const S = RA_S, anotar = document.getElementById("ra-anotar"), dia = RV.fmt(RV.today());
+  const prox = S.ids.map(id => {
+    RV.complete(id, S.grade[id]);
+    if (anotar && anotar.checked) { const md = RA.noteText(S.weak[id] || [], dia); if (md) RV.appendNote(id, md); }
+    const it = RV.byId()[id];
+    return it ? it.due : null;
+  });
+  const n = S.ids.length;
+  raClose(false);
+  rvToast(n === 1 ? (prox[0] ? "Revisão registrada. Próxima: " + rvDueText(prox[0]) + "." : "🏆 Aula dominada! Ela sai da agenda.")
+                  : n + " revisões registradas. Bom trabalho!");
+}
+
+document.addEventListener("keydown", e => {
+  const S = RA_S;
+  if (document.getElementById("ra").hidden) return;
+  if (e.key === "Escape") { e.preventDefault(); raClose(true); return; }
+  if (!S || S.i >= S.items.length || e.target.closest && e.target.closest("input,textarea,summary")) return;
+  const c = S.items[S.i].card;
+  if (c.k === "quiz") {
+    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= c.o.length) { e.preventDefault(); raAnswer(+e.key - 1); }
+    else if (S.answered != null && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); raAdvance(); }
+  } else if (!S.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); S.shown = true; raRender(); }
+  else if (S.shown && ["1", "2", "3"].includes(e.key)) { e.preventDefault(); raGrade({ 1: "z", 2: "m", 3: "f" }[e.key]); }
+});
+
+
+
 // =================== PÁGINA REVISÕES ===================
 const RV_TOPICS = {"ia-0-0-0":["ia","Instalar Python e usar o terminal"],"ia-0-0-2":["ia","Entrada e saída de dados"],"ia-0-0-1":["ia","Variáveis e tipos (int, float, str, bool)"],"ia-0-0-g07":["ia","Operadores aritméticos"],"ia-0-0-g08":["ia","Usar módulos prontos (import)"],"ia-0-0-g09":["ia","Manipular textos (strings)"],"ia-0-0-3":["ia","Condicionais (if, elif, else)"],"ia-0-0-g12":["ia","Condições aninhadas e elif"],"ia-0-0-4":["ia","Laços (for, while)"],"ia-0-0-g14":["ia","Repetir enquanto (while)"],"ia-0-0-g15":["ia","Interromper laços (break) e f-strings"],"ia-0-1-2":["ia","Tuplas e conjuntos"],"ia-0-1-0":["ia","Listas e fatiamento"],"ia-0-1-g18":["ia","Listas compostas (listas dentro de listas)"],"ia-0-1-1":["ia","Dicionários"],"ia-0-1-3":["ia","List comprehension"],"ia-0-0-5":["ia","Funções, parâmetros e retorno"],"ia-0-1-g21":["ia","Funções: escopo, opcionais e docstrings"],"ia-0-2-1":["ia","Módulos e pacotes"],"ia-0-2-3":["ia","Tratamento de erros (try/except)"],"ia-0-2-2":["ia","Arquivos (ler e escrever)"],"ia-0-2-0":["ia","Orientação a objetos (classes, métodos, herança)"],"ia-0-2-4":["ia","Ambientes virtuais e pip"],"ia-0-2-5":["ia","Python assíncrono (async/await)"],"ia-0-3-0":["ia","Git: commit, branch, merge"],"ia-0-3-1":["ia","GitHub: repositórios e README"],"ia-0-3-2":["ia","Consumir APIs com requests e JSON"],"ia-0-3-3":["ia","Desenvolver com assistentes de IA (Claude Code, Copilot, Cursor)"],"ia-0-4-0":["ia","Estilo de código PEP 8"],"ia-0-4-1":["ia","Docstrings e comentários"],"ia-0-4-2":["ia","Depuração (debug) e leitura de erros"],"ia-0-4-3":["ia","Testes simples com pytest"],"ia-0-4-4":["ia","Lambda, map e filter"],"ia-0-4-5":["ia","Geradores e iteradores"],"ia-0-4-6":["ia","Decoradores (noção)"],"ia-0-4-7":["ia","Tipagem, dataclasses e Pydantic"],"ia-0-5-0":["ia","datetime"],"ia-0-5-1":["ia","os e pathlib"],"ia-0-5-2":["ia","json e csv"],"ia-0-5-3":["ia","Expressões regulares (re)"],"ia-0-5-4":["ia","Web scraping com BeautifulSoup"],"ia-0-6-0":["ia","30 exercícios (Beecrowd, HackerRank, Exercism)"],"ia-0-6-1":["ia","Algoritmos de busca e ordenação"],"ia-0-6-2":["ia","Noções de complexidade (Big O)"],"ia-0-6-3":["ia","Projeto de linha de comando completo"],"ia-1-0-0":["ia","NumPy: arrays e operações vetorizadas"],"ia-1-0-1":["ia","Pandas: DataFrames e Series"],"ia-1-0-2":["ia","Pandas: filtrar, agrupar e juntar (merge)"],"ia-1-0-3":["ia","Limpeza de dados e valores ausentes"],"ia-1-1-0":["ia","Matplotlib"],"ia-1-1-1":["ia","Seaborn"],"ia-1-1-2":["ia","Análise exploratória de dados (EDA)"],"ia-1-2-0":["ia","Jupyter Notebook e Google Colab"],"ia-1-2-1":["ia","SQL: SELECT, WHERE, JOIN, GROUP BY"],"ia-1-2-2":["ia","Ler CSV, Excel e JSON"],"ia-1-3-0":["ia","Broadcasting"],"ia-1-3-1":["ia","Máscaras booleanas e indexação"],"ia-1-3-2":["ia","Séries temporais"],"ia-1-3-3":["ia","Pivot tables e melt"],"ia-1-3-4":["ia","Apply e funções vetorizadas"],"ia-1-3-5":["ia","Outliers e duplicados"],"ia-1-3-6":["ia","Encoding de variáveis categóricas"],"ia-1-4-0":["ia","Web scraping e APIs (opcional)"],"ia-1-4-1":["ia","SQLite e SQLAlchemy"],"ia-1-4-2":["ia","SQL avançado: subconsultas e window functions"],"ia-1-4-3":["ia","Formato Parquet"],"ia-1-4-4":["ia","Plotly e gráficos interativos"],"ia-1-5-0":["ia","Notebooks reprodutíveis"],"ia-1-5-1":["ia","Storytelling com dados"],"ia-1-5-2":["ia","Dashboards com Streamlit (opcional)"],"ia-2-0-0":["ia","Aprendizado supervisionado vs. não supervisionado"],"ia-2-0-1":["ia","Treino, validação e teste"],"ia-2-0-2":["ia","Overfitting e underfitting"],"ia-2-0-3":["ia","Validação cruzada"],"ia-2-0-4":["ia","Engenharia de atributos (feature engineering)"],"ia-2-1-0":["ia","Regressão linear"],"ia-2-1-1":["ia","Regressão logística"],"ia-2-1-2":["ia","Árvores de decisão"],"ia-2-1-3":["ia","Random Forest"],"ia-2-1-4":["ia","Gradient Boosting (XGBoost, LightGBM)"],"ia-2-1-5":["ia","K-Means e clusterização"],"ia-2-1-6":["ia","PCA"],"ia-2-2-0":["ia","Métricas: acurácia, precisão, recall, F1"],"ia-2-2-1":["ia","Matriz de confusão e curva ROC"],"ia-2-2-2":["ia","Scikit-learn e pipelines"],"ia-2-2-3":["ia","Ajuste de hiperparâmetros"],"ia-2-3-0":["ia","KNN"],"ia-2-3-1":["ia","Naive Bayes"],"ia-2-3-2":["ia","SVM"],"ia-2-3-3":["ia","DBSCAN e clusterização hierárquica"],"ia-2-3-4":["ia","Regularização Lasso e Ridge"],"ia-2-3-5":["ia","Detecção de anomalias"],"ia-2-4-0":["ia","Normalização e padronização"],"ia-2-4-1":["ia","Dados desbalanceados (SMOTE)"],"ia-2-4-2":["ia","Seleção de atributos"],"ia-2-4-3":["ia","Vazamento de dados (data leakage)"],"ia-2-4-4":["ia","Séries temporais com ML"],"ia-2-5-0":["ia","Importância de atributos"],"ia-2-5-1":["ia","SHAP e LIME"],"ia-2-5-2":["ia","Viés e ética em ML"],"ia-2-5-3":["ia","Sistemas de recomendação"],"ia-3-0-0":["ia","Neurônio, camadas e pesos"],"ia-3-0-1":["ia","Funções de ativação"],"ia-3-0-2":["ia","Função de perda"],"ia-3-0-3":["ia","Backpropagation"],"ia-3-0-4":["ia","Gradiente descendente e otimizadores (SGD, Adam)"],"ia-3-0-5":["ia","Regularização (dropout, weight decay)"],"ia-3-1-0":["ia","CNNs para imagens"],"ia-3-1-1":["ia","Transfer learning"],"ia-3-1-2":["ia","RNNs e LSTMs para sequências"],"ia-3-2-0":["ia","Tensores e autograd"],"ia-3-2-1":["ia","Datasets e DataLoaders"],"ia-3-2-2":["ia","Loop de treino e avaliação"],"ia-3-2-3":["ia","Treinar em GPU (Colab)"],"ia-3-3-0":["ia","Autoencoders"],"ia-3-3-1":["ia","GANs (opcional)"],"ia-3-3-2":["ia","Modelos de difusão (noção) (opcional)"],"ia-3-3-3":["ia","Redes de grafos (noção) (opcional)"],"ia-3-3-4":["ia","Detecção de objetos (YOLO) (opcional)"],"ia-3-3-5":["ia","Segmentação de imagens (opcional)"],"ia-3-4-0":["ia","Batch normalization"],"ia-3-4-1":["ia","Learning rate schedulers"],"ia-3-4-2":["ia","Data augmentation"],"ia-3-4-3":["ia","Early stopping e checkpoints"],"ia-3-4-4":["ia","Depurar rede que não aprende"],"ia-3-4-5":["ia","Mixed precision (opcional)"],"ia-3-5-0":["ia","TensorFlow e Keras (noção) (opcional)"],"ia-3-5-1":["ia","TensorBoard e logs"],"ia-3-5-2":["ia","Exportar modelos com ONNX (opcional)"],"ia-3-5-3":["ia","PyTorch Lightning (opcional)"],"ia-4-0-0":["ia","Tokenização e embeddings"],"ia-4-0-1":["ia","Mecanismo de atenção"],"ia-4-0-2":["ia","Arquitetura Transformer"],"ia-4-0-3":["ia","Pré-treino, fine-tuning e RLHF (visão geral)"],"ia-4-1-0":["ia","Hugging Face: modelos, datasets e transformers"],"ia-4-1-1":["ia","Fine-tuning com LoRA"],"ia-4-1-2":["ia","Engenharia de prompts"],"ia-4-1-3":["ia","Usar APIs de LLMs (chamadas, streaming, tool use)"],"ia-4-2-0":["ia","RAG: busca em documentos + LLM"],"ia-4-2-1":["ia","Bancos vetoriais e busca semântica"],"ia-4-2-2":["ia","Agentes e uso de ferramentas"],"ia-4-2-3":["ia","Avaliação e segurança de sistemas com LLM"],"ia-4-3-0":["ia","Self-attention e multi-head"],"ia-4-3-1":["ia","Positional encoding"],"ia-4-3-2":["ia","Encoder vs. decoder (BERT vs. GPT)"],"ia-4-3-3":["ia","Janela de contexto e KV cache"],"ia-4-3-4":["ia","Quantização (4-bit, 8-bit)"],"ia-4-3-5":["ia","Scaling laws"],"ia-4-4-0":["ia","Chunking e estratégias de recuperação no RAG"],"ia-4-4-1":["ia","Reranking"],"ia-4-4-2":["ia","Saída estruturada (JSON)"],"ia-4-4-3":["ia","Memória e orquestração de agentes"],"ia-4-4-4":["ia","Protocolo MCP"],"ia-4-4-5":["ia","Multimodalidade: visão e áudio"],"ia-4-5-0":["ia","Avaliação de LLMs (evals e benchmarks)"],"ia-4-5-1":["ia","Alucinações e mitigação"],"ia-4-5-2":["ia","Prompt injection"],"ia-4-5-3":["ia","Custo e latência"],"ia-4-5-4":["ia","Modelos locais (Ollama, llama.cpp)"],"ia-4-5-5":["ia","LGPD e dados pessoais em sistemas de IA"],"ia-5-0-0":["ia","Docker"],"ia-5-0-1":["ia","FastAPI e criação de APIs"],"ia-5-0-2":["ia","Deploy em nuvem (AWS, GCP ou Azure)"],"ia-5-0-3":["ia","Testes e boas práticas de código"],"ia-5-0-4":["ia","Erros, tentativas e logs em produção"],"ia-5-1-0":["ia","Versionamento de dados e modelos"],"ia-5-1-1":["ia","MLflow ou Weights & Biases"],"ia-5-1-2":["ia","Monitoramento de modelos"],"ia-5-2-0":["ia","3 a 5 projetos documentados no GitHub"],"ia-5-2-1":["ia","READMEs com problema, solução e resultados"],"ia-5-2-2":["ia","Perfil ativo no LinkedIn e Kaggle"],"ia-5-2-3":["ia","Inglês técnico"],"ia-5-2-4":["ia","Design de sistemas de ML e LLM (entrevistas)"],"ia-5-3-0":["ia","Linux e shell avançado"],"ia-5-3-1":["ia","CI/CD com GitHub Actions"],"ia-5-3-2":["ia","Kubernetes (noção)"],"ia-5-3-3":["ia","Filas e processamento assíncrono"],"ia-5-3-4":["ia","Redis, Postgres e pgvector"],"ia-5-4-0":["ia","Interfaces com Gradio e Streamlit"],"ia-5-4-1":["ia","Front-end básico (HTML e JS)"],"ia-5-4-2":["ia","Autenticação e limites de uso"],"ia-5-4-3":["ia","Observabilidade de LLMs"],"ia-5-5-0":["ia","Currículo e entrevistas técnicas"],"ia-5-5-1":["ia","Contribuir com open source"],"ia-5-5-2":["ia","Escrever artigos e posts"],"ia-5-5-3":["ia","Comunidades e eventos"],"ia-5-5-4":["ia","Certificações (opcional)"],"mat-3-0-0":["mat","Equações, inequações e gráficos de funções aplicadas"],"mat-3-0-1":["mat","Exponenciais e logaritmos na modelagem de IA"],"mat-3-0-2":["mat","Somatório, produtório e notação matemática em papers"],"mat-3-0-3":["mat","Geometria analítica e distância Euclidiana vs Manhattan"],"mat-0-0-0":["mat","Vetores e espaços vetoriais: intuição geométrica"],"mat-0-0-1":["mat","Combinações lineares, espaço gerado (span) e bases"],"mat-0-0-2":["mat","Produto escalar (Dot Product) e projeções"],"mat-0-0-3":["mat","Norma de vetores (L1, L2 Euclidiana) e distâncias"],"mat-0-0-4":["mat","Ângulo entre vetores e Similaridade de Cosseno"],"mat-0-1-0":["mat","Matrizes como transformações lineares no espaço"],"mat-0-1-1":["mat","Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)"],"mat-0-1-2":["mat","Sistemas de equações lineares e determinantes"],"mat-0-1-3":["mat","Inversa de matriz e pseudoinversa de Moore-Penrose (opcional)"],"mat-0-1-4":["mat","Autovalores e Autovetores (Eigenvalues & Eigenvectors)"],"mat-0-1-5":["mat","Decomposição em Valores Singulares (SVD) e PCA"],"mat-1-0-0":["mat","Limites e taxa de variação instantânea (ideia geral)"],"mat-1-0-1":["mat","Derivadas fundamentais e regras básicas (potência, produto, soma)"],"mat-1-0-2":["mat","Regra da Cadeia (Chain Rule) - o motor do Backpropagation"],"mat-1-0-3":["mat","Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)"],"mat-1-1-0":["mat","Derivadas parciais e o vetor Gradiente (nabla f)"],"mat-1-1-1":["mat","Matriz Jacobiana e Matriz Hessiana (curvatura da loss) (opcional)"],"mat-1-1-2":["mat","Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)"],"mat-1-1-3":["mat","Otimizadores modernos: Momentum, RMSprop e Adam"],"mat-1-1-4":["mat","Taxa de aprendizado (Learning Rate), convergência e pontos de sela"],"mat-2-0-0":["mat","Variáveis aleatórias discretas e contínuas"],"mat-2-0-1":["mat","Média, mediana, variância e desvio padrão"],"mat-2-0-2":["mat","Esperança matemática, covariância e correlação"],"mat-2-0-3":["mat","Probabilidade condicional e Teorema de Bayes"],"mat-2-1-0":["mat","Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança"],"mat-2-1-1":["mat","Teorema do Limite Central e amostragem (opcional)"],"mat-2-1-2":["mat","Intervalos de confiança e teste de hipóteses (noção)"],"mat-2-1-3":["mat","Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)"],"mat-2-1-4":["mat","Trade-off Viés vs. Variância (Bias-Variance Dilemma)"],"mat-2-1-5":["mat","Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)"],"mat-3-1-0":["mat","Entropia de Shannon (medida de incerteza da informação)"],"mat-3-1-1":["mat","Entropia Cruzada (Cross-Entropy Loss) e função Softmax"],"mat-3-1-2":["mat","Divergência de Kullback-Leibler (KL Divergence)"],"mat-3-1-3":["mat","Funções de perda de regressão (MSE, MAE, Huber) e classificação"],"mat-4-0-0":["mat","Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs"],"mat-4-0-1":["mat","Normalização de embeddings e geometria do espaço semântico"],"mat-4-0-2":["mat","Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)"],"mat-4-1-0":["mat","Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V"],"mat-4-1-1":["mat","Mecanismo Multi-Head Attention: divisão de dimensões e concatenação"],"mat-4-1-2":["mat","Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)"],"ing-0-0-0":["ing","Curso de Inglês GRÁTIS - Aula Zero"],"ing-0-0-1":["ing","Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas"],"ing-0-0-2":["ing","Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação"],"ing-0-0-3":["ing","Curso de Inglês - Módulo 01 Aula 03 - Aula Prática"],"ing-0-1-0":["ing","Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa"],"ing-0-1-1":["ing","Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100"],"ing-0-1-2":["ing","Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)"],"ing-0-2-0":["ing","Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos"],"ing-0-2-1":["ing","Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto"],"ing-0-2-2":["ing","Curso de Inglês - Módulo 01 Aula 09 - Small Talk"],"ing-0-3-0":["ing","Curso de Inglês - Módulo 01 Aula 10 - Family Tree"],"ing-0-3-1":["ing","Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02"],"ing-0-3-2":["ing","Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês"],"ing-1-0-0":["ing","Curso de Inglês - Módulo 02 Aula 01 - Falando da Família"],"ing-1-0-1":["ing","Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An"],"ing-1-0-2":["ing","Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária"],"ing-1-1-0":["ing","Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos"],"ing-1-1-1":["ing","Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT"],"ing-1-1-2":["ing","Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês"],"ing-1-2-0":["ing","Curso de Inglês - Módulo 02 Aula 07 - Com que frequência"],"ing-1-2-1":["ing","Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas"],"ing-1-2-2":["ing","Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?"],"ing-1-3-0":["ing","Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas"],"ing-1-3-1":["ing","Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver"],"ing-1-3-2":["ing","Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês"],"ing-2-0-0":["ing","Curso de Inglês - Módulo 03 Aula 01 - Eu posso!"],"ing-2-0-1":["ing","Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns"],"ing-2-1-0":["ing","Curso de Inglês - Módulo 03 Aula 03 - Eu deveria"],"ing-2-1-1":["ing","Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos"],"ing-2-1-2":["ing","Curso de Inglês - Módulo 03 Aula 05 - Eu devo"],"ing-2-2-0":["ing","Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas"],"ing-2-2-1":["ing","Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will"],"ing-2-2-2":["ing","Curso de Inglês - Módulo 03 Aula 08 - Advérbios"],"ing-2-3-0":["ing","Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To"],"ing-2-3-1":["ing","Curso de Inglês - Módulo 03 Aula 10 - Do or Make?"],"ing-2-3-2":["ing","Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades"],"ing-2-3-3":["ing","Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos"],"ing-3-0-0":["ing","Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria"],"ing-3-0-1":["ing","Curso de Inglês - Módulo 04 Aula 02 - Comparativos"],"ing-3-0-2":["ing","Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que"],"ing-3-1-0":["ing","Curso de Inglês - Módulo 04 Aula 04 - Superlativos"],"ing-3-1-1":["ing","Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be"],"ing-3-1-2":["ing","Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade"],"ing-3-2-0":["ing","Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)"],"ing-3-2-1":["ing","Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados"],"ing-3-2-2":["ing","Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia"],"ing-3-3-0":["ing","Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns"],"ing-3-3-1":["ing","Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados"],"ing-3-3-2":["ing","Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria"],"ing-4-0-0":["ing","Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva"],"ing-4-0-1":["ing","Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares"],"ing-4-1-0":["ing","Curso de Inglês - Módulo 05 Aula 03 - E se..."],"ing-4-1-1":["ing","Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares"],"ing-4-1-2":["ing","Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse"],"ing-4-2-0":["ing","Curso de Inglês - Módulo 05 Aula 06 - Prefixes"],"ing-4-2-1":["ing","Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando"],"ing-4-2-2":["ing","Curso de Inglês - Módulo 05 Aula 08 - Suffixes"],"ing-4-3-0":["ing","Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos"],"ing-4-3-1":["ing","Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas"],"ing-4-3-2":["ing","Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se"],"ing-4-3-3":["ing","Curso de Inglês - Módulo 05 Aula 12 - Quantificadores"],"ing-5-0-0":["ing","Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês"],"ing-5-0-1":["ing","Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio"],"ing-5-1-0":["ing","Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca"],"ing-5-1-1":["ing","Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo"],"ing-5-1-2":["ing","Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando"],"ing-5-2-0":["ing","Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio"],"ing-5-2-1":["ing","Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado"],"ing-5-2-2":["ing","Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva"],"ing-5-3-0":["ing","Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes"],"ing-5-3-1":["ing","Curso de Inglês - Módulo 06 Aula 10 - Reported Speech"],"ing-5-3-2":["ing","Curso de Inglês - Módulo 06 Aula 11 - Três Desejos"],"ing-5-3-3":["ing","Curso de Inglês - Módulo 06 Aula 12 - Tag Questions"],"ing-6-0-0":["ing","Inglês no trabalho 01 · Ler documentação técnica"],"ing-6-0-1":["ing","Inglês no trabalho 02 · Ler artigos de Machine Learning"],"ing-6-0-2":["ing","Inglês no trabalho 03 · Escrever o README do seu projeto"],"ing-6-0-3":["ing","Inglês no trabalho 04 · Pull requests e code review"],"ing-6-1-0":["ing","Inglês no trabalho 05 · E-mails e mensagens de trabalho"],"ing-6-1-1":["ing","Inglês no trabalho 06 · Daily stand-up e reuniões"],"ing-6-2-0":["ing","Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos"],"ing-6-2-1":["ing","Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais"]};   // {id: [trilha, título]}
 const RV_TRK = { ia: { nome: "IA & Código", pagina: "ia.html", cor: "--t-ia" },
@@ -4382,10 +4767,10 @@ function rvpItem(it) {
   const meta = [t.nome, RV.when(it.due), it.src === "quiz" ? "agendada pelo quiz" : "agendada por você", it.n + "ª revisão"];
   return '<li class="rvp-item" style="--c:var(' + t.cor + ')"><i class="rvp-dot" aria-hidden="true"></i>' +
     '<div class="rvp-t"><a href="' + rvpLink(it.id) + '">' + rvEsc(tp[1]) + "</a><small>" + meta.map(rvEsc).join(" · ") + "</small></div>" +
-    '<div class="rvp-acts"><a class="rvp-btn" href="' + rvpLink(it.id) + '">Abrir aula</a>' +
-    '<button type="button" class="rvp-btn pri" onclick="openReviewMenu(\'' + it.id + '\', this, \'grade\')">Revisei</button>' +
-    '<button type="button" class="rvp-btn" aria-label="Mudar a data ou tirar da agenda" title="Mudar a data ou tirar da agenda" ' +
-    'onclick="openReviewMenu(\'' + it.id + '\', this, \'date\')">⋯</button></div></li>';
+    '<div class="rvp-acts"><button type="button" class="rvp-btn pri" onclick="raStart([\'' + it.id + '\'], \'one\')" title="Revisão ativa em cartões (5 a 10 min)">▶ Revisar</button>' +
+    '<a class="rvp-btn" href="' + rvpLink(it.id) + '">Abrir aula</a>' +
+    '<button type="button" class="rvp-btn" aria-label="Já revisou, mudar a data ou tirar da agenda" title="Já revisou, mudar a data ou tirar da agenda" ' +
+    'onclick="openReviewMenu(\'' + it.id + '\', this, \'all\')">⋯</button></div></li>';
 }
 
 function rvpSection(titulo, itens, cls) {
@@ -4403,9 +4788,11 @@ function renderRevisoes() {
   const box = document.getElementById("rv-hoje"), n = atrasadas.length + deHoje.length, prox = ag.find(it => it.due > hoje);
   box.hidden = !ag.length;
   if (n) {
+    const aulas = Math.min(n, 5), min = Math.max(5, Math.min(24, aulas * 6));
     box.innerHTML = '<span class="ico" aria-hidden="true">🧠</span><div><b>Hoje: ' + n + (n === 1 ? " revisão" : " revisões") +
       (atrasadas.length ? " · " + atrasadas.length + (atrasadas.length === 1 ? " atrasada" : " atrasadas") : "") + "</b>" +
-      "<span>Abra a aula, refaça o quiz e um exercício de cabeça, e toque em <b>Revisei</b> para dizer como foi. O site agenda a próxima.</span></div>";
+      "<span>Cartões das aulas" + (aulas > 1 ? ", misturados (misturar matérias fixa mais)" : "") + ". No fim, você diz como foi e o site agenda a próxima." +
+      (n > 5 ? " Começa pelas 5 mais urgentes." : "") + '</span></div><button type="button" class="rvp-btn pri rvp-go" onclick="raStartDay()">▶ Começar revisão do dia<small>≈ ' + min + " min</small></button>";
   } else if (prox) {
     box.innerHTML = '<span class="ico" aria-hidden="true">🎉</span><div><b>Nada para revisar hoje</b><span>Próxima: ' +
       rvEsc(RV_TOPICS[prox.id][1]) + " · " + RV.when(prox.due) + ".</span></div>";
@@ -4485,6 +4872,14 @@ function toggleTheme() {
 
 // Monta a agenda antes da primeira pintura (o script está no fim do <body>)
 renderRevisoes();
+
+// revisoes.html?ativa=<aula>: vem do "▶ Fazer a revisão ativa" de uma aula ou do hub
+(function () {
+  try {
+    const id = new URLSearchParams(location.search).get("ativa");
+    if (id && RV_TOPICS[id]) { history.replaceState(null, "", location.pathname); raStart([id], "one"); }
+  } catch (e) {}
+})();
 
 </script>
 
@@ -4702,10 +5097,13 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
     if (!tr) document.body.setAttribute("data-track", /ia\.html/.test(location.pathname) ? "ia" : "hub");
     tagTrackCards(); initSpotlight(); addNavButton(); buildRoute();
     // Link direto para uma aula (vindo da busca em outra página): pagina.html?aula=<id>
+    // &video=2 abre direto no 2º vídeo (o "outra explicação" do reforço da Revisão ativa)
     try {
-      var aula = new URLSearchParams(location.search).get("aula");
+      var qs = new URLSearchParams(location.search), aula = qs.get("aula");
+      var vid = qs.get("video") === "2" ? 2 : 1;
       if (aula && typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[aula] && typeof openStudyModal === "function") {
-        setTimeout(function () { openStudyModal(aula, Boolean(TOPICS_MAP[aula].pt_guide), 1); }, 350);
+        if (vid === 2 && !TOPICS_MAP[aula].url2) vid = 1;
+        setTimeout(function () { openStudyModal(aula, vid === 1 && Boolean(TOPICS_MAP[aula].pt_guide), vid); }, 350);
         history.replaceState(null, "", location.pathname);
       }
     } catch (e) {}

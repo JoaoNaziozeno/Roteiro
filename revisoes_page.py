@@ -28,6 +28,10 @@ REVIEW_PAGE_CSS = r"""
 .rvp-today div>b{display:block;font-size:1.15rem}
 .rvp-today div>span{display:block;margin-top:3px;font-size:.85rem;color:var(--mu);line-height:1.45}
 .rvp-today div>span b{color:var(--tx)}
+.rvp-today>div{flex:1;min-width:0}
+.rvp-go{flex-direction:column;gap:0;min-height:44px;padding:7px 18px;font-size:.88rem}
+.rvp-go small{font-weight:600;font-size:.7rem;opacity:.75}
+@media (max-width:640px){.rvp-today{flex-wrap:wrap}.rvp-go{width:100%}}
 .rvp-search{margin-bottom:14px;padding:14px;border:1px solid var(--bd);border-radius:14px;background:var(--card)}
 .rvp-search[hidden]{display:none}
 .rvp-search input{width:100%;min-height:40px;padding:8px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-size:.9rem}
@@ -77,6 +81,351 @@ REVIEW_PAGE_CSS = r"""
 .rvp-muted{color:var(--mu)}
 """
 
+RA_JS = r"""
+// =================== REVISÃO ATIVA: escolha dos cartões, nota e caderno (sem tela; testado no Node) ===================
+const RA = (() => {
+  const LABEL = { mem: "Puxe da memória", arm: "Armadilha comum", not: "Notação", pen: "Pense", pas: "Por que este passo?",
+                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago" };
+  const PTS = { f: 1, m: 0.5, z: 0 };
+  function shuffle(arr, rnd) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 do quiz
+  function pick(deck, rnd) {
+    rnd = rnd || Math.random;
+    const c = (deck && deck.c) || [];
+    const mem = c.filter(x => x.k === "mem").slice(0, 1);
+    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3);
+    const tipos = {};
+    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
+    const flash = [];
+    for (let r = 0; flash.length < 3; r++) {
+      let pegou = false;
+      for (const k in tipos) if (flash.length < 3 && tipos[k][r]) { flash.push(tipos[k][r]); pegou = true; }
+      if (!pegou) break;
+    }
+    return mem.concat(shuffle(flash, rnd), quiz);
+  }
+  function score(res) { const n = res.length, s = res.reduce((a, r) => a + (PTS[r] || 0), 0); return { n, s, pct: n ? s / n : 0 }; }
+  // Nota sugerida para a agenda: 85% ou mais = fácil; 50% ou mais = com esforço; abaixo = não lembrei
+  function suggest(res) { const p = score(res).pct; return p >= 0.85 ? "f" : p >= 0.5 ? "m" : "z"; }
+  // Revisão do dia: rodadas alternando as aulas (misturar matérias fixa mais); cada aula começa pela memória
+  function interleave(lessons, max) {
+    const out = [];
+    for (let r = 0; out.length < max; r++) {
+      let any = false;
+      for (const L of lessons) if (r < L.cards.length && out.length < max) { out.push({ id: L.id, card: L.cards[r] }); any = true; }
+      if (!any) break;
+    }
+    return out;
+  }
+  // Tira o HTML: quebras de linha e itens viram espaço; marcações no meio do texto (<code>, <b>) só somem
+  const strip = h => String(h == null ? "" : h).replace(/<(br|\/p|\/li|\/div|\/h\d)\b[^>]*>/gi, " ").replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
+  const short = (s, n) => { s = strip(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; };
+  function labelOf(c) {
+    if (c.k === "mem") return "Ideias-chave da aula";
+    if (c.k === "not") return "O que significa " + strip(c.q);
+    if (c.k === "exp") return "Explicar: " + short(c.q, 80);
+    if (c.k === "pon") return "Onde isso aparece na IA" + (c.q ? " (" + short(c.q, 60) + ")" : "");
+    return short(c.q, 90);
+  }
+  function answerOf(c) {
+    if (c.k === "quiz") return short(c.o[c.c], 160);
+    if (c.k === "not") return short((c.l ? c.l + ": " : "") + (c.a || ""), 160);
+    if (c.k === "mem" || c.k === "obj") return "";
+    return short(c.a, 160);
+  }
+  // Texto para o caderno da aula (Markdown), com os cartões que você não lembrou
+  function noteText(weak, dia) {
+    if (!weak || !weak.length) return "";
+    return "\n\n## 🔁 Revisão ativa de " + dia + ": pontos para reforçar\n" +
+      weak.map(c => { const a = answerOf(c); return "- " + labelOf(c) + (a ? " → " + a : ""); }).join("\n") + "\n";
+  }
+  return { LABEL, shuffle, pick, score, suggest, interleave, strip, labelOf, answerOf, noteText };
+})();
+if (typeof module !== "undefined") module.exports = RA;
+"""
+
+RA_UI_JS = r"""
+// =================== REVISÃO ATIVA: a sessão em cartões ===================
+let RA_DECKS = null, RA_S = null;
+async function raLoadDecks() {
+  if (RA_DECKS) return RA_DECKS;
+  const r = await fetch("revisao_cartoes.json", { cache: "no-cache" });
+  if (!r.ok) throw new Error("erro " + r.status);
+  RA_DECKS = await r.json();
+  return RA_DECKS;
+}
+function raMath(el) {
+  if (!window.renderMathInElement) return;
+  try {
+    window.renderMathInElement(el, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false },
+      { left: "\\[", right: "\\]", display: true }, { left: "\\(", right: "\\)", display: false }], throwOnError: false });
+  } catch (e) {}
+}
+function raSet(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
+function raClose(ask) {
+  if (ask && RA_S && RA_S.i > 0 && RA_S.i < RA_S.items.length && !confirm("Sair da revisão? Os cartões que você já respondeu não serão salvos.")) return;
+  document.getElementById("ra").hidden = true;
+  document.body.classList.remove("ra-on");
+  RA_S = null;
+}
+
+// ids: aulas da sessão · mode: "one" (uma aula) ou "day" (revisão do dia, aulas misturadas)
+async function raStart(ids, mode) {
+  const box = document.getElementById("ra"), body = document.getElementById("ra-body");
+  box.hidden = false; document.body.classList.add("ra-on");
+  raSet("ra-title", mode === "day" ? "Revisão do dia" : "Revisão ativa"); raSet("ra-count", "");
+  document.getElementById("ra-bar").style.width = "0%";
+  body.innerHTML = '<div class="ra-wait">Preparando os cartões…</div>';
+  let decks;
+  try { decks = await raLoadDecks(); }
+  catch (e) { body.innerHTML = '<div class="ra-wait">Não consegui carregar os cartões (' + rvEsc(e.message) + "). Confira a conexão e tente de novo.</div>"; return; }
+  const lessons = ids.filter(id => decks[id] && RV_TOPICS[id]).map(id => ({ id, cards: RA.pick(decks[id]) })).filter(L => L.cards.length);
+  if (!lessons.length) {
+    body.innerHTML = '<div class="ra-wait">Esta aula ainda não tem cartões de revisão. Revise pela própria aula e use o <b>⋯ → Já revisou?</b> para registrar.</div>';
+    return;
+  }
+  const items = mode === "day" ? RA.interleave(lessons, 24) : lessons[0].cards.map(card => ({ id: lessons[0].id, card }));
+  RA_S = { mode, items, i: 0, shown: false, answered: null, res: {}, weak: {}, grade: {},
+           ids: lessons.map(L => L.id).filter(id => items.some(x => x.id === id)) };
+  raRender();
+}
+function rvStartActive(id) { raStart([id], "one"); }   // o "▶ Fazer a revisão ativa" do menu, já nesta página
+function raStartDay() {
+  const hoje = RV.today();
+  raStart(RV.agenda().filter(it => it.due <= hoje && RV_TOPICS[it.id]).slice(0, 5).map(it => it.id), "day");
+}
+
+function raFaces(it) {
+  const c = it.card, deck = RA_DECKS[it.id] || {}, li = a => "<ul>" + a.map(x => "<li>" + x + "</li>").join("") + "</ul>";
+  switch (c.k) {
+    case "mem": return { f: "Sem olhar: quais são as ideias-chave desta aula? Tente lembrar pelo menos duas antes de virar." +
+                           (c.h && c.h.length ? '<details class="ra-hint"><summary>Dica: o que a aula prometia ensinar</summary>' + li(c.h) + "</details>" : ""),
+                         b: li(c.a) };
+    case "arm": return { f: "Erro comum: " + c.q + '<span class="ra-sub">O que está errado e qual é o jeito certo?</span>', b: c.a };
+    case "not": return { f: 'O que significa <span class="ra-sym">' + c.q + "</span>?", b: (c.l ? "<b>" + c.l + "</b><br>" : "") + (c.a || "") };
+    case "pas": return { f: (c.t ? '<span class="ra-sub ra-top-sub">' + c.t + "</span>" : "") + "Por que este passo? " + c.q, b: c.a };
+    case "exp": return { f: "Explique com suas palavras: <b>" + c.q + "</b>", b: c.a };
+    case "pon": return { f: "Onde isso aparece na IA?" + (c.q ? '<span class="ra-sub">' + c.q + "</span>" : ""), b: c.a };
+    case "obj": { const mem = (deck.c || []).find(x => x.k === "mem");
+                  return { f: "Consegue explicar isto de cabeça? " + c.q, b: "Compare com as ideias-chave:" + (mem ? li(mem.a) : "") }; }
+    default: return { f: c.q, b: c.a || "" };
+  }
+}
+
+function raRender() {
+  const S = RA_S; if (!S) return;
+  if (S.i >= S.items.length) return raResult();
+  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id), faces = raFaces(it);
+  raSet("ra-count", (S.i + 1) + " / " + S.items.length);
+  document.getElementById("ra-bar").style.width = (S.i / S.items.length * 100) + "%";
+  let h = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>" +
+          '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
+  if (c.k === "quiz") {
+    const a = S.answered;
+    h += '<div class="ra-opts">' + c.o.map((o, i) => '<button type="button" class="ra-opt' +
+         (a != null ? (i === c.c ? " ok" : i === a ? " no" : "") : "") + '" data-o="' + i + '"' + (a != null ? " disabled" : "") +
+         "><kbd>" + (i + 1) + "</kbd>" + o + "</button>").join("") + "</div>";
+    if (a != null) h += '<div class="ra-a ' + (a === c.c ? "ok" : "no") + '"><b>' + (a === c.c ? "✓ Isso!" : "✗ Não foi dessa vez.") + "</b> " + (c.e || "") + "</div>";
+    h += "</div>" + (a != null ? '<div class="ra-actions"><button type="button" class="ra-btn pri" data-next>Continuar →</button></div>'
+                                : '<p class="ra-tip">Escolha uma opção (ou tecle o número).</p>');
+  } else {
+    if (S.shown) h += '<div class="ra-a">' + faces.b + "</div>";
+    h += "</div>";
+    h += S.shown
+      ? '<p class="ra-tip">Como foi para lembrar?</p><div class="ra-grades">' +
+        '<button type="button" class="ra-grade" data-g="z"><span>😵</span>Não lembrei<kbd>1</kbd></button>' +
+        '<button type="button" class="ra-grade" data-g="m"><span>🙂</span>Com esforço<kbd>2</kbd></button>' +
+        '<button type="button" class="ra-grade" data-g="f"><span>😌</span>Lembrei fácil<kbd>3</kbd></button></div>'
+      : '<div class="ra-actions"><button type="button" class="ra-btn pri" data-show>Mostrar resposta<kbd>espaço</kbd></button></div>' +
+        '<p class="ra-tip">Tente responder de cabeça (ou em voz alta) antes de virar.</p>';
+  }
+  const body = document.getElementById("ra-body");
+  body.innerHTML = h; body.scrollTop = 0; raMath(body);
+  const show = body.querySelector("[data-show]"); if (show) show.onclick = () => { S.shown = true; raRender(); };
+  body.querySelectorAll("[data-g]").forEach(b => b.onclick = () => raGrade(b.dataset.g));
+  body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
+  const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
+}
+function raRecord(id, g, card) {
+  (RA_S.res[id] = RA_S.res[id] || []).push(g);
+  if (g === "z") (RA_S.weak[id] = RA_S.weak[id] || []).push(card);
+}
+function raGrade(g) { const it = RA_S.items[RA_S.i]; raRecord(it.id, g, it.card); raAdvance(); }
+function raAnswer(i) {
+  const S = RA_S, it = S.items[S.i];
+  if (S.answered != null) return;
+  S.answered = i;
+  raRecord(it.id, i === it.card.c ? "f" : "z", it.card);
+  raRender();
+}
+function raAdvance() { RA_S.i++; RA_S.shown = false; RA_S.answered = null; raRender(); }
+
+function raReforco(id) {
+  const r = (RA_DECKS[id] || {}).r || {}, link = rvpLink(id);
+  let h = '<div class="ra-ref"><b>🎯 Reforço sugerido</b><ul>';
+  if (r.v2) h += '<li>🎬 Outra explicação: <a href="' + link + '&video=2">' + rvEsc(r.v2) + "</a></li>";
+  if (r.kid) h += '<li><details><summary>🧒 Explicação bem simples</summary><div class="ra-kid">' + r.kid + "</div></details></li>";
+  (r.src || []).forEach(s => { h += '<li>📚 <a href="' + rvEsc(s.url) + '" target="_blank" rel="noopener">' + rvEsc(s.nome) + "</a>" + (s.tempo ? " · " + rvEsc(s.tempo) : "") + "</li>"; });
+  return h + '<li>📘 <a href="' + link + '">Rever na aula</a> os pontos marcados com ✗</li></ul></div>';
+}
+function raPicker(id) {
+  return '<div class="ra-pick" data-id="' + id + '">' + [["z", "😵", "Não lembrei"], ["m", "🙂", "Com esforço"], ["f", "😌", "Fácil"]].map(([g, e, n]) => {
+    const d = RV.preview(id, g);
+    return '<button type="button" class="ra-pg' + (RA_S.grade[id] === g ? " on" : "") + '" data-g="' + g + '"><span>' + e + "</span>" + n +
+           "<small>" + (d ? "próxima " + rvDueText(d) : "aula dominada") + "</small></button>";
+  }).join("") + "</div>";
+}
+
+function raResult() {
+  const S = RA_S, body = document.getElementById("ra-body");
+  raSet("ra-count", "Resultado");
+  document.getElementById("ra-bar").style.width = "100%";
+  S.ids.forEach(id => { if (!S.grade[id]) S.grade[id] = RA.suggest(S.res[id] || []); });
+  const anyWeak = S.ids.some(id => (S.weak[id] || []).length);
+  let h = "";
+  if (S.ids.length === 1) {
+    const id = S.ids[0], sc = RA.score(S.res[id] || []), pct = Math.round(sc.pct * 100), weak = S.weak[id] || [];
+    const firmes = S.items.filter(x => x.id === id && weak.indexOf(x.card) < 0);
+    h += '<div class="ra-res-head"><div class="ra-ring" style="--p:' + pct + '"><b>' + pct + "%</b></div><div><h3>" +
+         (sc.pct >= 0.85 ? "Mandou bem! Ficou firme." : sc.pct >= 0.5 ? "Boa revisão! Alguns pontos pedem reforço." : "Essa custou, e tudo bem: é assim que fixa.") +
+         "</h3><p>" + rvEsc(RV_TOPICS[id][1]) + "</p></div></div>";
+    h += '<ul class="ra-list">' + firmes.map(x => '<li class="ok">✓ ' + rvEsc(RA.labelOf(x.card)) + "</li>").join("") +
+         weak.map(c => '<li class="no">✗ ' + rvEsc(RA.labelOf(c)) + "</li>").join("") + "</ul>";
+    if (weak.length || S.grade[id] === "z") h += raReforco(id);
+    h += '<div class="ra-h4">Como foi, no geral? (sugerimos pela sua nota)</div>' + raPicker(id);
+  } else {
+    h += '<div class="ra-res-head"><div><h3>Revisão do dia concluída 🎉</h3><p>' + S.items.length + " cartões de " + S.ids.length + " aulas</p></div></div>";
+    S.ids.forEach(id => {
+      const sc = RA.score(S.res[id] || []), weak = S.weak[id] || [];
+      h += '<div class="ra-row"><div class="ra-row-h"><b>' + rvEsc(RV_TOPICS[id][1]) + "</b><span>" + Math.round(sc.pct * 100) + "%</span></div>" +
+           (weak.length ? '<p class="ra-weak">✗ ' + weak.map(c => rvEsc(RA.labelOf(c))).join(" · ") +
+                          ' · <a href="' + rvpLink(id) + '">rever na aula</a></p>' : "") + raPicker(id) + "</div>";
+    });
+  }
+  if (anyWeak) h += '<label class="ra-check"><input type="checkbox" id="ra-anotar" checked> Anotar no caderno da aula os pontos para reforçar</label>';
+  h += '<div class="ra-actions"><button type="button" class="ra-btn pri" data-fim>Concluir e agendar</button></div>';
+  body.innerHTML = h; body.scrollTop = 0; raMath(body);
+  body.querySelectorAll(".ra-pick").forEach(p => p.querySelectorAll(".ra-pg").forEach(b => b.onclick = () => {
+    S.grade[p.dataset.id] = b.dataset.g;
+    p.querySelectorAll(".ra-pg").forEach(x => x.classList.toggle("on", x === b));
+  }));
+  body.querySelector("[data-fim]").onclick = raFinish;
+}
+
+function raFinish() {
+  const S = RA_S, anotar = document.getElementById("ra-anotar"), dia = RV.fmt(RV.today());
+  const prox = S.ids.map(id => {
+    RV.complete(id, S.grade[id]);
+    if (anotar && anotar.checked) { const md = RA.noteText(S.weak[id] || [], dia); if (md) RV.appendNote(id, md); }
+    const it = RV.byId()[id];
+    return it ? it.due : null;
+  });
+  const n = S.ids.length;
+  raClose(false);
+  rvToast(n === 1 ? (prox[0] ? "Revisão registrada. Próxima: " + rvDueText(prox[0]) + "." : "🏆 Aula dominada! Ela sai da agenda.")
+                  : n + " revisões registradas. Bom trabalho!");
+}
+
+document.addEventListener("keydown", e => {
+  const S = RA_S;
+  if (document.getElementById("ra").hidden) return;
+  if (e.key === "Escape") { e.preventDefault(); raClose(true); return; }
+  if (!S || S.i >= S.items.length || e.target.closest && e.target.closest("input,textarea,summary")) return;
+  const c = S.items[S.i].card;
+  if (c.k === "quiz") {
+    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= c.o.length) { e.preventDefault(); raAnswer(+e.key - 1); }
+    else if (S.answered != null && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); raAdvance(); }
+  } else if (!S.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); S.shown = true; raRender(); }
+  else if (S.shown && ["1", "2", "3"].includes(e.key)) { e.preventDefault(); raGrade({ 1: "z", 2: "m", 3: "f" }[e.key]); }
+});
+"""
+
+RA_CSS = r"""
+/* ===== Revisão ativa (sessão em cartões) ===== */
+.ra{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.ra[hidden]{display:none}
+body.ra-on{overflow:hidden}
+.ra-box{width:min(680px,100%);max-height:100%;display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:22px;
+  background:var(--card);box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden}
+.ra-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}
+.ra-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer;font:inherit}
+.ra-top span{min-width:36px;text-align:right;color:var(--mu);font-size:.85rem;font-variant-numeric:tabular-nums}
+.ra-prog{height:4px;background:var(--bd)}
+.ra-prog i{display:block;height:100%;width:0;background:var(--t-hub);transition:width .25s}
+.ra-body{padding:18px 20px 22px;overflow:auto}
+.ra-wait{padding:40px 10px;text-align:center;color:var(--mu);line-height:1.6}
+.ra-chip{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:.82rem;color:var(--mu)}
+.ra-chip i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.ra-chip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ra-chip small{margin-left:auto;flex:none;font-size:.74rem}
+.ra-card{padding:18px;border-radius:18px;border:1px solid color-mix(in srgb,var(--t-hub) 28%,var(--bd));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--t-hub) 7%,var(--card)),var(--card))}
+.ra-kick{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f5a524}
+.ra-q{margin-top:8px;font-size:1.12rem;font-weight:650;line-height:1.45}
+.ra-sub{display:block;margin-top:6px;font-size:.86rem;font-weight:500;color:var(--mu)}
+.ra-top-sub{margin:0 0 6px}
+.ra-sym{font-size:1.2em}
+.ra-hint{margin-top:10px;font-size:.84rem;font-weight:500;color:var(--mu)}
+.ra-hint summary{cursor:pointer}
+.ra-a{margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:.95rem;line-height:1.6}
+.ra-a ul{margin:.3em 0 0;padding-left:1.2em}
+.ra-a.ok b{color:#2fa36b}.ra-a.no b{color:#ef6b5b}
+.ra code,.ra-a code{background:rgba(74,92,106,.22);padding:1px 5px;border-radius:4px;font-size:.88em}
+.ra-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.ra-opt{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);
+  color:var(--tx);font:inherit;font-size:.92rem;text-align:left;cursor:pointer}
+.ra-opt kbd{flex:none;font:700 .7rem Inter,system-ui;opacity:.55;margin-top:3px}
+.ra-opt:hover:not([disabled]){border-color:var(--t-hub)}
+.ra-opt[disabled]{cursor:default}
+.ra-opt.ok{border-color:#2fa36b;background:color-mix(in srgb,#2fa36b 14%,var(--bg))}
+.ra-opt.no{border-color:#ef6b5b;background:color-mix(in srgb,#ef6b5b 12%,var(--bg))}
+.ra-actions{display:flex;justify-content:center;margin-top:16px}
+.ra-btn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:9px 20px;border-radius:99px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
+.ra-btn.pri{background:var(--t-hub);border-color:var(--t-hub);color:#04201d}
+.ra-btn kbd,.ra-grade kbd{font:600 .66rem Inter,system-ui;opacity:.6}
+.ra-tip{margin:12px 0 0;text-align:center;font-size:.8rem;color:var(--mu)}
+.ra-grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.ra-grade{display:flex;flex-direction:column;align-items:center;gap:3px;padding:12px 6px;border-radius:14px;border:1px solid var(--bd);
+  background:var(--bg);color:var(--tx);font:inherit;font-size:.84rem;cursor:pointer}
+.ra-grade span{font-size:1.4rem}
+.ra-grade:hover{border-color:var(--t-hub)}
+.ra-res-head{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+.ra-res-head h3{margin:0;font-size:1.15rem;line-height:1.35}
+.ra-res-head p{margin:4px 0 0;color:var(--mu);font-size:.88rem}
+.ra-ring{--p:0;flex:none;width:88px;height:88px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--t-hub) calc(var(--p) * 1%),var(--bd) 0)}
+.ra-ring b{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:var(--card);font-size:1.15rem}
+.ra-list{list-style:none;margin:8px 0;padding:0;font-size:.88rem;line-height:1.6}
+.ra-list .ok{color:#2fa36b}.ra-list .no{color:#ef6b5b}
+.ra-ref{margin-top:12px;padding:12px 14px;border-radius:14px;border:1px solid color-mix(in srgb,#e8a100 40%,var(--bd));
+  background:color-mix(in srgb,#e8a100 8%,var(--card));font-size:.88rem}
+.ra-ref ul{margin:6px 0 0;padding-left:1.1em}
+.ra-ref li{margin:5px 0}
+.ra-ref a{color:var(--t-hub)}
+.ra-ref summary{cursor:pointer}
+.ra-kid{margin-top:6px;font-size:.86rem;line-height:1.55}
+.ra-h4{margin:16px 0 6px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.ra-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ra-pg{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:12px;border:1px solid var(--bd);
+  background:var(--bg);color:var(--tx);font:inherit;font-size:.8rem;cursor:pointer;line-height:1.25}
+.ra-pg span{font-size:1.15rem}
+.ra-pg small{font-size:.68rem;color:var(--mu)}
+.ra-pg.on{border-color:var(--t-hub);box-shadow:inset 0 0 0 1px var(--t-hub)}
+.ra-row{padding:12px 0;border-top:1px solid var(--bd)}
+.ra-row-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:.9rem}
+.ra-weak{margin:0 0 8px;font-size:.8rem;color:#ef6b5b}
+.ra-weak a{color:var(--t-hub)}
+.ra-check{display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:.86rem;color:var(--mu)}
+@media (max-width:600px){.ra{padding:0}.ra-box{height:100%;max-height:none;border-radius:0;border:0}.ra-q{font-size:1.02rem}.ra-body{padding:14px 14px 20px}}
+"""
+
 REVIEW_PAGE_JS = r"""
 // =================== PÁGINA REVISÕES ===================
 const RV_TOPICS = __RV_TOPICS__;   // {id: [trilha, título]}
@@ -95,10 +444,10 @@ function rvpItem(it) {
   const meta = [t.nome, RV.when(it.due), it.src === "quiz" ? "agendada pelo quiz" : "agendada por você", it.n + "ª revisão"];
   return '<li class="rvp-item" style="--c:var(' + t.cor + ')"><i class="rvp-dot" aria-hidden="true"></i>' +
     '<div class="rvp-t"><a href="' + rvpLink(it.id) + '">' + rvEsc(tp[1]) + "</a><small>" + meta.map(rvEsc).join(" · ") + "</small></div>" +
-    '<div class="rvp-acts"><a class="rvp-btn" href="' + rvpLink(it.id) + '">Abrir aula</a>' +
-    '<button type="button" class="rvp-btn pri" onclick="openReviewMenu(\'' + it.id + '\', this, \'grade\')">Revisei</button>' +
-    '<button type="button" class="rvp-btn" aria-label="Mudar a data ou tirar da agenda" title="Mudar a data ou tirar da agenda" ' +
-    'onclick="openReviewMenu(\'' + it.id + '\', this, \'date\')">⋯</button></div></li>';
+    '<div class="rvp-acts"><button type="button" class="rvp-btn pri" onclick="raStart([\'' + it.id + '\'], \'one\')" title="Revisão ativa em cartões (5 a 10 min)">▶ Revisar</button>' +
+    '<a class="rvp-btn" href="' + rvpLink(it.id) + '">Abrir aula</a>' +
+    '<button type="button" class="rvp-btn" aria-label="Já revisou, mudar a data ou tirar da agenda" title="Já revisou, mudar a data ou tirar da agenda" ' +
+    'onclick="openReviewMenu(\'' + it.id + '\', this, \'all\')">⋯</button></div></li>';
 }
 
 function rvpSection(titulo, itens, cls) {
@@ -116,9 +465,11 @@ function renderRevisoes() {
   const box = document.getElementById("rv-hoje"), n = atrasadas.length + deHoje.length, prox = ag.find(it => it.due > hoje);
   box.hidden = !ag.length;
   if (n) {
+    const aulas = Math.min(n, 5), min = Math.max(5, Math.min(24, aulas * 6));
     box.innerHTML = '<span class="ico" aria-hidden="true">🧠</span><div><b>Hoje: ' + n + (n === 1 ? " revisão" : " revisões") +
       (atrasadas.length ? " · " + atrasadas.length + (atrasadas.length === 1 ? " atrasada" : " atrasadas") : "") + "</b>" +
-      "<span>Abra a aula, refaça o quiz e um exercício de cabeça, e toque em <b>Revisei</b> para dizer como foi. O site agenda a próxima.</span></div>";
+      "<span>Cartões das aulas" + (aulas > 1 ? ", misturados (misturar matérias fixa mais)" : "") + ". No fim, você diz como foi e o site agenda a próxima." +
+      (n > 5 ? " Começa pelas 5 mais urgentes." : "") + '</span></div><button type="button" class="rvp-btn pri rvp-go" onclick="raStartDay()">▶ Começar revisão do dia<small>≈ ' + min + " min</small></button>";
   } else if (prox) {
     box.innerHTML = '<span class="ico" aria-hidden="true">🎉</span><div><b>Nada para revisar hoje</b><span>Próxima: ' +
       rvEsc(RV_TOPICS[prox.id][1]) + " · " + RV.when(prox.due) + ".</span></div>";
@@ -198,6 +549,14 @@ function toggleTheme() {
 
 // Monta a agenda antes da primeira pintura (o script está no fim do <body>)
 renderRevisoes();
+
+// revisoes.html?ativa=<aula>: vem do "▶ Fazer a revisão ativa" de uma aula ou do hub
+(function () {
+  try {
+    const id = new URLSearchParams(location.search).get("ativa");
+    if (id && RV_TOPICS[id]) { history.replaceState(null, "", location.pathname); raStart([id], "one"); }
+  } catch (e) {}
+})();
 """
 
 TEMPLATE = r"""<!DOCTYPE html>
@@ -208,6 +567,10 @@ TEMPLATE = r"""<!DOCTYPE html>
 <title>Revisões · Roteiro IA</title>
 __FAVICON__
 __AUTH_GUARD__
+<!-- KaTeX: fórmulas dos cartões de Matemática -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 <style>
 __CSS__
 </style>
@@ -287,8 +650,25 @@ __CSS__
 
 __CHANGE_CRED__
 
+<!-- REVISÃO ATIVA: a sessão em cartões (uma aula ou a revisão do dia) -->
+<div class="ra" id="ra" hidden role="dialog" aria-modal="true" aria-labelledby="ra-title">
+  <div class="ra-box">
+    <div class="ra-top">
+      <button type="button" class="ra-x" onclick="raClose(true)" aria-label="Sair da revisão" title="Sair (Esc)">✕</button>
+      <b id="ra-title">Revisão ativa</b>
+      <span id="ra-count"></span>
+    </div>
+    <div class="ra-prog"><i id="ra-bar"></i></div>
+    <div class="ra-body" id="ra-body"></div>
+  </div>
+</div>
+
 <script>
 __AUTH_JS__
+
+__RA_JS__
+
+__RA_UI_JS__
 
 __PAGE_JS__
 </script>
@@ -303,10 +683,12 @@ def generate_review_page(out_path, shared_css, topic_index_json):
     html = (TEMPLATE
             .replace("__FAVICON__", FAVICON_LINK)
             .replace("__AUTH_GUARD__", AUTH_GUARD_HEAD_SCRIPT)
-            .replace("__CSS__", shared_css + "\n" + AUTH_AWS_SYNC_CSS + "\n" + REVIEW_PAGE_CSS)
+            .replace("__CSS__", shared_css + "\n" + AUTH_AWS_SYNC_CSS + "\n" + REVIEW_PAGE_CSS + "\n" + RA_CSS)
             .replace("__CHANGE_CRED__", CHANGE_CREDENTIALS_MODAL_HTML)
             .replace("__AUTH_JS__", AUTH_AWS_SYNC_JS)
-            .replace("__PAGE_JS__", page_js))
+            .replace("__RA_JS__", RA_JS)
+            .replace("__PAGE_JS__", page_js)
+            .replace("__RA_UI_JS__", RA_UI_JS))
     from design_v2 import apply_design
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(apply_design(html, "rev"))

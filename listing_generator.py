@@ -1813,3 +1813,4 @@ if (typeof initSplitResizer === "function") initSplitResizer();
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(rendered)
     print(f"Gerado: {out_path} ({total_topics} tópicos enriquecidos)")
+    return topics_map   # usado para montar os cartões da Revisão ativa (review_cards.py)
