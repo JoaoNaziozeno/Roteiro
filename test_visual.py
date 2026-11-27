@@ -90,20 +90,17 @@ class Visual(unittest.TestCase):
             self.assertIn('data-f="v" onclick="setFilter(\'v\')"', s, tr)
             self.assertIn('id="modal-review-btn"', s, tr)
             self.assertIn('else if (FILTER === "v") matchFilter = Boolean(inReview);', s, tr)
-            # a marca de revisão não mexe na situação da aula
-            ini = s.index("function toggleTopicReview(")
-            corpo = s[ini:s.index("\n}\n", ini)]
-            self.assertNotIn(".s =", corpo, tr)
+            self.assertIn("openReviewMenu(", s, tr)
             self.assertNotIn("“Revisar”", s, tr)
+        # a agenda de revisões (cálculo e menu) nunca mexe na situação da aula
+        from review_js import REVIEW_JS, REVIEW_UI_JS
+        self.assertNotRegex(REVIEW_JS + REVIEW_UI_JS, r"\.s\s*=[^=]")
 
     def test_lista_de_revisao_no_hub(self):
         self.assertIn('id="cq-rev" hidden', self.hub)
         self.assertIn("function cqRenderReview(", self.hub)
         self.assertIn('"?aula="', self.hub)
-        ini = self.hub.index("function cqReviewDone(")
-        corpo = self.hub[ini:self.hub.index("\n}\n", ini)]
-        self.assertIn("delete saved[id].rv", corpo)
-        self.assertNotIn(".s =", corpo)
+        self.assertIn('class="cq-rev-all" href="revisoes.html"', self.hub)   # leva à agenda completa
 
     def test_hub_sem_anel(self):
         self.assertNotIn("function cqRing", self.hub)

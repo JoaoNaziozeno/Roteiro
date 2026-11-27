@@ -81,6 +81,10 @@ CONQ_CSS = r"""
 .cq-rev-item small{display:block;font-weight:400;font-size:.74rem;color:var(--mu)}
 .cq-rev-ok{flex:none;font:inherit;font-size:.78rem;min-height:34px;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer}
 .cq-rev-ok:hover{border-color:#2fa36b;color:#2fa36b}
+.cq-rev-all{font-size:.78rem;font-weight:600;color:var(--t-hub);text-decoration:none;text-transform:none;letter-spacing:0}
+.cq-rev-all:hover{text-decoration:underline}
+.cq-rev-none{margin:6px 0 0;font-size:.85rem;color:var(--mu)}
+.cq-rev-none b{color:var(--tx)}
 .cq-h{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .cq-heat{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(10px,20px);gap:4px;justify-content:start}
 .cq-heat i{display:block;aspect-ratio:1;border-radius:4px;background:var(--bd);opacity:.55}
@@ -265,39 +269,38 @@ function renderConquistas() {
       '<div class="cq-nextbar"><i style="width:' + Math.round(next.frac * 100) + '%"></i></div>';
   } else document.getElementById("cq-next").textContent = "Você conquistou todos os selos. Lenda!";
 
-  cqRenderReview(prog);
+  cqRenderReview();
 }
 
 // Lista de revisão: aulas que o aluno marcou com ↻ (campo rv), das três disciplinas, a mais antiga primeiro.
 // Só a marca entra e sai: a situação da aula (concluída etc.) não muda.
-function cqRenderReview(prog) {
+// Revisões de hoje (e atrasadas), da agenda única (RV). A página Revisões tem a agenda completa.
+// "Revisei" pergunta como foi e agenda a próxima. A situação da aula não muda.
+function cqRenderReview() {
   const box = document.getElementById("cq-rev");
-  if (!box) return;
-  const topics = CQ_INDEX.topics, track = {};
+  if (!box || typeof RV === "undefined") return;
+  const topics = CQ_INDEX.topics, track = {}, hoje = RV.today();
   CQ_TRACKS.forEach(([tr, name, icon, href, color]) => { track[tr] = { name, href, color }; });
-  const ids = Object.keys(prog).filter(id => prog[id] && prog[id].rv && topics[id] && track[id.split("-")[0]])
-    .sort((a, b) => prog[a].rv - prog[b].rv);
-  box.hidden = !ids.length;
-  if (!ids.length) { box.innerHTML = ""; return; }
-  box.innerHTML = '<div class="cq-h"><span>↻ Para revisar</span><span>' + ids.length + (ids.length === 1 ? " aula" : " aulas") + "</span></div>" +
-    '<ul class="cq-rev-list">' + ids.map(id => {
-      const t = track[id.split("-")[0]];
-      return '<li class="cq-rev-item" style="--c:var(' + t.color + ')"><i aria-hidden="true"></i>' +
-        '<a href="' + t.href + "?aula=" + encodeURIComponent(id) + '">' + cqEsc(topics[id][0]) +
-        "<small>" + cqEsc(t.name) + " · marcada em " + cqDate(prog[id].rv) + "</small></a>" +
-        '<button type="button" class="cq-rev-ok" onclick="cqReviewDone(\'' + id + '\')" title="Tirar da lista de revisão">Revisei ✓</button></li>';
-    }).join("") + "</ul>";
-}
-
-function cqReviewDone(id) {
-  // Lê o salvo na hora e muda só esta aula: nunca regrava uma cópia antiga do progresso
-  const saved = cqRead("roteiro-ia-v1", {});
-  if (saved[id]) {
-    delete saved[id].rv;
-    try { localStorage.setItem("roteiro-ia-v1", JSON.stringify(saved)); } catch (e) {}
+  const all = RV.agenda().filter(it => topics[it.id] && track[it.id.split("-")[0]]);
+  const due = all.filter(it => it.due <= hoje), next = all.find(it => it.due > hoje);
+  box.hidden = !all.length;
+  if (!all.length) { box.innerHTML = ""; return; }
+  const link = '<a class="cq-rev-all" href="revisoes.html">Ver agenda →</a>';
+  if (!due.length) {
+    box.innerHTML = '<div class="cq-h"><span>↻ Revisões</span>' + link + "</div>" +
+      '<p class="cq-rev-none">Nada para revisar hoje 🎉 Próxima: <b>' + cqEsc(topics[next.id][0]) + "</b> · " + RV.when(next.due) + ".</p>";
+    return;
   }
-  if (typeof PR !== "undefined" && PR && PR[id]) delete PR[id].rv;
-  if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
-  renderConquistas();
+  const late = due.filter(it => it.due < hoje).length;
+  box.innerHTML = '<div class="cq-h"><span>↻ Revisões de hoje · ' + due.length + (late ? " (" + late + (late === 1 ? " atrasada" : " atrasadas") + ")" : "") +
+    "</span>" + link + "</div>" +
+    '<ul class="cq-rev-list">' + due.slice(0, 5).map(it => {
+      const t = track[it.id.split("-")[0]];
+      return '<li class="cq-rev-item" style="--c:var(' + t.color + ')"><i aria-hidden="true"></i>' +
+        '<a href="' + t.href + "?aula=" + encodeURIComponent(it.id) + '">' + cqEsc(topics[it.id][0]) +
+        "<small>" + cqEsc(t.name) + " · " + RV.when(it.due) + "</small></a>" +
+        '<button type="button" class="cq-rev-ok" onclick="openReviewMenu(\'' + it.id + '\', this, \'grade\')" title="Registrar a revisão e agendar a próxima">Revisei</button></li>';
+    }).join("") + "</ul>" + (due.length > 5 ? '<p class="cq-rev-none">+ ' + (due.length - 5) + " na página Revisões.</p>" : "");
 }
+window.addEventListener("rv:change", () => { try { cqRenderReview(); } catch (e) {} });
 """

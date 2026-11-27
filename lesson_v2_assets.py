@@ -194,8 +194,7 @@ const LV2_META = {
   quiz:        { icon: "✅", label: "Quiz de saída" },
   camadas:     { icon: "📚", label: "Vá mais fundo" }
 };
-const LV2_REVIEW_KEY = "roteiro-review-v1";
-const LV2_REVIEW_DAYS = [1, 3, 7, 21];
+const LV2_REVIEW_KEY = "roteiro-review-v1";   // agenda única de revisões (ver review_js.py / RV)
 const lv2Fmt = s => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
 
 /* Trechos de vídeo: o parâmetro end= do YouTube só para a reprodução uma vez e
@@ -241,13 +240,7 @@ window.addEventListener("message", ev => {
     if (clip.note) clip.note.hidden = true;
   }
 });
-const lv2Date = t => { const d = new Date(t); return String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0"); };
 function lv2ReadReview() { try { return JSON.parse(localStorage.getItem(LV2_REVIEW_KEY) || "{}") || {}; } catch (e) { return {}; } }
-function lv2WriteReview(o) {
-  try { localStorage.setItem(LV2_REVIEW_KEY, JSON.stringify(o)); } catch (e) {}
-  // Revisões fazem parte do progresso: vão para a nuvem junto com o resto (campo "extra" no DynamoDB)
-  if (typeof scheduleAwsRealtimeSync === "function") scheduleAwsRealtimeSync();
-}
 
 function isPtGuideV2(g) { return Boolean(g && g.v === 2 && Array.isArray(g.blocos)); }
 function ptGuideCardCount(g) { return isPtGuideV2(g) ? g.blocos.length : 4; }
@@ -425,11 +418,8 @@ function renderPtGuideV2Body(g, topicId) {
   if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
   if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
   if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
-  const rv = topicId ? lv2ReadReview()[topicId] : null;
-  if (rv && rv.next && rv.next.length) {
-    const due = rv.next.find(t => t > (rv.done || 0));
-    if (due && due <= Date.now()) chips.push("revisão de hoje");
-  }
+  const rvSt = (topicId && typeof RV !== "undefined") ? RV.stateOf(lv2ReadReview()[topicId]) : null;
+  if (rvSt && rvSt.due <= RV.today()) chips.push(rvSt.due < RV.today() ? "revisão atrasada" : "revisão de hoje");
 
   let html = `<div class="lv2" data-topic="${topicId || ""}"><div class="lv2-hero">` +
     `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
@@ -627,23 +617,27 @@ function lv2ParseNums(s) {
   return String(s).replace(/[\[\]()]/g, " ").split(/[;\s]+/).filter(Boolean).map(x => parseFloat(x.replace(",", ".")));
 }
 
+// Quiz aprovado: a agenda única (RV) cuida das revisões. 1ª aprovação agenda a primeira revisão para amanhã;
+// refazer o quiz no dia da revisão (ou depois) conta como revisão feita.
 function lv2ScheduleReview(topicId, score, total) {
-  if (!topicId) return null;
-  const all = lv2ReadReview(), now = Date.now(), DAY = 86400000;
-  const prev = all[topicId] || {};
-  const firstPass = !prev.passedAt;
-  const rec = Object.assign({}, prev, { score, total, last: now });
-  if (firstPass) { rec.passedAt = now; rec.next = LV2_REVIEW_DAYS.map(d => now + d * DAY); }
-  else rec.done = now; // refazer o quiz conta como uma revisão concluída
-  all[topicId] = rec; lv2WriteReview(all);
-  return rec;
+  if (!topicId || typeof RV === "undefined") return null;
+  return RV.quizPassed(topicId, score, total);
 }
 
 function lv2ShowReview(root, rec) {
-  const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || !rec.next) return;
-  const pend = rec.next.filter(t => t > (rec.done || 0));
-  box.insertAdjacentHTML("beforeend", `<div class="lv2-review">🔁 Revisões agendadas: ${rec.next.map(t => (pend.includes(t) ? "" : "✓ ") + lv2Date(t)).join(" · ")}. ` +
-    `Nesses dias, refaça este quiz e um exercício 🟡 de cabeça. Se errar, coloque a aula na lista de revisão (↻ Revisar).</div>`);
+  const box = root.querySelector(".lv2-quiz-res"); if (!box || !rec || typeof RV === "undefined") return;
+  const st = RV.stateOf(rec);
+  let msg;
+  if (st) {
+    const n = RV.between(RV.today(), st.due), quando = RV.when(st.due) + (n >= 2 ? ` (${RV.fmt(st.due)})` : "");
+    msg = `🔁 Próxima revisão: <b>${quando}</b>. Nesse dia, refaça este quiz e um exercício 🟡 de cabeça: lembrando bem, o intervalo cresce (3, 7, 21 e 60 dias). ` +
+          `A agenda completa fica na página <a href="revisoes.html">Revisões</a>.`;
+  } else if (rec.mastered) {
+    msg = `🏆 Aula dominada: você lembrou bem em todas as revisões, então ela saiu da agenda.`;
+  } else {
+    msg = `Sem revisão agendada. Use o ↻ Revisar, no topo da aula, para agendar uma.`;
+  }
+  box.insertAdjacentHTML("beforeend", `<div class="lv2-review">${msg}</div>`);
 }
 
 function lv2Unlock(root) { root.querySelectorAll(".lv2-layers").forEach(l => l.dataset.locked = "0"); }

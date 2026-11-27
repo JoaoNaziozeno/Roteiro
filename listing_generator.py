@@ -176,7 +176,7 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     options.append(f'<a class="row-opt" data-act="doc" href="{t["doc_url"]}" target="_blank" rel="noopener" title="{html_lib.escape(doc_lbl)}">{doc_name} ↗</a>')
                 options.append(f'<button class="row-opt" data-act="notes" onclick="openTopicNotes(\'{t_id}\')">Anotações</button>')
                 # Revisão é uma marca à parte: não muda a situação da aula nem os contadores
-                options.append(f'<button class="row-opt" data-act="review" aria-pressed="false" onclick="toggleTopicReview(\'{t_id}\')">↻ Revisar</button>')
+                options.append(f'<button class="row-opt" data-act="review" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu(\'{t_id}\', this)">↻ Revisar</button>')
 
                 # A bolinha não gira o status sozinha: voltar a "Do zero" apaga o % de vídeo e de aula, então é escolha explícita
                 status_options = "".join(
@@ -404,7 +404,7 @@ __LISTING_CSS__
         <!-- STATUS MANUAL -->
         <div class="note-status-wrap">
           <button class="note-status-pill" id="modal-status-btn" data-s="z" onclick="toggleModalTopicStatus()" title="Clique para alternar: Do zero → Em andamento → Concluído">Do zero</button>
-          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" onclick="toggleTopicReview(CURRENT_MODAL_TOPIC_ID)" title="Colocar esta aula na lista de revisão (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
+          <button type="button" class="note-review-pill" id="modal-review-btn" aria-pressed="false" aria-haspopup="dialog" onclick="openReviewMenu(CURRENT_MODAL_TOPIC_ID, this)" title="Agendar a revisão desta aula (a situação não muda)"><span aria-hidden="true">↻</span><span class="rv-txt">Revisar</span></button>
         </div>
 
         <!-- OPÇÕES DA AULA: progresso automático e meta de data -->
@@ -1022,6 +1022,7 @@ async function syncTopicToServer(topicId) {
 function paint() {
   let doneCount = 0, progCount = 0, zeroCount = 0, noteCount = 0, reviewCount = 0;
   const optCount = { e: 0, r: 0, z: 0 };
+  const rvMap = typeof RV !== "undefined" ? RV.byId() : {};   // revisões marcadas (agenda única)
 
   const allRows = document.querySelectorAll(`.topic-row`);
   let firstUncompletedRow = null;
@@ -1039,11 +1040,12 @@ function paint() {
     else zeroCount++;
 
     if (item.n && item.n.trim()) noteCount++;
-    if (item.rv) reviewCount++;
+    const rvItem = rvMap[tid];
+    if (rvItem) reviewCount++;
     const rvBtn = row.querySelector('[data-act="review"]');
     if (rvBtn) {
-      rvBtn.setAttribute("aria-pressed", String(Boolean(item.rv)));
-      rvBtn.textContent = item.rv ? "✓ Na revisão" : "↻ Revisar";
+      rvBtn.setAttribute("aria-pressed", String(Boolean(rvItem)));
+      rvBtn.textContent = rvItem ? "↻ " + rvShortLabel(rvItem.due) : "↻ Revisar";
     }
 
     // Situação: bolinha, faixa lateral e a opção marcada no painel
@@ -1063,7 +1065,7 @@ function paint() {
       const bits = [];
       if (st === "r") bits.push("Em andamento");
       if (item.n && item.n.trim()) bits.push("com anotação");
-      if (item.rv) bits.push("↻ para revisar");
+      if (rvItem) bits.push("↻ revisão " + RV.when(rvItem.due));
       meta.textContent = bits.join(" · ");
     }
 
@@ -1073,7 +1075,7 @@ function paint() {
     }
 
     // Aplicar Filtro e Busca
-    applyRowVisibility(row, status, item.n || "", Boolean(item.rv));
+    applyRowVisibility(row, status, item.n || "", Boolean(rvItem));
   });
 
   // Resumo da trilha
@@ -1100,7 +1102,7 @@ function paint() {
   const notesBtn = document.querySelector('.fil-btn[data-f="n"]');
   if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
   const reviewBtn = document.querySelector('.fil-btn[data-f="v"]');
-  if (reviewBtn) reviewBtn.title = "Para revisar: " + reviewCount;
+  if (reviewBtn) reviewBtn.title = "Com revisão marcada: " + reviewCount;
 
   // Nível
   const lvlIcon = document.getElementById("lvl-icon");
@@ -1160,28 +1162,26 @@ function chooseTopicStatus(topicId, next) {
   syncTopicToServer(topicId);
 }
 
-// Lista de revisão: marca à parte (campo rv = quando entrou na lista). A situação, os contadores,
-// as conquistas e o ritmo não mudam. Vai para a nuvem junto com o resto do progresso.
-function toggleTopicReview(topicId) {
-  if (!topicId) return;
-  if (!PR[topicId]) PR[topicId] = { s: "z", n: "", d: "" };
-  const add = !PR[topicId].rv;
-  if (add) PR[topicId].rv = Date.now();
-  else delete PR[topicId].rv;
-  saveLocal();
-  paint();
-  updateModalReviewBtn();
-  if (typeof showToast === "function") showToast(add ? "↻ Aula na lista de revisão. A situação dela não muda." : "Aula retirada da lista de revisão.");
+// Revisão da aula: vem da agenda única (RV, página Revisões). O botão ↻ abre o menu "Quando revisar?"
+// (openReviewMenu). A situação da aula, os contadores, as conquistas e os pontos não mudam.
+// Rótulo curto para botões: "Revisar hoje", "Revisão amanhã", "Revisão 30/11", "Revisão atrasada"
+function rvShortLabel(due) {
+  const n = RV.between(RV.today(), due);
+  return n < 0 ? "Revisão atrasada" : n === 0 ? "Revisar hoje" : n === 1 ? "Revisão amanhã" : "Revisão " + RV.fmt(due);
 }
 
 function updateModalReviewBtn() {
   const btn = document.getElementById("modal-review-btn");
   if (!btn) return;
-  const on = Boolean(CURRENT_MODAL_TOPIC_ID && PR[CURRENT_MODAL_TOPIC_ID] && PR[CURRENT_MODAL_TOPIC_ID].rv);
-  btn.setAttribute("aria-pressed", String(on));
-  btn.querySelector(".rv-txt").textContent = on ? "Na revisão" : "Revisar";
-  btn.title = on ? "Esta aula está na lista de revisão. Toque para tirar." : "Colocar esta aula na lista de revisão (a situação não muda)";
+  const it = (CURRENT_MODAL_TOPIC_ID && typeof RV !== "undefined") ? RV.byId()[CURRENT_MODAL_TOPIC_ID] : null;
+  btn.setAttribute("aria-pressed", String(Boolean(it)));
+  btn.dataset.late = it && it.due < RV.today() ? "1" : "";
+  btn.querySelector(".rv-txt").textContent = it ? rvShortLabel(it.due) : "Revisar";
+  btn.title = it ? "Revisão marcada (" + RV.when(it.due) + "). Toque para registrar, mudar a data ou tirar." : "Agendar a revisão desta aula (a situação não muda)";
 }
+
+// Agenda mudou (nesta página, em outra aba ou vinda da nuvem): lista e botão da aula acompanham
+window.addEventListener("rv:change", () => { try { paint(); updateModalReviewBtn(); } catch (e) {} });
 
 // =========================================================================
 // PONTOS DA AULA (topo do estúdio)

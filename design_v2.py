@@ -55,7 +55,7 @@ DESIGN_HEAD = r"""
 }
 body[data-track="ia"]{--t:var(--t-ia)} body[data-track="mat"]{--t:var(--t-mat)}
 body[data-track="ing"]{--t:var(--t-ing)} body[data-track="proj"]{--t:var(--t-proj)}
-body[data-track="hub"]{--t:var(--t-hub)}
+body[data-track="hub"]{--t:var(--t-hub)} body[data-track="rev"]{--t:var(--t-hub)}
 
 /* ============================ BASE ============================ */
 body{font-family:var(--ds-font);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;background:var(--bg)}
@@ -310,7 +310,8 @@ window.DS_TOPICS = __DS_TOPICS__;
     { t: "IA & Código", d: "Python, dados, Machine Learning, Deep Learning e LLMs", href: "ia.html", ico: "🤖", k: "ia" },
     { t: "Matemática para IA", d: "Álgebra linear, cálculo, probabilidade e atenção", href: "matematica.html", ico: "📐", k: "mat" },
     { t: "Inglês", d: "Do básico aos tempos verbais avançados", href: "ingles.html", ico: "🗣️", k: "ing" },
-    { t: "Projetos & Portfólio", d: "Projetos práticos para o seu GitHub", href: "projetos.html", ico: "🛠️", k: "proj" }
+    { t: "Projetos & Portfólio", d: "Projetos práticos para o seu GitHub", href: "projetos.html", ico: "🛠️", k: "proj" },
+    { t: "Revisões", d: "Sua agenda de revisões: hoje, atrasadas e próximas", href: "revisoes.html", ico: "↻", k: "rev" }
   ];
 
   /* ---------- Holofote que segue o cursor ---------- */
@@ -545,6 +546,7 @@ def set_topic_index(tracks):
 # Roda logo depois do menu, antes da primeira pintura: o selo já nasce "Nuvem" para quem está logado
 # (antes ele aparecia como "Local" e trocava ~1 s depois, fazendo o menu pular a cada troca de página).
 NAV_EARLY_SCRIPT = """<script>
+try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões de hoje + atrasadas)
 (function () {
   try {
     var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
@@ -571,8 +573,20 @@ NAV_SEARCH_BUTTON = ('<button type="button" class="ds-k-btn" title="Buscar pági
 def apply_design(html: str, track: str) -> str:
     """Injeta a camada de design no fim do <head> e do <body> e marca a trilha da página."""
     from modal_ui import MODAL_UI_CSS, MODAL_UI_JS
-    html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n</head>", 1)
+    from review_js import REVIEW_JS, REVIEW_UI_JS, REVIEW_UI_CSS
+    # Agenda de revisões no <head>: o contador do menu já sai certo na primeira pintura (sem o menu "pular")
+    review_head = "<style>" + REVIEW_UI_CSS + "</style>\n<script>\n" + REVIEW_JS + "\n" + REVIEW_UI_JS + "\n</script>"
+    html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n" + review_head + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
+    # Item "Revisões" no menu de todas as páginas (logo depois de Projetos), com o contador de hoje + atrasadas
+    nav_rev = ('\n      <a href="revisoes.html" class="nav-link' + (" active" if track == "rev" else "") + '" id="nav-rv-link">'
+               '↻ Revisões<span class="nav-rv-badge" id="nav-rv-badge" hidden></span></a>')
+    html = html.replace("🛠️ Projetos & Portfólio</a>", "🛠️ Projetos & Portfólio</a>" + nav_rev, 1)
+    # Com "Revisões", o menu não cabia em 1366 px: só no menu, os dois rótulos mais longos ficam curtos
+    i, j = html.find('<nav class="nav-links"'), html.find("</nav>")
+    if i != -1 and j > i:
+        nav = html[i:j].replace("🇺🇸 Inglês EnglishBay</a>", "🇺🇸 Inglês</a>").replace("🛠️ Projetos & Portfólio</a>", "🛠️ Projetos</a>")
+        html = html[:i] + nav + html[j:]
     html = html.replace("</header>", "</header>\n" + NAV_EARLY_SCRIPT, 1)
     html = html.replace('<div class="nav-right">', '<div class="nav-right">\n' + NAV_SEARCH_BUTTON, 1)
     idx = html.rfind("</body>")

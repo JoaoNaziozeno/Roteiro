@@ -2088,6 +2088,7 @@ out_ia = os.path.join(BASE_DIR, "ia.html")
 out_mat = os.path.join(BASE_DIR, "matematica.html")
 out_ing = os.path.join(BASE_DIR, "ingles.html")
 out_proj = os.path.join(BASE_DIR, "projetos.html")
+out_rev = os.path.join(BASE_DIR, "revisoes.html")
 out_hub = os.path.join(BASE_DIR, "index.html")
 out_mirror = os.path.join(BASE_DIR, "Roteiro de Estudo_ do zero à IA.html")
 
@@ -2149,6 +2150,11 @@ generate_listing_page(
 
 generate_projects_page(out_proj, SHARED_CSS)
 
+# Página Revisões: agenda única (revisões do quiz + "↻ Revisar"), com os títulos do mesmo índice da busca
+import design_v2 as _dv2
+from revisoes_page import generate_review_page
+generate_review_page(out_rev, SHARED_CSS, _dv2._TOPIC_INDEX_JSON)
+
 generate_hub_page(out_hub)
 generate_hub_page(out_mirror)
 
@@ -2167,6 +2173,7 @@ deploy_files = [
     (out_mat, "matematica.html"),
     (out_ing, "ingles.html"),
     (out_proj, "projetos.html"),
+    (out_rev, "revisoes.html"),
     (out_hub, "index.html"),
     (out_mirror, "Roteiro de Estudo_ do zero à IA.html"),
     (out_admin, "admin.html")
