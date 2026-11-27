@@ -71,20 +71,6 @@ CONQ_CSS = r"""
 .cq-row2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
 @media(max-width:980px){.cq-row2{grid-template-columns:1fr}}
 .cq-box{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px}
-.cq-rev{margin-bottom:14px;padding:12px 16px}
-.cq-rev-list{list-style:none;margin:6px 0 0;padding:0}
-.cq-rev-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--bd)}
-.cq-rev-item:first-child{border-top:0}
-.cq-rev-item i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.cq-rev-item a{flex:1;min-width:0;color:var(--tx);text-decoration:none;font-size:.88rem;font-weight:600;line-height:1.3}
-.cq-rev-item a:hover{text-decoration:underline}
-.cq-rev-item small{display:block;font-weight:400;font-size:.74rem;color:var(--mu)}
-.cq-rev-ok{flex:none;font:inherit;font-size:.78rem;min-height:34px;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer}
-.cq-rev-ok:hover{border-color:#2fa36b;color:#2fa36b}
-.cq-rev-all{font-size:.78rem;font-weight:600;color:var(--t-hub);text-decoration:none;text-transform:none;letter-spacing:0}
-.cq-rev-all:hover{text-decoration:underline}
-.cq-rev-none{margin:6px 0 0;font-size:.85rem;color:var(--mu)}
-.cq-rev-none b{color:var(--tx)}
 .cq-h{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .cq-heat{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(10px,20px);gap:4px;justify-content:start}
 .cq-heat i{display:block;aspect-ratio:1;border-radius:4px;background:var(--bd);opacity:.55}
@@ -112,7 +98,6 @@ CONQ_HTML = r"""<section class="cq-sect" id="hub-conquistas" aria-labelledby="cq
       <div class="cq-stats" id="cq-stats"></div>
     </div>
     <div class="cq-grid" id="cq-cards"></div>
-    <div class="cq-box cq-rev" id="cq-rev" hidden></div>
     <div class="cq-row2">
       <div class="cq-box">
         <div class="cq-h"><span>📅 Seus dias de estudo (últimas 12 semanas)</span><span id="cq-streak"></span></div>
@@ -173,6 +158,11 @@ function renderConquistas() {
   const dayMin = {};
   sessions.forEach(s => { if (s && s.t) dayMin[cqDayKey(s.t)] = (dayMin[cqDayKey(s.t)] || 0) + (s.sec || 0) / 60; });
   events.forEach(e => { if (e && e.t && (e.to === "e" || e.to === "r")) { const k = cqDayKey(e.t); dayMin[k] = (dayMin[k] || 0) + (e.to === "e" ? 15 : 5); } });
+  // Revisões feitas também contam como dia de estudo (o aviso de sequência do sino usa o mesmo critério)
+  const recs = cqRead("roteiro-review-v1", {});
+  for (const rid in recs) (recs[rid] && Array.isArray(recs[rid].hist) ? recs[rid].hist : []).forEach(h => {
+    const t = Number(h && h[0]); if (t) { const k = cqDayKey(t); dayMin[k] = (dayMin[k] || 0) + 10; }
+  });
   const studied = k => (dayMin[k] || 0) > 0;
   let streak = 0;
   for (let d = 0; d < 400; d++) {
@@ -269,38 +259,8 @@ function renderConquistas() {
       '<div class="cq-nextbar"><i style="width:' + Math.round(next.frac * 100) + '%"></i></div>';
   } else document.getElementById("cq-next").textContent = "Você conquistou todos os selos. Lenda!";
 
-  cqRenderReview();
 }
 
 // Lista de revisão: aulas que o aluno marcou com ↻ (campo rv), das três disciplinas, a mais antiga primeiro.
 // Só a marca entra e sai: a situação da aula (concluída etc.) não muda.
-// Revisões de hoje (e atrasadas), da agenda única (RV). A página Revisões tem a agenda completa.
-// "Revisei" pergunta como foi e agenda a próxima. A situação da aula não muda.
-function cqRenderReview() {
-  const box = document.getElementById("cq-rev");
-  if (!box || typeof RV === "undefined") return;
-  const topics = CQ_INDEX.topics, track = {}, hoje = RV.today();
-  CQ_TRACKS.forEach(([tr, name, icon, href, color]) => { track[tr] = { name, href, color }; });
-  const all = RV.agenda().filter(it => topics[it.id] && track[it.id.split("-")[0]]);
-  const due = all.filter(it => it.due <= hoje), next = all.find(it => it.due > hoje);
-  box.hidden = !all.length;
-  if (!all.length) { box.innerHTML = ""; return; }
-  const link = '<a class="cq-rev-all" href="revisoes.html">Ver agenda →</a>';
-  if (!due.length) {
-    box.innerHTML = '<div class="cq-h"><span>↻ Revisões</span>' + link + "</div>" +
-      '<p class="cq-rev-none">Nada para revisar hoje 🎉 Próxima: <b>' + cqEsc(topics[next.id][0]) + "</b> · " + RV.when(next.due) + ".</p>";
-    return;
-  }
-  const late = due.filter(it => it.due < hoje).length;
-  box.innerHTML = '<div class="cq-h"><span>↻ Revisões de hoje · ' + due.length + (late ? " (" + late + (late === 1 ? " atrasada" : " atrasadas") + ")" : "") +
-    "</span>" + link + "</div>" +
-    '<ul class="cq-rev-list">' + due.slice(0, 5).map(it => {
-      const t = track[it.id.split("-")[0]];
-      return '<li class="cq-rev-item" style="--c:var(' + t.color + ')"><i aria-hidden="true"></i>' +
-        '<a href="' + t.href + "?aula=" + encodeURIComponent(it.id) + '">' + cqEsc(topics[it.id][0]) +
-        "<small>" + cqEsc(t.name) + " · " + RV.when(it.due) + "</small></a>" +
-        '<button type="button" class="cq-rev-ok" onclick="openReviewMenu(\'' + it.id + '\', this, \'grade\')" title="Registrar a revisão e agendar a próxima">Revisei</button></li>';
-    }).join("") + "</ul>" + (due.length > 5 ? '<p class="cq-rev-none">+ ' + (due.length - 5) + " na página Revisões.</p>" : "");
-}
-window.addEventListener("rv:change", () => { try { cqRenderReview(); } catch (e) {} });
 """

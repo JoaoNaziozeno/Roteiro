@@ -97,10 +97,10 @@ class Visual(unittest.TestCase):
         self.assertNotRegex(REVIEW_JS + REVIEW_UI_JS, r"\.s\s*=[^=]")
 
     def test_lista_de_revisao_no_hub(self):
-        self.assertIn('id="cq-rev" hidden', self.hub)
-        self.assertIn("function cqRenderReview(", self.hub)
-        self.assertIn('"?aula="', self.hub)
-        self.assertIn('class="cq-rev-all" href="revisoes.html"', self.hub)   # leva à agenda completa
+        # o bloco antigo "Revisões de hoje" virou parte do cartão "Hoje" (avisos), logo abaixo da abertura do hub
+        self.assertNotIn('id="cq-rev"', self.hub)
+        self.assertLess(self.hub.index('class="hub-hero'), self.hub.index('id="av-hoje"'))
+        self.assertLess(self.hub.index('id="av-hoje"'), self.hub.index('id="hub-conquistas"'))
 
     def test_hub_sem_anel(self):
         self.assertNotIn("function cqRing", self.hub)

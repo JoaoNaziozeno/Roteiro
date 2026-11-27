@@ -190,7 +190,7 @@ class PaginasComAgenda(unittest.TestCase):
             self.assertIn("RV.quizPassed(", s, nome)
             self.assertNotIn("LV2_REVIEW_DAYS", s, nome)
         hub = self.ler("index.html")
-        self.assertIn("RV.agenda()", hub)
+        self.assertIn('id="av-hoje"', hub)              # as revisões de hoje aparecem no cartão "Hoje" (avisos)
         self.assertNotIn("function cqReviewDone", hub)
 
     def test_sincronizacao_avisa_as_paginas(self):

@@ -1066,6 +1066,11 @@ function paint() {
       if (st === "r") bits.push("Em andamento");
       if (item.n && item.n.trim()) bits.push("com anotação");
       if (rvItem) bits.push("↻ revisão " + RV.when(rvItem.due));
+      // "Meta de conclusão" da aula (⋯ > Opções), enquanto ela não estiver concluída
+      if (st !== "e" && typeof item.d === "string" && /^\d{4}-\d{2}-\d{2}/.test(item.d)) {
+        const n = RV.between(RV.today(), item.d.slice(0, 10));
+        bits.push(n < 0 ? "⏰ prazo vencido" : n === 0 ? "⏰ prazo hoje" : n === 1 ? "⏰ prazo amanhã" : "⏰ prazo " + RV.fmt(item.d.slice(0, 10)));
+      }
       meta.textContent = bits.join(" · ");
     }
 
@@ -1103,6 +1108,9 @@ function paint() {
   if (notesBtn) notesBtn.title = "Anotações: " + noteCount;
   const reviewBtn = document.querySelector('.fil-btn[data-f="v"]');
   if (reviewBtn) reviewBtn.title = "Com revisão marcada: " + reviewCount;
+
+  // Sino de avisos: prazos e revisões podem ter mudado com a situação das aulas
+  if (typeof avBellBadge === "function") { try { avBellBadge(); } catch (e) {} }
 
   // Nível
   const lvlIcon = document.getElementById("lvl-icon");
@@ -1364,6 +1372,7 @@ function onModalDateChange() {
   PR[CURRENT_MODAL_TOPIC_ID].d = dateInput ? dateInput.value : "";
   saveLocal();
   syncTopicToServer(CURRENT_MODAL_TOPIC_ID);
+  paint();   // a linha mostra o prazo e o sino de avisos se atualiza
 }
 
 // 5. Filtros e Pesquisa

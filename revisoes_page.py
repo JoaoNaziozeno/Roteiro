@@ -551,10 +551,12 @@ function toggleTheme() {
 renderRevisoes();
 
 // revisoes.html?ativa=<aula>: vem do "▶ Fazer a revisão ativa" de uma aula ou do hub
+// revisoes.html?dia=1: vem do "Começar" do aviso de revisões (sino ou cartão "Hoje"): abre a revisão do dia
 (function () {
   try {
-    const id = new URLSearchParams(location.search).get("ativa");
+    const qs = new URLSearchParams(location.search), id = qs.get("ativa");
     if (id && RV_TOPICS[id]) { history.replaceState(null, "", location.pathname); raStart([id], "one"); }
+    else if (qs.get("dia")) { history.replaceState(null, "", location.pathname); if (RV.counts().due) raStartDay(); }
   } catch (e) {}
 })();
 """
