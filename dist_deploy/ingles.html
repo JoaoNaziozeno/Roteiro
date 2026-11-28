@@ -6666,6 +6666,8 @@ async function awsRealtimePullFromDynamoDB() {
   if (typeof renderProjects === "function") renderProjects();
   // A agenda de revisões pode ter mudado (outro aparelho): menu, listas e página Revisões se atualizam
   try { window.dispatchEvent(new CustomEvent("rv:change")); } catch (e) {}
+  // O resultado dos treinos vem junto das respostas: o treino da aula e os pontos dela se atualizam
+  try { window.dispatchEvent(new CustomEvent("tr:change")); } catch (e) {}
   if (extraChanged && user) scheduleAwsRealtimeSync();
   return true;
 }
@@ -6683,6 +6685,10 @@ const RM = (() => {
   const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };   // substituído por configure() com os obrigatórios
   const OPTIONAL = new Set();                            // tópicos opcionais: fora da meta e dos percentuais
   const REQUIRED = new Set();                            // ids obrigatórios do roteiro atual (vazio = sem catálogo)
+  const TREINO = new Set();                              // aulas com Treino no fim da Aula Visual (treino.py)
+  // Nas aulas com treino, TR_SHARE do peso vem dele, e só com pelo menos TR_MIN% de acertos (o melhor resultado).
+  // O resto vem do estudo (vídeo e Aula Visual, ou o ✓ de Concluído). O peso total da aula não muda.
+  const TR_SHARE = 0.25, TR_MIN = 70;
   const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
   // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
   // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
@@ -6691,9 +6697,26 @@ const RM = (() => {
     if (c && c.totals) for (const t in c.totals) TRACK_TOTAL[t] = c.totals[t];
     if (c && Array.isArray(c.optional)) { OPTIONAL.clear(); c.optional.forEach(k => OPTIONAL.add(k)); }
     if (c && Array.isArray(c.required)) { REQUIRED.clear(); c.required.forEach(k => REQUIRED.add(k)); }
+    if (c && Array.isArray(c.treino)) { TREINO.clear(); c.treino.forEach(k => TREINO.add(k)); }
   }
   const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
   const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
+  const trShare = k => (TREINO.has(k) ? TR_SHARE : 0);   // parte do peso que vem do treino (0 = aula sem treino)
+  // Melhor % no treino de cada aula, das respostas salvas (roteiro-answers-v1: {aula: {tr: {b: melhor %}}})
+  function trBest(answers) {
+    const o = {};
+    for (const k in (answers || {})) { const a = answers[k]; if (a && a.tr && a.tr.b > 0) o[k] = a.tr.b; }
+    return o;
+  }
+  const trPassed = (k, best) => trShare(k) > 0 && Boolean(best) && (best[k] || 0) >= TR_MIN;
+  // Crédito de uma aula: o estudo (concluída = inteiro; em andamento = média do % de vídeo e de aula) vale
+  // (1 - TR_SHARE) do peso nas aulas com treino, e o treino aprovado vale o resto. Sem treino, o estudo vale tudo.
+  function credit(k, it, w, best) {
+    it = it || {};
+    const sh = trShare(k);
+    const study = it.s === "e" ? 1 : it.s === "r" ? Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
+    return w * ((1 - sh) * study + (trPassed(k, best) ? sh : 0));
+  }
 
   // Esforço total do roteiro, em "pontos" (1 ponto = tópico de peso 1)
   function totals(eff) {
@@ -6703,27 +6726,29 @@ const RM = (() => {
     return { topics, points };
   }
 
-  // Estrutural = tópicos concluídos. Ponderado = peso dos concluídos + crédito parcial dos "falta terminar"
-  // (crédito parcial = média do % de vídeo (vp) e % de aula visual (gp) já registrados no tópico).
-  function progress(PR, eff) {
+  // Estrutural = tópicos concluídos. Ponderado = crédito de cada aula (credit): peso dos concluídos + crédito
+  // parcial dos "falta terminar" (média do % de vídeo (vp) e % de aula visual (gp)) + o treino aprovado.
+  // best = melhor % no treino de cada aula (trBest); sem ele, nenhum treino conta.
+  function progress(PR, eff, best) {
     const per = {};
     for (const t in TRACK_TOTAL) per[t] = { done: 0, pts: 0, total: TRACK_TOTAL[t], ptsTotal: TRACK_TOTAL[t] * trackW(eff, t) };
     let structDone = 0, pts = 0;
-    for (const k in PR) {
+    // o treino conta mesmo numa aula que ainda não aparece no progresso
+    const keys = new Set(Object.keys(PR || {}).concat(Object.keys(best || {}).filter(k => trPassed(k, best))));
+    for (const k of keys) {
       if (!isTopic(k)) continue;
-      const it = PR[k] || {}, t = trackOf(k), w = weightOf(k, eff);
-      let c = 0;
-      if (it.s === "e") { c = w; structDone++; per[t].done++; }
-      else if (it.s === "r") c = w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200);
+      const it = (PR && PR[k]) || {}, t = trackOf(k), c = credit(k, it, weightOf(k, eff), best);
+      if (it.s === "e") { structDone++; per[t].done++; }
       per[t].pts += c; pts += c;
     }
     return { structDone, pts, per };
   }
 
-  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}
+  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}. Concluir uma aula com treino
+  // soma só a parte do estudo: o treino aprovado entra nos pontos sem evento, como o crédito parcial.
   const evNet = (e, eff) => {
     if (!isTopic(e.id)) return 0;
-    const w = weightOf(e.id, eff);
+    const w = weightOf(e.id, eff) * (1 - trShare(e.id));
     return (e.to === "e" && e.f !== "e") ? w : (e.f === "e" && e.to !== "e") ? -w : 0;
   };
 
@@ -6810,12 +6835,12 @@ const RM = (() => {
   // Peso de cada trilha em pontos de esforço (ver TRACK_WEIGHTS no Python): o hub e as aulas usam este mesmo valor
   const TRACK_WEIGHTS = Object.freeze({"ia": 4, "mat": 6, "ing": 1});
 
-  return { TRACK_TOTAL, TRACK_WEIGHTS, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
-           planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
+  return { TRACK_TOTAL, TRACK_WEIGHTS, TR_SHARE, TR_MIN, configure, trackOf, isTopic, trackW, weightOf, trShare, trBest, trPassed,
+           credit, totals, progress, evNet, weeklySeries, forecast, planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;
 
-RM.configure({"totals": {"ia": 176, "mat": 41, "ing": 81}, "optional": ["ia-1-4-0", "ia-1-5-2", "ia-3-3-1", "ia-3-3-2", "ia-3-3-3", "ia-3-3-4", "ia-3-3-5", "ia-3-4-5", "ia-3-5-0", "ia-3-5-2", "ia-3-5-3", "mat-0-1-3", "mat-1-1-1", "mat-2-1-1"], "required": ["ia-0-0-0", "ia-0-0-1", "ia-0-0-2", "ia-0-0-3", "ia-0-0-4", "ia-0-0-5", "ia-0-0-g07", "ia-0-0-g08", "ia-0-0-g09", "ia-0-0-g12", "ia-0-0-g14", "ia-0-0-g15", "ia-0-1-0", "ia-0-1-1", "ia-0-1-2", "ia-0-1-3", "ia-0-1-g18", "ia-0-1-g21", "ia-0-2-0", "ia-0-2-1", "ia-0-2-2", "ia-0-2-3", "ia-0-2-4", "ia-0-2-5", "ia-0-3-0", "ia-0-3-1", "ia-0-3-2", "ia-0-3-3", "ia-0-4-0", "ia-0-4-1", "ia-0-4-2", "ia-0-4-3", "ia-0-4-4", "ia-0-4-5", "ia-0-4-6", "ia-0-4-7", "ia-0-5-0", "ia-0-5-1", "ia-0-5-2", "ia-0-5-3", "ia-0-5-4", "ia-0-6-0", "ia-0-6-1", "ia-0-6-2", "ia-0-6-3", "ia-1-0-0", "ia-1-0-1", "ia-1-0-2", "ia-1-0-3", "ia-1-1-0", "ia-1-1-1", "ia-1-1-2", "ia-1-2-0", "ia-1-2-1", "ia-1-2-2", "ia-1-3-0", "ia-1-3-1", "ia-1-3-2", "ia-1-3-3", "ia-1-3-4", "ia-1-3-5", "ia-1-3-6", "ia-1-4-1", "ia-1-4-2", "ia-1-4-3", "ia-1-4-4", "ia-1-5-0", "ia-1-5-1", "ia-2-0-0", "ia-2-0-1", "ia-2-0-2", "ia-2-0-3", "ia-2-0-4", "ia-2-1-0", "ia-2-1-1", "ia-2-1-2", "ia-2-1-3", "ia-2-1-4", "ia-2-1-5", "ia-2-1-6", "ia-2-2-0", "ia-2-2-1", "ia-2-2-2", "ia-2-2-3", "ia-2-3-0", "ia-2-3-1", "ia-2-3-2", "ia-2-3-3", "ia-2-3-4", "ia-2-3-5", "ia-2-4-0", "ia-2-4-1", "ia-2-4-2", "ia-2-4-3", "ia-2-4-4", "ia-2-5-0", "ia-2-5-1", "ia-2-5-2", "ia-2-5-3", "ia-3-0-0", "ia-3-0-1", "ia-3-0-2", "ia-3-0-3", "ia-3-0-4", "ia-3-0-5", "ia-3-1-0", "ia-3-1-1", "ia-3-1-2", "ia-3-2-0", "ia-3-2-1", "ia-3-2-2", "ia-3-2-3", "ia-3-3-0", "ia-3-4-0", "ia-3-4-1", "ia-3-4-2", "ia-3-4-3", "ia-3-4-4", "ia-3-5-1", "ia-4-0-0", "ia-4-0-1", "ia-4-0-2", "ia-4-0-3", "ia-4-1-0", "ia-4-1-1", "ia-4-1-2", "ia-4-1-3", "ia-4-2-0", "ia-4-2-1", "ia-4-2-2", "ia-4-2-3", "ia-4-3-0", "ia-4-3-1", "ia-4-3-2", "ia-4-3-3", "ia-4-3-4", "ia-4-3-5", "ia-4-4-0", "ia-4-4-1", "ia-4-4-2", "ia-4-4-3", "ia-4-4-4", "ia-4-4-5", "ia-4-5-0", "ia-4-5-1", "ia-4-5-2", "ia-4-5-3", "ia-4-5-4", "ia-4-5-5", "ia-5-0-0", "ia-5-0-1", "ia-5-0-2", "ia-5-0-3", "ia-5-0-4", "ia-5-1-0", "ia-5-1-1", "ia-5-1-2", "ia-5-2-0", "ia-5-2-1", "ia-5-2-2", "ia-5-2-3", "ia-5-2-4", "ia-5-3-0", "ia-5-3-1", "ia-5-3-2", "ia-5-3-3", "ia-5-3-4", "ia-5-4-0", "ia-5-4-1", "ia-5-4-2", "ia-5-4-3", "ia-5-5-0", "ia-5-5-1", "ia-5-5-2", "ia-5-5-3", "ia-5-5-4", "ing-0-0-0", "ing-0-0-1", "ing-0-0-2", "ing-0-0-3", "ing-0-1-0", "ing-0-1-1", "ing-0-1-2", "ing-0-2-0", "ing-0-2-1", "ing-0-2-2", "ing-0-3-0", "ing-0-3-1", "ing-0-3-2", "ing-1-0-0", "ing-1-0-1", "ing-1-0-2", "ing-1-1-0", "ing-1-1-1", "ing-1-1-2", "ing-1-2-0", "ing-1-2-1", "ing-1-2-2", "ing-1-3-0", "ing-1-3-1", "ing-1-3-2", "ing-2-0-0", "ing-2-0-1", "ing-2-1-0", "ing-2-1-1", "ing-2-1-2", "ing-2-2-0", "ing-2-2-1", "ing-2-2-2", "ing-2-3-0", "ing-2-3-1", "ing-2-3-2", "ing-2-3-3", "ing-3-0-0", "ing-3-0-1", "ing-3-0-2", "ing-3-1-0", "ing-3-1-1", "ing-3-1-2", "ing-3-2-0", "ing-3-2-1", "ing-3-2-2", "ing-3-3-0", "ing-3-3-1", "ing-3-3-2", "ing-4-0-0", "ing-4-0-1", "ing-4-1-0", "ing-4-1-1", "ing-4-1-2", "ing-4-2-0", "ing-4-2-1", "ing-4-2-2", "ing-4-3-0", "ing-4-3-1", "ing-4-3-2", "ing-4-3-3", "ing-5-0-0", "ing-5-0-1", "ing-5-1-0", "ing-5-1-1", "ing-5-1-2", "ing-5-2-0", "ing-5-2-1", "ing-5-2-2", "ing-5-3-0", "ing-5-3-1", "ing-5-3-2", "ing-5-3-3", "ing-6-0-0", "ing-6-0-1", "ing-6-0-2", "ing-6-0-3", "ing-6-1-0", "ing-6-1-1", "ing-6-2-0", "ing-6-2-1", "mat-0-0-0", "mat-0-0-1", "mat-0-0-2", "mat-0-0-3", "mat-0-0-4", "mat-0-1-0", "mat-0-1-1", "mat-0-1-2", "mat-0-1-4", "mat-0-1-5", "mat-1-0-0", "mat-1-0-1", "mat-1-0-2", "mat-1-0-3", "mat-1-1-0", "mat-1-1-2", "mat-1-1-3", "mat-1-1-4", "mat-2-0-0", "mat-2-0-1", "mat-2-0-2", "mat-2-0-3", "mat-2-1-0", "mat-2-1-2", "mat-2-1-3", "mat-2-1-4", "mat-2-1-5", "mat-3-0-0", "mat-3-0-1", "mat-3-0-2", "mat-3-0-3", "mat-3-1-0", "mat-3-1-1", "mat-3-1-2", "mat-3-1-3", "mat-4-0-0", "mat-4-0-1", "mat-4-0-2", "mat-4-1-0", "mat-4-1-1", "mat-4-1-2"]});
+RM.configure({"totals": {"ia": 176, "mat": 41, "ing": 81}, "optional": ["ia-1-4-0", "ia-1-5-2", "ia-3-3-1", "ia-3-3-2", "ia-3-3-3", "ia-3-3-4", "ia-3-3-5", "ia-3-4-5", "ia-3-5-0", "ia-3-5-2", "ia-3-5-3", "mat-0-1-3", "mat-1-1-1", "mat-2-1-1"], "required": ["ia-0-0-0", "ia-0-0-1", "ia-0-0-2", "ia-0-0-3", "ia-0-0-4", "ia-0-0-5", "ia-0-0-g07", "ia-0-0-g08", "ia-0-0-g09", "ia-0-0-g12", "ia-0-0-g14", "ia-0-0-g15", "ia-0-1-0", "ia-0-1-1", "ia-0-1-2", "ia-0-1-3", "ia-0-1-g18", "ia-0-1-g21", "ia-0-2-0", "ia-0-2-1", "ia-0-2-2", "ia-0-2-3", "ia-0-2-4", "ia-0-2-5", "ia-0-3-0", "ia-0-3-1", "ia-0-3-2", "ia-0-3-3", "ia-0-4-0", "ia-0-4-1", "ia-0-4-2", "ia-0-4-3", "ia-0-4-4", "ia-0-4-5", "ia-0-4-6", "ia-0-4-7", "ia-0-5-0", "ia-0-5-1", "ia-0-5-2", "ia-0-5-3", "ia-0-5-4", "ia-0-6-0", "ia-0-6-1", "ia-0-6-2", "ia-0-6-3", "ia-1-0-0", "ia-1-0-1", "ia-1-0-2", "ia-1-0-3", "ia-1-1-0", "ia-1-1-1", "ia-1-1-2", "ia-1-2-0", "ia-1-2-1", "ia-1-2-2", "ia-1-3-0", "ia-1-3-1", "ia-1-3-2", "ia-1-3-3", "ia-1-3-4", "ia-1-3-5", "ia-1-3-6", "ia-1-4-1", "ia-1-4-2", "ia-1-4-3", "ia-1-4-4", "ia-1-5-0", "ia-1-5-1", "ia-2-0-0", "ia-2-0-1", "ia-2-0-2", "ia-2-0-3", "ia-2-0-4", "ia-2-1-0", "ia-2-1-1", "ia-2-1-2", "ia-2-1-3", "ia-2-1-4", "ia-2-1-5", "ia-2-1-6", "ia-2-2-0", "ia-2-2-1", "ia-2-2-2", "ia-2-2-3", "ia-2-3-0", "ia-2-3-1", "ia-2-3-2", "ia-2-3-3", "ia-2-3-4", "ia-2-3-5", "ia-2-4-0", "ia-2-4-1", "ia-2-4-2", "ia-2-4-3", "ia-2-4-4", "ia-2-5-0", "ia-2-5-1", "ia-2-5-2", "ia-2-5-3", "ia-3-0-0", "ia-3-0-1", "ia-3-0-2", "ia-3-0-3", "ia-3-0-4", "ia-3-0-5", "ia-3-1-0", "ia-3-1-1", "ia-3-1-2", "ia-3-2-0", "ia-3-2-1", "ia-3-2-2", "ia-3-2-3", "ia-3-3-0", "ia-3-4-0", "ia-3-4-1", "ia-3-4-2", "ia-3-4-3", "ia-3-4-4", "ia-3-5-1", "ia-4-0-0", "ia-4-0-1", "ia-4-0-2", "ia-4-0-3", "ia-4-1-0", "ia-4-1-1", "ia-4-1-2", "ia-4-1-3", "ia-4-2-0", "ia-4-2-1", "ia-4-2-2", "ia-4-2-3", "ia-4-3-0", "ia-4-3-1", "ia-4-3-2", "ia-4-3-3", "ia-4-3-4", "ia-4-3-5", "ia-4-4-0", "ia-4-4-1", "ia-4-4-2", "ia-4-4-3", "ia-4-4-4", "ia-4-4-5", "ia-4-5-0", "ia-4-5-1", "ia-4-5-2", "ia-4-5-3", "ia-4-5-4", "ia-4-5-5", "ia-5-0-0", "ia-5-0-1", "ia-5-0-2", "ia-5-0-3", "ia-5-0-4", "ia-5-1-0", "ia-5-1-1", "ia-5-1-2", "ia-5-2-0", "ia-5-2-1", "ia-5-2-2", "ia-5-2-3", "ia-5-2-4", "ia-5-3-0", "ia-5-3-1", "ia-5-3-2", "ia-5-3-3", "ia-5-3-4", "ia-5-4-0", "ia-5-4-1", "ia-5-4-2", "ia-5-4-3", "ia-5-5-0", "ia-5-5-1", "ia-5-5-2", "ia-5-5-3", "ia-5-5-4", "ing-0-0-0", "ing-0-0-1", "ing-0-0-2", "ing-0-0-3", "ing-0-1-0", "ing-0-1-1", "ing-0-1-2", "ing-0-2-0", "ing-0-2-1", "ing-0-2-2", "ing-0-3-0", "ing-0-3-1", "ing-0-3-2", "ing-1-0-0", "ing-1-0-1", "ing-1-0-2", "ing-1-1-0", "ing-1-1-1", "ing-1-1-2", "ing-1-2-0", "ing-1-2-1", "ing-1-2-2", "ing-1-3-0", "ing-1-3-1", "ing-1-3-2", "ing-2-0-0", "ing-2-0-1", "ing-2-1-0", "ing-2-1-1", "ing-2-1-2", "ing-2-2-0", "ing-2-2-1", "ing-2-2-2", "ing-2-3-0", "ing-2-3-1", "ing-2-3-2", "ing-2-3-3", "ing-3-0-0", "ing-3-0-1", "ing-3-0-2", "ing-3-1-0", "ing-3-1-1", "ing-3-1-2", "ing-3-2-0", "ing-3-2-1", "ing-3-2-2", "ing-3-3-0", "ing-3-3-1", "ing-3-3-2", "ing-4-0-0", "ing-4-0-1", "ing-4-1-0", "ing-4-1-1", "ing-4-1-2", "ing-4-2-0", "ing-4-2-1", "ing-4-2-2", "ing-4-3-0", "ing-4-3-1", "ing-4-3-2", "ing-4-3-3", "ing-5-0-0", "ing-5-0-1", "ing-5-1-0", "ing-5-1-1", "ing-5-1-2", "ing-5-2-0", "ing-5-2-1", "ing-5-2-2", "ing-5-3-0", "ing-5-3-1", "ing-5-3-2", "ing-5-3-3", "ing-6-0-0", "ing-6-0-1", "ing-6-0-2", "ing-6-0-3", "ing-6-1-0", "ing-6-1-1", "ing-6-2-0", "ing-6-2-1", "mat-0-0-0", "mat-0-0-1", "mat-0-0-2", "mat-0-0-3", "mat-0-0-4", "mat-0-1-0", "mat-0-1-1", "mat-0-1-2", "mat-0-1-4", "mat-0-1-5", "mat-1-0-0", "mat-1-0-1", "mat-1-0-2", "mat-1-0-3", "mat-1-1-0", "mat-1-1-2", "mat-1-1-3", "mat-1-1-4", "mat-2-0-0", "mat-2-0-1", "mat-2-0-2", "mat-2-0-3", "mat-2-1-0", "mat-2-1-2", "mat-2-1-3", "mat-2-1-4", "mat-2-1-5", "mat-3-0-0", "mat-3-0-1", "mat-3-0-2", "mat-3-0-3", "mat-3-1-0", "mat-3-1-1", "mat-3-1-2", "mat-3-1-3", "mat-4-0-0", "mat-4-0-1", "mat-4-0-2", "mat-4-1-0", "mat-4-1-1", "mat-4-1-2"], "treino": ["ia-0-0-0", "ia-0-0-1", "ia-0-0-2", "ia-0-0-3", "ia-0-0-4", "ia-0-0-g07", "ia-0-0-g08", "ia-0-0-g09", "ia-0-0-g12", "ia-0-0-g14", "ia-0-0-g15", "ia-0-1-0", "ia-0-1-1", "ia-0-1-2", "ia-0-1-3", "ia-0-1-g18", "mat-0-0-0", "mat-0-0-1", "mat-0-0-2", "mat-0-0-3", "mat-0-0-4", "mat-0-1-0", "mat-0-1-1", "mat-0-1-2", "mat-0-1-3", "mat-0-1-4", "mat-0-1-5", "mat-1-0-0", "mat-1-0-1", "mat-1-0-2", "mat-1-0-3", "mat-1-1-0", "mat-1-1-1", "mat-1-1-2", "mat-1-1-3", "mat-1-1-4", "mat-2-0-0", "mat-2-0-1", "mat-2-0-2", "mat-2-0-3", "mat-2-1-0", "mat-2-1-1", "mat-2-1-2", "mat-2-1-3", "mat-2-1-4", "mat-2-1-5", "mat-3-0-0", "mat-3-0-1", "mat-3-0-2", "mat-3-0-3", "mat-3-1-0", "mat-3-1-1", "mat-3-1-2", "mat-3-1-3", "mat-4-0-0", "mat-4-0-1", "mat-4-0-2", "mat-4-1-0", "mat-4-1-1", "mat-4-1-2"]});
 
 
 const TRACK_ID = "ing";
@@ -7116,12 +7141,15 @@ window.addEventListener("rv:change", () => { try { paint(); updateModalReviewBtn
 
 // =========================================================================
 // PONTOS DA AULA (topo do estúdio)
-// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM):
+// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM.credit):
 // concluída = peso inteiro; em andamento = crédito parcial (média do % de vídeo e de aula); opcional = fora da meta.
+// Nas aulas com treino, RM.TR_SHARE do peso vem do treino do fim da Aula Visual (com pelo menos RM.TR_MIN% de acertos):
+// concluir sem o treino dá só a parte do estudo, e o resto espera o treino (grupo "treino").
 // A frase é sorteada a cada vez que a aula abre (sem repetir a última do mesmo grupo) e os números
-// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir, com um "pop").
+// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir ou passar no treino, com um "pop").
 // Tokens: {mais} "+4 pontos" (o que falta somar) · {resta} "4 pontos" · {vale} peso da aula ·
-// {feito} crédito já garantido · {jAntes}/{jAgora} % da Jornada agora · {jDepois} % ao concluir.
+// {feito} crédito já garantido · {ganhou} o que acabou de entrar · {jAntes}/{jAgora} % da Jornada agora ·
+// {jDepois} % com a aula completa · {treino}/{estudo} parte do treino e do estudo · {min} "70%" (acertos para o treino valer).
 // =========================================================================
 const LESSON_PTS_PHRASES = {
   todo: [   // ainda não começou (ou começou sem crédito)
@@ -7137,7 +7165,11 @@ const LESSON_PTS_PHRASES = {
     "Level up à vista: conclua e ganhe {mais}.",
     "Bora? Tem {mais} no fim desta aula.",
     "Foco nesta aqui: ela leva sua Jornada para {jDepois}.",
-    "Sem pressa e sem pausa: {mais} ao concluir."
+    "Sem pressa e sem pausa: {mais} ao concluir.",
+    // só nas aulas com treino por fazer
+    "Esta aula vale {vale}: {estudo} pelo estudo e {treino} pelo treino do fim.",
+    "Estude, faça o treino do fim da aula e some {mais}!",
+    "No fim desta aula tem treino: com {min} de acertos, ele vale {treino}."
   ],
   doing: [  // em andamento, já com crédito parcial
     "Você já garantiu {feito} aqui. Conclua e leve o resto: {mais}!",
@@ -7149,12 +7181,23 @@ const LESSON_PTS_PHRASES = {
     "Já tem {feito} no bolso. Bora buscar o resto?",
     "Termine o que começou: {mais} e mais um ✓ na lista.",
     "Cada minuto aqui conta: só {resta} para completar.",
-    "Combo em andamento: {feito} no bolso, {resta} para fechar."
+    "Combo em andamento: {feito} no bolso, {resta} para fechar.",
+    // só nas aulas com treino por fazer
+    "Já tem {feito} no bolso. E o treino do fim da aula vale {treino}.",
+    "Bom ritmo! Termine o estudo, faça o treino e leve {mais}."
   ],
   full: [   // em andamento com vídeo e aula completos: os pontos já contam, falta o ✓
     "Tudo visto! Esta aula já conta {vale} na Jornada. Marque como concluída para fechar.",
     "Você já somou {vale} com esta aula. Falta só o ✓ de Concluído.",
     "Pontos no bolso ({vale}). Agora é marcar como concluída!"
+  ],
+  treino: [ // estudo completo (concluída ou não), treino por fazer: o resto dos pontos é dele
+    "Estudo completo! Agora o treino do fim da aula vale {mais}, com {min} de acertos.",
+    "Falta só o treino: acerte {min} e some {mais}.",
+    "Você já garantiu {feito}. O treino do fim da aula fecha a conta: {mais}.",
+    "Teoria feita, agora a prática: o treino vale {resta}.",
+    "Último passo: o treino no fim da aula, que vale {resta}.",
+    "Quase lá! Com {min} de acertos no treino, a aula fica completa: {mais}."
   ],
   won: [    // no instante em que a aula é concluída (com o estúdio aberto)
     "Concluída! Sua Jornada subiu para {jAgora}.",
@@ -7164,6 +7207,19 @@ const LESSON_PTS_PHRASES = {
     "Mais uma pronta! A Jornada agora está em {jAgora}.",
     "Tijolo no lugar! Esta aula agora soma {vale} na obra.",
     "GG! Aula concluída e {vale} no placar."
+  ],
+  wonTr: [  // no instante em que a aula é concluída, com o treino ainda por fazer
+    "Concluída! Entrou {ganhou} na Jornada, e o treino do fim ainda vale {resta}.",
+    "Aula concluída! Agora o treino do fim dela vale {mais}.",
+    "Mandou bem! Para completar a aula, falta o treino: {mais}.",
+    "Concluída! A Jornada está em {jAgora}, e o treino leva a {jDepois}."
+  ],
+  trWon: [  // no instante em que o treino passa do mínimo de acertos (com o estúdio aberto)
+    "Treino aprovado! {ganhou} na sua Jornada.",
+    "Mandou bem no treino: {ganhou} na conta!",
+    "Treino feito! A Jornada agora está em {jAgora}.",
+    "Prática em dia: o treino somou {ganhou}.",
+    "É isso! O treino rendeu {ganhou} na Jornada."
   ],
   done: [   // ao reabrir uma aula já concluída
     "Aula concluída: {vale} na sua conta!",
@@ -7186,23 +7242,26 @@ const LESSON_PTS_PHRASES = {
     "Side quest! Não vale pontos, vale experiência."
   ]
 };
-const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", won: "🎉", done: "✅", opt: "🧠" };
-const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0 };
+const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", treino: "🏋️", won: "🎉", wonTr: "🎉", trWon: "🏆", done: "✅", opt: "🧠" };
+const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0, s: null, trOk: false };
 
 // Números da aula pelo cálculo do hub. null = sem o cálculo na página (aviso escondido).
 function lessonPointsInfo(topicId) {
   if (typeof RM === "undefined" || !topicId) return null;
-  let raw = {};
+  let raw = {}, ans = {};
   try { raw = JSON.parse(localStorage.getItem("roteiro-effort-v1") || "{}") || {}; } catch (e) {}
+  try { ans = JSON.parse(localStorage.getItem("roteiro-answers-v1") || "{}") || {}; } catch (e) {}
   const eff = { tracks: Object.assign({}, RM.TRACK_WEIGHTS), topics: raw.topics || {} };   // igual à Jornada do hub
   if (!RM.isTopic(topicId)) return { group: "opt" };
-  const it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
+  const best = RM.trBest(ans), it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
   const s = it.s === "e" || it.s === "r" ? it.s : "z";
-  const got = s === "e" ? w : s === "r" ? w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
-  const rest = Math.max(0, w - got);
-  const T = RM.totals(eff), P = RM.progress(PR, eff);
-  const group = s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : s === "r" && got >= 0.05 ? "doing" : "todo";
-  return { group, w, got, rest, jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
+  const sh = RM.trShare(topicId), tr = sh > 0, trOk = RM.trPassed(topicId, best);
+  const got = RM.credit(topicId, it, w, best), rest = Math.max(0, w - got);
+  const estudoOk = s === "e" || (s === "r" && (it.vp || 0) + (it.gp || 0) >= 200);   // vídeo e Aula Visual completos
+  const T = RM.totals(eff), P = RM.progress(PR, eff, best);
+  const group = tr && !trOk && estudoOk ? "treino" : s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : got >= 0.05 ? "doing" : "todo";
+  return { group, s, w, got, rest, tr, trOk, trPts: w * sh, estudo: w * (1 - sh), min: RM.TR_MIN,
+           jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
 }
 
 const lessonPtsRound = v => Math.round(v * 10) / 10;
@@ -7212,6 +7271,13 @@ function lessonPointsUsable(tpl, x) {
   if (tpl.includes("{feito}") && !(x.got >= 0.05)) return false;
   if (tpl.includes("{ganhou}") && !(x.ganhou >= 0.05)) return false;
   if (/\{j(Antes|Depois)\}/.test(tpl) && lessonPtsRound(x.jNow) === lessonPtsRound(x.jAfter)) return false;
+  // Antes de completar o estudo: as frases do treino só nas aulas com treino por fazer, e nessas o ✓ de Concluído
+  // não dá todos os pontos (ficam de fora as frases que prometem os pontos ao concluir)
+  if (x.group === "todo" || x.group === "doing") {
+    const pendente = Boolean(x.tr && !x.trOk);
+    if (/treino|\{estudo\}/.test(tpl) && !pendente) return false;
+    if (pendente && /conclu/i.test(tpl)) return false;
+  }
   return true;
 }
 
@@ -7219,6 +7285,7 @@ function lessonPointsFill(tpl, x) {
   const num = v => lessonPtsRound(v).toLocaleString("pt-BR");
   const pts = v => num(v) + (lessonPtsRound(v) === 1 ? " ponto" : " pontos");
   const map = { mais: "+" + pts(x.rest), resta: pts(x.rest), vale: pts(x.w), feito: pts(x.got), ganhou: "+" + pts(x.ganhou || 0),
+                treino: pts(x.trPts || 0), estudo: pts(x.estudo || 0), min: x.min + "%",
                 jAntes: num(x.jNow) + "%", jAgora: num(x.jNow) + "%", jDepois: num(x.jAfter) + "%" };
   return tpl.replace(/\{(\w+)\}/g, (m, k) => (k in map ? "<b>" + map[k] + "</b>" : m));
 }
@@ -7233,12 +7300,15 @@ function renderLessonPoints() {
   if (!x) { el.hidden = true; return; }
   const st = LESSON_PTS, same = st.id === id;
   const fam = g => (g === "todo" || g === "doing" ? "active" : g);   // começar a estudar não troca a frase
-  const celebrate = same && st.group !== "done" && x.group === "done";
+  // Comemora o que acabou de acontecer com a aula aberta: concluir (com ou sem o treino por fazer) ou passar no treino
+  const win = !same || x.group === "opt" ? null
+    : st.s !== "e" && x.s === "e" ? (x.rest < 0.05 ? "won" : "wonTr")
+    : !st.trOk && x.trOk ? "trWon" : null;
   if (!same) st.ganhou = 0;
-  if (celebrate) st.ganhou = st.rest;          // o que faltava somar antes de concluir acabou de entrar
+  if (win) st.ganhou = Math.max(0, st.rest - x.rest);   // o que acabou de entrar na Jornada
   x.ganhou = st.ganhou;
-  if (celebrate || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
-    const key = celebrate ? "won" : x.group;
+  if (win || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
+    const key = win || x.group;
     const pool = LESSON_PTS_PHRASES[key], ok = pool.filter(t => lessonPointsUsable(t, x));
     let opts = ok.filter(t => t !== st.last[key]);
     if (!opts.length) opts = ok.length ? ok : pool;
@@ -7246,13 +7316,15 @@ function renderLessonPoints() {
     st.last[key] = st.tpl;
     st.pool = key;
   }
-  st.id = id; st.group = x.group; st.rest = x.rest;
+  st.id = id; st.group = x.group; st.rest = x.rest; st.s = x.s; st.trOk = Boolean(x.trOk);
   const html = '<span class="pts-ico" aria-hidden="true">' + LESSON_PTS_ICON[st.pool] + "</span><span>" + lessonPointsFill(st.tpl, x) + "</span>";
   if (html !== st.html) { el.innerHTML = html; st.html = html; }
   el.dataset.state = x.group;
   el.hidden = false;
-  if (celebrate) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
+  if (win) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
 }
+// O treino da aula terminou (ou o resultado chegou de outro aparelho): os pontos do topo acompanham
+window.addEventListener("tr:change", () => { try { renderLessonPoints(); } catch (e) {} });
 
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
@@ -9969,14 +10041,15 @@ function renderPtGuideV2Body(g, topicId) {
   if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
   if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
   if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
-  // Treino da aula (treino_js.py): o cartão "Treinar esta aula" entra logo depois do quiz de saída (ou no fim)
-  const trHtml = topicId && typeof trEntryHTML === "function" ? trEntryHTML(topicId) : "";
-  if (trHtml) chips.push("🏋️ treino");
+  // Treino da aula (treino_js.py): o bloco com as questões entra logo depois do quiz de saída (ou no fim), e o chip desce até ele
+  const trHtml = topicId && typeof trAulaHTML === "function" ? trAulaHTML(topicId) : "";
+  if (trHtml) chips.push({ go: "🏋️ treino" });
   const rvSt = (topicId && typeof RV !== "undefined") ? RV.stateOf(lv2ReadReview()[topicId]) : null;
   if (rvSt && rvSt.due <= RV.today()) chips.push(rvSt.due < RV.today() ? "revisão atrasada" : "revisão de hoje");
 
   let html = `<div class="lv2" data-topic="${topicId || ""}"><div class="lv2-hero">` +
-    `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
+    `<div class="lv2-chips">${chips.map(c => (typeof c === "string" ? `<span class="lv2-chip">${c}</span>`
+      : `<button type="button" class="lv2-chip lv2-chip-go" data-tr-go title="Ir para o treino desta aula">${c.go}</button>`)).join("")}</div>` +
     `<div class="lv2-hook">${g.gancho || ""}</div><div class="lv2-meta">`;
   if (g.objetivos && g.objetivos.length) {
     html += `<div><div class="lv2-meta-title">Ao final desta aula você vai</div><ul>${g.objetivos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
@@ -10306,6 +10379,7 @@ function lv2Init(container) {
   }
   lv2RestoreAnswers(root, topicId);
   if (typeof lv2InitExtra === "function") lv2InitExtra(root, topicId);
+  if (typeof trAulaInit === "function") { try { trAulaInit(root); } catch (e) { console.warn("treino", e); } }   // treino do fim da aula
 
   const checks = [...root.querySelectorAll(".lv2-check")];
   const checkKey = box => String(checks.indexOf(box));

@@ -2125,6 +2125,8 @@ if _tr_soltos:
 _TR_FILES = _treino.gravar(_TREINO, BASE_DIR)
 _TREINO_POR_ID = {tid: qs for banco in _TREINO.values() for tid, qs in banco.items()}
 print(f"Gerado: {', '.join(n for _, n in _TR_FILES)} ({len(_TREINO_POR_ID)} aulas, {sum(map(len, _TREINO_POR_ID.values()))} questões de treino)")
+# Nas aulas com treino, parte dos pontos vem dele (RM.TR_SHARE, metrics_js.py): o hub e as aulas precisam saber quais são
+RM_CONFIG["treino"] = sorted(_TREINO_POR_ID)
 
 # Índice de todos os tópicos para a busca global (Ctrl/⌘ + K) do design v2
 from design_v2 import set_topic_index

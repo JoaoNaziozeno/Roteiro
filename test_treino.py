@@ -15,109 +15,15 @@ import unittest
 import zipfile
 from pathlib import Path
 
-import numpy as np
-
 import treino
 from revisoes_page import RA_JS
-from test_contadores import PAGINAS, json_apos, ler, node
-from treino_contas import TR_GEN_JS
+from test_contadores import PAGINAS, funcao_js, json_apos, ler, node
+from treino_checagem import CHECK, ORDEM_LIVRE, distinta, perto
 from treino_js import TR_JS
 from validate_lessons import check_latex
 
 BASE = Path(__file__).resolve().parent
-SEMENTES = 150
-
-
-# ---------------------------------------------------------------- respostas refeitas com o NumPy
-def _cos(u, v):
-    return float(np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v)))
-
-
-def _transf(d):
-    k = d["k"]
-    rot = lambda g: np.round([[np.cos(g), -np.sin(g)], [np.sin(g), np.cos(g)]]).astype(int).tolist()
-    return {"rot90": rot(np.pi / 2), "rot-90": rot(-np.pi / 2), "rot180": rot(np.pi), "refx": [[1, 0], [0, -1]],
-            "refy": [[-1, 0], [0, 1]], "esc": [[k, 0], [0, k]], "estx": [[k, 0], [0, 1]]}[d["nome"]]
-
-
-def _forma(d):
-    try:
-        return "x".join(map(str, (np.zeros(d["a"]) @ np.zeros(d["w"])).shape))
-    except ValueError:
-        return "erro"
-
-
-def _eigvec(d):
-    A, v = np.array(d["A"], float), np.array(d["v"], float)
-    w = A @ v
-    return float(w[0] / v[0]) if abs(w[0] * v[1] - w[1] * v[0]) < 1e-9 else "nao"
-
-
-def _ncomp(d):
-    acc = np.cumsum(d["l"]) / np.sum(d["l"]) * 100
-    return int(np.argmax(acc >= d["meta"] - 1e-9)) + 1
-
-
-def _svd(d):
-    U, S, Vt = np.linalg.svd(np.ones((d["m"], d["k"])), full_matrices=d["full"])
-    return "x".join(map(str, {"U": U, "S": S, "Vt": Vt}[d["what"]].shape))
-
-
-def _det(M):
-    return float(np.linalg.det(np.array(M, float)))
-
-
-CHECK = {
-    "vsoma": lambda d: np.add(d["u"], d["v"]),
-    "vescala": lambda d: d["a"] * np.array(d["u"]),
-    "vcomb": lambda d: d["a"] * np.array(d["u"]) + d["b"] * np.array(d["v"]),
-    "vdesloc": lambda d: np.subtract(d["B"], d["A"]),
-    "combcoef": lambda d: np.linalg.solve(np.array([d["b1"], d["b2"]], float).T, d["w"]),
-    "base2": lambda d: _det(np.array([d["u"], d["v"]]).T),
-    "dot": lambda d: float(np.dot(d["u"], d["v"])),
-    "dotang": lambda d: {1: "agudo", 0: "reto", -1: "obtuso"}[int(np.sign(np.dot(d["u"], d["v"])))],
-    "projesc": lambda d: float(np.dot(d["u"], d["v"]) / np.linalg.norm(d["v"])),
-    "ortok": lambda d: -d["u"][1] * d["c"] / d["u"][0],
-    "l2": lambda d: float(np.linalg.norm(d["v"])),
-    "l1": lambda d: float(np.linalg.norm(d["v"], 1)),
-    "dist2": lambda d: float(np.linalg.norm(np.subtract(d["B"], d["A"]))),
-    "manh": lambda d: float(np.abs(np.subtract(d["B"], d["A"])).sum()),
-    "cos": lambda d: _cos(d["u"], d["v"]),
-    "cosesp": lambda d: _cos(d["u"], d["v"]),
-    "angesp": lambda d: float(np.degrees(np.arccos(np.clip(_cos(d["u"], d["v"]), -1, 1)))),
-    "matvec": lambda d: np.array(d["A"]) @ d["x"],
-    "matcol": lambda d: np.array(d["A"]) @ d["e"],
-    "transf": _transf,
-    "matmulij": lambda d: float((np.array(d["A"]) @ np.array(d["B"]))[d["i"], d["j"]]),
-    "matmul2": lambda d: np.array(d["A"]) @ np.array(d["B"]),
-    "hada": lambda d: np.array(d["A"]) * np.array(d["B"]),
-    "forma": _forma,
-    "det2": lambda d: _det(d["A"]),
-    "det3": lambda d: _det(d["A"]),
-    "sist2": lambda d: np.linalg.solve(np.array(d["A"], float), d["b"]),
-    "detarea": lambda d: abs(_det(d["A"])),
-    "detsing": lambda d: d["b"] * d["c"] / d["a"],
-    "inv2": lambda d: np.linalg.inv(np.array(d["A"], float)),
-    "invdiag": lambda d: np.linalg.inv(np.array(d["D"], float)),
-    "axb": lambda d: np.linalg.solve(np.array(d["A"], float), d["b"]),
-    "eigtri": lambda d: sorted(np.linalg.eigvals(np.array(d["A"], float)).real),
-    "eigtd": lambda d: sorted(np.roots([1, -d["T"], d["D"]]).real),
-    "eigvec": _eigvec,
-    "eigpot": lambda d: d["lam"] ** d["k"] * np.array(d["v"]),
-    "varexp": lambda d: 100 * d["l"][0] / sum(d["l"]),
-    "varsing": lambda d: 100 * d["s"][0] ** 2 / sum(x * x for x in d["s"]),
-    "ncomp": _ncomp,
-    "svdshape": _svd,
-    "pcaproj": lambda d: float((np.array(d["x"]) - d["mu"]) @ np.array(d["w"])),
-}
-ORDEM_LIVRE = ("eigtri", "eigtd")   # par de autovalores: a ordem não importa
-
-
-def igual(a, b):
-    if isinstance(a, str) or isinstance(b, str):
-        return a == b
-    a, b = np.array(a, float), np.array(b, float)
-    return a.shape == b.shape and bool(np.allclose(a, b, atol=0.006))
+SEMENTES = 120
 
 
 def fora_do_latex(s):
@@ -157,16 +63,24 @@ class Bancos(unittest.TestCase):
 class Geradores(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.amostras = node(TR_JS + "\n" + TR_GEN_JS + r"""
-const out = [];
+        # cada gerador sem parâmetros e com cada parâmetro usado nos bancos de questões
+        var = {}
+        for banco in treino.carregar().values():
+            for qs in banco.values():
+                for q in qs:
+                    if q["k"] == "conta" and q.get("p") and q["p"] not in var.setdefault(q["g"], []):
+                        var[q["g"]].append(q["p"])
+        cls.amostras = node(TR_JS + "\n" + treino.gen_js() + r"""
+const VAR = __VAR__, out = [];
 for (const g of Object.keys(TR.GEN)) for (let s = 0; s < __N__; s++) {
-  for (const p of (g === "dot" ? [{}, { dim: 4 }] : g === "matvec" || g === "matmulij" ? [{}, { dim: 3 }] : [{}])) {
+  for (const p of [{}].concat(VAR[g] || [])) {
     const it = TR.inst({ k: "conta", g, p }, TR.rng(s * 7919 + 13));
-    out.push({ g, s, d: it.d, c: it.c, q: it.q, x: it.x, t: it.t, opts: it.opts.map(o => ({ v: o.v, h: o.h, ok: o.ok, why: o.why })) });
+    out.push({ g, s, d: it.d, c: it.c, q: it.q, x: it.x, t: it.t, casas: it.casas == null ? 2 : it.casas,
+               opts: it.opts.map(o => ({ v: o.v, h: o.h, ok: o.ok, why: o.why })) });
   }
 }
 console.log(JSON.stringify(out));
-""".replace("__N__", str(SEMENTES)))
+""".replace("__N__", str(SEMENTES)).replace("__VAR__", json.dumps(var)))
 
     def test_todo_gerador_tem_conferencia(self):
         self.assertEqual(sorted({a["g"] for a in self.amostras}), sorted(CHECK))
@@ -180,10 +94,10 @@ console.log(JSON.stringify(out));
             self.assertEqual(len({o["h"] for o in ops}), 4, onde)                 # nada repetido na tela
             self.assertEqual([i for i, o in enumerate(ops) if o.get("ok")], [a["c"]], onde)
             norm = (lambda v: sorted(v) if isinstance(v, list) else v) if a["g"] in ORDEM_LIVRE else (lambda v: v)
-            self.assertTrue(igual(norm(ops[a["c"]]["v"]), esperado), (onde, ops[a["c"]]["v"], esperado))
+            self.assertTrue(perto(norm(ops[a["c"]]["v"]), esperado, a["casas"]), (onde, ops[a["c"]]["v"], esperado))
             for i, o in enumerate(ops):
                 if i != a["c"] and o["v"] is not None:
-                    self.assertFalse(igual(norm(o["v"]), esperado), (onde, "errada igual à certa", o["h"]))
+                    self.assertTrue(distinta(norm(o["v"]), esperado, a["casas"]), (onde, "errada igual à certa", o["h"]))
 
     def test_textos_sem_lixo_e_latex_valido(self):
         for a in self.amostras:
@@ -200,7 +114,7 @@ console.log(JSON.stringify(out));
 MOTOR = r"""
 const store = {};
 const localStorage = { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); } };
-""" + TR_JS + "\n" + TR_GEN_JS + "\nconst out = {};\n"
+""" + TR_JS + "\n" + treino.gen_js() + "\nconst out = {};\n"
 
 
 class Motor(unittest.TestCase):
@@ -311,28 +225,68 @@ class Paginas(unittest.TestCase):
 
     def test_trilhas_sabem_quais_aulas_tem_treino(self):
         todas = {tid: len(qs) for arq in self.arquivos.values() for tid, qs in arq.items()}
+        hub = json_apos(ler("index.html"), "RM.configure(")
+        self.assertEqual(hub["treino"], sorted(todas))           # a Jornada sabe quais aulas têm treino (parte dos pontos)
         for tr in ("ia", "mat"):
             s = ler(PAGINAS[tr])
             indice = json_apos(s, "const TR_INDEX = ")
             self.assertEqual(indice, todas)        # o mesmo índice em todas as páginas com treino
+            self.assertEqual(json_apos(s, "RM.configure(")["treino"], sorted(todas), tr)
             for tid in self.mapas[tr]:
                 linha = s[s.index(f'id="more-{tid}"'):]
                 linha = linha[:linha.index("</div>")]
-                self.assertEqual(f"trOpenLesson('{tid}')" in linha, tid in indice, tid)
+                # "🏋️ Treinar" da lista abre a Aula Visual no treino (não há mais janela por cima da aula)
+                self.assertEqual(f"trGoLesson('{tid}')" in linha, tid in indice, tid)
+                if tid in indice:                  # o treino fica no fim da Aula Visual: toda aula com treino tem uma
+                    self.assertIn("blocos", self.mapas[tr][tid]["pt_guide"] or {}, tid)
             ini = s.index("function renderPtGuideV2Body(")
-            self.assertIn("trEntryHTML(topicId)", s[ini:s.index("\nfunction ", ini + 10)])
-            for nome in ("function trOpenLesson(", "function trEntryHTML(", "function trQHTML(", 'const TR_PY_RE'):
+            self.assertIn("trAulaHTML(topicId)", s[ini:s.index("\nfunction ", ini + 10)])
+            ini = s.index("function lv2Init(")
+            self.assertIn("trAulaInit(root)", s[ini:s.index("\nfunction ", ini + 10)])
+            for nome in ("function trAulaHTML(", "function trAulaInit(", "function trGoLesson(", "function trQHTML(", 'const TR_PY_RE'):
                 self.assertIn(nome, s, (tr, nome))
+            for velho in ("trOpenLesson", "trEntryHTML", "tr-entry"):
+                self.assertNotIn(velho, s, (tr, velho))
         self.assertNotIn("const TR_INDEX", ler("ingles.html"))   # Inglês ainda não tem banco de questões
+
+    def test_rotulos_em_texto_puro(self):
+        # O rótulo vai, em texto puro, para a lista "Para rever", a revisão ativa e o caderno: sem LaTeX cru
+        # (só a Matemática usa LaTeX; na IA uma barra invertida é de verdade, como em C:\Users)
+        qs = [q for arq in self.arquivos.values() for lista in arq.values() for q in lista]
+        r = node(MOTOR + "const qs = " + json.dumps(qs) + ";\nconsole.log(JSON.stringify(qs.map(q => TR.labelOf(q))));")
+        self.assertEqual(len(r), len(qs))
+        mat = {json.dumps(q, sort_keys=True) for lista in self.arquivos["mat"].values() for q in lista}
+        for q, rot in zip(qs, r):
+            self.assertTrue(rot.strip(), q)
+            if json.dumps(q, sort_keys=True) in mat:
+                self.assertNotRegex(rot, r"\\[A-Za-z]|[{}]", rot)
+
+    def test_bloco_do_treino_na_aula(self):
+        s = ler(PAGINAS["mat"])
+        tid = next(k for k in json_apos(s, "const TR_INDEX = ") if k.startswith("mat-"))
+        js = (MOTOR + "const TR_INDEX = " + json.dumps({tid: 10, "x-1": 3}) + ";\n"
+              + "const TR_COLOR = { ia: '--t-ia', mat: '--t-mat', ing: '--t-ing' };\n"
+              + "function trTrack(id) { return String(id || '').split('-')[0]; }\n" + funcao_js(s, "trAulaHTML") + "\n"
+              + f"console.log(JSON.stringify({{ a: trAulaHTML({json.dumps(tid)}), b: trAulaHTML('x-1'), c: trAulaHTML('nada') }}));")
+        r = node(js)
+        self.assertIn(f'class="tr-aula" data-tr="{tid}"', r["a"])
+        self.assertIn("--tc:var(--t-mat)", r["a"])
+        self.assertIn("10 questões de marcar, uma por vez", r["a"])
+        for parte in ('class="tr-a-count"', 'class="tr-prog"', 'class="tr-a-pts" hidden', 'class="tr-a-body"'):
+            self.assertIn(parte, r["a"])
+        self.assertNotIn('role="dialog"', r["a"])                 # dentro da aula, sem janela
+        self.assertIn("3 questões", r["b"])                       # banco menor que uma sessão
+        self.assertEqual(r["c"], "")                              # aula sem treino: nada
 
     def test_revisoes_tem_treino_misto_e_revisao_ativa_com_treino(self):
         s = ler("revisoes.html")
         self.assertIn('id="rv-treino"', s)
         mods = json_apos(s, "const TR_MODS = ")
-        self.assertEqual([(m["tr"], len(m["ids"])) for m in mods], [("ia", 16), ("mat", 11)])
+        # IA: a Fase 1 (16 aulas com treino); Matemática: os 5 módulos inteiros (44 aulas), na ordem do site
+        self.assertEqual([(m["tr"], len(m["ids"])) for m in mods], [("ia", 16), ("mat", 4), ("mat", 11), ("mat", 9), ("mat", 14), ("mat", 6)])
         self.assertEqual(len({m["k"] for m in mods}), len(mods))
-        self.assertIn("Fundamentos de programação", mods[0]["nome"])
-        self.assertIn("Álgebra Linear", mods[1]["nome"])
+        for m, nome in zip(mods, ("Fundamentos de programação", "Fundamentos", "Álgebra Linear", "Cálculo", "Probabilidade", "Transformers")):
+            self.assertIn(nome, m["nome"])
         for trecho in ("function rvpTreino(", "trOpenMixed(", "function raRenderTreino(", 'window.addEventListener("tr:change"'):
             self.assertIn(trecho, s, trecho)
         decks = json.loads((BASE / "revisao_cartoes.json").read_text(encoding="utf-8"))

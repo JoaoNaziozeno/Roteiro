@@ -216,7 +216,8 @@ function calcAndPaint() {
   const ev = jrRead(EVENTS_KEY, []), ses = jrRead(SESS_KEY, []);
   const logStart = parseInt(localStorage.getItem(LOGSTART_KEY) || "", 10) || null;
 
-  const P = RM.progress(PR, eff), T = RM.totals(eff);
+  // o treino aprovado de cada aula também soma (parte dos pontos das aulas com treino, ver RM.credit)
+  const P = RM.progress(PR, eff, RM.trBest(jrRead("roteiro-answers-v1", {}))), T = RM.totals(eff);
   const sPct = P.structDone / T.topics * 100, wPct = P.pts / T.points * 100, remaining = Math.max(0, T.points - P.pts);
 
   // cards das trilhas (mantém os 4 cards grandes do hub)
@@ -261,7 +262,8 @@ function calcAndPaint() {
   const metaNome = "meta de " + preset.months + " meses";
   const fim = deadline ? formatDateBR(new Date(deadline)) : "";
   const PONTOS = '<span class="jr-banner-sub">Os pontos medem o esforço: cada aula vale conforme a dificuldade (Inglês ' +
-    JR_TRACK_WEIGHTS.ing + ", IA " + JR_TRACK_WEIGHTS.ia + ", Matemática " + JR_TRACK_WEIGHTS.mat + ").</span>";
+    JR_TRACK_WEIGHTS.ing + ", IA " + JR_TRACK_WEIGHTS.ia + ", Matemática " + JR_TRACK_WEIGHTS.mat + "). Nas aulas com treino, " +
+    Math.round(RM.TR_SHARE * 100) + "% dos pontos vêm dele, com pelo menos " + RM.TR_MIN + "% de acertos.</span>";
   const ritmoHoje = curPace != null
     ? "Nas últimas " + plural(Math.min(4, series.length), "semana", "semanas") + ", você fez em média <b>" + jrF(curPace) + " pontos por semana</b>. "
     : "";
@@ -293,7 +295,7 @@ function calcAndPaint() {
   // progresso
   jrSet("jr-wpct", jrPct(wPct)); jrSet("jr-spct", jrPct(sPct));
   jrEl("jr-wbar").style.width = wPct + "%"; jrEl("jr-sbar").style.width = sPct + "%";
-  jrSet("jr-explain", "Você concluiu " + P.structDone + " de " + T.topics + " tópicos. Considerando a dificuldade de cada trilha (um tópico de Matemática exige mais estudo que uma aula de Inglês), já percorreu " + jrF(P.pts) + " de " + jrF(T.points) + " pontos, contando o que está em andamento.");
+  jrSet("jr-explain", "Você concluiu " + P.structDone + " de " + T.topics + " tópicos. Considerando a dificuldade de cada trilha (um tópico de Matemática exige mais estudo que uma aula de Inglês), já percorreu " + jrF(P.pts) + " de " + jrF(T.points) + " pontos, contando o que está em andamento e os treinos.");
 
   // previsão
   const fmt = d => formatDateBR(new Date(now + d * DAY));

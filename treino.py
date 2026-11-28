@@ -7,7 +7,13 @@ só quando você começa um treino). Também confere as questões de código rod
 
 Formato das questões: ver treino_js.py. Bancos (título da aula -> lista de questões):
     IA, Fase 1 ("Base da linguagem" e "Estruturas de dados")   treino_ia_f1.py
-    Matemática, Álgebra Linear                                 treino_mat_m1.py
+    Matemática, Módulo 1 do site (Fundamentos)                 treino_mat_fund.py
+    Matemática, Álgebra Linear (Módulo 2 do site)              treino_mat_m1.py
+    Matemática, Cálculo (Módulo 3)                             treino_mat_calc.py
+    Matemática, Probabilidade, Estatística e Informação (4)    treino_mat_prob.py
+    Matemática, Transformers (Módulo 5)                        treino_mat_transf.py
+Geradores de conta: treino_contas.py (Álgebra Linear e ferramentas), treino_contas_calc.py (Fundamentos e Cálculo),
+treino_contas_prob.py (Probabilidade, Estatística e Informação) e treino_contas_transf.py (Transformers).
 """
 import contextlib
 import importlib
@@ -15,9 +21,13 @@ import io
 import json
 import os
 import sys
+import warnings
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-BANCOS = {"ia": ["treino_ia_f1"], "mat": ["treino_mat_m1"]}
+BANCOS = {"ia": ["treino_ia_f1"],
+          "mat": ["treino_mat_fund", "treino_mat_m1", "treino_mat_calc", "treino_mat_prob", "treino_mat_transf"]}
+# Geradores de conta: cada arquivo registra os seus em TR.GEN (o 1º também define as ferramentas TR.H)
+GERADORES = ["treino_contas", "treino_contas_calc", "treino_contas_prob", "treino_contas_transf"]
 TIPOS = ("saida", "lacuna", "erro", "conceito", "conta")
 
 INDEX = {}   # id da aula -> nº de questões (preenchido por montar(); vai para as páginas como TR_INDEX)
@@ -83,8 +93,12 @@ def _js(o):
 def ui_js():
     """O script do Treino com o índice desta build (precisa de montar() antes)."""
     from treino_js import TR_JS, TR_UI_JS
-    from treino_contas import TR_GEN_JS
-    return TR_JS + "\n" + TR_GEN_JS + "\n" + TR_UI_JS.replace("__TR_INDEX__", _js(INDEX)).replace("__TR_MODS__", _js(MODS))
+    return TR_JS + "\n" + gen_js() + "\n" + TR_UI_JS.replace("__TR_INDEX__", _js(INDEX)).replace("__TR_MODS__", _js(MODS))
+
+
+def gen_js():
+    """Todos os geradores de conta, na ordem de GERADORES (o 1º define as ferramentas TR.H)."""
+    return "\n".join(importlib.import_module(m).TR_GEN_JS for m in GERADORES)
 
 
 def contar(tid):
@@ -124,7 +138,8 @@ def rodar(codigo, entradas=None, max_linhas=200_000):
     ns = {"__name__": "__main__", "input": _input}
     erro, antigo = None, sys.gettrace()
     try:
-        with contextlib.redirect_stdout(tela):
+        with contextlib.redirect_stdout(tela), warnings.catch_warnings():
+            warnings.simplefilter("ignore")      # ex.: o aviso de overflow de np.exp(1000), que faz parte da questão
             sys.settrace(_trace)
             try:
                 exec(compile(codigo, "<treino>", "exec"), ns)
