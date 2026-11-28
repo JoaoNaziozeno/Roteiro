@@ -586,8 +586,13 @@ def apply_design(html: str, track: str) -> str:
     from review_js import REVIEW_JS, REVIEW_UI_JS, REVIEW_UI_CSS
     from alerts_js import AV_JS, AV_UI_JS, AV_CSS, NAV_BELL
     # Agenda de revisões e avisos no <head>: os contadores do menu já saem certos na primeira pintura (sem o menu "pular")
-    review_head = ("<style>" + REVIEW_UI_CSS + "\n" + AV_CSS + "</style>\n<script>\n" + REVIEW_JS + "\n" + REVIEW_UI_JS + "\n"
-                   + AV_JS + "\n" + AV_UI_JS + "\n</script>")
+    # Treino (questões de marcar) nas trilhas que têm banco de questões e na página Revisões (treino misto e revisão ativa)
+    com_treino = track in ("ia", "mat", "rev")
+    if com_treino:
+        import treino
+        from treino_js import TR_CSS
+    review_head = ("<style>" + REVIEW_UI_CSS + "\n" + AV_CSS + (("\n" + TR_CSS) if com_treino else "") + "</style>\n<script>\n"
+                   + REVIEW_JS + "\n" + REVIEW_UI_JS + "\n" + AV_JS + "\n" + AV_UI_JS + "\n</script>")
     html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n" + review_head + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
     # Item "Revisões" no menu de todas as páginas (logo depois de Projetos), com o contador de hoje + atrasadas
@@ -604,7 +609,8 @@ def apply_design(html: str, track: str) -> str:
     idx = html.rfind("</body>")
     if idx != -1:
         # avBoot: avisos (painel e cartão "Hoje" do hub) montados quando o índice das aulas já existe, antes de #ds-end
-        html = (html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS
+        tr_js = ("<script>\n" + treino.ui_js() + "\n</script>\n") if com_treino else ""
+        html = (html[:idx] + tr_js + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS
                 + "\n<script>try { avBoot(); } catch (e) {}</script>"
                 + '\n<div id="ds-end" hidden></div>\n' + html[idx:])
     return html

@@ -1,0 +1,441 @@
+# -*- coding: utf-8 -*-
+"""
+Treino · Matemática, Álgebra Linear para IA & Tensores (o 1º módulo original; no site, depois da
+reorganização do currículo, ele aparece como Módulo 2).
+
+Cada aula mistura:
+  conta     "Faça a conta" com números novos a cada vez (geradores em treino_contas.py, conferidos com o NumPy)
+  saida     "Qual é a saída?" de trechos com NumPy (o gabarito é o que o NumPy imprime de verdade)
+  conceito  múltipla escolha sobre o que a conta significa e onde ela aparece na IA
+"""
+import textwrap
+
+
+def c(s):
+    return textwrap.dedent(s).strip("\n")
+
+
+def conta(g, **p):
+    q = {"k": "conta", "g": g}
+    if p:
+        q["p"] = p
+    return q
+
+
+TREINO = {
+    "Vetores e espaços vetoriais: intuição geométrica": [
+        conta("vsoma"), conta("vescala"), conta("vcomb"), conta("vdesloc"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            u = np.array([1, 2, 3])
+            v = np.array([4, 5, 6])
+            print(u + v, 2 * u)
+         '''),
+         "opcoes": ["[5 7 9] [2 4 6]", "[1, 2, 3, 4, 5, 6] [1, 2, 3, 1, 2, 3]", "[5 7 9] [1 2 3 1 2 3]", "21 [2 4 6]"],
+         "correta": 0,
+         "x": "Com arrays do NumPy, <code>+</code> soma posição por posição e <code>2 * u</code> multiplica cada coordenada: exatamente a conta de vetores."},
+        {"k": "saida", "codigo": c('''
+            u = [1, 2, 3]
+            v = [4, 5, 6]
+            print(u + v)
+         '''),
+         "opcoes": ["[5, 7, 9]", "[1, 2, 3, 4, 5, 6]", "[5 7 9]", "TypeError"],
+         "correta": 1,
+         "x": "Cuidado: com listas comuns do Python, <code>+</code> <b>emenda</b> as listas. Para somar como vetores, use <code>np.array</code>."},
+        {"k": "conceito", "pergunta": r"Um vetor de $\mathbb{R}^3$ é…",
+         "opcoes": ["uma lista de 3 números reais, que dá para desenhar como uma seta no espaço 3D", "um número com 3 casas decimais", "uma tabela de 3 por 3", "um conjunto de 3 setas"],
+         "correta": 0,
+         "x": r"$\mathbb{R}^n$ é o espaço das listas de $n$ números reais. Em $\mathbb{R}^3$, cada vetor tem 3 coordenadas, como $(2, -1, 5)$."},
+        {"k": "conceito", "pergunta": "Na IA, o embedding de uma palavra é…",
+         "opcoes": ["um vetor: palavras de sentido parecido ficam com vetores próximos", "o número da palavra no dicionário", "a palavra escrita ao contrário", "uma imagem da palavra"],
+         "correta": 0,
+         "x": "Modelos de linguagem transformam cada palavra (token) num vetor com centenas de coordenadas. A distância entre os vetores reflete a semelhança de sentido."},
+        {"k": "conceito", "pergunta": r"O que acontece com a seta quando você multiplica o vetor por $-1$?",
+         "opcoes": ["Inverte o sentido e mantém o tamanho", "Fica igual", "Vira o vetor zero", "Gira 90°"],
+         "correta": 0,
+         "x": r"Cada coordenada troca de sinal: $(3, 1)$ vira $(-3, -1)$, a mesma seta apontando para o lado oposto."},
+        {"k": "conceito", "pergunta": r"Em $v = (4, 7, 1)$, quanto vale $v_2$?",
+         "opcoes": [r"$7$, a 2ª coordenada", r"$(16, 49, 1)$, o vetor ao quadrado", r"$(8, 14, 2)$, o dobro de $v$", r"$4$, a 1ª coordenada"],
+         "correta": 0,
+         "x": r"O índice embaixo indica a posição: $v_1 = 4$, $v_2 = 7$, $v_3 = 1$. (No Python, que começa do zero, seria <code>v[1]</code>.)"},
+    ],
+
+    "Combinações lineares, espaço gerado (span) e bases": [
+        conta("combcoef"), conta("base2"), conta("vcomb"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[1, 2],
+                          [2, 4]])
+            print(np.linalg.matrix_rank(A))
+         '''),
+         "opcoes": ["1", "2", "0", "4"],
+         "correta": 0,
+         "x": "A 2ª coluna (2, 4) é o dobro da 1ª (1, 2): só há uma direção de verdade. O posto conta as colunas independentes: 1."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            v1 = np.array([1, 0])
+            v2 = np.array([0, 1])
+            print(3 * v1 + 2 * v2)
+         '''),
+         "opcoes": ["[3 2]", "[2 3]", "5", "[3 0]"],
+         "correta": 0,
+         "x": "Combinação linear: 3 vezes (1, 0) mais 2 vezes (0, 1) dá (3, 2). Com a base padrão, os coeficientes são as próprias coordenadas."},
+        {"k": "conceito", "pergunta": r"O espaço gerado (span) por dois vetores não paralelos do $\mathbb{R}^2$ é…",
+         "opcoes": ["o plano inteiro", "uma reta", "só os dois vetores", "um ponto"],
+         "correta": 0,
+         "x": "Com duas direções diferentes, combinando as duas dá para chegar a qualquer ponto do plano."},
+        {"k": "conceito", "pergunta": r"O span de $(1, 2)$ e $(2, 4)$ é…",
+         "opcoes": ["uma reta, porque um vetor é o dobro do outro", "o plano inteiro", "dois pontos", "vazio"],
+         "correta": 0,
+         "x": "Vetores paralelos apontam na mesma direção: qualquer combinação deles fica na mesma reta."},
+        {"k": "conceito", "pergunta": r"Quantos vetores tem uma base do $\mathbb{R}^3$?",
+         "opcoes": ["3", "2", "6", "Quantos você quiser"],
+         "correta": 0,
+         "x": r"A base é o conjunto mínimo que gera o espaço todo. No $\mathbb{R}^n$, ela tem exatamente $n$ vetores independentes."},
+        {"k": "conceito", "pergunta": r"Três vetores do $\mathbb{R}^2$ podem ser linearmente independentes?",
+         "opcoes": ["Não: no plano cabem no máximo 2; o 3º sempre é combinação dos outros", "Sim, se forem diferentes", "Sim, se nenhum for o vetor zero", "Depende do tamanho deles"],
+         "correta": 0,
+         "x": "Dois vetores independentes já geram o plano todo, então qualquer terceiro pode ser escrito com eles."},
+        {"k": "conceito", "pergunta": "O que o posto (rank) de uma matriz diz?",
+         "opcoes": ["Quantas colunas são de fato independentes, ou seja, a dimensão do que elas geram", "Quantas linhas ela tem", "O maior número da matriz", "Se ela é quadrada"],
+         "correta": 0,
+         "x": "Uma matriz 3×3 de posto 2 \"achata\" o espaço num plano: uma das direções é combinação das outras."},
+    ],
+
+    "Produto escalar (Dot Product) e projeções": [
+        conta("dot"), conta("dot", dim=4), conta("dotang"), conta("projesc"), conta("ortok"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            v = np.array([2, 1])
+            w = np.array([3, 4])
+            print(v @ w, v * w)
+         '''),
+         "opcoes": ["10 [6 4]", "[6 4] 10", "10 10", "10 [5 5]"],
+         "correta": 0,
+         "x": "<code>@</code> é o produto escalar (2·3 + 1·4 = 10, um número). <code>*</code> multiplica posição por posição e devolve um vetor."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            u = np.array([1, 2, -1])
+            w = np.array([2, -1, 0])
+            print(np.dot(u, w))
+         '''),
+         "opcoes": ["0", "4", "[ 2 -2  0]", "-1"],
+         "correta": 0,
+         "x": "1·2 + 2·(−1) + (−1)·0 = 0. Produto escalar zero: os vetores são perpendiculares."},
+        {"k": "conceito", "pergunta": "O resultado de um produto escalar é…",
+         "opcoes": ["um número", "um vetor do mesmo tamanho", "uma matriz", "um ângulo em graus"],
+         "correta": 0,
+         "x": "Multiplica par a par e <b>soma tudo</b>: sobra um número só. Por isso ele também se chama produto interno."},
+        {"k": "conceito", "pergunta": r"Um neurônio calcula $w \cdot x + b$. O que o produto escalar $w \cdot x$ faz aí?",
+         "opcoes": ["Soma cada entrada multiplicada pelo seu peso", "Escolhe a maior entrada", "Ordena as entradas", "Conta quantas entradas há"],
+         "correta": 0,
+         "x": r"$w \cdot x = w_1 x_1 + w_2 x_2 + \dots$: cada entrada pesa o quanto o peso dela manda. O neurônio inteiro é essa soma, mais o viés, passando pela ativação."},
+        {"k": "conceito", "pergunta": r"O produto escalar de um vetor com ele mesmo, $u \cdot u$, é igual a…",
+         "opcoes": [r"$\lVert u \rVert^2$, o comprimento ao quadrado", r"$1$", r"$0$", r"$2u$"],
+         "correta": 0,
+         "x": r"$u \cdot u = u_1^2 + u_2^2 + \dots$, que é a norma L2 ao quadrado. Por isso $\lVert u \rVert = \sqrt{u \cdot u}$."},
+    ],
+
+    "Norma de vetores (L1, L2 Euclidiana) e distâncias": [
+        conta("l2"), conta("l1"), conta("dist2"), conta("manh"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            v = np.array([3, -4])
+            print(np.linalg.norm(v), np.linalg.norm(v, 1))
+         '''),
+         "opcoes": ["5.0 7.0", "5 7", "7.0 5.0", "-1.0 7.0"],
+         "correta": 0,
+         "x": "Sem o 2º argumento, <code>norm</code> calcula a L2: raiz de 9 + 16 = 5.0. Com <code>1</code>, a L1: |3| + |−4| = 7.0."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            a = np.array([1, 1])
+            b = np.array([4, 5])
+            print(np.abs(b - a).sum(), np.linalg.norm(b - a))
+         '''),
+         "opcoes": ["7 5.0", "5.0 7", "7 7.0", "9 5.0"],
+         "correta": 0,
+         "x": "A diferença é (3, 4). Manhattan soma os módulos (7); a euclidiana é a linha reta, raiz de 9 + 16 (5.0)."},
+        {"k": "conceito", "pergunta": "Qual regularização tende a zerar pesos, deixando o modelo esparso?",
+         "opcoes": ["L1 (Lasso)", "L2 (Ridge)", "Nenhuma das duas", "As duas zeram igual"],
+         "correta": 0,
+         "x": "A L1 tem bicos (o losango) e empurra pesos pouco úteis para exatamente zero. A L2 só encolhe os pesos, sem zerar."},
+        {"k": "conceito", "pergunta": "Num táxi andando por quadras, a distância percorrida entre dois pontos é a…",
+         "opcoes": ["Distância Manhattan (L1)", "Distância euclidiana (L2)", "Distância do máximo (L∞)", "Similaridade de cosseno"],
+         "correta": 0,
+         "x": "Pelas quadras não dá para cortar caminho em diagonal: soma-se o que se anda em cada eixo."},
+        {"k": "conceito", "pergunta": r"A norma L∞ (do máximo) de $(2, -7, 5)$ é…",
+         "opcoes": [r"$7$", r"$5$", r"$14$", r"$-7$"],
+         "correta": 0,
+         "x": "L∞ é o maior módulo entre as coordenadas: |−7| = 7."},
+        {"k": "conceito", "pergunta": "Um vetor unitário tem norma L2 igual a…",
+         "opcoes": [r"$1$", r"$0$", "o número de coordenadas", "depende das coordenadas"],
+         "correta": 0,
+         "x": r"Unitário é ter comprimento 1. Para normalizar um vetor, divida-o pela própria norma: $v / \lVert v \rVert$."},
+    ],
+
+    "Ângulo entre vetores e Similaridade de Cosseno": [
+        conta("cos"), conta("cosesp"), conta("angesp"), conta("dotang"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            a = np.array([3.0, 4.0])
+            b = np.array([6.0, 8.0])
+            cos = a @ b / (np.linalg.norm(a) * np.linalg.norm(b))
+            print(round(cos, 2))
+         '''),
+         "opcoes": ["1.0", "0.5", "50.0", "2.0"],
+         "correta": 0,
+         "x": "b é o dobro de a: mesma direção. a·b = 50 e as normas são 5 e 10, então o cosseno é 50 / 50 = 1. O tamanho não importa."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            a = np.array([1, 0])
+            b = np.array([0, 5])
+            print(a @ b / (np.linalg.norm(a) * np.linalg.norm(b)))
+         '''),
+         "opcoes": ["0.0", "5.0", "1.0", "nan"],
+         "correta": 0,
+         "x": "Um vetor aponta no eixo x e o outro no eixo y: perpendiculares. O produto escalar é 0, então o cosseno também é 0."},
+        {"k": "conceito", "pergunta": "Por que a busca semântica (como no RAG) costuma usar o cosseno, e não o produto escalar puro?",
+         "opcoes": ["Porque o cosseno ignora o tamanho dos vetores e compara só a direção", "Porque o cosseno é sempre positivo", "Porque o produto escalar não funciona com textos", "Porque o cosseno dá números inteiros"],
+         "correta": 0,
+         "x": "Um texto longo pode gerar um vetor maior sem ter sentido mais parecido. Dividindo pelas normas, sobra só a direção, que é o que carrega o sentido."},
+        {"k": "conceito", "pergunta": "Similaridade de cosseno igual a −1 significa…",
+         "opcoes": ["vetores em sentidos opostos", "vetores perpendiculares", "vetores iguais", "que houve erro na conta"],
+         "correta": 0,
+         "x": "−1 é o ângulo de 180°: mesma direção, sentidos contrários. 0 é perpendicular e 1 é mesma direção e mesmo sentido."},
+        {"k": "conceito", "pergunta": "Se os vetores já têm tamanho 1 (normalizados), a similaridade de cosseno vira…",
+         "opcoes": ["o próprio produto escalar", "sempre 1", "a soma das coordenadas", "a distância euclidiana"],
+         "correta": 0,
+         "x": r"$\cos\theta = \dfrac{u \cdot v}{\lVert u \rVert \lVert v \rVert}$ e, com normas iguais a 1, sobra $u \cdot v$. Por isso muitos bancos de vetores normalizam os embeddings antes."},
+        {"k": "conceito", "pergunta": "Que valores a similaridade de cosseno pode ter?",
+         "opcoes": ["De −1 a 1", "De 0 a 1", "De 0 a 180", "Qualquer número"],
+         "correta": 0,
+         "x": "É o cosseno de um ângulo, então fica entre −1 e 1. (Com vetores só de números positivos, fica entre 0 e 1.)"},
+    ],
+
+    "Matrizes como transformações lineares no espaço": [
+        conta("matvec"), conta("matvec", dim=3), conta("matcol"), conta("transf"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[2, 0],
+                          [0, 3]])
+            x = np.array([1, 1])
+            print(A @ x)
+         '''),
+         "opcoes": ["[2 3]", "[2 0]", "5", "[1 1]"],
+         "correta": 0,
+         "x": "A estica o eixo x 2 vezes e o eixo y 3 vezes: (1, 1) vai para (2, 3)."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            C = np.array([[1, 2],
+                          [0, 1]])
+            print(C @ np.array([0, 1]))
+         '''),
+         "opcoes": ["[2 1]", "[0 1]", "[1 0]", "[1 2]"],
+         "correta": 0,
+         "x": "O vetor (0, 1) vai para a 2ª coluna de C: (2, 1). É um cisalhamento: o eixo y tomba para o lado."},
+        {"k": "conceito", "pergunta": "O que as colunas de uma matriz 2×2 mostram?",
+         "opcoes": [r"Para onde vão os vetores $(1, 0)$ e $(0, 1)$", "As coordenadas dos pontos de um gráfico", "A soma das linhas", "Nada: só a matriz inteira tem significado"],
+         "correta": 0,
+         "x": "A 1ª coluna é onde o eixo x vai parar e a 2ª, onde vai o eixo y. Sabendo isso, você sabe onde vai qualquer ponto."},
+        {"k": "conceito", "pergunta": "Numa transformação linear, o que acontece com a origem?",
+         "opcoes": [r"Fica no lugar: $A \cdot 0 = 0$", "Vai para o ponto (1, 1)", "Some", "Depende da matriz"],
+         "correta": 0,
+         "x": "Qualquer matriz vezes o vetor zero dá zero. Por isso, para deslocar (transladar), as redes neurais somam um viés à parte."},
+        {"k": "conceito", "pergunta": "Uma camada densa de rede neural, sem a função de ativação, faz o quê com a entrada?",
+         "opcoes": ["Uma transformação linear (matriz vezes vetor) mais um deslocamento, o viés", "Ordena os números", "Arredonda os valores", "Nada: só repassa a entrada"],
+         "correta": 0,
+         "x": r"$y = Wx + b$. A ativação, depois, é o que deixa a rede aprender curvas, e não só transformações lineares."},
+        {"k": "conceito", "pergunta": "O que acontece com as retas numa transformação linear?",
+         "opcoes": ["Continuam retas, e retas paralelas continuam paralelas", "Viram curvas", "Viram pontos", "Ficam todas paralelas ao eixo x"],
+         "correta": 0,
+         "x": "Transformações lineares podem girar, esticar, espelhar e cisalhar, mas a malha quadriculada continua de linhas retas e igualmente espaçadas."},
+    ],
+
+    "Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)": [
+        conta("matmulij"), conta("matmulij", dim=3), conta("matmul2"), conta("hada"), conta("forma"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[1, 2],
+                          [3, 4]])
+            B = np.array([[2, 0],
+                          [1, 2]])
+            print(A * B)
+         '''),
+         "opcoes": ["[[2 0]\n [3 8]]", "[[ 4  4]\n [10  8]]", "[[2 0]\n [1 2]]", "ValueError"],
+         "correta": 0,
+         "x": "No NumPy, <code>*</code> é o Hadamard: cada posição vezes a mesma posição. O produto de matrizes é <code>A @ B</code>, que daria [[4 4] [10 8]]."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.ones((2, 3))
+            B = np.ones((3, 4))
+            print((A @ B).shape)
+         '''),
+         "opcoes": ["(2, 4)", "(3, 3)", "(2, 3)", "ValueError"],
+         "correta": 0,
+         "x": "(2 × 3) @ (3 × 4): as dimensões de dentro (3 e 3) batem e somem; ficam as de fora, (2, 4)."},
+        {"k": "conceito", "pergunta": r"Em geral, $AB$ e $BA$…",
+         "opcoes": ["são diferentes: a ordem importa", "são sempre iguais", "só diferem no sinal", "são iguais se as matrizes forem quadradas"],
+         "correta": 0,
+         "x": "Multiplicar matrizes é compor transformações, e a ordem muda o resultado (girar e depois esticar não é o mesmo que esticar e depois girar)."},
+        {"k": "conceito", "pergunta": "O elemento da linha i, coluna j, de AB é…",
+         "opcoes": ["o produto escalar da linha i de A com a coluna j de B", "A[i][j] vezes B[i][j]", "a soma da linha i de A", "o produto escalar da linha i de A com a linha j de B"],
+         "correta": 0,
+         "x": "Linha de A com coluna de B, sempre. Multiplicar posição por posição é o produto de Hadamard, outra operação."},
+        {"k": "conceito", "pergunta": "Um lote X de shape (32, 784), com 32 imagens de 784 pixels, passa por pesos W de shape (784, 128). O que é cada linha de <code>X @ W</code>?",
+         "opcoes": ["As 128 saídas da camada para uma das 32 imagens", "Um pixel de cada imagem", "Os 784 pesos de um neurônio", "A média das 32 imagens"],
+         "correta": 0,
+         "x": "O resultado tem shape (32, 128): uma linha por imagem, com as 128 saídas da camada. Um único <code>@</code> processa o lote inteiro de uma vez."},
+    ],
+
+    "Sistemas de equações lineares e determinantes": [
+        conta("det2"), conta("det3"), conta("sist2"), conta("detarea"), conta("detsing"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[3.0, 1.0],
+                          [2.0, 4.0]])
+            b = np.array([9.0, 16.0])
+            print(np.linalg.solve(A, b))
+         '''),
+         "opcoes": ["[2. 3.]", "[3. 2.]", "[ 9. 16.]", "10.0"],
+         "correta": 0,
+         "x": "<code>solve</code> resolve A x = b: x = 2 e y = 3. Confira: 3·2 + 1·3 = 9 e 2·2 + 4·3 = 16."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[2.0, 4.0],
+                          [1.0, 2.0]])
+            print(round(np.linalg.det(A), 2))
+         '''),
+         "opcoes": ["0.0", "8.0", "4.0", "LinAlgError"],
+         "correta": 0,
+         "x": "2·2 − 4·1 = 0: a 1ª linha é o dobro da 2ª. Matriz singular, sem inversa, e o sistema não tem solução única."},
+        {"k": "conceito", "pergunta": r"Se $\det A = 0$, o sistema $Ax = b$…",
+         "opcoes": ["não tem solução única: ou não tem nenhuma, ou tem infinitas", "tem sempre a solução x = 0", "tem exatamente uma solução", "só tem solução se b = 0"],
+         "correta": 0,
+         "x": "Determinante zero quer dizer que a transformação achata o espaço (perde uma dimensão). Aí, ou b fica fora do que A alcança (nenhuma solução), ou há infinitas."},
+        {"k": "conceito", "pergunta": "O que o determinante de uma matriz 2×2 mede?",
+         "opcoes": ["Quanto a transformação multiplica as áreas (e o sinal diz se ela espelha)", "A soma da diagonal", "O maior número da matriz", "Quantas linhas ela tem"],
+         "correta": 0,
+         "x": "Um quadrado de área 1 vira uma figura de área |det|. Se o det é negativo, a figura também foi espelhada."},
+        {"k": "conceito", "pergunta": r"Como fica o sistema $2x + y = 5$, $x - y = 1$ na forma $Ax = b$?",
+         "opcoes": [r"$A = \begin{bmatrix} 2 & 1 \\ 1 & -1 \end{bmatrix}$, $b = (5,\ 1)$", r"$A = \begin{bmatrix} 2 & 1 \\ 1 & 1 \end{bmatrix}$, $b = (5,\ 1)$",
+                    r"$A = \begin{bmatrix} 2 & 1 \\ 5 & 1 \end{bmatrix}$, $b = (1,\ -1)$", r"$A = \begin{bmatrix} 2 & 1 \\ 1 & -1 \end{bmatrix}$, $b = (1,\ 5)$"],
+         "correta": 0,
+         "x": "Cada equação vira uma linha de A, com os coeficientes de x e de y (o −1 de −y conta), e o lado direito vai para b, na mesma ordem."},
+    ],
+
+    "Inversa de matriz e pseudoinversa de Moore-Penrose": [
+        conta("inv2"), conta("inv2"), conta("invdiag"), conta("axb"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[2.0, 0.0],
+                          [0.0, 4.0]])
+            print(np.linalg.inv(A) @ A)
+         '''),
+         "opcoes": ["[[1. 0.]\n [0. 1.]]", "[[0.5  0.  ]\n [0.   0.25]]", "[[ 4.  0.]\n [ 0. 16.]]", "LinAlgError"],
+         "correta": 0,
+         "x": r"A inversa desfaz a transformação: $A^{-1}A = I$, a identidade. (A inversa sozinha seria diag(0.5, 0.25).)"},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[1.0, 2.0],
+                          [2.0, 4.0]])
+            try:
+                np.linalg.inv(A)
+                print("tem inversa")
+            except np.linalg.LinAlgError:
+                print("singular")
+         '''),
+         "opcoes": ["singular", "tem inversa", "[[-2.  1.]\n [ 1. -0.5]]", "(nada aparece)"],
+         "correta": 0,
+         "x": "det = 1·4 − 2·2 = 0: a matriz é singular e o NumPy avisa com <code>LinAlgError</code>. Para esses casos existe a pseudoinversa, <code>np.linalg.pinv</code>."},
+        {"k": "conceito", "pergunta": r"$A^{-1} A$ é igual a…",
+         "opcoes": [r"a identidade $I$", r"$A$", r"$0$", r"$A^2$"],
+         "correta": 0,
+         "x": "Fazer e desfazer a transformação deixa tudo como estava: a matriz identidade, que não muda nenhum vetor."},
+        {"k": "conceito", "pergunta": r"Para que serve a pseudoinversa $A^+$ na regressão linear?",
+         "opcoes": ["Achar os pesos de mínimos quadrados quando X é retangular (mais exemplos que atributos)", "Inverter matrizes quadradas mais rápido", "Normalizar os dados", "Calcular autovalores"],
+         "correta": 0,
+         "x": r"Com mais equações que incógnitas, não há solução exata. A pseudoinversa dá a que erra menos: $w = X^+ y$, o mesmo que $(X^\top X)^{-1} X^\top y$."},
+        {"k": "conceito", "pergunta": "Qual destas matrizes NÃO tem inversa?",
+         "opcoes": [r"$\begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$", r"$\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$", r"$\begin{bmatrix} 2 & 0 \\ 0 & 3 \end{bmatrix}$", r"$\begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix}$"],
+         "correta": 0,
+         "x": "Sem inversa quando det = 0: 1·4 − 2·2 = 0. As outras têm det −2, 6 e −1."},
+        {"k": "conceito", "pergunta": "Por que, na prática, se usa <code>np.linalg.solve(A, b)</code> em vez de <code>np.linalg.inv(A) @ b</code>?",
+         "opcoes": ["É mais rápido e erra menos nos arredondamentos", "inv não existe no NumPy", "solve funciona com qualquer matriz, até as singulares", "Dão resultados totalmente diferentes"],
+         "correta": 0,
+         "x": "<code>solve</code> resolve o sistema direto, sem montar a inversa inteira. Menos contas, menos erro de arredondamento."},
+    ],
+
+    "Autovalores e Autovetores (Eigenvalues & Eigenvectors)": [
+        conta("eigtri"), conta("eigtd"), conta("eigvec"), conta("eigpot"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[3.0, 0.0],
+                          [0.0, 2.0]])
+            vals, vecs = np.linalg.eigh(A)
+            print(vals)
+         '''),
+         "opcoes": ["[2. 3.]", "[3. 2.]", "[5. 6.]", "[[3. 0.]\n [0. 2.]]"],
+         "correta": 0,
+         "x": "Matriz diagonal: os autovalores são os números da diagonal, 3 e 2. A <code>eigh</code> (para matrizes simétricas) devolve sempre números reais e em ordem <b>crescente</b>, por isso [2. 3.]."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[4, 1],
+                          [2, 3]])
+            v = np.array([1, 1])
+            print(A @ v)
+         '''),
+         "opcoes": ["[5 5]", "[4 3]", "[5 1]", "[1 1]"],
+         "correta": 0,
+         "x": "A·(1, 1) = (5, 5) = 5·(1, 1): a direção não mudou, só esticou. Então (1, 1) é autovetor de A, com autovalor 5."},
+        {"k": "conceito", "pergunta": "O que é um autovetor de uma matriz A?",
+         "opcoes": ["Uma direção que A só estica ou encolhe, sem girar", "O maior vetor que cabe na matriz", "A primeira coluna de A", "Um vetor que A transforma em zero"],
+         "correta": 0,
+         "x": r"$Av = \lambda v$: depois da transformação, v continua na mesma reta. O autovalor $\lambda$ diz quanto esticou."},
+        {"k": "conceito", "pergunta": "No PCA, as componentes principais são…",
+         "opcoes": ["os autovetores da matriz de covariância", "as colunas dos dados originais", "os autovalores da matriz de dados", "as médias de cada coluna"],
+         "correta": 0,
+         "x": "Os autovetores da covariância apontam nas direções de maior variação dos dados, e o autovalor de cada um diz quanta variância ele carrega."},
+        {"k": "conceito", "pergunta": "Se um autovalor de A é 0, o que se pode dizer de A?",
+         "opcoes": ["A não tem inversa (det = 0)", "A é a identidade", "A é diagonal", "Nada"],
+         "correta": 0,
+         "x": "O determinante é o produto dos autovalores. Se um é 0, o det é 0: alguma direção é achatada e não dá para desfazer."},
+        {"k": "conceito", "pergunta": "Um autovalor negativo significa que, na direção do autovetor, A…",
+         "opcoes": ["inverte o sentido (e estica pelo valor absoluto)", "gira 90°", "não faz nada", "zera o vetor"],
+         "correta": 0,
+         "x": r"Com $\lambda = -2$, o vetor fica na mesma reta, mas aponta para o lado oposto e com o dobro do tamanho."},
+    ],
+
+    "Decomposição em Valores Singulares (SVD) e PCA": [
+        conta("varexp"), conta("varsing"), conta("ncomp"), conta("svdshape"), conta("pcaproj"),
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            A = np.array([[3.0, 0.0],
+                          [0.0, 2.0]])
+            U, S, Vt = np.linalg.svd(A)
+            print(S)
+         '''),
+         "opcoes": ["[3. 2.]", "[2. 3.]", "[9. 4.]", "[[3. 0.]\n [0. 2.]]"],
+         "correta": 0,
+         "x": "Os valores singulares vêm num vetor, do maior para o menor. Para uma matriz diagonal positiva como esta, são os próprios números da diagonal."},
+        {"k": "saida", "codigo": c('''
+            import numpy as np
+            S = np.array([4.0, 3.0])
+            print(S[0] ** 2 / (S ** 2).sum())
+         '''),
+         "opcoes": ["0.64", "0.5714285714285714", "0.8", "16.0"],
+         "correta": 0,
+         "x": "A variância de cada componente é proporcional ao valor singular ao quadrado: 16 / (16 + 9) = 0.64, ou seja, 64%."},
+        {"k": "conceito", "pergunta": "Antes de fazer PCA, o que se faz com os dados?",
+         "opcoes": ["Centraliza: subtrai a média de cada coluna", "Ordena as linhas", "Arredonda os valores", "Nada: o PCA usa os dados crus"],
+         "correta": 0,
+         "x": "As componentes descrevem a variação em torno da média. Sem centralizar, a 1ª componente acaba apontando para a própria média."},
+        {"k": "conceito", "pergunta": r"Na SVD $A = U \Sigma V^\top$, os valores singulares (em $\Sigma$) são…",
+         "opcoes": ["números não negativos, do maior para o menor", "sempre inteiros", "os autovalores de A, com o mesmo sinal", "as médias das colunas"],
+         "correta": 0,
+         "x": r"Eles medem quanto A estica em cada direção, então nunca são negativos. São as raízes dos autovalores de $A^\top A$."},
+        {"k": "conceito", "pergunta": "Por que dá para comprimir uma imagem com SVD?",
+         "opcoes": ["Poucos valores singulares grandes guardam quase toda a informação; os pequenos podem ser descartados", "Porque a SVD apaga as cores", "Porque a SVD diminui a resolução pela metade", "Não dá: SVD não serve para imagens"],
+         "correta": 0,
+         "x": "Guardando só as k primeiras componentes (U, Σ e V cortados), a imagem fica bem parecida ocupando muito menos espaço."},
+    ],
+}

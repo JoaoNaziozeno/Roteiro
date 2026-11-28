@@ -2116,6 +2116,16 @@ CURR_COUNTS = curriculo.counts(_TRACKS)
 RM_CONFIG = {"totals": {t: c["req"] for t, c in CURR_COUNTS.items()}, "optional": curriculo.optional_ids(_TRACKS),
              "required": curriculo.required_ids(_TRACKS)}
 
+# Treino (questões de marcar, ver treino.py): liga cada banco de questões à sua aula. O índice (quais aulas têm treino)
+# vai para as páginas e as questões para treino_<trilha>.json, baixado só quando um treino começa.
+import treino as _treino
+_TREINO, _tr_soltos = _treino.montar(_TRACKS)
+if _tr_soltos:
+    print("⚠️  Treino: títulos sem aula correspondente:", _tr_soltos)
+_TR_FILES = _treino.gravar(_TREINO, BASE_DIR)
+_TREINO_POR_ID = {tid: qs for banco in _TREINO.values() for tid, qs in banco.items()}
+print(f"Gerado: {', '.join(n for _, n in _TR_FILES)} ({len(_TREINO_POR_ID)} aulas, {sum(map(len, _TREINO_POR_ID.values()))} questões de treino)")
+
 # Índice de todos os tópicos para a busca global (Ctrl/⌘ + K) do design v2
 from design_v2 import set_topic_index
 set_topic_index({"ia": ia_phases, "mat": mat_phases, "ing": ing_phases})
@@ -2162,7 +2172,7 @@ generate_review_page(out_rev, SHARED_CSS, _dv2._TOPIC_INDEX_JSON)
 # Cartões da Revisão ativa (baixados só quando uma revisão começa), montados do conteúdo das aulas
 from review_cards import write_decks
 out_cards = os.path.join(BASE_DIR, "revisao_cartoes.json")
-_decks = write_decks(_TOPIC_MAPS, out_cards)
+_decks = write_decks(_TOPIC_MAPS, out_cards, treino=_TREINO_POR_ID)
 print(f"Gerado: {out_cards} ({len(_decks)} aulas com cartões de revisão)")
 
 generate_hub_page(out_hub)
@@ -2185,6 +2195,7 @@ deploy_files = [
     (out_proj, "projetos.html"),
     (out_rev, "revisoes.html"),
     (out_cards, "revisao_cartoes.json"),
+] + _TR_FILES + [
     (out_hub, "index.html"),
     (out_mirror, "Roteiro de Estudo_ do zero à IA.html"),
     (out_admin, "admin.html")

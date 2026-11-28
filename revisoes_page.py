@@ -76,6 +76,12 @@ REVIEW_PAGE_CSS = r"""
 .rvp-kv b{font-variant-numeric:tabular-nums}
 .rvp-kv a{color:var(--tx);text-decoration:none}
 .rvp-kv a:hover{text-decoration:underline}
+.rvp-tr-sub{margin:0 0 6px;font-size:.78rem;line-height:1.45;color:var(--mu)}
+.rvp-tr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bd)}
+.rvp-tr>div{flex:1;min-width:0}
+.rvp-tr b{display:block;font-size:.86rem;line-height:1.35}
+.rvp-tr small{display:block;margin-top:2px;font-size:.74rem;color:var(--mu)}
+.rvp-tr .rvp-btn{flex:none}
 .rvp-rule{display:flex;gap:10px;padding:5px 0;font-size:.84rem;line-height:1.45}
 .rvp-rule span:first-child{flex:none;width:20px;text-align:center}
 .rvp-muted{color:var(--mu)}
@@ -85,28 +91,32 @@ RA_JS = r"""
 // =================== REVISÃO ATIVA: escolha dos cartões, nota e caderno (sem tela; testado no Node) ===================
 const RA = (() => {
   const LABEL = { mem: "Puxe da memória", arm: "Armadilha comum", not: "Notação", pen: "Pense", pas: "Por que este passo?",
-                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago" };
+                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago",
+                  tr: "Treino relâmpago" };
+  const hasTR = () => typeof TR !== "undefined";   // o Treino carrega depois deste script: confere na hora do uso
   const PTS = { f: 1, m: 0.5, z: 0 };
   function shuffle(arr, rnd) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
     return a;
   }
-  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 do quiz
+  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 de marcar:
+  // com treino na aula, até 2 vêm do treino (contas com números novos, código) e o resto do quiz de saída
   function pick(deck, rnd) {
     rnd = rnd || Math.random;
     const c = (deck && deck.c) || [];
     const mem = c.filter(x => x.k === "mem").slice(0, 1);
-    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3);
+    const trn = hasTR() ? shuffle(c.filter(x => x.k === "tr"), rnd).slice(0, 2) : [];
+    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3 - trn.length).concat(trn);
     const tipos = {};
-    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
+    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz" && x.k !== "tr"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
     const flash = [];
     for (let r = 0; flash.length < 3; r++) {
       let pegou = false;
       for (const k in tipos) if (flash.length < 3 && tipos[k][r]) { flash.push(tipos[k][r]); pegou = true; }
       if (!pegou) break;
     }
-    return mem.concat(shuffle(flash, rnd), quiz);
+    return mem.concat(shuffle(flash, rnd), shuffle(quiz, rnd));
   }
   function score(res) { const n = res.length, s = res.reduce((a, r) => a + (PTS[r] || 0), 0); return { n, s, pct: n ? s / n : 0 }; }
   // Nota sugerida para a agenda: 85% ou mais = fácil; 50% ou mais = com esforço; abaixo = não lembrei
@@ -126,6 +136,7 @@ const RA = (() => {
     .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
   const short = (s, n) => { s = strip(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; };
   function labelOf(c) {
+    if (c.k === "tr") return hasTR() ? "Treino: " + TR.labelOf(c.q) : "Treino";
     if (c.k === "mem") return "Ideias-chave da aula";
     if (c.k === "not") return "O que significa " + strip(c.q);
     if (c.k === "exp") return "Explicar: " + short(c.q, 80);
@@ -133,6 +144,7 @@ const RA = (() => {
     return short(c.q, 90);
   }
   function answerOf(c) {
+    if (c.k === "tr") return hasTR() ? short(TR.answerOf(c.q), 160) : "";
     if (c.k === "quiz") return short(c.o[c.c], 160);
     if (c.k === "not") return short((c.l ? c.l + ": " : "") + (c.a || ""), 160);
     if (c.k === "mem" || c.k === "obj") return "";
@@ -220,11 +232,13 @@ function raFaces(it) {
 function raRender() {
   const S = RA_S; if (!S) return;
   if (S.i >= S.items.length) return raResult();
-  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id), faces = raFaces(it);
+  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id);
   raSet("ra-count", (S.i + 1) + " / " + S.items.length);
   document.getElementById("ra-bar").style.width = (S.i / S.items.length * 100) + "%";
-  let h = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>" +
-          '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
+  const chip = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>";
+  if (c.k === "tr") return raRenderTreino(it, chip);   // questão do Treino (contas com números novos, código)
+  const faces = raFaces(it);
+  let h = chip + '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
   if (c.k === "quiz") {
     const a = S.answered;
     h += '<div class="ra-opts">' + c.o.map((o, i) => '<button type="button" class="ra-opt' +
@@ -251,16 +265,29 @@ function raRender() {
   body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
   const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
 }
+// Cartão com uma questão do Treino: a mesma tela do treino (trQHTML), dentro do cartão da revisão
+function raRenderTreino(it, chip) {
+  const S = RA_S, body = document.getElementById("ra-body");
+  if (!it.inst) it.inst = TR.inst(it.card.q);
+  if (!it.inst) { S.i++; return raRender(); }          // gerador desconhecido: pula o cartão
+  const a = S.answered;
+  body.innerHTML = chip + '<div class="ra-card tr-in"><div class="ra-kick">' + RA.LABEL.tr + "</div>" + trQHTML(it.inst, a) + "</div>" +
+    (a != null ? '<div class="ra-actions"><button type="button" class="ra-btn pri" data-next>Continuar →</button></div>'
+               : '<p class="ra-tip">' + (it.inst.k === "erro" ? "Toque na linha com o erro (ou tecle o número dela)." : "Escolha uma opção (ou tecle o número).") + "</p>");
+  body.scrollTop = 0; raMath(body);
+  body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
+  const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
+}
 function raRecord(id, g, card) {
   (RA_S.res[id] = RA_S.res[id] || []).push(g);
   if (g === "z") (RA_S.weak[id] = RA_S.weak[id] || []).push(card);
 }
 function raGrade(g) { const it = RA_S.items[RA_S.i]; raRecord(it.id, g, it.card); raAdvance(); }
 function raAnswer(i) {
-  const S = RA_S, it = S.items[S.i];
-  if (S.answered != null) return;
+  const S = RA_S, it = S.items[S.i], tr = it.card.k === "tr";
+  if (S.answered != null || (tr && !(it.inst && trCanAnswer(it.inst, i)))) return;
   S.answered = i;
-  raRecord(it.id, i === it.card.c ? "f" : "z", it.card);
+  raRecord(it.id, i === (tr ? it.inst.c : it.card.c) ? "f" : "z", it.card);
   raRender();
 }
 function raAdvance() { RA_S.i++; RA_S.shown = false; RA_S.answered = null; raRender(); }
@@ -336,9 +363,10 @@ document.addEventListener("keydown", e => {
   if (document.getElementById("ra").hidden) return;
   if (e.key === "Escape") { e.preventDefault(); raClose(true); return; }
   if (!S || S.i >= S.items.length || e.target.closest && e.target.closest("input,textarea,summary")) return;
-  const c = S.items[S.i].card;
-  if (c.k === "quiz") {
-    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= c.o.length) { e.preventDefault(); raAnswer(+e.key - 1); }
+  const c = S.items[S.i].card, inst = S.items[S.i].inst;
+  if (c.k === "quiz" || c.k === "tr") {
+    const n = c.k === "tr" ? (inst ? (inst.lines || inst.opts).length : 0) : c.o.length;
+    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= n) { e.preventDefault(); raAnswer(+e.key - 1); }
     else if (S.answered != null && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); raAdvance(); }
   } else if (!S.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); S.shown = true; raRender(); }
   else if (S.shown && ["1", "2", "3"].includes(e.key)) { e.preventDefault(); raGrade({ 1: "z", 2: "m", 3: "f" }[e.key]); }
@@ -537,7 +565,24 @@ function rvpSearch(q) {
     : '<li class="rvp-muted" style="padding:8px 10px;font-size:.82rem">Nenhuma aula com esse nome.</li>';
 }
 
+// Treino misto: um botão por fase/módulo que tem treino (questões de várias aulas, misturadas)
+function rvpTreino() {
+  const el = document.getElementById("rv-treino");
+  if (!el || typeof TR_MODS === "undefined" || !TR_MODS.length) return;
+  const st = trStudied();
+  el.hidden = false;
+  el.innerHTML = "<h3>🏋️ Treino misto</h3><p class=\"rvp-tr-sub\">Questões de marcar de várias aulas do módulo, misturadas. Não muda a agenda nem os pontos.</p>" +
+    TR_MODS.map(m => {
+      const feitas = m.ids.filter(id => st.has(id)).length, treinadas = m.ids.filter(id => TR.stats(id)).length;
+      const meta = [m.ids.length + " aulas com treino", feitas ? feitas + (feitas === 1 ? " já estudada" : " já estudadas") : "nenhuma estudada ainda"];
+      if (treinadas) meta.push(treinadas + (treinadas === 1 ? " já treinada" : " já treinadas"));
+      return '<div class="rvp-tr"><i class="rvp-dot" style="--c:var(' + (RV_TRK[m.tr] || RV_TRK.ia).cor + ')" aria-hidden="true"></i><div><b>' + rvEsc(m.nome) + "</b><small>" +
+        meta.join(" · ") + '</small></div><button type="button" class="rvp-btn pri" onclick="trOpenMixed(\'' + m.k + '\')">Treinar</button></div>';
+    }).join("");
+}
+
 window.addEventListener("rv:change", () => { try { renderRevisoes(); } catch (e) { console.error(e); } });
+window.addEventListener("tr:change", () => { try { rvpTreino(); } catch (e) { console.error(e); } });
 
 function toggleTheme() {
   const html = document.documentElement;
@@ -547,8 +592,9 @@ function toggleTheme() {
   try { localStorage.setItem("roteiro-theme", next); } catch (e) {}
 }
 
-// Monta a agenda antes da primeira pintura (o script está no fim do <body>)
+// Monta a agenda antes da primeira pintura (o script está no fim do <body>); o treino misto, quando o Treino carregar
 renderRevisoes();
+window.addEventListener("DOMContentLoaded", () => { try { rvpTreino(); } catch (e) {} });
 
 // revisoes.html?ativa=<aula>: vem do "▶ Fazer a revisão ativa" de uma aula ou do hub
 // revisoes.html?dia=1: vem do "Começar" do aviso de revisões (sino ou cartão "Hoje"): abre a revisão do dia
@@ -636,6 +682,7 @@ __CSS__
   <div class="rvp-grid">
     <div id="rv-lista"></div>
     <aside>
+      <div class="rvp-box" id="rv-treino" hidden></div>
       <div class="rvp-box" id="rv-semana"></div>
       <div class="rvp-box">
         <h3>Como o site agenda</h3>

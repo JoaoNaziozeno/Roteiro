@@ -18,6 +18,8 @@ Tipos de cartão ("k"):
   obj   consegue explicar isto?: um objetivo da aula (o verso mostra as ideias-chave do cartão "mem");
         só entra em aulas que ainda ficaram com menos de 4 cartões
   quiz  pergunta de múltipla escolha do quiz de saída (ou do "chute antes de ver"), com a explicação
+  tr    questão do Treino da aula ({"k": "tr", "q": questão}, formato em treino_js.py): contas com números novos a cada
+        revisão, código etc. A sessão usa até 2 delas no lugar de perguntas do quiz (ver RA.pick).
 
 Reforço ("r"), usado quando a revisão custou:
   v2    nome do 2º vídeo da aula (outra explicação)
@@ -28,14 +30,16 @@ import json
 
 MAX_FLASH = 6      # candidatos por tipo de cartão rápido (a sessão sorteia até 3 no total)
 MAX_QUIZ = 4       # perguntas candidatas (a sessão usa até 3)
+MAX_TR = 10        # questões do Treino candidatas (a sessão usa até 2)
 
 
 def _txt(v):
     return v.strip() if isinstance(v, str) else ""
 
 
-def build_deck(t):
-    """Cartões e reforço de uma aula (t = item do TOPICS_MAP). None se a aula não tem Aula Visual v2."""
+def build_deck(t, treino=None):
+    """Cartões e reforço de uma aula (t = item do TOPICS_MAP; treino = questões do Treino da aula, se houver).
+    None se a aula não tem Aula Visual v2."""
     g = t.get("pt_guide")
     if not isinstance(g, dict) or g.get("v") != 2:
         return None
@@ -91,6 +95,7 @@ def build_deck(t):
                 quiz.append({"k": "quiz", "q": _txt(b["pergunta"]), "o": [_txt(o) for o in b["opcoes"]],
                              "c": b["correta"], "e": _txt(b.get("explicacao"))})
     cards += quiz[:MAX_QUIZ]
+    cards += [{"k": "tr", "q": q} for q in (treino or [])[:MAX_TR]]
 
     reforco = {}
     if t.get("url2"):
@@ -106,19 +111,19 @@ def build_deck(t):
     return {"c": cards, "r": reforco}
 
 
-def build_decks(topic_maps):
-    """topic_maps = {"ia": TOPICS_MAP, "mat": ..., "ing": ...} -> {id: deck}"""
-    decks = {}
+def build_decks(topic_maps, treino=None):
+    """topic_maps = {"ia": TOPICS_MAP, "mat": ..., "ing": ...}; treino = {id: [questões]} -> {id: deck}"""
+    decks, treino = {}, treino or {}
     for tm in topic_maps.values():
         for tid, t in tm.items():
-            d = build_deck(t)
+            d = build_deck(t, treino.get(tid))
             if d and d["c"]:
                 decks[tid] = d
     return decks
 
 
-def write_decks(topic_maps, out_path):
-    decks = build_decks(topic_maps)
+def write_decks(topic_maps, out_path, treino=None):
+    decks = build_decks(topic_maps, treino)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(decks, f, ensure_ascii=False, separators=(",", ":"))
     return decks
