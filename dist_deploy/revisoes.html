@@ -2499,6 +2499,12 @@ input:checked + .slider:before { transform: translateX(14px); }
 .rvp-kv b{font-variant-numeric:tabular-nums}
 .rvp-kv a{color:var(--tx);text-decoration:none}
 .rvp-kv a:hover{text-decoration:underline}
+.rvp-tr-sub{margin:0 0 6px;font-size:.78rem;line-height:1.45;color:var(--mu)}
+.rvp-tr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--bd)}
+.rvp-tr>div{flex:1;min-width:0}
+.rvp-tr b{display:block;font-size:.86rem;line-height:1.35}
+.rvp-tr small{display:block;margin-top:2px;font-size:.74rem;color:var(--mu)}
+.rvp-tr .rvp-btn{flex:none}
 .rvp-rule{display:flex;gap:10px;padding:5px 0;font-size:.84rem;line-height:1.45}
 .rvp-rule span:first-child{flex:none;width:20px;text-align:center}
 .rvp-muted{color:var(--mu)}
@@ -3367,6 +3373,105 @@ html::view-transition{background:var(--bg)}
 .av-more{border:0;background:none;color:var(--t-hub);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
 .av-hoje .av-item{background:var(--bg)}
 @media (max-width:640px){.av-item{flex-wrap:wrap}.av-acts{width:100%;justify-content:flex-end}}
+
+
+/* ===== Treino (questões de marcar) ===== */
+/* .tr = a janela do treino; .tr-in = uma questão do treino dentro de outra tela (cartão da revisão ativa) */
+.tr,.tr-in{--tc:var(--t-hub);--code-bg:#0b1218;--code-line:rgba(148,178,190,.14);--code-tx:#d6dee1;
+  --code-c:#6f8590;--code-s:#9fdcae;--code-n:#f2b872;--code-k:#c8a8ff;--code-f:#7fc8f8}
+:root[data-theme="light"] .tr,:root[data-theme="light"] .tr-in{--code-bg:#f6f8fa;--code-line:#e1e7eb;--code-tx:#1f2b31;--code-c:#6e7f88;--code-s:#116329;--code-n:#a04f00;--code-k:#7c3aed;--code-f:#0550ae}
+.tr{position:fixed;inset:0;z-index:99995;display:flex;align-items:center;justify-content:center;padding:18px;
+  background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.tr[hidden]{display:none}
+body.tr-on{overflow:hidden}
+.tr-box{width:min(680px,100%);max-height:100%;display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:22px;
+  background:var(--card);color:var(--tx);box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden;font-size:15px;line-height:1.55}
+.tr-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px}
+.tr-top b{font-size:.95rem}
+.tr-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer;font:inherit}
+.tr-top span{min-width:36px;text-align:right;color:var(--mu);font-size:.82rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tr-prog{height:4px;background:var(--bd)}
+.tr-prog i{display:block;height:100%;width:0;background:var(--tc);box-shadow:0 0 10px var(--tc);transition:width .25s}
+.tr-body{padding:16px 20px 22px;overflow:auto}
+.tr-wait{padding:40px 10px;text-align:center;color:var(--mu);line-height:1.6}
+.tr-note{margin:0 0 10px;padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--tc) 10%,transparent);font-size:.84rem;color:var(--mu)}
+.tr-chip{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:.8rem;color:var(--mu)}
+.tr-chip i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.tr-chip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tr-chip small{margin-left:auto;flex:none;font-size:.72rem}
+.tr-card{padding:16px;border-radius:18px;border:1px solid color-mix(in srgb,var(--tc) 28%,var(--bd));
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 7%,var(--card)),var(--card))}
+.tr-kind{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:.74rem;font-weight:800;letter-spacing:.04em;color:var(--tc)}
+.tr-kind small{font-weight:600;letter-spacing:0;color:var(--mu)}
+.tr-q{margin-top:8px;font-size:1.02rem;font-weight:650;line-height:1.5}
+.tr-q code,.tr-fb code:not(.tr-fix),.tr-opt:not(.mono) code{background:rgba(74,92,106,.25);padding:1px 5px;border-radius:4px;font-size:.88em}
+.tr-code{margin:12px 0 0;padding:12px 14px;background:var(--code-bg);color:var(--code-tx);border:1px solid var(--code-line);border-radius:10px;
+  font:13.5px/1.6 ui-monospace,"JetBrains Mono","Cascadia Code",SFMono-Regular,Consolas,monospace;overflow-x:auto;tab-size:4}
+.tr-code code{background:none;padding:0;white-space:pre;font:inherit;color:inherit}
+:is(.tr,.tr-in) .tk-c{color:var(--code-c);font-style:italic}:is(.tr,.tr-in) .tk-s{color:var(--code-s)}:is(.tr,.tr-in) .tk-n{color:var(--code-n)}
+:is(.tr,.tr-in) .tk-k{color:var(--code-k);font-weight:500}:is(.tr,.tr-in) .tk-f{color:var(--code-f)}
+.tr-gap{display:inline-block;min-width:4.5ch;padding:0 4px;border-bottom:2px dashed var(--tc);color:var(--tc);text-align:center}
+.tr-gap.ok{border-bottom-style:solid;border-color:#2fa36b;color:#2fa36b;font-weight:700}
+.tr-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.tr-opt{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);
+  color:var(--tx);font:inherit;font-size:.93rem;text-align:left;cursor:pointer;line-height:1.45}
+.tr-opt.mono .tr-ot{font:13.5px/1.5 ui-monospace,"JetBrains Mono",Consolas,monospace;white-space:pre-wrap}
+.tr-opt:hover:not([disabled]){border-color:var(--tc)}
+.tr-opt[disabled]{cursor:default}
+.tr-r{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);display:grid;place-items:center;font:700 .7rem/1 Inter,system-ui;color:var(--mu)}
+.tr-ot{min-width:0;overflow-wrap:anywhere}
+.tr-why{margin-left:auto;padding-left:8px;font-size:.74rem;color:var(--mu);text-align:right}
+.tr-opt.ok{border-color:#2fa36b;background:color-mix(in srgb,#2fa36b 14%,var(--bg))}
+.tr-opt.ok .tr-r{border-color:#2fa36b;background:#2fa36b;color:#06221a}
+.tr-opt.no{border-color:#ef6b5b;background:color-mix(in srgb,#ef6b5b 12%,var(--bg))}
+.tr-opt.no .tr-r{border-color:#ef6b5b;background:#ef6b5b;color:#2a0808}
+.tr-lines{margin-top:12px;border:1px solid var(--code-line);border-radius:10px;overflow:hidden;background:var(--code-bg)}
+.tr-ln{display:flex;align-items:baseline;gap:10px;width:100%;padding:6px 12px;border:0;border-top:1px solid var(--code-line);background:transparent;
+  color:var(--code-tx);font:13.5px/1.55 ui-monospace,"JetBrains Mono",Consolas,monospace;text-align:left;cursor:pointer}
+.tr-ln:first-child{border-top:0}
+.tr-ln code{background:none;padding:0;white-space:pre;font:inherit;color:inherit;overflow-x:auto}
+.tr-ln:hover:not([disabled]){background:color-mix(in srgb,var(--tc) 12%,transparent)}
+.tr-ln[disabled]{cursor:default}
+.tr-n{flex:none;width:18px;text-align:right;color:var(--code-c);font-size:.78rem}
+.tr-ln.ok{background:color-mix(in srgb,#2fa36b 18%,transparent);box-shadow:inset 3px 0 0 #2fa36b}
+.tr-ln.no{background:color-mix(in srgb,#ef6b5b 16%,transparent);box-shadow:inset 3px 0 0 #ef6b5b}
+.tr-fb{margin-top:14px;padding:11px 13px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);font-size:.9rem;line-height:1.6}
+.tr-fb.ok{border-color:color-mix(in srgb,#2fa36b 50%,var(--bd))}.tr-fb.no{border-color:color-mix(in srgb,#ef6b5b 50%,var(--bd))}
+.tr-fb-h{display:block;margin-bottom:3px}.tr-fb.ok .tr-fb-h{color:#2fa36b}.tr-fb.no .tr-fb-h{color:#ef6b5b}
+.tr-fb-why{margin-bottom:6px;color:var(--mu)}
+.tr-fb ol,.tr-fb ul{margin:.3em 0 0;padding-left:1.3em}
+.tr-fix{display:block;margin-top:8px;padding:6px 10px;border-radius:8px;background:color-mix(in srgb,#2fa36b 12%,transparent);color:#2fa36b;
+  font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.tr-out{margin-top:8px;font-size:.8rem;color:var(--mu)}
+.tr-out pre{margin:4px 0 0;padding:6px 10px;border-radius:8px;background:var(--code-bg);color:var(--code-tx);font:12.5px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.tr-tip{margin:12px 0 0;text-align:center;font-size:.8rem;color:var(--mu)}
+.tr-actions{display:flex;justify-content:center;gap:8px;margin-top:16px}
+.tr-actions.wrap{flex-wrap:wrap}
+.tr-btn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:9px 18px;border-radius:99px;border:1px solid var(--bd);
+  background:transparent;color:var(--tx);font:inherit;font-weight:700;cursor:pointer}
+.tr-btn.pri{background:var(--tc);border-color:var(--tc);color:#04121a}
+.tr-btn[disabled]{opacity:.7;cursor:default}
+.tr-end{text-align:center}
+.tr-score{font-size:2.6rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:6px}
+.tr-msg{margin:6px 0 0;font-weight:650}
+.tr-sub{margin:6px 0 0;font-size:.84rem;color:var(--mu)}
+.tr-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.tr-chip2{font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--bd);color:var(--mu)}
+.tr-rows{margin:10px 0 0;text-align:left;font-size:.86rem}
+.tr-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--bd)}
+.tr-miss{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);text-align:left;font-size:.86rem}
+.tr-miss ul{margin:4px 0 0;padding-left:1.2em;color:var(--mu)}
+.tr-miss small{color:var(--mu)}
+/* Cartão "Treinar esta aula" (fim da Aula Visual) e treino misto (página Revisões) */
+.tr-entry{display:flex;align-items:center;gap:12px;margin:2px 0;padding:12px 14px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--t,var(--t-hub)) 55%,transparent);
+  background:color-mix(in srgb,var(--t,var(--t-hub)) 7%,transparent)}
+.tr-entry-ico{font-size:1.5rem;flex:none}
+.tr-entry-t{min-width:0;flex:1}
+.tr-entry-t b{display:block;font-size:.93rem}
+.tr-entry-t span{display:block;font-size:.8rem;color:var(--mu);line-height:1.45}
+.tr-entry-go{flex:none;padding:8px 14px;border-radius:99px;border:1px solid var(--t,var(--t-hub));background:var(--t,var(--t-hub));color:#04121a;font:inherit;font-weight:700;font-size:.84rem;cursor:pointer}
+@media (max-width:600px){.tr{padding:0}.tr-box{height:100%;max-height:none;border-radius:0;border:0}.tr-body{padding:12px 12px 20px}
+  .tr-card{padding:13px}.tr-q{font-size:.97rem}.tr-entry{flex-wrap:wrap}.tr-entry-go{width:100%}}
 </style>
 <script>
 
@@ -4011,6 +4116,7 @@ try { avBellBadge(); } catch (e) {}  // número vermelho do sino (revisões + pr
   <div class="rvp-grid">
     <div id="rv-lista"></div>
     <aside>
+      <div class="rvp-box" id="rv-treino" hidden></div>
       <div class="rvp-box" id="rv-semana"></div>
       <div class="rvp-box">
         <h3>Como o site agenda</h3>
@@ -4786,28 +4892,32 @@ window.addEventListener("DOMContentLoaded", () => {
 // =================== REVISÃO ATIVA: escolha dos cartões, nota e caderno (sem tela; testado no Node) ===================
 const RA = (() => {
   const LABEL = { mem: "Puxe da memória", arm: "Armadilha comum", not: "Notação", pen: "Pense", pas: "Por que este passo?",
-                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago" };
+                  exp: "Explique com suas palavras", pon: "Onde isso aparece na IA?", obj: "Consegue explicar isto?", quiz: "Quiz relâmpago",
+                  tr: "Treino relâmpago" };
+  const hasTR = () => typeof TR !== "undefined";   // o Treino carrega depois deste script: confere na hora do uso
   const PTS = { f: 1, m: 0.5, z: 0 };
   function shuffle(arr, rnd) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
     return a;
   }
-  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 do quiz
+  // Cartões de uma sessão: o "puxe da memória" primeiro, até 3 rápidos (um de cada tipo antes de repetir) e até 3 de marcar:
+  // com treino na aula, até 2 vêm do treino (contas com números novos, código) e o resto do quiz de saída
   function pick(deck, rnd) {
     rnd = rnd || Math.random;
     const c = (deck && deck.c) || [];
     const mem = c.filter(x => x.k === "mem").slice(0, 1);
-    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3);
+    const trn = hasTR() ? shuffle(c.filter(x => x.k === "tr"), rnd).slice(0, 2) : [];
+    const quiz = shuffle(c.filter(x => x.k === "quiz"), rnd).slice(0, 3 - trn.length).concat(trn);
     const tipos = {};
-    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
+    shuffle(c.filter(x => x.k !== "mem" && x.k !== "quiz" && x.k !== "tr"), rnd).forEach(x => { (tipos[x.k] = tipos[x.k] || []).push(x); });
     const flash = [];
     for (let r = 0; flash.length < 3; r++) {
       let pegou = false;
       for (const k in tipos) if (flash.length < 3 && tipos[k][r]) { flash.push(tipos[k][r]); pegou = true; }
       if (!pegou) break;
     }
-    return mem.concat(shuffle(flash, rnd), quiz);
+    return mem.concat(shuffle(flash, rnd), shuffle(quiz, rnd));
   }
   function score(res) { const n = res.length, s = res.reduce((a, r) => a + (PTS[r] || 0), 0); return { n, s, pct: n ? s / n : 0 }; }
   // Nota sugerida para a agenda: 85% ou mais = fácil; 50% ou mais = com esforço; abaixo = não lembrei
@@ -4827,6 +4937,7 @@ const RA = (() => {
     .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/\s+/g, " ").trim();
   const short = (s, n) => { s = strip(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + "…" : s; };
   function labelOf(c) {
+    if (c.k === "tr") return hasTR() ? "Treino: " + TR.labelOf(c.q) : "Treino";
     if (c.k === "mem") return "Ideias-chave da aula";
     if (c.k === "not") return "O que significa " + strip(c.q);
     if (c.k === "exp") return "Explicar: " + short(c.q, 80);
@@ -4834,6 +4945,7 @@ const RA = (() => {
     return short(c.q, 90);
   }
   function answerOf(c) {
+    if (c.k === "tr") return hasTR() ? short(TR.answerOf(c.q), 160) : "";
     if (c.k === "quiz") return short(c.o[c.c], 160);
     if (c.k === "not") return short((c.l ? c.l + ": " : "") + (c.a || ""), 160);
     if (c.k === "mem" || c.k === "obj") return "";
@@ -4921,11 +5033,13 @@ function raFaces(it) {
 function raRender() {
   const S = RA_S; if (!S) return;
   if (S.i >= S.items.length) return raResult();
-  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id), faces = raFaces(it);
+  const it = S.items[S.i], c = it.card, t = rvpTrack(it.id);
   raSet("ra-count", (S.i + 1) + " / " + S.items.length);
   document.getElementById("ra-bar").style.width = (S.i / S.items.length * 100) + "%";
-  let h = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>" +
-          '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
+  const chip = '<div class="ra-chip" style="--c:var(' + t.cor + ')"><i></i><span>' + rvEsc(RV_TOPICS[it.id][1]) + "</span><small>" + t.nome + "</small></div>";
+  if (c.k === "tr") return raRenderTreino(it, chip);   // questão do Treino (contas com números novos, código)
+  const faces = raFaces(it);
+  let h = chip + '<div class="ra-card"><div class="ra-kick">' + RA.LABEL[c.k] + '</div><div class="ra-q">' + faces.f + "</div>";
   if (c.k === "quiz") {
     const a = S.answered;
     h += '<div class="ra-opts">' + c.o.map((o, i) => '<button type="button" class="ra-opt' +
@@ -4952,16 +5066,29 @@ function raRender() {
   body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
   const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
 }
+// Cartão com uma questão do Treino: a mesma tela do treino (trQHTML), dentro do cartão da revisão
+function raRenderTreino(it, chip) {
+  const S = RA_S, body = document.getElementById("ra-body");
+  if (!it.inst) it.inst = TR.inst(it.card.q);
+  if (!it.inst) { S.i++; return raRender(); }          // gerador desconhecido: pula o cartão
+  const a = S.answered;
+  body.innerHTML = chip + '<div class="ra-card tr-in"><div class="ra-kick">' + RA.LABEL.tr + "</div>" + trQHTML(it.inst, a) + "</div>" +
+    (a != null ? '<div class="ra-actions"><button type="button" class="ra-btn pri" data-next>Continuar →</button></div>'
+               : '<p class="ra-tip">' + (it.inst.k === "erro" ? "Toque na linha com o erro (ou tecle o número dela)." : "Escolha uma opção (ou tecle o número).") + "</p>");
+  body.scrollTop = 0; raMath(body);
+  body.querySelectorAll("[data-o]").forEach(b => b.onclick = () => raAnswer(+b.dataset.o));
+  const nx = body.querySelector("[data-next]"); if (nx) nx.onclick = raAdvance;
+}
 function raRecord(id, g, card) {
   (RA_S.res[id] = RA_S.res[id] || []).push(g);
   if (g === "z") (RA_S.weak[id] = RA_S.weak[id] || []).push(card);
 }
 function raGrade(g) { const it = RA_S.items[RA_S.i]; raRecord(it.id, g, it.card); raAdvance(); }
 function raAnswer(i) {
-  const S = RA_S, it = S.items[S.i];
-  if (S.answered != null) return;
+  const S = RA_S, it = S.items[S.i], tr = it.card.k === "tr";
+  if (S.answered != null || (tr && !(it.inst && trCanAnswer(it.inst, i)))) return;
   S.answered = i;
-  raRecord(it.id, i === it.card.c ? "f" : "z", it.card);
+  raRecord(it.id, i === (tr ? it.inst.c : it.card.c) ? "f" : "z", it.card);
   raRender();
 }
 function raAdvance() { RA_S.i++; RA_S.shown = false; RA_S.answered = null; raRender(); }
@@ -5037,9 +5164,10 @@ document.addEventListener("keydown", e => {
   if (document.getElementById("ra").hidden) return;
   if (e.key === "Escape") { e.preventDefault(); raClose(true); return; }
   if (!S || S.i >= S.items.length || e.target.closest && e.target.closest("input,textarea,summary")) return;
-  const c = S.items[S.i].card;
-  if (c.k === "quiz") {
-    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= c.o.length) { e.preventDefault(); raAnswer(+e.key - 1); }
+  const c = S.items[S.i].card, inst = S.items[S.i].inst;
+  if (c.k === "quiz" || c.k === "tr") {
+    const n = c.k === "tr" ? (inst ? (inst.lines || inst.opts).length : 0) : c.o.length;
+    if (S.answered == null && /^[1-9]$/.test(e.key) && +e.key <= n) { e.preventDefault(); raAnswer(+e.key - 1); }
     else if (S.answered != null && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); raAdvance(); }
   } else if (!S.shown && (e.key === " " || e.key === "Enter")) { e.preventDefault(); S.shown = true; raRender(); }
   else if (S.shown && ["1", "2", "3"].includes(e.key)) { e.preventDefault(); raGrade({ 1: "z", 2: "m", 3: "f" }[e.key]); }
@@ -5157,7 +5285,24 @@ function rvpSearch(q) {
     : '<li class="rvp-muted" style="padding:8px 10px;font-size:.82rem">Nenhuma aula com esse nome.</li>';
 }
 
+// Treino misto: um botão por fase/módulo que tem treino (questões de várias aulas, misturadas)
+function rvpTreino() {
+  const el = document.getElementById("rv-treino");
+  if (!el || typeof TR_MODS === "undefined" || !TR_MODS.length) return;
+  const st = trStudied();
+  el.hidden = false;
+  el.innerHTML = "<h3>🏋️ Treino misto</h3><p class=\"rvp-tr-sub\">Questões de marcar de várias aulas do módulo, misturadas. Não muda a agenda nem os pontos.</p>" +
+    TR_MODS.map(m => {
+      const feitas = m.ids.filter(id => st.has(id)).length, treinadas = m.ids.filter(id => TR.stats(id)).length;
+      const meta = [m.ids.length + " aulas com treino", feitas ? feitas + (feitas === 1 ? " já estudada" : " já estudadas") : "nenhuma estudada ainda"];
+      if (treinadas) meta.push(treinadas + (treinadas === 1 ? " já treinada" : " já treinadas"));
+      return '<div class="rvp-tr"><i class="rvp-dot" style="--c:var(' + (RV_TRK[m.tr] || RV_TRK.ia).cor + ')" aria-hidden="true"></i><div><b>' + rvEsc(m.nome) + "</b><small>" +
+        meta.join(" · ") + '</small></div><button type="button" class="rvp-btn pri" onclick="trOpenMixed(\'' + m.k + '\')">Treinar</button></div>';
+    }).join("");
+}
+
 window.addEventListener("rv:change", () => { try { renderRevisoes(); } catch (e) { console.error(e); } });
+window.addEventListener("tr:change", () => { try { rvpTreino(); } catch (e) { console.error(e); } });
 
 function toggleTheme() {
   const html = document.documentElement;
@@ -5167,8 +5312,9 @@ function toggleTheme() {
   try { localStorage.setItem("roteiro-theme", next); } catch (e) {}
 }
 
-// Monta a agenda antes da primeira pintura (o script está no fim do <body>)
+// Monta a agenda antes da primeira pintura (o script está no fim do <body>); o treino misto, quando o Treino carregar
 renderRevisoes();
+window.addEventListener("DOMContentLoaded", () => { try { rvpTreino(); } catch (e) {} });
 
 // revisoes.html?ativa=<aula>: vem do "▶ Fazer a revisão ativa" de uma aula ou do hub
 // revisoes.html?dia=1: vem do "Começar" do aviso de revisões (sino ou cartão "Hoje"): abre a revisão do dia
@@ -5179,6 +5325,928 @@ renderRevisoes();
     else if (qs.get("dia")) { history.replaceState(null, "", location.pathname); if (RV.counts().due) raStartDay(); }
   } catch (e) {}
 })();
+
+</script>
+<script>
+
+// =================== TREINO: questões de marcar (sem tela; testado no Node) ===================
+const TR = (() => {
+  const KIND = { saida: "🐍 Qual é a saída?", lacuna: "🧩 Complete o código", erro: "🐞 Ache o erro",
+                 conta: "🔢 Faça a conta", conceito: "🧠 Conceito" };
+  const SHORT = { saida: "saída", lacuna: "completar", erro: "erro", conta: "conta", conceito: "conceito" };
+  const ICON = { saida: "🐍", lacuna: "🧩", erro: "🐞", conta: "🔢", conceito: "🧠" };
+  const ASK = { saida: "O que aparece na tela?", erro: "Este programa tem um erro. Em qual linha ele está?" };
+  const ANS_KEY = "roteiro-answers-v1";   // o resultado fica junto das respostas da aula (vai para a nuvem com elas)
+  const PER_SESSION = 10;
+
+  // Números pseudoaleatórios com semente (os testes repetem o mesmo sorteio); na página, Math.random
+  function rng(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) >>> 0;
+      let t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function shuffle(arr, rnd) {
+    rnd = rnd || Math.random;
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+
+  // ---- números em LaTeX (vírgula decimal, nunca "-0") ----
+  function n(x, casas) {
+    if (typeof x !== "number") return String(x);
+    const c = casas == null ? 2 : casas, p = Math.pow(10, c);
+    let v = Math.round(x * p) / p;
+    if (v === 0) v = 0;
+    let s = String(v);
+    if (s.indexOf("e") >= 0) s = v.toFixed(c);
+    return s.replace(".", "{,}");
+  }
+  const vec = (v, c) => "(" + v.map(x => n(x, c)).join(",\\ ") + ")";
+  const mat = (M, c) => "\\begin{bmatrix}" + M.map(r => r.map(x => n(x, c)).join(" & ")).join(" \\\\ ") + "\\end{bmatrix}";
+  const isMat = v => Array.isArray(v) && v.length > 0 && Array.isArray(v[0]);
+  function fmtVal(v, c) {   // valor -> HTML da alternativa
+    if (typeof v === "number") return "$" + n(v, c) + "$";
+    if (isMat(v)) return "$" + mat(v, c) + "$";
+    if (Array.isArray(v)) return "$" + vec(v, c) + "$";
+    return String(v);
+  }
+
+  // Ferramentas dos geradores de conta
+  function tools(rnd) {
+    const R = {
+      rnd,
+      int: (a, b) => a + Math.floor(rnd() * (b - a + 1)),            // inteiro de a até b
+      nz: (a, b) => { let x; do { x = R.int(a, b); } while (x === 0); return x; },   // idem, sem o zero
+      pick: arr => arr[Math.floor(rnd() * arr.length)],
+      sign: () => (rnd() < 0.5 ? -1 : 1),
+      vec: (k, a, b) => Array.from({ length: k }, () => R.int(a, b)),
+      shuffle: arr => shuffle(arr, rnd),
+      n, v: vec, m: mat, fmtVal                                        // formatação em LaTeX
+    };
+    return R;
+  }
+
+  // Alternativa "vizinha" quando o gerador não trouxe erradas suficientes
+  function near(v, R) {
+    if (typeof v === "number") {
+      if (Number.isInteger(v)) return v + R.pick([-3, -2, -1, 1, 2, 3]);
+      const d = Math.max(0.01, Math.abs(v) * R.pick([0.1, 0.2, 0.3]));
+      return Math.round((v + R.pick([-1, 1]) * d) * 100) / 100;
+    }
+    if (isMat(v)) { const M = v.map(r => r.slice()), i = R.int(0, M.length - 1), j = R.int(0, M[0].length - 1); M[i][j] = near(M[i][j], R); return M; }
+    if (Array.isArray(v)) { const w = v.slice(), i = R.int(0, w.length - 1); w[i] = near(w[i], R); return w; }
+    return null;
+  }
+
+  const GEN = {};   // geradores de conta: GEN[id] = { t: "título curto", f: (R, p) => ({ q, v, ops, x, d, casas, h }) }
+
+  function conta(q, rnd) {
+    const G = GEN[q.g];
+    if (!G) return null;
+    const R = tools(rnd), r = G.f(R, q.p || {}), c = r.casas;
+    const fmt = r.fmt || (v => fmtVal(v, c));          // o gerador pode escrever as alternativas do seu jeito
+    const hOf = o => o.h || fmt(o.v);
+    const right = { h: hOf(r), v: r.v, why: "", ok: true };
+    const seen = new Set([right.h]), wrong = [];      // alternativas com o mesmo texto na tela não se repetem
+    (r.ops || []).forEach(o => { const h = hOf(o); if (!seen.has(h)) { seen.add(h); wrong.push({ h, v: o.v, why: o.why || "" }); } });
+    for (let t = 0; wrong.length < 3 && t < 80; t++) {
+      const v = near(r.v, R); if (v == null) break;
+      const h = hOf({ v }); if (!seen.has(h)) { seen.add(h); wrong.push({ h, v, why: "" }); }
+    }
+    const opts = shuffle([right].concat(wrong.slice(0, 3)), rnd);
+    return { k: "conta", g: q.g, t: G.t, q: r.q, opts, c: opts.findIndex(o => o.ok), x: r.x || "", d: r.d, src: q };
+  }
+
+  // Uma questão pronta para a tela: alternativas embaralhadas (ou números sorteados, nas contas)
+  function inst(q, rnd) {
+    rnd = rnd || Math.random;
+    if (!q) return null;
+    if (q.k === "conta") return conta(q, rnd);
+    const base = { k: q.k, q: q.pergunta || ASK[q.k] || "", x: q.x || "", src: q,
+                   out: q.saida == null ? null : String(q.saida) };
+    if (q.k === "erro") {
+      return Object.assign(base, { lines: String(q.codigo || "").split("\n"), c: q.linha - 1, fix: q.correcao || "" });
+    }
+    const mono = q.k === "saida" || q.k === "lacuna" || !!q.mono;
+    const idx = (q.opcoes || []).map((_, i) => i), order = q.fixa ? idx : shuffle(idx, rnd);
+    const opts = order.map(i => ({ h: q.opcoes[i], why: (q.porques || [])[i] || "", mono, ok: i === q.correta }));
+    return Object.assign(base, { code: q.codigo || null, opts, c: opts.findIndex(o => o.ok) });
+  }
+
+  // Sessão de uma aula: até 10 questões, revezando os tipos (nada de 4 contas seguidas)
+  function pick(qs, max, rnd) {
+    rnd = rnd || Math.random; max = max || PER_SESSION;
+    const by = {};
+    shuffle(qs || [], rnd).forEach(q => { (by[q.k] = by[q.k] || []).push(q); });
+    const kinds = shuffle(Object.keys(by), rnd), out = [];
+    for (let r = 0; out.length < max; r++) {
+      let any = false;
+      for (const k of kinds) if (out.length < max && by[k][r]) { out.push(by[k][r]); any = true; }
+      if (!any) break;
+    }
+    return out;
+  }
+  // Treino misto: as aulas se revezam (misturar matérias fixa mais) e, de cada aula, vem a questão do tipo
+  // menos usado até ali (para não cair, por acaso, 5 "Qual é a saída?" num treino de 10) -> [{id, q}]
+  function pickMixed(lessons, max, rnd) {
+    rnd = rnd || Math.random; max = max || PER_SESSION;
+    const L = shuffle(lessons || [], rnd).map(l => ({ id: l.id, qs: pick(l.qs, max, rnd) })).filter(l => l.qs.length);
+    const out = [], usados = {};
+    for (let r = 0; out.length < max; r++) {
+      let any = false;
+      for (const l of L) {
+        if (out.length >= max || !l.qs.length) continue;
+        let best = 0;
+        l.qs.forEach((q, i) => { if ((usados[q.k] || 0) < (usados[l.qs[best].k] || 0)) best = i; });
+        const q = l.qs.splice(best, 1)[0];
+        usados[q.k] = (usados[q.k] || 0) + 1;
+        out.push({ id: l.id, q });
+        any = true;
+      }
+      if (!any) break;
+    }
+    return out;
+  }
+  function byKind(items, res) {
+    const o = {};
+    items.forEach((it, i) => { const k = (it.q || it).k; o[k] = o[k] || [0, 0]; o[k][1]++; if (res[i]) o[k][0]++; });
+    return o;
+  }
+
+  // ---- resultado por aula, dentro das respostas da aula: a.tr = {b: melhor %, s: "8/10", n: vezes, l: quando} ----
+  function readAns() { try { return JSON.parse(localStorage.getItem(ANS_KEY) || "{}") || {}; } catch (e) { return {}; } }
+  function stats(id) { const a = readAns()[id]; return (a && a.tr) || null; }
+  function record(id, ok, total, now) {
+    now = now || Date.now();
+    const all = readAns(), a = all[id] || {}, prev = a.tr || null, pct = total ? Math.round(ok / total * 100) : 0;
+    a.p = a.p || {}; a.c = a.c || {}; a.q = a.q || {};
+    a.tr = { b: Math.max(prev ? prev.b || 0 : 0, pct), s: ok + "/" + total, n: (prev ? prev.n || 0 : 0) + 1, l: now };
+    a.t = now;
+    all[id] = a;
+    try { localStorage.setItem(ANS_KEY, JSON.stringify(all)); } catch (e) {}
+    return { prev, cur: a.tr };
+  }
+
+  // Rótulos curtos (lista de erros, caderno da aula e revisão ativa)
+  const strip = h => String(h == null ? "" : h).replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/\$/g, "").replace(/\s+/g, " ").trim();
+  const short = (s, k) => { s = strip(s); return s.length > k ? s.slice(0, k - 1).trimEnd() + "…" : s; };
+  // 1ª linha que diz algo (pula linhas em branco e os imports, iguais em todas as questões de NumPy)
+  const firstLine = code => {
+    const ls = String(code || "").split("\n").map(l => l.trim()).filter(Boolean);
+    return ls.find(l => !/^(import|from)\s/.test(l)) || ls[0] || "";
+  };
+  function labelOf(q) {
+    if (!q) return "";
+    if (q.tema) return q.tema;
+    if (q.k === "conta") return (GEN[q.g] && GEN[q.g].t) || "Conta";
+    if (q.k === "saida") return "Saída de " + short(firstLine(q.codigo), 50);
+    if (q.k === "erro") return "Erro em " + short(firstLine(q.codigo), 50);
+    return short(q.pergunta, 90);
+  }
+  function answerOf(q) {
+    if (!q || q.k === "conta") return "";
+    if (q.k === "erro") return "linha " + q.linha + ": " + String(q.correcao || "").trim();
+    return short((q.opcoes || [])[q.correta], 120);
+  }
+
+  return { KIND, SHORT, ICON, PER_SESSION, GEN, rng, shuffle, tools, n, vec, mat, fmtVal, near, inst, pick, pickMixed, byKind,
+           stats, record, strip, labelOf, answerOf };
+})();
+if (typeof module !== "undefined") module.exports = TR;
+
+
+// =================== TREINO: geradores de conta (Álgebra Linear) ===================
+(() => {
+  const G = TR.GEN, n = TR.n, V = TR.vec, M = TR.mat;
+  const N1 = x => n(x);
+  const P = x => (typeof x === "number" && x < 0 ? "(" + n(x) + ")" : n(x));   // negativo entre parênteses nos produtos
+  const nt = (x, c) => n(x, c).replace("{,}", ",");                             // número fora do LaTeX
+  const $ = s => "$" + s + "$";
+  const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
+  const sum = a => a.reduce((s, x) => s + x, 0);
+  const add = (a, b) => a.map((x, i) => x + b[i]);
+  const sub = (a, b) => a.map((x, i) => x - b[i]);
+  const mul = (k, a) => a.map(x => k * x);
+  const mv = (A, x) => A.map(r => dot(r, x));
+  const mm = (A, B) => A.map(r => B[0].map((_, j) => r.reduce((s, x, k) => s + x * B[k][j], 0)));
+  const tr = A => A[0].map((_, j) => A.map(r => r[j]));
+  const had = (A, B) => A.map((r, i) => r.map((x, j) => x * B[i][j]));
+  const r2 = x => Math.round(x * 100) / 100;
+  const nrm = v => Math.sqrt(dot(v, v));
+  const prods = (a, b) => a.map((x, i) => P(x) + "\\cdot " + P(b[i])).join(" + ");
+  const li = arr => "<ol>" + arr.map(s => "<li>" + s + "</li>").join("") + "</ol>";
+  const signed = (R, v) => v.map(x => (x === 0 ? 0 : x * R.sign()));
+  const dimOf = (R, p) => p.dim || R.pick([2, 3]);
+  // "2x - y", "a + 3b": coeficientes 1 e 0 somem
+  const lin = (cs, vs) => {
+    let s = "";
+    cs.forEach((c, i) => {
+      if (!c) return;
+      const t = (Math.abs(c) === 1 ? "" : n(Math.abs(c))) + vs[i];
+      s += s ? (c < 0 ? " - " : " + ") + t : (c < 0 ? "-" : "") + t;
+    });
+    return s || "0";
+  };
+  const par = (x, y, a, b) => $(a + " = " + n(x) + ",\\ " + b + " = " + n(y));
+  const lamPair = v => { const s = v.slice().sort((p, q) => p - q); return $("\\lambda = " + n(s[0]) + " \\text{ e } " + n(s[1])); };
+  const PIT2 = [[[3, 4], 5], [[6, 8], 10], [[5, 12], 13], [[8, 15], 17], [[9, 12], 15]];
+  const PIT3 = [[[1, 2, 2], 3], [[2, 3, 6], 7], [[1, 4, 8], 9], [[4, 4, 7], 9], [[2, 6, 9], 11], [[6, 6, 7], 11], [[2, 10, 11], 15]];
+  const PIT5 = [[3, 4], [4, 3], [0, 5], [5, 0], [6, 8], [8, 6], [0, 10], [10, 0]];   // normas 5 e 10: divisões exatas
+
+  // ---------------- Vetores ----------------
+  G.vsoma = { t: "Soma de vetores", f: (R, p) => {
+    const k = dimOf(R, p), u = R.vec(k, -6, 6), v = R.vec(k, -6, 6), s = add(u, v);
+    return { q: "Calcule " + $("u + v") + " para " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + ".", v: s, d: { u, v },
+      ops: [{ v: sub(u, v), why: "fez u − v" }, { v: u.map((x, i) => x * v[i]), why: "multiplicou as coordenadas" },
+            { v: sum(u) + sum(v), why: "somou tudo num número só" }],
+      x: "Some coordenada por coordenada: " + $("(" + u.map((x, i) => n(x) + " + " + P(v[i])).join(",\\ ") + ") = " + V(s)) + "." };
+  } };
+
+  G.vescala = { t: "Número vezes vetor", f: (R, p) => {
+    const k = dimOf(R, p), a = R.pick([-3, -2, 2, 3, 4, 5]), u = R.vec(k, -5, 5), s = mul(a, u);
+    return { q: "Calcule " + $(n(a) + "\\,u") + " para " + $("u = " + V(u)) + ".", v: s, d: { a, u },
+      ops: [{ v: u.map(x => x + a), why: "somou o número em cada coordenada" }, { v: [a * u[0]].concat(u.slice(1)), why: "multiplicou só a 1ª coordenada" },
+            { v: mul(-a, u), why: "errou o sinal" }],
+      x: "Multiplique cada coordenada por " + $(n(a)) + ": " + $("(" + u.map(x => n(a) + "\\cdot " + P(x)).join(",\\ ") + ") = " + V(s)) + "." };
+  } };
+
+  G.vcomb = { t: "Combinação linear", f: (R, p) => {
+    const a = R.nz(-3, 3), b = R.nz(-3, 3), u = R.vec(2, -4, 4), v = R.vec(2, -4, 4), s = add(mul(a, u), mul(b, v));
+    return { q: "Calcule " + $("w = " + lin([a, b], ["u", "v"])) + " para " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + ".", v: s, d: { a, b, u, v },
+      ops: [{ v: add(mul(a, u), v), why: "esqueceu o número que multiplica v" }, { v: add(mul(b, u), mul(a, v)), why: "trocou os números de u e v" },
+            { v: sub(mul(a, u), mul(b, v)), why: "errou o sinal do 2º termo" }],
+      x: "Primeiro multiplique, depois some: " + $(n(a) + "\\,u = " + V(mul(a, u))) + " e " + $(n(b) + "\\,v = " + V(mul(b, v))) + ", então " + $("w = " + V(s)) + "." };
+  } };
+
+  G.vdesloc = { t: "Vetor de A até B", f: (R, p) => {
+    const k = dimOf(R, p), A = R.vec(k, -5, 6), B = R.vec(k, -5, 6), s = sub(B, A);
+    return { q: "Qual é o vetor que leva o ponto " + $("A = " + V(A)) + " até o ponto " + $("B = " + V(B)) + "?", v: s, d: { A, B },
+      ops: [{ v: sub(A, B), why: "fez A − B (o vetor ao contrário)" }, { v: add(A, B), why: "somou os pontos" }, { v: B.slice(), why: "usou só o ponto B" }],
+      x: "Chegada menos saída: " + $("\\overrightarrow{AB} = B - A = " + V(s)) + "." };
+  } };
+
+  // ---------------- Combinações, span e bases ----------------
+  G.combcoef = { t: "Coeficientes de uma combinação linear", f: (R, p) => {
+    const bases = [[[1, 0], [1, 1]], [[1, 1], [0, 1]], [[2, 1], [1, 1]], [[1, 2], [0, 1]], [[1, 1], [1, -1]], [[1, 0], [2, 1]], [[3, 1], [1, 0]], [[1, -1], [0, 1]]];
+    const [b1, b2] = R.pick(bases);
+    let a, b; do { a = R.nz(-4, 4); b = R.nz(-4, 4); } while (a === b);
+    const w = add(mul(a, b1), mul(b, b2));
+    return { q: "Escreva " + $("w = " + V(w)) + " como " + $("w = a\\,b_1 + b\\,b_2") + ", com " + $("b_1 = " + V(b1)) + " e " + $("b_2 = " + V(b2)) +
+             ". Quanto valem " + $("a") + " e " + $("b") + "?",
+      v: [a, b], fmt: v => par(v[0], v[1], "a", "b"), d: { b1, b2, w },
+      ops: [{ v: [b, a], why: "trocou a e b" }, { v: w.slice(), why: "usou as coordenadas de w" }, { v: [a, -b], why: "errou o sinal de b" }],
+      x: "Coordenada por coordenada: " + $(lin([b1[0], b2[0]], ["a", "b"]) + " = " + n(w[0])) + " e " + $(lin([b1[1], b2[1]], ["a", "b"]) + " = " + n(w[1])) +
+         ". Resolvendo, " + par(a, b, "a", "b") + ". Confira: " + $(n(a) + "\\cdot " + V(b1) + " + " + P(b) + "\\cdot " + V(b2) + " = " + V(w)) + "." };
+  } };
+
+  G.base2 = { t: "Base do R² pelo determinante", f: (R, p) => {
+    const u = [R.nz(-5, 5), R.int(-5, 5)];
+    let v;
+    if (R.rnd() < 0.45) v = mul(R.pick([-3, -2, -1, 2, 3]), u);              // paralelos: não formam base
+    else do { v = [R.int(-5, 5), R.nz(-5, 5)]; } while (u[0] * v[1] - u[1] * v[0] === 0);
+    const det = u[0] * v[1] - u[1] * v[0];
+    const fmt = d => (d !== 0 ? "Sim: " + $("\\det = " + n(d) + " \\neq 0") : "Não: " + $("\\det = 0") + ", um é múltiplo do outro");
+    return { q: "Monte a matriz com " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + " nas colunas. Quanto vale o determinante, e os dois formam uma base do " + $("\\mathbb{R}^2") + "?",
+      v: det, fmt, d: { u, v },
+      ops: [{ v: u[0] * v[1] + u[1] * v[0], why: "somou os produtos em vez de subtrair" }, { v: u[0] * u[1] - v[0] * v[1], why: "multiplicou dentro de cada vetor" },
+            { v: -det, why: "subtraiu na ordem errada" }],
+      x: $("\\det " + M([[u[0], v[0]], [u[1], v[1]]]) + " = " + P(u[0]) + "\\cdot " + P(v[1]) + " - " + P(v[0]) + "\\cdot " + P(u[1]) + " = " + n(det)) + ". " +
+         (det !== 0 ? "Diferente de zero: os vetores não são paralelos e geram o plano inteiro, então formam uma base."
+                    : "Zero: um vetor é múltiplo do outro, os dois ficam na mesma reta e não formam base.") };
+  } };
+
+  // ---------------- Produto escalar e projeções ----------------
+  G.dot = { t: "Produto escalar", f: (R, p) => {
+    const k = p.dim || R.pick([2, 3, 3, 4]), u = R.vec(k, -5, 5), v = R.vec(k, -5, 5), s = dot(u, v), pr = u.map((x, i) => x * v[i]);
+    return { q: "Calcule " + $("u \\cdot v") + " para " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + ".", v: s, d: { u, v },
+      ops: [{ v: pr, why: "multiplicou e não somou" }, { v: sum(u) + sum(v), why: "somou todos os números" }, { v: sum(pr.map(Math.abs)), why: "ignorou os sinais" }],
+      x: "Multiplique posição por posição e some: " + $(prods(u, v) + " = " + pr.map(P).join(" + ") + " = " + n(s)) + "." };
+  } };
+
+  G.dotang = { t: "Sinal do produto escalar e o ângulo", f: (R, p) => {
+    const u = [R.nz(-5, 5), R.nz(-5, 5)];
+    let v;
+    if (R.rnd() < 0.34) v = mul(R.pick([-2, -1, 1, 2]), [-u[1], u[0]]);      // perpendicular
+    else do { v = R.vec(2, -5, 5); } while (dot(u, v) === 0);
+    const s = dot(u, v), cat = s > 0 ? "agudo" : s < 0 ? "obtuso" : "reto";
+    const H = { agudo: "Agudo (menor que 90°)", reto: "Reto (exatamente 90°)", obtuso: "Obtuso (maior que 90°)", nd: "Não dá para saber sem medir com transferidor" };
+    return { q: "Sem calcular o ângulo: o ângulo entre " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + " é…", v: cat, fmt: c => H[c], d: { u, v },
+      ops: ["agudo", "reto", "obtuso", "nd"].filter(c => c !== cat).map(c => ({ v: c, why: "" })),
+      x: $("u \\cdot v = " + prods(u, v) + " = " + n(s)) + ". " + (s > 0 ? "Positivo: os vetores apontam para o mesmo lado, ângulo agudo."
+         : s < 0 ? "Negativo: apontam para lados opostos, ângulo obtuso." : "Zero: os vetores são perpendiculares (90°).") };
+  } };
+
+  G.projesc = { t: "Projeção escalar", f: (R, p) => {
+    const v = signed(R, R.pick(PIT5)), u = R.vec(2, -6, 6), L = nrm(v), s = dot(u, v), c = s / L;
+    return { q: "Qual é a projeção escalar de " + $("u = " + V(u)) + " sobre " + $("v = " + V(v)) + "? Use " + $("\\text{comp}_v\\,u = \\dfrac{u \\cdot v}{\\lVert v \\rVert}") + ".",
+      v: c, d: { u, v },
+      ops: [{ v: s, why: "esqueceu de dividir por ‖v‖" }, { v: s / (L * L), why: "dividiu por ‖v‖² (o fator do vetor projeção)" }, { v: s * L, why: "multiplicou em vez de dividir" }],
+      x: $("u \\cdot v = " + prods(u, v) + " = " + n(s)) + " e " + $("\\lVert v \\rVert = \\sqrt{" + P(v[0]) + "^2 + " + P(v[1]) + "^2} = " + n(L)) +
+         ", então " + $("\\dfrac{" + n(s) + "}{" + n(L) + "} = " + n(c)) + "." };
+  } };
+
+  G.ortok = { t: "Valor que deixa dois vetores perpendiculares", f: (R, p) => {
+    const k0 = R.nz(-5, 5), c = R.nz(-4, 4), m = R.pick([1, 1, -1, 2]), u = [m * c, -m * k0];
+    return { q: "Para qual valor de " + $("k") + " os vetores " + $("u = " + V(u)) + " e " + $("w = (k,\\ " + n(c) + ")") + " são perpendiculares?",
+      v: k0, d: { u, c },
+      ops: [{ v: -k0, why: "errou o sinal ao isolar k" }, { v: c, why: "copiou a outra coordenada de w" }, { v: 0, why: "achou que k = 0 sempre resolve" }],
+      x: "Perpendiculares têm produto escalar zero: " + $(n(u[0]) + "k + " + P(u[1]) + "\\cdot " + P(c) + " = 0") + ", ou seja, " +
+         $(n(u[0]) + "k = " + n(-u[1] * c)) + " e " + $("k = " + n(k0)) + "." };
+  } };
+
+  // ---------------- Normas e distâncias ----------------
+  G.l2 = { t: "Norma L2 (comprimento)", f: (R, p) => {
+    const [base, L] = R.pick(R.rnd() < 0.5 ? PIT2 : PIT3), v = signed(R, R.shuffle(base));
+    return { q: "Calcule a norma L2 (o comprimento) de " + $("v = " + V(v)) + ".", v: L, d: { v },
+      ops: [{ v: sum(v.map(Math.abs)), why: "calculou a norma L1 (soma dos módulos)" }, { v: L * L, why: "esqueceu a raiz quadrada" }, { v: sum(v), why: "somou as coordenadas com sinal" }],
+      x: $("\\lVert v \\rVert_2 = \\sqrt{" + v.map(x => P(x) + "^2").join(" + ") + "} = \\sqrt{" + n(L * L) + "} = " + n(L)) + "." };
+  } };
+
+  G.l1 = { t: "Norma L1", f: (R, p) => {
+    let v; do { v = R.vec(R.int(3, 5), -9, 9); } while (!v.some(x => x < 0) || !v.some(x => x > 0));
+    const s = sum(v.map(Math.abs));
+    return { q: "Calcule a norma L1 de " + $("v = " + V(v)) + ".", v: s, d: { v },
+      ops: [{ v: sum(v), why: "esqueceu o módulo (os negativos descontaram)" }, { v: Math.max(...v.map(Math.abs)), why: "calculou a norma L∞ (o maior módulo)" },
+            { v: sum(v.map(x => x * x)), why: "somou os quadrados" }],
+      x: "Some os módulos: " + $("\\lVert v \\rVert_1 = " + v.map(x => "|" + n(x) + "|").join(" + ") + " = " + n(s)) + "." };
+  } };
+
+  G.dist2 = { t: "Distância euclidiana", f: (R, p) => {
+    const [base, L] = R.pick(R.rnd() < 0.6 ? PIT2 : PIT3.slice(0, 4)), dl = signed(R, R.shuffle(base)), A = R.vec(dl.length, -4, 6), B = add(A, dl);
+    return { q: "Qual é a distância euclidiana entre " + $("A = " + V(A)) + " e " + $("B = " + V(B)) + "?", v: L, d: { A, B },
+      ops: [{ v: sum(dl.map(Math.abs)), why: "calculou a distância Manhattan" }, { v: L * L, why: "esqueceu a raiz quadrada" }, { v: Math.abs(sum(dl)), why: "somou as diferenças com sinal" }],
+      x: "Diferenças: " + $("B - A = " + V(dl)) + ". Então " + $("d = \\sqrt{" + dl.map(x => P(x) + "^2").join(" + ") + "} = \\sqrt{" + n(L * L) + "} = " + n(L)) + "." };
+  } };
+
+  G.manh = { t: "Distância Manhattan", f: (R, p) => {
+    const k = R.pick([2, 3]);
+    let A, B, dl; do { A = R.vec(k, -5, 6); B = R.vec(k, -5, 6); dl = sub(B, A); } while (!dl.some(x => x < 0) || !dl.some(x => x > 0));
+    const s = sum(dl.map(Math.abs));
+    return { q: "Qual é a distância Manhattan (L1) entre " + $("A = " + V(A)) + " e " + $("B = " + V(B)) + "?", v: s, d: { A, B },
+      ops: [{ v: r2(nrm(dl)), why: "calculou a distância euclidiana" }, { v: Math.abs(sum(dl)), why: "somou as diferenças com sinal" }, { v: Math.max(...dl.map(Math.abs)), why: "pegou só a maior diferença" }],
+      x: "Some quanto se anda em cada eixo: " + $(dl.map((x, i) => "|" + n(B[i]) + " - " + P(A[i]) + "|").join(" + ") + " = " + dl.map(x => n(Math.abs(x))).join(" + ") + " = " + n(s)) + "." };
+  } };
+
+  // ---------------- Ângulo e cosseno ----------------
+  G.cos = { t: "Similaridade de cosseno", f: (R, p) => {
+    let u, v, c; do { u = signed(R, R.pick(PIT5)); v = signed(R, R.pick(PIT5)); c = dot(u, v) / (nrm(u) * nrm(v)); } while (Math.abs(c) > 0.999);
+    const s = dot(u, v), Lu = nrm(u), Lv = nrm(v);
+    return { q: "Calcule a similaridade de cosseno entre " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + ".", v: c, d: { u, v },
+      ops: [{ v: s, why: "esqueceu de dividir pelas normas" }, { v: r2(s / Lu), why: "dividiu só por ‖u‖" }, { v: r2(1 - c), why: "calculou a distância de cosseno (1 − cos)" }],
+      x: $("u \\cdot v = " + prods(u, v) + " = " + n(s)) + ", " + $("\\lVert u \\rVert = " + n(Lu)) + " e " + $("\\lVert v \\rVert = " + n(Lv)) +
+         ". Então " + $("\\cos\\theta = \\dfrac{" + n(s) + "}{" + n(Lu) + "\\cdot " + n(Lv) + "} = " + n(c)) + "." };
+  } };
+
+  G.cosesp = { t: "Cosseno em casos especiais", f: (R, p) => {
+    const u = [R.nz(-4, 4), R.nz(-4, 4)], t = R.pick(["mesmo", "oposto", "perp"]), k = R.pick([2, 3, 4]);
+    const v = t === "mesmo" ? mul(k, u) : t === "oposto" ? mul(-k, u) : mul(R.pick([1, 2, -1]), [-u[1], u[0]]);
+    const c = t === "mesmo" ? 1 : t === "oposto" ? -1 : 0;
+    const fmt = x => (x === "dep" ? "Depende do tamanho dos vetores" : $(n(x)));
+    return { q: "Sem fazer a conta inteira: qual é a similaridade de cosseno entre " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + "?",
+      v: c, fmt, d: { u, v },
+      ops: [1, -1, 0].filter(x => x !== c).map(x => ({ v: x, why: "" })).concat([{ v: "dep", why: "o tamanho não muda o cosseno" }]),
+      x: t === "perp" ? "Aqui " + $("u \\cdot v = " + n(dot(u, v))) + ": os vetores são perpendiculares, então o cosseno é 0."
+        : $("v = " + n(t === "mesmo" ? k : -k) + "\\,u") + ": mesma direção" + (t === "mesmo" ? " e mesmo sentido, cosseno 1." : ", sentido oposto, cosseno −1.") +
+          " Esticar o vetor (o " + $(n(k)) + ") não muda o cosseno: ele só olha a direção." };
+  } };
+
+  G.angesp = { t: "Ângulo entre vetores", f: (R, p) => {
+    const T = [[[1, 0], [1, 1], 45], [[1, 0], [0, 1], 90], [[1, 1], [-1, 1], 90], [[1, 0], [-1, 1], 135], [[1, 0], [-1, 0], 180],
+               [[1, 1], [2, 2], 0], [[1, 0], [1, -1], 45], [[1, 1], [0, 1], 45], [[1, 1], [-1, 0], 135], [[0, 1], [1, -1], 135]];
+    const [a, b, ang] = R.pick(T), op = R.int(0, 3);
+    const f = w => (op === 1 ? [w[1], w[0]] : op === 2 ? [-w[0], w[1]] : op === 3 ? [w[0], -w[1]] : w);   // o mesmo espelho nos dois: ângulo igual
+    const u = f(mul(R.pick([1, 2, 3]), a)).map(x => x || 0), v = f(mul(R.pick([1, 2, 3]), b)).map(x => x || 0);
+    const s = dot(u, v), c = s / (nrm(u) * nrm(v));
+    return { q: "Qual é o ângulo entre " + $("u = " + V(u)) + " e " + $("v = " + V(v)) + "?", v: ang, fmt: x => $(n(x) + "^\\circ"), d: { u, v },
+      ops: R.shuffle([0, 45, 60, 90, 135, 180].filter(x => x !== ang)).slice(0, 3).map(x => ({ v: x, why: "" })),
+      x: $("\\cos\\theta = \\dfrac{u \\cdot v}{\\lVert u \\rVert\\,\\lVert v \\rVert} = \\dfrac{" + n(s) + "}{\\sqrt{" + n(dot(u, u)) + "}\\cdot\\sqrt{" + n(dot(v, v)) + "}} \\approx " + n(c, 3)) +
+         ". Como " + $("\\cos " + n(ang) + "^\\circ \\approx " + n(Math.cos(ang * Math.PI / 180), 3)) + ", o ângulo é " + $(n(ang) + "^\\circ") + "." };
+  } };
+
+  // ---------------- Matrizes como transformações ----------------
+  G.matvec = { t: "Matriz vezes vetor", f: (R, p) => {
+    const k = p.dim || 2, A = Array.from({ length: k }, () => R.vec(k, -3, 4)), x = R.vec(k, -3, 4), y = mv(A, x);
+    return { q: "Calcule " + $("A\\,x") + " para " + $("A = " + M(A)) + " e " + $("x = " + V(x)) + ".", v: y, d: { A, x },
+      ops: [{ v: mv(tr(A), x), why: "usou as colunas como se fossem linhas (Aᵀx)" }, { v: A.map((r, i) => r[i] * x[i]), why: "usou só a diagonal" },
+            { v: A.map(r => sum(r) * x[0]), why: "multiplicou a soma de cada linha só por x₁" }],
+      x: "Cada linha de A faz um produto escalar com x:" + li(A.map((r, i) => $("y_" + (i + 1) + " = " + prods(r, x) + " = " + n(y[i])))) + "Resultado: " + $(V(y)) + "." };
+  } };
+
+  G.matcol = { t: "Para onde vai um vetor da base", f: (R, p) => {
+    const A = [R.vec(2, -4, 5), R.vec(2, -4, 5)], j = R.int(0, 1), e = j === 0 ? [1, 0] : [0, 1], y = mv(A, e);
+    return { q: "A matriz " + $("A = " + M(A)) + " transforma o plano. Para onde ela leva " + $(j === 0 ? "e_1 = (1,\\ 0)" : "e_2 = (0,\\ 1)") + "?", v: y, d: { A, e },
+      ops: [{ v: A[j].slice(), why: "pegou a linha em vez da coluna" }, { v: mv(A, j === 0 ? [0, 1] : [1, 0]), why: "pegou a outra coluna" }, { v: e.slice(), why: "achou que o vetor não muda" }],
+      x: $("A\\,e_" + (j + 1)) + " é exatamente a " + (j + 1) + "ª coluna de A: " + $(V(y)) + ". É por isso que as colunas de uma matriz mostram para onde vão os eixos." };
+  } };
+
+  G.transf = { t: "Matriz de uma transformação", f: (R, p) => {
+    const k = R.pick([2, 3]);
+    const L = [["rot90", "gira o plano 90° no sentido anti-horário", [[0, -1], [1, 0]]], ["rot-90", "gira o plano 90° no sentido horário", [[0, 1], [-1, 0]]],
+               ["refx", "espelha no eixo x: (x, y) vira (x, −y)", [[1, 0], [0, -1]]], ["refy", "espelha no eixo y: (x, y) vira (−x, y)", [[-1, 0], [0, 1]]],
+               ["esc", "aumenta tudo " + k + " vezes", [[k, 0], [0, k]]], ["estx", "estica só o eixo x, " + k + " vezes", [[k, 0], [0, 1]]],
+               ["rot180", "gira o plano 180°", [[-1, 0], [0, -1]]]];
+    const i = R.int(0, L.length - 1), [nome, desc, A] = L[i], cols = tr(A);
+    return { q: "Qual matriz " + desc + "?", v: A, d: { nome, k },
+      ops: R.shuffle(L.filter((_, j) => j !== i)).map(o => ({ v: o[2], why: "esta " + o[1] })),
+      x: "Veja para onde vão " + $("e_1 = (1,\\ 0)") + " e " + $("e_2 = (0,\\ 1)") + ": eles viram as colunas da matriz. Aqui " + $("e_1 \\to " + V(cols[0])) + " e " + $("e_2 \\to " + V(cols[1])) + "." };
+  } };
+
+  // ---------------- Multiplicação de matrizes ----------------
+  G.matmulij = { t: "Um elemento do produto AB", f: (R, p) => {
+    const k = p.dim || R.pick([2, 3]), A = Array.from({ length: k }, () => R.vec(k, -3, 4)), B = Array.from({ length: k }, () => R.vec(k, -3, 4));
+    const i = R.int(0, k - 1), j = R.int(0, k - 1), C = mm(A, B), col = B.map(r => r[j]);
+    return { q: "Com " + $("A = " + M(A)) + " e " + $("B = " + M(B)) + ", quanto vale o elemento da linha " + (i + 1) + ", coluna " + (j + 1) + " de " + $("AB") + "?",
+      v: C[i][j], d: { A, B, i, j },
+      ops: [{ v: A[i][j] * B[i][j], why: "multiplicou elemento a elemento (Hadamard)" }, { v: dot(A[i], B[j]), why: "fez linha de A com linha de B" },
+            { v: mm(B, A)[i][j], why: "calculou BA (a ordem importa)" }],
+      x: "Linha " + (i + 1) + " de A com a coluna " + (j + 1) + " de B: " + $(prods(A[i], col) + " = " + n(C[i][j])) + "." };
+  } };
+
+  G.matmul2 = { t: "Produto de matrizes 2×2", f: (R, p) => {
+    const A = [R.vec(2, -3, 4), R.vec(2, -3, 4)], B = [R.vec(2, -3, 4), R.vec(2, -3, 4)], C = mm(A, B);
+    return { q: "Calcule " + $("AB") + " para " + $("A = " + M(A)) + " e " + $("B = " + M(B)) + ".", v: C, d: { A, B },
+      ops: [{ v: had(A, B), why: "multiplicou elemento a elemento" }, { v: mm(B, A), why: "calculou BA" }, { v: mm(A, tr(B)), why: "fez linha com linha" }],
+      x: "Cada elemento é linha de A com coluna de B:" + li([0, 1].flatMap(i => [0, 1].map(j => $("c_{" + (i + 1) + (j + 1) + "} = " + prods(A[i], [B[0][j], B[1][j]]) + " = " + n(C[i][j]))))) };
+  } };
+
+  G.hada = { t: "Produto elemento a elemento (Hadamard)", f: (R, p) => {
+    const A = [R.vec(2, -3, 4), R.vec(2, -3, 4)], B = [R.vec(2, -3, 4), R.vec(2, -3, 4)], H = had(A, B);
+    return { q: "Calcule " + $("A \\odot B") + " (o <code>A * B</code> do NumPy) para " + $("A = " + M(A)) + " e " + $("B = " + M(B)) + ".", v: H, d: { A, B },
+      ops: [{ v: mm(A, B), why: "fez o produto de matrizes (A @ B)" }, { v: A.map((r, i) => r.map((x, j) => x + B[i][j])), why: "somou" },
+            { v: had(A, tr(B)), why: "transpôs B sem querer" }],
+      x: "Cada posição vezes a mesma posição: " + $(M(A.map((r, i) => r.map((x, j) => P(x) + "\\cdot " + P(B[i][j])))) + " = " + M(H)) + "." };
+  } };
+
+  G.forma = { t: "Shape de um produto (A @ W)", f: (R, p) => {
+    const DIMS = [3, 10, 16, 64, 128], m = R.pick([2, 8, 32, 64, 100]), k1 = R.pick(DIMS), c = R.pick([1, 2, 5, 10, 256]);
+    const bate = R.rnd() < 0.75, k2 = bate ? k1 : R.pick(DIMS.filter(x => x !== k1));
+    const sh = (a, b) => "<code>(" + a + ", " + b + ")</code>";
+    const fmt = v => (v === "erro" ? "Dá erro: as dimensões não batem" : sh(...String(v).split("x")));
+    const mais = [{ v: k1 + "x" + k2, why: "juntou as dimensões de dentro" }, { v: m + "x" + k1, why: "copiou o shape de A" },
+                  { v: k2 + "x" + c, why: "copiou o shape de W" }, { v: c + "x" + m, why: "inverteu a ordem" }, { v: m + "x" + m, why: "repetiu as linhas de A" }];
+    const ops = (bate ? [{ v: "erro", why: "as dimensões de dentro (" + k1 + " e " + k2 + ") batem" }]
+                      : [{ v: m + "x" + c, why: "só olhou as pontas: as de dentro (" + k1 + " e " + k2 + ") não batem" }]).concat(mais);
+    return { q: "No NumPy, <code>A</code> tem shape " + sh(m, k1) + " e <code>W</code> tem shape " + sh(k2, c) + ". Qual é o shape de <code>A @ W</code>?",
+      v: bate ? m + "x" + c : "erro", fmt, d: { a: [m, k1], w: [k2, c] }, ops,
+      x: bate ? "As dimensões de dentro batem (" + k1 + " com " + k2 + ") e somem; ficam as de fora: " + sh(m, c) + "."
+              : "Para multiplicar, o nº de colunas de A (" + k1 + ") tem que ser igual ao nº de linhas de W (" + k2 + "). Não é, então o NumPy dá <code>ValueError</code>." };
+  } };
+
+  // ---------------- Sistemas e determinantes ----------------
+  G.det2 = { t: "Determinante 2×2", f: (R, p) => {
+    const A = [R.vec(2, -6, 6), R.vec(2, -6, 6)], [[a, b], [c, d]] = A, det = a * d - b * c;
+    return { q: "Calcule " + $("\\det A") + " para " + $("A = " + M(A)) + ".", v: det, d: { A },
+      ops: [{ v: a * d + b * c, why: "somou os produtos das diagonais" }, { v: b * c - a * d, why: "subtraiu na ordem errada" }, { v: a * b - c * d, why: "multiplicou as linhas, não as diagonais" }],
+      x: $("\\det A = ad - bc = " + P(a) + "\\cdot " + P(d) + " - " + P(b) + "\\cdot " + P(c) + " = " + n(a * d) + " - " + P(b * c) + " = " + n(det)) + "." };
+  } };
+
+  G.det3 = { t: "Determinante 3×3 (Sarrus)", f: (R, p) => {
+    const A = Array.from({ length: 3 }, () => R.vec(3, -2, 3)), [[a, b, c], [d, e, f], [g, h, i]] = A;
+    const pos = [a * e * i, b * f * g, c * d * h], neg = [c * e * g, a * f * h, b * d * i], det = sum(pos) - sum(neg);
+    return { q: "Calcule " + $("\\det A") + " para " + $("A = " + M(A)) + " (regra de Sarrus).", v: det, d: { A },
+      ops: [{ v: a * e * i, why: "multiplicou só a diagonal principal" }, { v: sum(pos), why: "esqueceu os três termos que subtraem" }, { v: sum(pos) + sum(neg), why: "somou os termos que deviam subtrair" }],
+      x: "Sarrus: as três diagonais que descem menos as três que sobem. " + $("(" + pos.map(P).join(" + ") + ") - (" + neg.map(P).join(" + ") + ") = " + n(sum(pos)) + " - " + P(sum(neg)) + " = " + n(det)) + "." };
+  } };
+
+  G.sist2 = { t: "Sistema 2×2", f: (R, p) => {
+    let a, b, c, d; do { a = R.int(-4, 4); b = R.int(-4, 4); c = R.int(-4, 4); d = R.int(-4, 4); } while (a * d - b * c === 0 || !a || !b || (!c && !d));
+    const x = R.int(-5, 5), y = R.int(-5, 5), e = a * x + b * y, f = c * x + d * y;
+    const eq = (p1, p2, rhs) => lin([p1, p2], ["x", "y"]) + " = " + n(rhs);
+    const subst = (p1, p2) => P(p1) + "\\cdot " + P(x) + " + " + P(p2) + "\\cdot " + P(y);
+    return { q: "Resolva o sistema " + $("\\begin{cases} " + eq(a, b, e) + " \\\\ " + eq(c, d, f) + " \\end{cases}"),
+      v: [x, y], fmt: v => par(v[0], v[1], "x", "y"), d: { A: [[a, b], [c, d]], b: [e, f] },
+      ops: [{ v: [y, x], why: "trocou x e y" }, { v: [-x, y], why: "errou o sinal de x" }, { v: [x + b, y - a], why: "serve só na 1ª equação" }],
+      x: "Um caminho: isole uma variável numa equação e substitua na outra. Confira " + par(x, y, "x", "y") + " nas duas: " +
+         $(subst(a, b) + " = " + n(e)) + " ✓ e " + $(subst(c, d) + " = " + n(f)) + " ✓." };
+  } };
+
+  G.detarea = { t: "Determinante e área", f: (R, p) => {
+    let A; do { A = [R.vec(2, -4, 5), R.vec(2, -4, 5)]; } while (A[0][0] * A[1][1] - A[0][1] * A[1][0] === 0);
+    const [[a, b], [c, d]] = A, det = a * d - b * c;
+    return { q: "Um quadrado de área 1 passa pela transformação " + $("A = " + M(A)) + ". Qual é a área da figura que sai?", v: Math.abs(det), d: { A },
+      ops: [{ v: det, why: "área não é negativa: use o módulo do det" }, { v: a + d, why: "somou a diagonal (isso é o traço)" }, { v: Math.abs(a * d + b * c), why: "somou os produtos das diagonais" }],
+      x: $("\\det A = " + P(a) + "\\cdot " + P(d) + " - " + P(b) + "\\cdot " + P(c) + " = " + n(det)) + ". A área é multiplicada por " + $("|\\det A| = " + n(Math.abs(det))) +
+         (det < 0 ? " (o sinal negativo só diz que a figura foi espelhada)." : ".") };
+  } };
+
+  G.detsing = { t: "Quando a matriz não tem inversa", f: (R, p) => {
+    const a = R.pick([1, 2, 3, -1, -2]), k = R.nz(-4, 4), c = R.nz(-4, 4), b = a * k, sol = k * c;
+    return { q: "Para qual valor de " + $("t") + " a matriz " + $(M([[a, b], [c, "t"]])) + " não tem inversa?", v: sol, d: { a, b, c },
+      ops: [{ v: -sol, why: "errou o sinal" }, { v: b * c, why: "esqueceu de dividir por " + nt(a) }, { v: 0, why: "achou que t = 0 zera o determinante" }],
+      x: "Não tem inversa quando " + $("\\det = 0") + ": " + $(n(a) + "t - " + P(b) + "\\cdot " + P(c) + " = 0") + ", então " + $("t = \\dfrac{" + n(b * c) + "}{" + n(a) + "} = " + n(sol)) + "." };
+  } };
+
+  // ---------------- Inversa ----------------
+  G.inv2 = { t: "Inversa 2×2", f: (R, p) => {
+    let A = mm(mm([[1, R.int(-2, 2)], [0, 1]], [[R.pick([1, 1, -1, 2]), 0], [0, 1]]), [[1, 0], [R.int(-2, 2), 1]]);   // det 1, -1 ou 2
+    if (R.rnd() < 0.4) A = A.map(r => [r[1], r[0]]);
+    const [[a, b], [c, d]] = A, det = a * d - b * c, inv = [[d / det, -b / det], [-c / det, a / det]];
+    return { q: "Calcule " + $("A^{-1}") + " para " + $("A = " + M(A)) + ".", v: inv, d: { A },
+      ops: [{ v: [[d, -b], [-c, a]], why: "esqueceu de dividir pelo det" }, { v: [[d / det, b / det], [c / det, a / det]], why: "trocou a diagonal, mas esqueceu os sinais" },
+            { v: [[a / det, -b / det], [-c / det, d / det]], why: "trocou os sinais, mas não a diagonal" }, { v: [[-d / det, b / det], [c / det, -a / det]], why: "errou o sinal de tudo" }],
+      x: "Na 2×2: troque " + $("a") + " e " + $("d") + " de lugar, troque o sinal de " + $("b") + " e " + $("c") + " e divida pelo det. " +
+         $("\\det A = " + n(det)) + ", então " + $("A^{-1} = \\dfrac{1}{" + n(det) + "}" + M([[d, -b], [-c, a]]) + " = " + M(inv)) + "." };
+  } };
+
+  G.invdiag = { t: "Inversa de matriz diagonal", f: (R, p) => {
+    const vals = R.shuffle([2, 4, 5, 10, -2, -4, -5]).slice(0, R.pick([2, 3]));
+    const D = vals.map((x, i) => vals.map((_, j) => (i === j ? x : 0))), inv = D.map((r, i) => r.map((x, j) => (i === j ? 1 / x : 0)));
+    return { q: "Calcule a inversa de " + $("D = " + M(D)) + ".", v: inv, d: { D },
+      ops: [{ v: D.map(r => r.map(x => -x)), why: "só trocou os sinais" }, { v: inv.map(r => r.map(x => -x)), why: "inverteu e também trocou os sinais" }, { v: D, why: "achou que a diagonal não muda" }],
+      x: "Na diagonal, a inversa só inverte cada número: " + vals.map(x => $("\\tfrac{1}{" + n(x) + "} = " + n(1 / x))).join(", ") + ". Confira: " + $("D\\,D^{-1} = I") + "." };
+  } };
+
+  G.axb = { t: "Resolver Ax = b com a inversa", f: (R, p) => {
+    let A = mm([[1, R.int(-2, 2)], [0, 1]], [[1, 0], [R.int(-2, 2), 1]]);   // det 1: inversa inteira
+    if (R.rnd() < 0.5) A = A.map(r => [r[1], r[0]]);
+    const x = R.vec(2, -4, 4), b = mv(A, x), [[a, bb], [c, d]] = A, det = a * d - bb * c, inv = [[d / det, -bb / det], [-c / det, a / det]];
+    return { q: "Resolva " + $("A\\,x = b") + " para " + $("A = " + M(A)) + " e " + $("b = " + V(b)) + ".", v: x, d: { A, b },
+      ops: [{ v: mv(A, b), why: "multiplicou b por A em vez de A⁻¹" }, { v: b.slice(), why: "achou que x = b" }, { v: [x[1], x[0]], why: "trocou as coordenadas" }],
+      x: $("A^{-1} = " + M(inv)) + " e " + $("x = A^{-1} b = " + V(x)) + ". Confira: " + $("A\\,x = " + V(mv(A, x))) + "." };
+  } };
+
+  // ---------------- Autovalores e autovetores ----------------
+  G.eigtri = { t: "Autovalores de matriz triangular", f: (R, p) => {
+    let a, d; do { a = R.int(-5, 6); d = R.int(-5, 6); } while (a === d);
+    const b = R.nz(-5, 5), A = R.rnd() < 0.6 ? [[a, b], [0, d]] : [[a, 0], [b, d]];
+    return { q: "Quais são os autovalores de " + $("A = " + M(A)) + "?", v: [Math.min(a, d), Math.max(a, d)], fmt: lamPair, d: { A },
+      ops: [{ v: [a, b], why: "pegou números fora da diagonal" }, { v: [a + d, a * d], why: "calculou o traço e o det" }, { v: [-a, -d], why: "errou o sinal" }],
+      x: "Em matriz triangular, os autovalores são os números da diagonal: " + lamPair([a, d]) + ". Confira: " + $("\\det(A - \\lambda I) = (" + n(a) + " - \\lambda)(" + n(d) + " - \\lambda)") + ", que zera nesses dois valores." };
+  } };
+
+  G.eigtd = { t: "Autovalores pelo traço e o determinante", f: (R, p) => {
+    let l1, l2; do { l1 = R.int(-4, 7); l2 = R.int(-4, 7); } while (l1 === l2);
+    const T = l1 + l2, D = l1 * l2;
+    const poly = "\\lambda^2" + (T ? (T > 0 ? " - " : " + ") + (Math.abs(T) === 1 ? "" : n(Math.abs(T))) + "\\lambda" : "") + (D ? (D > 0 ? " + " : " - ") + n(Math.abs(D)) : "") + " = 0";
+    return { q: "Uma matriz 2×2 tem traço " + $(n(T)) + " e determinante " + $(n(D)) + ". Quais são os autovalores?", v: [Math.min(l1, l2), Math.max(l1, l2)], fmt: lamPair, d: { T, D },
+      ops: [{ v: [T, D], why: "usou o traço e o det como se fossem os autovalores" }, { v: [-l1, -l2], why: "errou o sinal" }, { v: [l1 + 1, l2 - 1], why: "a soma bate, mas o produto não" }],
+      x: "Os autovalores somam o traço e multiplicam o det, então são as raízes de " + $(poly) + ": " + lamPair([l1, l2]) + ". Confira: " +
+         $(n(l1) + " + " + P(l2) + " = " + n(T)) + " e " + $(n(l1) + "\\cdot " + P(l2) + " = " + n(D)) + "." };
+  } };
+
+  G.eigvec = { t: "É autovetor? Qual o autovalor?", f: (R, p) => {
+    const v = R.pick([[1, 1], [1, -1], [1, 2], [2, 1]]), lam = R.nz(-4, 5), eig = R.rnd() < 0.7;
+    const row = t => { for (let k = 0; k < 200; k++) { const r0 = R.int(-4, 5), rest = t - r0 * v[0]; if (rest % v[1] === 0 && Math.abs(rest / v[1]) <= 9) return [r0, rest / v[1]]; } return null; };
+    const paralelo = w => w[0] * v[1] === w[1] * v[0];
+    let A = null;
+    if (eig) { const l1 = row(lam * v[0]), l2 = row(lam * v[1]); if (l1 && l2) A = [l1, l2]; }   // linhas com A·v = λ·v
+    if (!A) do { A = [R.vec(2, -4, 5), R.vec(2, -4, 5)]; } while (paralelo(mv(A, v)));             // ou uma A qualquer em que v não é autovetor
+    const w = mv(A, v), par1 = paralelo(w), L = par1 ? w[0] / v[0] : null;
+    const fmt = x => (x === "nao" ? "Não é autovetor" : "Sim, com " + $("\\lambda = " + n(x)));
+    const ops = par1
+      ? [{ v: "nao", why: "Av ficou na mesma direção de v" }, { v: A[0][0], why: "pegou o 1º número de A" }, { v: -L, why: "errou o sinal" }, { v: w[0], why: "não dividiu pela coordenada de v" }]
+      : [{ v: r2(w[0] / v[0]), why: "dividiu só a 1ª coordenada" }, { v: A[0][0], why: "pegou o 1º número de A" }, { v: A[0][0] + A[1][1], why: "usou o traço" },
+         { v: r2(w[1] / v[1]), why: "dividiu só a 2ª coordenada" }, { v: A[1][1], why: "pegou o último número de A" }, { v: 1, why: "chutou λ = 1" }, { v: -1, why: "chutou λ = −1" }];
+    return { q: "Seja " + $("A = " + M(A)) + ". O vetor " + $("v = " + V(v)) + " é autovetor de A? Se for, com qual autovalor?", v: par1 ? L : "nao", fmt, d: { A, v },
+      ops, x: "Calcule " + $("A\\,v = " + V(w)) + ". " + (par1 ? "Isso é " + $(n(L) + "\\cdot " + V(v)) + ": mesma direção de v, então é autovetor com " + $("\\lambda = " + n(L)) + "."
+        : "Não existe um número que vezes " + $(V(v)) + " dê " + $(V(w)) + ", então v não é autovetor.") };
+  } };
+
+  G.eigpot = { t: "Potência de matriz num autovetor", f: (R, p) => {
+    const lam = R.pick([-3, -2, 2, 3, 4]), v = R.vec(2, -3, 3).map(x => x || 1), k = R.pick([2, 2, 3]), lk = Math.pow(lam, k);
+    return { q: "Sabendo que " + $("A\\,v = " + n(lam) + "\\,v") + " para " + $("v = " + V(v)) + ", quanto vale " + $("A^{" + k + "}\\,v") + "?", v: mul(lk, v), d: { lam, v, k },
+      ops: [{ v: mul(lam, v), why: "aplicou A uma vez só" }, { v: mul(k * lam, v), why: "multiplicou λ por " + k + " em vez de elevar" }, { v: lk, why: "esqueceu o vetor (ficou só o número)" }],
+      x: "Cada vez que A age em v, ele é multiplicado por " + $(n(lam)) + ": " + $("A^{" + k + "} v = " + P(lam) + "^{" + k + "}\\,v = " + n(lk) + "\\cdot " + V(v) + " = " + V(mul(lk, v))) + "." };
+  } };
+
+  // ---------------- SVD e PCA ----------------
+  const pctF = x => $(n(x, 1) + "\\%");
+  G.varexp = { t: "Variância explicada pelos autovalores", f: (R, p) => {
+    const S = R.pick([10, 20, 25, 40, 50]);
+    let l; do { const a = R.int(Math.ceil(S * 0.35), Math.floor(S * 0.8)), b = R.int(1, Math.max(1, S - a - 1)); l = [a, b, S - a - b].sort((x, y) => y - x); } while (l[2] <= 0 || l[0] === l[1] || l[1] === l[2]);
+    const pct = 100 * l[0] / S;
+    return { q: "A PCA achou os autovalores da covariância " + $("\\lambda = " + l.map(N1).join(",\\ ")) + ". Que porcentagem da variância a 1ª componente explica?",
+      v: pct, fmt: pctF, d: { l },
+      ops: [{ v: 100 * l[0] / l[1], why: "dividiu pelo 2º autovalor" }, { v: 100 * l[0] / (l[0] + l[1]), why: "esqueceu a 3ª componente" }, { v: l[0], why: "usou o autovalor direto como porcentagem" }],
+      x: "1º autovalor dividido pela soma de todos: " + $("\\dfrac{" + n(l[0]) + "}{" + l.map(N1).join(" + ") + "} = \\dfrac{" + n(l[0]) + "}{" + n(S) + "} = " + n(pct, 1) + "\\%") + "." };
+  } };
+
+  const SV = [[4, 3], [5, 4, 3], [7, 1], [6, 3, 2, 1], [5, 4, 2, 2, 1], [9, 4, 1, 1, 1], [7, 5, 4, 3, 1], [8, 4, 4, 2], [6, 6, 4, 2, 2, 2]];
+  G.varsing = { t: "Variância explicada pelos valores singulares", f: (R, p) => {
+    const s = R.pick(SV), sq = s.map(x => x * x), S2 = sum(sq), pct = 100 * sq[0] / S2;
+    return { q: "A SVD dos dados (já centralizados) deu os valores singulares " + $("\\sigma = " + s.map(N1).join(",\\ ")) + ". Que porcentagem da variância a 1ª componente explica?",
+      v: pct, fmt: pctF, d: { s },
+      ops: [{ v: 100 * s[0] / sum(s), why: "usou σ sem elevar ao quadrado" }, { v: 100 * sq[0] / (sum(s) * sum(s)), why: "elevou a soma ao quadrado" }, { v: 100 * s[0] / S2, why: "esqueceu de elevar o σ₁" }],
+      x: "A variância de cada componente é proporcional a " + $("\\sigma^2") + ": " + $("\\dfrac{" + n(s[0]) + "^2}{" + s.map(x => n(x) + "^2").join(" + ") + "} = \\dfrac{" + n(sq[0]) + "}{" + n(S2) + "} = " + n(pct, 1) + "\\%") + "." };
+  } };
+
+  G.ncomp = { t: "Quantas componentes manter", f: (R, p) => {
+    const meta = R.pick([80, 90, 95]);
+    let l, k, cum;
+    do {
+      l = Array.from({ length: R.int(4, 6) }, () => R.int(1, 12)).sort((a, b) => b - a);
+      const S = sum(l); let acc = 0; cum = l.map(x => (acc += x, 100 * acc / S));
+      k = cum.findIndex(c => c >= meta - 1e-9) + 1;
+    } while (k < 2 || cum.some(c => Math.abs(c - meta) < 0.05));   // nada de empate na meta
+    const cand = [...new Set([k - 1, k + 1, k + 2, l.length, 1, 2])].filter(x => x >= 1 && x <= l.length && x !== k);
+    return { q: "Os autovalores da covariância são " + $(l.map(N1).join(",\\ ")) + ". Qual é o menor número de componentes que explica pelo menos " + meta + "% da variância?",
+      v: k, fmt: x => x + (x === 1 ? " componente" : " componentes"), d: { l, meta },
+      ops: cand.slice(0, 3).map(x => ({ v: x, why: x < k ? "ainda não chega a " + meta + "%" : "passa do necessário" })),
+      x: "Some do maior para o menor e veja o acumulado: " + cum.map((c, i) => (i + 1) + " → " + nt(c, 1) + "%").join(" · ") + ". A meta de " + meta + "% chega com " + k + "." };
+  } };
+
+  G.svdshape = { t: "Shapes da SVD no NumPy", f: (R, p) => {
+    const m = R.pick([30, 50, 100, 200]), k = R.pick([5, 10, 20]), full = R.rnd() < 0.5, what = R.pick(["U", "S", "Vt"]);
+    const sh = a => "<code>(" + a.join(", ") + (a.length === 1 ? "," : "") + ")</code>";
+    const ans = what === "U" ? (full ? [m, m] : [m, k]) : what === "S" ? [k] : [k, k];
+    const pool = [[m, m], [m, k], [k, k], [k], [m], [k, m]].filter(a => a.join("x") !== ans.join("x"));
+    return { q: "<code>A</code> tem shape " + sh([m, k]) + " e você roda <code>U, S, Vt = np.linalg.svd(A, full_matrices=" + (full ? "True" : "False") + ")</code>. Qual é o shape de <code>" + what + "</code>?",
+      v: ans.join("x"), fmt: v => sh(String(v).split("x").map(Number)), d: { m, k, full, what },
+      ops: R.shuffle(pool).slice(0, 3).map(a => ({ v: a.join("x"), why: "" })),
+      x: (full ? "Com <code>full_matrices=True</code>, <code>U</code> é quadrada, " + sh([m, m]) : "Com <code>full_matrices=False</code> (SVD reduzida), <code>U</code> fica " + sh([m, k])) +
+         "; <code>S</code> vem como um vetor com os " + k + " valores singulares, " + sh([k]) + ", e <code>Vt</code> é " + sh([k, k]) + "." };
+  } };
+
+  G.pcaproj = { t: "Coordenada na 1ª componente (PCA)", f: (R, p) => {
+    const w = R.pick([[0.6, 0.8], [0.8, 0.6], [-0.6, 0.8], [0.8, -0.6], [1, 0], [0, 1]]), mu = R.vec(2, -3, 5), x = R.vec(2, -3, 8), c = sub(x, mu), s = r2(dot(c, w));
+    return { q: "Na PCA, a 1ª componente é " + $("w = " + V(w, 1)) + " e a média dos dados é " + $("\\mu = " + V(mu)) + ". Qual é a coordenada do ponto " + $("x = " + V(x)) + " nessa componente?",
+      v: s, d: { w, mu, x },
+      ops: [{ v: r2(dot(x, w)), why: "esqueceu de centralizar (subtrair a média)" }, { v: r2(dot(c, [w[1], w[0]])), why: "trocou as coordenadas de w" }, { v: r2(nrm(c)), why: "calculou a distância até a média" }],
+      x: "Centralize e projete: " + $("x - \\mu = " + V(c)) + " e " + $("(x - \\mu)\\cdot w = " + prods(c, w) + " = " + n(s)) + "." };
+  } };
+})();
+
+
+// =================== TREINO: a sessão na tela ===================
+const TR_INDEX = {"ia-0-0-0":10,"ia-0-0-2":10,"ia-0-0-1":10,"ia-0-0-g07":10,"ia-0-0-g08":10,"ia-0-0-g09":10,"ia-0-0-3":10,"ia-0-0-g12":10,"ia-0-0-4":10,"ia-0-0-g14":10,"ia-0-0-g15":10,"ia-0-1-2":10,"ia-0-1-0":10,"ia-0-1-g18":10,"ia-0-1-1":10,"ia-0-1-3":10,"mat-0-0-0":10,"mat-0-0-1":10,"mat-0-0-2":10,"mat-0-0-3":10,"mat-0-0-4":10,"mat-0-1-0":10,"mat-0-1-1":10,"mat-0-1-2":10,"mat-0-1-3":10,"mat-0-1-4":10,"mat-0-1-5":10};   // {id da aula: nº de questões}
+const TR_MODS = [{"k":"ia-0","tr":"ia","nome":"Fase 1 · Fundamentos de programação com Python","ids":["ia-0-0-0","ia-0-0-2","ia-0-0-1","ia-0-0-g07","ia-0-0-g08","ia-0-0-g09","ia-0-0-3","ia-0-0-g12","ia-0-0-4","ia-0-0-g14","ia-0-0-g15","ia-0-1-2","ia-0-1-0","ia-0-1-g18","ia-0-1-1","ia-0-1-3"]},{"k":"mat-1","tr":"mat","nome":"Módulo 2 · Álgebra Linear para IA & Tensores","ids":["mat-0-0-0","mat-0-0-1","mat-0-0-2","mat-0-0-3","mat-0-0-4","mat-0-1-0","mat-0-1-1","mat-0-1-2","mat-0-1-3","mat-0-1-4","mat-0-1-5"]}];     // módulos com treino, para o treino misto: [{k, tr, nome, ids}]
+const TR_BANKS = {};             // trilha -> {id: [questões]} (baixado na primeira vez: treino_<trilha>.json)
+const TR_COLOR = { ia: "--t-ia", mat: "--t-mat", ing: "--t-ing" };
+const TR_OK = ["Isso!", "Certo!", "Mandou bem!", "Exato!"], TR_NO = ["Quase!", "Não foi dessa vez.", "Ainda não."];
+let TR_S = null;
+
+function trEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function trTrack(id) { return String(id || "").split("-")[0]; }
+function trTitle(id) {
+  if (typeof TOPICS_MAP !== "undefined" && TOPICS_MAP[id]) return TOPICS_MAP[id].title;
+  if (typeof RV_TOPICS !== "undefined" && RV_TOPICS[id]) return RV_TOPICS[id][1];
+  const row = (window.DS_TOPICS || []).find(r => r[0] === id);
+  return row ? row[2] : id;
+}
+async function trLoadBank(track) {
+  if (TR_BANKS[track]) return TR_BANKS[track];
+  const r = await fetch("treino_" + track + ".json", { cache: "no-cache" });
+  if (!r.ok) throw new Error("erro " + r.status);
+  return (TR_BANKS[track] = await r.json());
+}
+// Aulas que você já começou ou concluiu (para o treino misto)
+function trStudied() {
+  let pr = {};
+  try { pr = JSON.parse(localStorage.getItem("roteiro-ia-v1") || "{}") || {}; } catch (e) {}
+  return new Set(Object.keys(pr).filter(id => pr[id] && (pr[id].s === "e" || pr[id].s === "r")));
+}
+
+// Realce do Python (o mesmo da Aula Visual; aqui também na página Revisões)
+const TR_PY_RE = /(#[^\n]*)|("{3}[\s\S]*?"{3}|'{3}[\s\S]*?'{3}|[fFrRbB]?"(?:\\.|[^"\\\n])*"|[fFrRbB]?'(?:\\.|[^'\\\n])*')|\b(\d+(?:\.\d+)?(?:e-?\d+)?)\b|\b(import|from|as|def|return|for|in|if|elif|else|while|class|with|lambda|and|or|not|is|None|True|False|try|except|finally|raise|yield|pass|break|continue|global|assert|async|await)\b|([A-Za-z_]\w*)(?=\()/g;
+function trHL(src) {
+  const s = String(src == null ? "" : src);
+  let out = "", last = 0, m;
+  TR_PY_RE.lastIndex = 0;
+  while ((m = TR_PY_RE.exec(s))) {
+    out += trEsc(s.slice(last, m.index));
+    const cls = m[1] ? "c" : m[2] ? "s" : m[3] ? "n" : m[4] ? "k" : "f";
+    out += '<span class="tk-' + cls + '">' + trEsc(m[0]) + "</span>";
+    last = TR_PY_RE.lastIndex;
+  }
+  return out + trEsc(s.slice(last));
+}
+function trMath(el) {
+  if (!window.renderMathInElement) return;
+  try {
+    window.renderMathInElement(el, { delimiters: [{ left: "$$", right: "$$", display: true }, { left: "$", right: "$", display: false }],
+      throwOnError: false, ignoredTags: ["script", "noscript", "style", "textarea", "pre", "code", "option"] });
+  } catch (e) {}
+}
+
+// Questão pronta (inst) -> HTML. a = alternativa marcada (null = ainda não respondeu). Também usada na revisão ativa.
+function trQHTML(inst, a) {
+  const done = a != null, right = done && a === inst.c;
+  let h = '<div class="tr-kind">' + TR.KIND[inst.k] + (inst.k === "conta" ? "<small>🎲 números novos a cada vez</small>" : "") + "</div>";
+  h += '<div class="tr-q">' + inst.q + "</div>";
+  if (inst.k === "erro") {
+    h += '<div class="tr-lines">' + inst.lines.map((ln, i) => {
+      const cls = done ? (i === inst.c ? " ok" : i === a ? " no" : "") : "";
+      return '<button type="button" class="tr-ln' + cls + '" data-o="' + i + '"' + (done || !ln.trim() ? " disabled" : "") + ">" +
+             '<span class="tr-n">' + (i + 1) + "</span><code>" + (trHL(ln) || " ") + "</code></button>";
+    }).join("") + "</div>";
+  } else {
+    if (inst.code) {
+      let code = trHL(inst.code);
+      if (inst.k === "lacuna") {
+        const fill = done ? '<span class="tr-gap ok">' + trEsc(inst.opts[inst.c].h) + "</span>" : '<span class="tr-gap">____</span>';
+        code = code.replace("____", fill);
+      }
+      h += '<pre class="tr-code"><code>' + code + "</code></pre>";
+    }
+    h += '<div class="tr-opts">' + inst.opts.map((o, i) => {
+      const cls = done ? (i === inst.c ? " ok" : i === a ? " no" : "") : "";
+      const mark = done ? (i === inst.c ? "✓" : i === a ? "✗" : "") : String(i + 1);
+      const why = done && o.why && inst.k === "conta" ? '<small class="tr-why">' + o.why + "</small>" : "";
+      return '<button type="button" class="tr-opt' + (o.mono ? " mono" : "") + cls + '" data-o="' + i + '"' + (done ? " disabled" : "") + ">" +
+             '<span class="tr-r" aria-hidden="true">' + mark + '</span><span class="tr-ot">' + (o.mono ? trEsc(o.h) : o.h) + "</span>" + why + "</button>";
+    }).join("") + "</div>";
+  }
+  if (done) {
+    if (inst.m == null) inst.m = Math.floor(Math.random() * 4);
+    const head = inst.k === "erro" ? (right ? "Achou! Linha " + (inst.c + 1) + "." : "O erro está na linha " + (inst.c + 1) + ".")
+                                   : (right ? TR_OK[inst.m % TR_OK.length] : TR_NO[inst.m % TR_NO.length]);
+    h += '<div class="tr-fb ' + (right ? "ok" : "no") + '"><b class="tr-fb-h">' + head + "</b>";
+    if (!right && inst.k !== "erro" && inst.k !== "conta" && inst.opts[a] && inst.opts[a].why) h += '<div class="tr-fb-why">' + inst.opts[a].why + "</div>";
+    h += "<div>" + inst.x + "</div>";
+    if (inst.k === "erro") h += '<code class="tr-fix">✓ ' + trEsc(String(inst.fix).trim()) + "</code>";
+    if ((inst.k === "erro" || inst.k === "lacuna") && inst.out != null && inst.out !== "") {
+      h += '<div class="tr-out"><span>Saída do programa certo:</span><pre>' + trEsc(inst.out) + "</pre></div>";
+    }
+    h += "</div>";
+  }
+  return h;
+}
+
+// ---- a janela do treino (criada na primeira vez) ----
+function trBox() {
+  let el = document.getElementById("tr");
+  if (el) return el;
+  el = document.createElement("div");
+  el.className = "tr"; el.id = "tr"; el.hidden = true;
+  el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "tr-title");
+  el.innerHTML = '<div class="tr-box"><div class="tr-top"><button type="button" class="tr-x" aria-label="Sair do treino" title="Sair (Esc)">✕</button>' +
+    '<b id="tr-title">🏋️ Treino</b><span id="tr-count"></span></div><div class="tr-prog"><i id="tr-bar"></i></div><div class="tr-body" id="tr-body"></div></div>';
+  el.querySelector(".tr-x").onclick = () => trClose(true);
+  document.body.appendChild(el);
+  return el;
+}
+function trSet(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
+function trShow(track, title) {
+  const el = trBox();
+  el.style.setProperty("--tc", "var(" + (TR_COLOR[track] || "--t-hub") + ")");
+  el.hidden = false; document.body.classList.add("tr-on");
+  trSet("tr-title", title); trSet("tr-count", "");
+  document.getElementById("tr-bar").style.width = "0%";
+  document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Preparando as questões…</div>';
+}
+function trClose(ask) {
+  const S = TR_S;
+  if (ask && S && S.i > 0 && S.i < S.items.length && !confirm("Sair do treino? As questões que você já respondeu não serão contadas.")) return;
+  const el = document.getElementById("tr");
+  if (el) el.hidden = true;
+  document.body.classList.remove("tr-on");
+  TR_S = null;
+  trPaintEntries();
+}
+
+// Treino de uma aula (fim da Aula Visual, menu "⋯ Mais" e página Revisões)
+async function trOpenLesson(id) {
+  trShow(trTrack(id), "🏋️ Treino");
+  let bank;
+  try { bank = await trLoadBank(trTrack(id)); }
+  catch (e) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + "). Confira a conexão e tente de novo.</div>"; return; }
+  const qs = bank[id] || [];
+  if (!qs.length) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Esta aula ainda não tem treino.</div>'; return; }
+  trBegin({ mode: "one", ids: [id], items: TR.pick(qs).map(q => ({ id, q })) });
+}
+// Treino misto de um módulo: questões das aulas que você já começou ou concluiu
+async function trOpenMixed(key) {
+  const m = TR_MODS.find(x => x.k === key);
+  if (!m) return;
+  trShow(m.tr, "🔀 Treino misto");
+  let bank;
+  try { bank = await trLoadBank(m.tr); }
+  catch (e) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + ").</div>"; return; }
+  const st = trStudied();
+  let ids = m.ids.filter(id => st.has(id) && bank[id]), note = "";
+  if (!ids.length) { ids = m.ids.filter(id => bank[id]); note = "Você ainda não estudou aulas deste módulo, então o treino usa todas."; }
+  trBegin({ mode: "mix", key, ids, note, items: TR.pickMixed(ids.map(id => ({ id, qs: bank[id] }))) });
+}
+function trBegin(o) {
+  const items = o.items.map(it => ({ id: it.id, q: it.q, inst: TR.inst(it.q) })).filter(it => it.inst);
+  if (!items.length) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Nenhuma questão disponível.</div>'; return; }
+  TR_S = Object.assign({}, o, { items, i: 0, answered: null, res: [] });
+  trRender();
+}
+
+function trRender() {
+  const S = TR_S;
+  if (!S) return;
+  if (S.i >= S.items.length) return trResult();
+  const it = S.items[S.i], ok = S.res.filter(Boolean).length;
+  trSet("tr-count", (S.i + 1) + " de " + S.items.length + (ok ? " · ✔ " + ok : ""));
+  document.getElementById("tr-bar").style.width = (S.i / S.items.length * 100) + "%";
+  let h = "";
+  if (S.note && S.i === 0) h += '<p class="tr-note">' + trEsc(S.note) + "</p>";
+  h += '<div class="tr-chip" style="--c:var(' + (TR_COLOR[trTrack(it.id)] || "--t-hub") + ')"><i></i><span>' + trEsc(trTitle(it.id)) + "</span>" +
+       (S.mode === "redo" ? "<small>refazendo as que errou</small>" : "") + "</div>";
+  h += '<div class="tr-card">' + trQHTML(it.inst, S.answered) + "</div>";
+  h += S.answered == null ? '<p class="tr-tip">' + (it.inst.k === "erro" ? "Toque na linha com o erro (ou tecle o número dela)." : "Toque na resposta (ou tecle o número).") + "</p>"
+    : '<div class="tr-actions"><button type="button" class="tr-btn pri" data-next>' + (S.i + 1 < S.items.length ? "Próxima →" : "Ver resultado") + "</button></div>";
+  const body = document.getElementById("tr-body");
+  body.innerHTML = h; body.scrollTop = 0; trMath(body);
+  body.querySelectorAll("[data-o]").forEach(b => { b.onclick = () => trAnswer(+b.dataset.o); });
+  const nx = body.querySelector("[data-next]");
+  if (nx) { nx.onclick = trNext; try { nx.focus({ preventScroll: true }); } catch (e) {} }
+}
+// A alternativa i existe? (no "Ache o erro", linha em branco não conta)
+function trCanAnswer(inst, i) { return inst.k === "erro" ? !!String(inst.lines[i] || "").trim() : !!inst.opts[i]; }
+function trAnswer(i) {
+  const S = TR_S;
+  if (!S || S.answered != null) return;
+  const inst = S.items[S.i].inst;
+  if (!trCanAnswer(inst, i)) return;
+  S.answered = i; S.res[S.i] = i === inst.c;
+  trRender();
+}
+function trNext() { if (!TR_S) return; TR_S.i++; TR_S.answered = null; trRender(); }
+
+function trResult() {
+  const S = TR_S, body = document.getElementById("tr-body");
+  const ok = S.res.filter(Boolean).length, n = S.items.length, pct = n ? Math.round(ok / n * 100) : 0;
+  trSet("tr-count", "Resultado");
+  document.getElementById("tr-bar").style.width = "100%";
+  // Só o treino completo de uma aula grava o resultado dela: refazer as erradas ou o misto (1 ou 2 questões por aula)
+  // não são comparáveis com o treino de 10 questões e mudariam o "seu melhor" à toa
+  if (!S.saved && S.mode === "one") {
+    S.saved = true; S.prev = {};
+    S.ids.forEach(id => {
+      const idx = S.items.map((it, i) => (it.id === id ? i : -1)).filter(i => i >= 0);
+      if (idx.length) S.prev[id] = TR.record(id, idx.filter(i => S.res[i]).length, idx.length).prev;
+    });
+    if (typeof scheduleAwsRealtimeSync === "function") { try { scheduleAwsRealtimeSync(); } catch (e) {} }
+    try { window.dispatchEvent(new CustomEvent("tr:change")); } catch (e) {}
+  }
+  const miss = S.items.filter((_, i) => !S.res[i]);
+  const msg = pct === 100 ? "Gabaritou! 🏆" : pct >= 80 ? "Mandou bem!" : pct >= 60 ? "Bom treino! Vale rever os erros abaixo." : "Esse custou, e tudo bem: é errando aqui que você acerta depois.";
+  let h = '<div class="tr-end"><div class="tr-score">' + ok + "/" + n + '</div><p class="tr-msg">' + msg + "</p>";
+  if (S.mode === "one" && S.prev && S.prev[S.ids[0]]) h += '<p class="tr-sub">Antes, seu melhor nesta aula era ' + S.prev[S.ids[0]].b + "%.</p>";
+  const bk = TR.byKind(S.items, S.res);
+  h += '<div class="tr-chips">' + Object.keys(bk).map(k => '<span class="tr-chip2">' + TR.ICON[k] + " " + TR.SHORT[k] + " " + bk[k][0] + "/" + bk[k][1] + "</span>").join("") + "</div>";
+  if (S.mode === "mix") {
+    h += '<div class="tr-rows">' + S.ids.filter(id => S.items.some(it => it.id === id)).map(id => {
+      const idx = S.items.map((it, i) => (it.id === id ? i : -1)).filter(i => i >= 0), a = idx.filter(i => S.res[i]).length;
+      return '<div class="tr-row"><span>' + trEsc(trTitle(id)) + "</span><b>" + a + "/" + idx.length + "</b></div>";
+    }).join("") + "</div>";
+  }
+  if (miss.length) {
+    h += '<div class="tr-miss"><b>Para rever (' + miss.length + "):</b><ul>" + miss.map(it => "<li>" + trEsc(TR.labelOf(it.q)) +
+         (S.mode === "mix" ? ' <small>· ' + trEsc(trTitle(it.id)) + "</small>" : "") + "</li>").join("") + "</ul></div>";
+  }
+  h += '<div class="tr-actions wrap">';
+  if (miss.length) h += '<button type="button" class="tr-btn pri" data-redo>Refazer só as ' + miss.length + (miss.length === 1 ? " que errei" : " que errei") + "</button>";
+  h += '<button type="button" class="tr-btn' + (miss.length ? "" : " pri") + '" data-again>Treinar de novo</button>';
+  const id1 = S.ids.length === 1 ? S.ids[0] : null, ag = id1 && typeof RV !== "undefined" ? RV.byId()[id1] : null;
+  if (id1 && typeof RV !== "undefined" && pct < 80 && !ag) h += '<button type="button" class="tr-btn" data-rev>↻ Pôr na revisão</button>';
+  h += '<button type="button" class="tr-btn" data-close>Fechar</button></div>';
+  if (id1 && ag) h += '<p class="tr-sub">↻ Esta aula já está na sua agenda de revisões: ' + trEsc(RV.when(ag.due)) + ".</p>";
+  h += "</div>";
+  body.innerHTML = h; body.scrollTop = 0; trMath(body);
+  const on = (sel, fn) => { const b = body.querySelector(sel); if (b) b.onclick = fn; };
+  const base = S.from || S.mode;   // de onde veio (uma aula ou misto), também ao refazer as erradas
+  on("[data-redo]", () => trBegin({ mode: "redo", from: base, key: S.key, ids: S.ids, items: miss.map(it => ({ id: it.id, q: it.q })) }));
+  on("[data-again]", () => (base === "mix" ? trOpenMixed(S.key) : trOpenLesson(S.ids[0])));
+  on("[data-rev]", () => {
+    RV.schedule(id1, RV.addDays(RV.today(), 1));
+    if (typeof rvToast === "function") rvToast("Revisão marcada para amanhã.");
+    if (typeof rvNavBadge === "function") rvNavBadge();
+    const b = body.querySelector("[data-rev]"); if (b) { b.disabled = true; b.textContent = "✓ Na revisão de amanhã"; }
+  });
+  on("[data-close]", () => trClose(false));
+}
+
+// Cartão "Treinar esta aula" (fim da Aula Visual)
+function trEntryHTML(id) {
+  const n = TR_INDEX[id];
+  if (!n) return "";
+  const st = TR.stats(id), k = Math.min(n, TR.PER_SESSION);
+  const sub = st ? "Seu melhor: " + st.b + "% · última vez " + trEsc(st.s) + " · treinou " + st.n + (st.n === 1 ? " vez" : " vezes")
+                 : "Questões de marcar, com a explicação na hora. Não mexe no seu progresso nem nos pontos.";
+  return '<div class="tr-entry" data-tr="' + id + '"><span class="tr-entry-ico" aria-hidden="true">🏋️</span><div class="tr-entry-t"><b>Treinar esta aula · ' + k +
+         " questões</b><span>" + sub + '</span></div><button type="button" class="tr-entry-go" onclick="trOpenLesson(\'' + id + '\')">' +
+         (st ? "Treinar de novo" : "Começar") + "</button></div>";
+}
+function trPaintEntries() {
+  document.querySelectorAll(".tr-entry[data-tr]").forEach(el => {
+    const html = trEntryHTML(el.dataset.tr);
+    if (html) el.outerHTML = html;
+  });
+}
+
+// Teclado: na fase de captura, para o Esc do treino não fechar também a aula que está por baixo
+window.addEventListener("keydown", e => {
+  const el = document.getElementById("tr"), S = TR_S;
+  if (!el || el.hidden) return;
+  if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); trClose(true); return; }
+  if (!S || S.i >= S.items.length || (e.target.closest && e.target.closest("input,textarea"))) return;
+  if (S.answered == null && /^[1-9]$/.test(e.key)) { e.preventDefault(); e.stopPropagation(); trAnswer(+e.key - 1); }
+  else if (S.answered != null && (e.key === "Enter" || e.key === " ")) {
+    e.stopPropagation();
+    if (!(e.target.closest && e.target.closest("button"))) { e.preventDefault(); trNext(); }   // num botão, o próprio clique resolve
+  }
+}, true);
 
 </script>
 

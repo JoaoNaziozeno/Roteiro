@@ -8,6 +8,7 @@ import html as html_lib
 import json
 import re
 import curriculo
+import treino
 from listing_css import LISTING_CSS
 from studio_js import STUDIO_JS
 from metrics_js import METRICS_JS
@@ -171,6 +172,8 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     options.append(f'<button class="row-opt" data-act="video2" title="{t2_lbl}" onclick="openStudyModal(\'{t_id}\', false, 2)">2º vídeo</button>')
                 if t.get("pt_guide"):
                     options.append(f'<button class="row-opt" data-act="guide" onclick="openStudyModal(\'{t_id}\', true, 1)">Aula Visual</button>')
+                if treino.contar(t_id):   # questões de marcar da aula (treino_js.py)
+                    options.append(f'<button class="row-opt" data-act="treino" onclick="trOpenLesson(\'{t_id}\')">🏋️ Treinar</button>')
                 if t.get("doc_url"):
                     doc_name = "Documentação" if track_id == "ia" else "Material de apoio"
                     options.append(f'<a class="row-opt" data-act="doc" href="{t["doc_url"]}" target="_blank" rel="noopener" title="{html_lib.escape(doc_lbl)}">{doc_name} ↗</a>')

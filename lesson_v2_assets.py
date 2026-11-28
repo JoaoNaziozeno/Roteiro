@@ -418,6 +418,9 @@ function renderPtGuideV2Body(g, topicId) {
   if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
   if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
   if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
+  // Treino da aula (treino_js.py): o cartão "Treinar esta aula" entra logo depois do quiz de saída (ou no fim)
+  const trHtml = topicId && typeof trEntryHTML === "function" ? trEntryHTML(topicId) : "";
+  if (trHtml) chips.push("🏋️ treino");
   const rvSt = (topicId && typeof RV !== "undefined") ? RV.stateOf(lv2ReadReview()[topicId]) : null;
   if (rvSt && rvSt.due <= RV.today()) chips.push(rvSt.due < RV.today() ? "revisão atrasada" : "revisão de hoje");
 
@@ -431,7 +434,12 @@ function renderPtGuideV2Body(g, topicId) {
     html += `<div><div class="lv2-meta-title">Você vai reutilizar</div><ul>${g.prerequisitos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
   }
   html += `</div></div>`;
-  blocos.forEach((b, k) => { html += lv2Block(b, k + 1, n); });
+  let trDone = !trHtml;
+  blocos.forEach((b, k) => {
+    html += lv2Block(b, k + 1, n);
+    if (!trDone && b.tipo === "quiz") { html += trHtml; trDone = true; }
+  });
+  if (!trDone) html += trHtml;
 
   html += `<div class="lv2-footer">`;
   if (g.resumo && g.resumo.length) {

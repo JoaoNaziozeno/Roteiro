@@ -26,9 +26,13 @@ class CartoesDasAulas(unittest.TestCase):
     def setUpClass(cls):
         cls.mapas = {tr: json_apos(ler(nome), "const TOPICS_MAP = ") for tr, nome in PAGINAS.items()}
         cls.decks = json.loads((BASE / "revisao_cartoes.json").read_text(encoding="utf-8"))
+        # questões do Treino (treino_<trilha>.json): também entram nos cartões das aulas que têm treino
+        cls.treino = {}
+        for arq in BASE.glob("treino_*.json"):
+            cls.treino.update(json.loads(arq.read_text(encoding="utf-8")))
 
     def test_arquivo_e_o_que_as_aulas_geram_e_vai_para_o_deploy(self):
-        self.assertEqual(self.decks, build_decks(self.mapas))
+        self.assertEqual(self.decks, build_decks(self.mapas, self.treino))
         self.assertTrue((BASE / "dist_deploy" / "revisao_cartoes.json").exists())
         self.assertIn("revisao_cartoes.json", zipfile.ZipFile(BASE / "roteiro_aws_deploy.zip").namelist())
 
@@ -52,6 +56,9 @@ class CartoesDasAulas(unittest.TestCase):
                     self.assertTrue(c["q"] and len(c["o"]) >= 2 and 0 <= c["c"] < len(c["o"]), tid)
                 elif c["k"] == "obj":
                     self.assertTrue(c["q"], tid)
+                elif c["k"] == "tr":     # questão do Treino, inteira (formato em treino_js.py)
+                    self.assertIn(c["q"]["k"], ("saida", "lacuna", "erro", "conceito", "conta"), tid)
+                    self.assertIn(c["q"], self.treino[tid], tid)
                 else:
                     self.assertTrue(c["q"] and (c.get("a") or c.get("l")), (tid, c["k"]))
 

@@ -24,6 +24,9 @@ class Visual(unittest.TestCase):
             k = "const TOPICS_MAP = "
             cls.mapa[tr] = json.JSONDecoder().raw_decode(s[s.index(k) + len(k):])[0]
             corpo = s[:s.index("const TOPICS_MAP = ")]
+            k = "const TR_INDEX = "   # aulas com Treino (questões de marcar)
+            cls.treino = getattr(cls, "treino", {})
+            cls.treino.update(json.JSONDecoder().raw_decode(s[s.index(k) + len(k):])[0] if k in s else {})
             partes = re.split(r'(?=<div class="topic-row )', corpo)[1:]
             cls.linhas[tr] = {re.search(r'data-id="([^"]+)"', p).group(1): p for p in partes}
 
@@ -44,7 +47,7 @@ class Visual(unittest.TestCase):
                 t = self.mapa[tr][tid]
                 painel = linha[linha.index(f'id="more-{tid}"'):]
                 painel = painel[:painel.index("</div>")]
-                esperado = [nome for nome, tem in (("video2", t["url2"]), ("guide", t["pt_guide"]),
+                esperado = [nome for nome, tem in (("video2", t["url2"]), ("guide", t["pt_guide"]), ("treino", tid in self.treino),
                                                    ("doc", t["doc_url"]), ("notes", True), ("review", True)) if tem]
                 self.assertEqual(re.findall(r'data-act="(\w+)"', painel), esperado, tid)
                 if t["doc_url"]:
