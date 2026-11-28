@@ -223,6 +223,34 @@ PROJECTS_CSS = """
   line-height: 1.55;
   margin-bottom: 16px;
 }
+.proj-prazo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: .8rem;
+  color: var(--mu);
+}
+.proj-prazo input[type=date] {
+  margin-left: 6px;
+  min-height: 30px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--bd);
+  background: var(--bg);
+  color: var(--tx);
+  font: inherit;
+  color-scheme: dark light;
+}
+.proj-prazo-tag {
+  padding: 2px 9px;
+  border-radius: 99px;
+  border: 1px solid var(--bd);
+  font-weight: 600;
+}
+.proj-prazo-tag.soon { border-color: #e8a100; color: #e8a100; }
+.proj-prazo-tag.late { border-color: #ef6b5b; color: #ef6b5b; }
 .proj-stack-tags {
   display: flex;
   flex-wrap: wrap;
@@ -589,7 +617,7 @@ function renderProjects() {{
     const demoLink = p.demoUrl ? `<a href="${{p.demoUrl}}" target="_blank" rel="noopener" class="proj-link-btn" style="color:#10b981">🌐 Demo</a>` : `<button class="proj-link-btn" onclick="openEditLinksModal('${{p.id}}')">+ Add Demo</button>`;
 
     return `
-      <div class="proj-card">
+      <div class="proj-card" id="${{p.id}}">
         <div>
           <div class="proj-card-top">
             <span class="proj-phase-badge">${{p.phaseLabel}}</span>
@@ -603,6 +631,10 @@ function renderProjects() {{
           <p class="proj-desc">${{p.desc}}</p>
           <div class="proj-stack-tags">
             ${{p.stack.map(s => `<span class="proj-tag">${{s}}</span>`).join("")}}
+          </div>
+          <div class="proj-prazo">
+            <label>⏰ Prazo <input type="date" value="${{p.prazo || ""}}" onchange="onProjectDeadlineChange('${{p.id}}', this.value)" aria-label="Prazo do projeto"></label>
+            ${{projPrazoTag(p)}}
           </div>
         </div>
 
@@ -646,8 +678,25 @@ function onProjectStatusChange(projId, newStatus) {{
     saveProjects();
     updateMetrics();
     renderProjects();
+    window.dispatchEvent(new CustomEvent("av:change"));   // projeto concluído sai dos avisos de prazo
     if (typeof showToast === "function") showToast("Status do projeto atualizado!");
   }}
+}}
+
+// Prazo do projeto: entra nos avisos (sino e cartão "Hoje") quando vence em até 3 dias
+function onProjectDeadlineChange(projId, value) {{
+  const p = projectsData.find(x => x.id === projId);
+  if (!p) return;
+  p.prazo = value || "";
+  saveProjects();
+  renderProjects();
+  window.dispatchEvent(new CustomEvent("av:change"));
+}}
+function projPrazoTag(p) {{
+  if (!p.prazo || p.status === "done" || typeof RV === "undefined") return "";
+  const n = RV.between(RV.today(), p.prazo);
+  const txt = n < 0 ? (n === -1 ? "venceu ontem" : "venceu há " + (-n) + " dias") : n === 0 ? "vence hoje" : n === 1 ? "vence amanhã" : "em " + n + " dias";
+  return `<span class="proj-prazo-tag${{n <= 0 ? " late" : n <= 3 ? " soon" : ""}}">${{txt}}</span>`;
 }}
 
 function openProjectNotesModal(projId) {{

@@ -3605,20 +3605,6 @@ input:checked + .slider:before { transform: translateX(14px); }
 .cq-row2{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}
 @media(max-width:980px){.cq-row2{grid-template-columns:1fr}}
 .cq-box{background:var(--bg);border:1px solid var(--bd);border-radius:16px;padding:16px}
-.cq-rev{margin-bottom:14px;padding:12px 16px}
-.cq-rev-list{list-style:none;margin:6px 0 0;padding:0}
-.cq-rev-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--bd)}
-.cq-rev-item:first-child{border-top:0}
-.cq-rev-item i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
-.cq-rev-item a{flex:1;min-width:0;color:var(--tx);text-decoration:none;font-size:.88rem;font-weight:600;line-height:1.3}
-.cq-rev-item a:hover{text-decoration:underline}
-.cq-rev-item small{display:block;font-weight:400;font-size:.74rem;color:var(--mu)}
-.cq-rev-ok{flex:none;font:inherit;font-size:.78rem;min-height:34px;padding:5px 12px;border-radius:99px;border:1px solid var(--bd);background:transparent;color:var(--tx);cursor:pointer}
-.cq-rev-ok:hover{border-color:#2fa36b;color:#2fa36b}
-.cq-rev-all{font-size:.78rem;font-weight:600;color:var(--t-hub);text-decoration:none;text-transform:none;letter-spacing:0}
-.cq-rev-all:hover{text-decoration:underline}
-.cq-rev-none{margin:6px 0 0;font-size:.85rem;color:var(--mu)}
-.cq-rev-none b{color:var(--tx)}
 .cq-h{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .cq-heat{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;grid-auto-columns:minmax(10px,20px);gap:4px;justify-content:start}
 .cq-heat i{display:block;aspect-ratio:1;border-radius:4px;background:var(--bd);opacity:.55}
@@ -4380,6 +4366,46 @@ html::view-transition{background:var(--bg)}
   max-width:calc(100vw - 24px);padding:10px 16px;border-radius:12px;background:#0f1d27;color:#e8eef1;border:1px solid #2c4350;
   box-shadow:0 16px 40px rgba(0,0,0,.4);font-size:.85rem}
 .rv-toast button{border:0;background:none;color:var(--t-hub,#5eead4);font:inherit;font-weight:700;cursor:pointer;padding:2px 4px}
+
+
+/* ===== Avisos: sino, painel e cartão "Hoje" ===== */
+.av-bell{position:relative;display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);
+  background:transparent;color:var(--tx);font-size:.95rem;cursor:pointer;flex:none}
+.av-bell:hover,.av-bell[aria-expanded="true"]{border-color:var(--t-hub)}
+.av-bell-badge{position:absolute;top:-5px;right:-5px;display:grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border-radius:9px;
+  background:#ef6b5b;color:#fff;font:800 .64rem/1 Inter,system-ui,sans-serif}
+.av-bell-badge[hidden]{display:none}
+.av-panel{position:fixed;z-index:100000;width:400px;max-width:calc(100vw - 20px);max-height:min(70vh,620px);overflow:auto;padding:12px 14px;
+  border-radius:16px;border:1px solid var(--bd);background:var(--card);color:var(--tx);box-shadow:0 24px 60px rgba(0,0,0,.45);font-size:.85rem}
+@media (max-width:600px){.av-panel{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto;max-height:80vh}}
+.av-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:4px}
+.av-head b{font-size:1rem}
+.av-head span{font-size:.75rem;color:var(--mu)}
+.av-g{margin:12px 0 6px;font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.av-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.av-item{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg)}
+.av-item.urg{border-color:color-mix(in srgb,#ef6b5b 45%,var(--bd))}
+.av-ico{flex:none;width:20px;text-align:center;font-size:1rem;line-height:1.35}
+.av-t{flex:1;min-width:0;line-height:1.4}
+.av-t small{display:block;margin-top:3px;font-size:.74rem;color:var(--mu);line-height:1.45}
+.av-t small a{color:var(--t-hub);text-decoration:none}
+.av-t small a:hover{text-decoration:underline}
+.av-acts{display:flex;align-items:center;gap:4px;flex:none}
+.av-act{display:inline-flex;align-items:center;min-height:30px;padding:4px 11px;border-radius:99px;border:1px solid var(--bd);background:transparent;
+  color:var(--tx);font:inherit;font-size:.76rem;font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap}
+.av-act:hover{border-color:var(--t-hub)}
+.av-act.pri{background:var(--t-hub);border-color:var(--t-hub);color:#04201d}
+.av-hide{width:26px;height:26px;border:0;border-radius:50%;background:transparent;color:var(--mu);font:inherit;font-size:.75rem;cursor:pointer}
+.av-hide:hover{background:var(--bd);color:var(--tx)}
+.av-empty{margin:10px 0 4px;color:var(--mu);line-height:1.5}
+.av-foot{margin:12px 0 0;padding-top:8px;border-top:1px solid var(--bd);font-size:.72rem;color:var(--mu)}
+.av-hoje{margin:0 0 26px;padding:16px 18px;border-radius:18px;border:1px solid var(--bd);background:var(--card)}
+.av-hoje[hidden]{display:none}
+.av-hoje-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.av-hoje-h h2{margin:0;font-size:1.05rem}
+.av-more{border:0;background:none;color:var(--t-hub);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
+.av-hoje .av-item{background:var(--bg)}
+@media (max-width:640px){.av-item{flex-wrap:wrap}.av-acts{width:100%;justify-content:flex-end}}
 </style>
 <script>
 
@@ -4687,9 +4713,265 @@ function rvNavBadge() {
 }
 if (typeof window !== "undefined") window.addEventListener("rv:change", () => { try { rvNavBadge(); } catch (e) {} });
 
+
+// =================== AVISOS: o que pede atenção (sem tela; testado no Node) ===================
+const AV = (() => {
+  const DAY = 86400000, HIDE_KEY = "roteiro-avisos-ocultos";
+  const read = (k, d) => { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch (e) { return d; } };
+  const isDate = d => typeof d === "string" && /^\d{4}-\d{2}-\d{2}/.test(d);
+
+  // Dias com estudo (o mesmo critério das Conquistas): sessões no estúdio, conclusões/avanços e revisões feitas.
+  // last[id] = última atividade em cada aula (sessão ou mudança de situação).
+  function studyDays() {
+    const days = new Set(), last = {};
+    read("roteiro-sessions-v1", []).forEach(s => {
+      if (!s || !s.t) return;
+      if ((s.sec || 0) > 0) days.add(RV.today(s.t));
+      if (s.id) last[s.id] = Math.max(last[s.id] || 0, s.t);
+    });
+    read("roteiro-events-v1", []).forEach(e => {
+      if (!e || !e.t) return;
+      if (e.to === "e" || e.to === "r") days.add(RV.today(e.t));
+      if (e.id) last[e.id] = Math.max(last[e.id] || 0, e.t);
+    });
+    const recs = read(RV.KEY, {});
+    for (const id in recs) (recs[id] && Array.isArray(recs[id].hist) ? recs[id].hist : []).forEach(h => { const t = Number(h && h[0]); if (t) days.add(RV.today(t)); });
+    return { days, last };
+  }
+
+  // Sequência: dias seguidos estudando até hoje (ou até ontem, se ainda não estudou hoje)
+  function streakInfo(now) {
+    const { days } = studyDays(), hoje = RV.today(now);
+    let n = 0, d = days.has(hoje) ? hoje : RV.addDays(hoje, -1);
+    while (days.has(d)) { n++; d = RV.addDays(d, -1); }
+    let lastDay = null;
+    days.forEach(k => { if (!lastDay || k > lastDay) lastDay = k; });
+    return { streak: n, today: days.has(hoje), lastDay };
+  }
+
+  // Só o urgente (número vermelho do sino): revisões de hoje/atrasadas + prazos vencidos ou de hoje
+  function urgentCount(now) {
+    const hoje = RV.today(now);
+    let n = RV.counts(now).due;
+    const prog = read("roteiro-ia-v1", {});
+    for (const id in prog) { const p = prog[id]; if (p && p.s !== "e" && isDate(p.d) && String(p.d).slice(0, 10) <= hoje) n++; }
+    const projs = read("roteiro_portfolio_projects", []);
+    (Array.isArray(projs) ? projs : []).forEach(pj => { if (pj && pj.status !== "done" && isDate(pj.prazo) && pj.prazo.slice(0, 10) <= hoje) n++; });
+    return n;
+  }
+
+  // Lista completa. topics = [[id, trilha, título, tem_quiz], ...] (o índice da busca)
+  function list(now, topics) {
+    now = now == null ? Date.now() : now;
+    const hoje = RV.today(now), T = {}, out = [];
+    (topics || []).forEach(r => { T[r[0]] = r; });
+    const prog = read("roteiro-ia-v1", {}), rev = read(RV.KEY, {}), projs = read("roteiro_portfolio_projects", []);
+    const P = Array.isArray(projs) ? projs : [];
+    // 1) revisões de hoje e atrasadas
+    const c = RV.counts(now);
+    if (c.due) out.push({ k: "rev", grupo: "hoje", urg: c.due, n: c.due, late: c.late, ids: RV.agenda(now).filter(it => it.due <= hoje && T[it.id]).map(it => it.id), key: "rev" });
+    // 2) prazos das aulas ainda não concluídas: vencidos, de hoje e dos próximos 3 dias
+    Object.keys(prog).sort().forEach(id => {
+      const p = prog[id];
+      if (!p || p.s === "e" || !isDate(p.d) || !T[id]) return;
+      const d = String(p.d).slice(0, 10), n = RV.between(hoje, d);
+      if (n <= 3) out.push({ k: "prazo", grupo: n <= 0 ? "hoje" : "breve", urg: n <= 0 ? 1 : 0, id, d, n, key: "prazo:" + id + ":" + d });
+    });
+    // 3) prazos dos projetos
+    P.forEach(pj => {
+      if (!pj || pj.status === "done" || !isDate(pj.prazo)) return;
+      const d = pj.prazo.slice(0, 10), n = RV.between(hoje, d);
+      if (n <= 3) out.push({ k: "proj", grupo: n <= 0 ? "hoje" : "breve", urg: n <= 0 ? 1 : 0, pid: pj.id, titulo: pj.title || "Projeto", d, n, key: "proj:" + pj.id + ":" + d });
+    });
+    // 4) aulas concluídas que têm quiz de saída, sem a aprovação registrada
+    const semQuiz = Object.keys(prog).filter(id => prog[id] && prog[id].s === "e" && T[id] && T[id][3] && !(rev[id] && rev[id].passedAt)).sort();
+    if (semQuiz.length) out.push({ k: "quiz", grupo: "pend", urg: 0, ids: semQuiz, key: "quiz:" + semQuiz.length });
+    // 5) aulas em andamento sem atividade há 7 dias ou mais (sem registro de atividade, não dá para saber: fica de fora)
+    const { last } = studyDays();
+    const paradas = Object.keys(prog).filter(id => prog[id] && prog[id].s === "r" && T[id] && last[id] && now - last[id] >= 7 * DAY)
+      .sort((a, b) => last[a] - last[b]).map(id => ({ id, dias: Math.floor((now - last[id]) / DAY) }));
+    if (paradas.length) out.push({ k: "parada", grupo: "pend", urg: 0, itens: paradas, key: "parada:" + paradas.map(x => x.id + "@" + last[x.id]).join(",") });
+    // 6) projetos em andamento sem prazo
+    const semPrazo = P.filter(pj => pj && pj.status === "wip" && !isDate(pj.prazo));
+    if (semPrazo.length) out.push({ k: "semprazo", grupo: "pend", urg: 0, projs: semPrazo.map(pj => ({ pid: pj.id, titulo: pj.title || "Projeto" })),
+                                    key: "semprazo:" + semPrazo.map(pj => pj.id).join(",") });
+    // 7) ritmo: sequência em risco, ou dias sem estudar
+    const s = streakInfo(now);
+    if (!s.today && s.streak >= 2) out.push({ k: "seq", grupo: "ritmo", urg: 0, n: s.streak, key: "seq:" + hoje });
+    else if (!s.today && !s.streak && s.lastDay) {
+      const dias = RV.between(s.lastDay, hoje);
+      if (dias >= 3) out.push({ k: "parado", grupo: "ritmo", urg: 0, dias, key: "parado:" + s.lastDay });
+    }
+    const oc = read(HIDE_KEY, {});
+    return out.filter(a => a.urg || !oc[a.key]);   // o urgente nunca some por ter sido ocultado
+  }
+
+  function hide(key, now) {
+    const oc = read(HIDE_KEY, {});
+    oc[key] = now == null ? Date.now() : now;
+    try { localStorage.setItem(HIDE_KEY, JSON.stringify(oc)); } catch (e) {}
+  }
+
+  return { list, urgentCount, hide, streakInfo, studyDays, HIDE_KEY };
+})();
+if (typeof module !== "undefined") module.exports = AV;
+
+
+// =================== SINO DE AVISOS E CARTÃO "HOJE" DO HUB ===================
+let AV_MAP = null;
+function avTopic(id) { if (!AV_MAP) { AV_MAP = {}; (window.DS_TOPICS || []).forEach(r => { AV_MAP[r[0]] = r; }); } return AV_MAP[id]; }
+// Nome curto, como na lista da trilha (listing_generator._list_title): "Aula 04 · assunto" no Inglês
+function avTitle(id) {
+  const r = avTopic(id); if (!r) return id;
+  const t = String(r[2]).replace(/\\u0026/g, "&");
+  const m = t.match(/^Curso de Inglês - Módulo \d+ Aula (\d+)\s*[:\-]?\s*(.+)$/);
+  if (m) return "Aula " + String(+m[1]).padStart(2, "0") + " · " + m[2];
+  return /^Curso de Inglês GRÁTIS - Aula Zero$/.test(t) ? "Aula Zero" : t;
+}
+function avLink(id) { return RV_TRACKS[rvTrackOf(id)].pagina + "?aula=" + encodeURIComponent(id); }
+function avPrazo(n, d) {
+  return n < 0 ? (n === -1 ? "venceu ontem" : "venceu há " + (-n) + " dias") : n === 0 ? "vence hoje" : n === 1 ? "vence amanhã" : "vence " + RV.fmt(d);
+}
+function avPlural(n, um, varios) { return n + " " + (n === 1 ? um : varios); }
+function avLinks(ids, max) {
+  const mais = ids.length - max;
+  return ids.slice(0, max).map(id => '<a href="' + avLink(id) + '">' + rvEsc(avTitle(id)) + "</a>").join(" · ") + (mais > 0 ? " · e mais " + mais : "");
+}
+const AV_GRUPOS = [["hoje", "Hoje"], ["breve", "Nos próximos dias"], ["pend", "Pendentes"], ["ritmo", "Ritmo"]];
+
+// Um aviso: ícone, texto e ação
+function avItem(a) {
+  const naRevisoes = typeof raStartDay === "function";
+  let ico = "", txt = "", sub = "", act = "";
+  switch (a.k) {
+    case "rev":
+      ico = "↻"; txt = "<b>" + avPlural(a.n, "revisão", "revisões") + " para hoje</b>" + (a.late ? " · " + avPlural(a.late, "atrasada", "atrasadas") : "");
+      sub = a.ids.length ? avLinks(a.ids, 3) : "";
+      act = naRevisoes ? '<button type="button" class="av-act pri" onclick="avClose(); raStartDay()">Começar</button>'
+                       : '<a class="av-act pri" href="revisoes.html?dia=1">Começar</a>';
+      break;
+    case "prazo":
+      ico = "⏰"; txt = "<b>Prazo " + avPrazo(a.n, a.d) + ":</b> " + rvEsc(avTitle(a.id)); sub = "Meta de conclusão que você definiu para esta aula";
+      act = '<a class="av-act" href="' + avLink(a.id) + '">Abrir aula</a>';
+      break;
+    case "proj":
+      ico = "🛠️"; txt = "<b>Projeto " + avPrazo(a.n, a.d) + ":</b> " + rvEsc(a.titulo);
+      act = '<a class="av-act" href="projetos.html#' + encodeURIComponent(a.pid) + '">Ver projeto</a>';
+      break;
+    case "quiz":
+      ico = "📝"; txt = "<b>" + avPlural(a.ids.length, "aula concluída", "aulas concluídas") + " sem o quiz de saída</b>";
+      sub = avLinks(a.ids, 3) + "<br>O quiz agenda as revisões e libera o “Vá mais fundo”.";
+      act = '<a class="av-act" href="' + avLink(a.ids[0]) + '">Fazer o quiz</a>';
+      break;
+    case "parada":
+      ico = "💤";
+      txt = a.itens.length === 1 ? "<b>Parada há " + a.itens[0].dias + " dias:</b> " + rvEsc(avTitle(a.itens[0].id))
+                                 : "<b>" + a.itens.length + " aulas em andamento paradas há 7 dias ou mais</b>";
+      sub = a.itens.length === 1 ? "Em andamento, sem estudo desde então" : avLinks(a.itens.map(x => x.id), 3);
+      act = '<a class="av-act" href="' + avLink(a.itens[0].id) + '">Continuar</a>';
+      break;
+    case "semprazo":
+      ico = "🛠️"; txt = "<b>" + (a.projs.length === 1 ? "Projeto em andamento sem prazo:</b> " + rvEsc(a.projs[0].titulo) : a.projs.length + " projetos em andamento sem prazo</b>");
+      sub = "Defina uma data e ele entra nos avisos";
+      act = '<a class="av-act" href="projetos.html#' + encodeURIComponent(a.projs[0].pid) + '">Definir prazo</a>';
+      break;
+    case "seq":
+      ico = "🔥"; txt = "<b>Sequência de " + a.n + " dias:</b> estude hoje para não quebrar"; sub = "Uma revisão de 5 minutos já conta.";
+      act = naRevisoes ? '<button type="button" class="av-act" onclick="avClose(); raStartDay()">Revisar</button>' : '<a class="av-act" href="revisoes.html">Revisar</a>';
+      break;
+    case "parado":
+      ico = "😴"; txt = "<b>Faz " + a.dias + " dias sem estudar</b>"; sub = "5 minutos de revisão já retomam o ritmo.";
+      act = '<a class="av-act" href="revisoes.html">Retomar</a>';
+      break;
+  }
+  const ocultar = a.urg ? "" : '<button type="button" class="av-hide" data-key="' + rvEsc(a.key) + '" title="Ocultar este aviso (neste aparelho)" aria-label="Ocultar este aviso">✕</button>';
+  return '<li class="av-item' + (a.urg ? " urg" : "") + '"><span class="av-ico" aria-hidden="true">' + ico + '</span><div class="av-t">' + txt +
+         (sub ? "<small>" + sub + "</small>" : "") + '</div><div class="av-acts">' + act + ocultar + "</div></li>";
+}
+
+function avGroupsHTML(items, max) {
+  let h = "", n = 0;
+  AV_GRUPOS.forEach(([g, nome]) => {
+    const its = items.filter(a => a.grupo === g).slice(0, max ? Math.max(0, max - n) : 99);
+    n += its.length;
+    if (its.length) h += '<div class="av-g">' + nome + '</div><ul class="av-list">' + its.map(avItem).join("") + "</ul>";
+  });
+  return h;
+}
+
+function avBindHide(root) {
+  root.querySelectorAll(".av-hide").forEach(b => b.onclick = e => { e.stopPropagation(); AV.hide(b.dataset.key); avRefresh(); });
+}
+
+// Painel do sino
+let AV_PANEL = null;
+function avClose() {
+  if (!AV_PANEL) return;
+  AV_PANEL.el.remove();
+  document.removeEventListener("pointerdown", AV_PANEL.out, true);
+  document.removeEventListener("keydown", AV_PANEL.key, true);
+  const b = document.getElementById("av-bell"); if (b) b.setAttribute("aria-expanded", "false");
+  AV_PANEL = null;
+}
+function avToggle(btn) {
+  if (AV_PANEL) { avClose(); return; }
+  const el = document.createElement("div");
+  el.className = "av-panel"; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "Avisos");
+  document.body.appendChild(el);
+  const out = e => { if (!el.contains(e.target) && !(btn && btn.contains(e.target))) avClose(); };
+  const key = e => { if (e.key === "Escape") { e.stopPropagation(); avClose(); } };
+  document.addEventListener("pointerdown", out, true);
+  document.addEventListener("keydown", key, true);
+  AV_PANEL = { el, btn, out, key };
+  if (btn) btn.setAttribute("aria-expanded", "true");
+  avRenderPanel();
+}
+function avRenderPanel() {
+  if (!AV_PANEL) return;
+  const items = AV.list(Date.now(), window.DS_TOPICS || []), el = AV_PANEL.el, urg = AV.urgentCount();
+  el.innerHTML = '<div class="av-head"><b>🔔 Avisos</b><span>' + (urg ? avPlural(urg, "urgente", "urgentes") : "nada urgente") + "</span></div>" +
+    (items.length ? avGroupsHTML(items) : '<p class="av-empty">✨ Tudo em dia. Nenhuma revisão, prazo ou pendência agora.</p>') +
+    '<p class="av-foot">Prazos: “Meta de conclusão” no ⋯ de cada aula e o campo Prazo de cada projeto.</p>';
+  avBindHide(el);
+  const r = AV_PANEL.btn ? AV_PANEL.btn.getBoundingClientRect() : { right: innerWidth - 10, bottom: 60 };
+  el.style.top = Math.round(r.bottom + 8) + "px";
+  el.style.left = Math.round(Math.max(10, Math.min(r.right - el.offsetWidth, innerWidth - el.offsetWidth - 10))) + "px";
+}
+
+// Número vermelho do sino (só o urgente)
+function avBellBadge() {
+  const b = document.getElementById("av-bell-badge");
+  if (!b) return;
+  const n = AV.urgentCount();
+  b.textContent = n > 99 ? "99+" : n;
+  b.hidden = !n;
+  const bell = document.getElementById("av-bell");
+  if (bell) bell.title = n ? "Avisos: " + avPlural(n, "urgente", "urgentes") : "Avisos";
+}
+
+// Cartão "Hoje" no topo do hub: os avisos mais importantes, com ação direta
+function avRenderHoje() {
+  const box = document.getElementById("av-hoje");
+  if (!box) return;
+  const items = AV.list(Date.now(), window.DS_TOPICS || []);
+  box.hidden = false;
+  box.innerHTML = '<div class="av-hoje-h"><h2>📋 Hoje</h2>' +
+    (items.length > 4 ? '<button type="button" class="av-more" onclick="avToggle(document.getElementById(\'av-bell\'))">Ver todos os ' + items.length + " avisos</button>" : "") + "</div>" +
+    (items.length ? avGroupsHTML(items, 4) : '<p class="av-empty">✨ Tudo em dia: nenhuma revisão, prazo ou pendência para hoje. Que tal adiantar a próxima aula?</p>');
+  avBindHide(box);
+}
+
+function avRefresh() { try { avBellBadge(); avRenderHoje(); avRenderPanel(); } catch (e) {} }
+// Depois que a página inteira existe (o índice das aulas, DS_TOPICS, vem no fim do <body data-track="hub">)
+function avBoot() {
+  avRefresh();
+  window.addEventListener("rv:change", avRefresh);
+  window.addEventListener("av:change", avRefresh);
+}
+
 </script>
 </head>
-<body data-track="hub">
+<body>
 
 <!-- TOPBAR FIXA -->
 <header class="top-nav">
@@ -4704,7 +4986,7 @@ if (typeof window !== "undefined") window.addEventListener("rv:change", () => { 
       <a href="revisoes.html" class="nav-link" id="nav-rv-link">↻ Revisões<span class="nav-rv-badge" id="nav-rv-badge" hidden></span></a>
     </nav>
     <div class="nav-right">
-<button type="button" class="ds-k-btn" title="Buscar páginas e tópicos (Ctrl + K)"><span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd></button>
+<button type="button" class="av-bell" id="av-bell" aria-haspopup="dialog" aria-expanded="false" title="Avisos" onclick="avToggle(this)"><span aria-hidden="true">🔔</span><span class="av-bell-badge" id="av-bell-badge" hidden></span></button><button type="button" class="ds-k-btn" title="Buscar páginas e tópicos (Ctrl + K)"><span aria-hidden="true">🔎</span><span class="ds-k-label">Buscar</span><kbd>Ctrl K</kbd></button>
       <div class="nav-user-dropdown-wrap" id="nav-user-wrap">
         <button class="nav-user-pill" onclick="toggleUserDropdown(event)" id="nav-auth-user" title="Menu da Conta">
           👤 <span>Minha conta</span> <span style="font-size:.7rem;margin-left:2px">▾</span>
@@ -4732,6 +5014,7 @@ if (typeof window !== "undefined") window.addEventListener("rv:change", () => { 
 </header>
 <script>
 try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões de hoje + atrasadas)
+try { avBellBadge(); } catch (e) {}  // número vermelho do sino (revisões + prazos vencidos ou de hoje)
 (function () {
   try {
     var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
@@ -4805,6 +5088,9 @@ try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões 
       <div class="ds-route" id="ds-route" aria-label="Mapa da sua trilha: clique em uma estação para abrir a trilha"></div>
     </section>
 
+    <!-- HOJE: avisos mais importantes (revisões, prazos, pendências e ritmo), com ação direta. Ver alerts_js.py -->
+    <section class="av-hoje" id="av-hoje" aria-label="Avisos de hoje" hidden></section>
+
   <!-- =======================================================================
        COCKPIT NEURAL DE TELEMETRIA 360°, VELOCÍMETRO SVG & SIMULADOR PREDITIVO
        ======================================================================= -->
@@ -4817,7 +5103,6 @@ try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões 
       <div class="cq-stats" id="cq-stats"></div>
     </div>
     <div class="cq-grid" id="cq-cards"></div>
-    <div class="cq-box cq-rev" id="cq-rev" hidden></div>
     <div class="cq-row2">
       <div class="cq-box">
         <div class="cq-h"><span>📅 Seus dias de estudo (últimas 12 semanas)</span><span id="cq-streak"></span></div>
@@ -6438,6 +6723,11 @@ function renderConquistas() {
   const dayMin = {};
   sessions.forEach(s => { if (s && s.t) dayMin[cqDayKey(s.t)] = (dayMin[cqDayKey(s.t)] || 0) + (s.sec || 0) / 60; });
   events.forEach(e => { if (e && e.t && (e.to === "e" || e.to === "r")) { const k = cqDayKey(e.t); dayMin[k] = (dayMin[k] || 0) + (e.to === "e" ? 15 : 5); } });
+  // Revisões feitas também contam como dia de estudo (o aviso de sequência do sino usa o mesmo critério)
+  const recs = cqRead("roteiro-review-v1", {});
+  for (const rid in recs) (recs[rid] && Array.isArray(recs[rid].hist) ? recs[rid].hist : []).forEach(h => {
+    const t = Number(h && h[0]); if (t) { const k = cqDayKey(t); dayMin[k] = (dayMin[k] || 0) + 10; }
+  });
   const studied = k => (dayMin[k] || 0) > 0;
   let streak = 0;
   for (let d = 0; d < 400; d++) {
@@ -6534,40 +6824,10 @@ function renderConquistas() {
       '<div class="cq-nextbar"><i style="width:' + Math.round(next.frac * 100) + '%"></i></div>';
   } else document.getElementById("cq-next").textContent = "Você conquistou todos os selos. Lenda!";
 
-  cqRenderReview();
 }
 
 // Lista de revisão: aulas que o aluno marcou com ↻ (campo rv), das três disciplinas, a mais antiga primeiro.
 // Só a marca entra e sai: a situação da aula (concluída etc.) não muda.
-// Revisões de hoje (e atrasadas), da agenda única (RV). A página Revisões tem a agenda completa.
-// "Revisei" pergunta como foi e agenda a próxima. A situação da aula não muda.
-function cqRenderReview() {
-  const box = document.getElementById("cq-rev");
-  if (!box || typeof RV === "undefined") return;
-  const topics = CQ_INDEX.topics, track = {}, hoje = RV.today();
-  CQ_TRACKS.forEach(([tr, name, icon, href, color]) => { track[tr] = { name, href, color }; });
-  const all = RV.agenda().filter(it => topics[it.id] && track[it.id.split("-")[0]]);
-  const due = all.filter(it => it.due <= hoje), next = all.find(it => it.due > hoje);
-  box.hidden = !all.length;
-  if (!all.length) { box.innerHTML = ""; return; }
-  const link = '<a class="cq-rev-all" href="revisoes.html">Ver agenda →</a>';
-  if (!due.length) {
-    box.innerHTML = '<div class="cq-h"><span>↻ Revisões</span>' + link + "</div>" +
-      '<p class="cq-rev-none">Nada para revisar hoje 🎉 Próxima: <b>' + cqEsc(topics[next.id][0]) + "</b> · " + RV.when(next.due) + ".</p>";
-    return;
-  }
-  const late = due.filter(it => it.due < hoje).length;
-  box.innerHTML = '<div class="cq-h"><span>↻ Revisões de hoje · ' + due.length + (late ? " (" + late + (late === 1 ? " atrasada" : " atrasadas") + ")" : "") +
-    "</span>" + link + "</div>" +
-    '<ul class="cq-rev-list">' + due.slice(0, 5).map(it => {
-      const t = track[it.id.split("-")[0]];
-      return '<li class="cq-rev-item" style="--c:var(' + t.color + ')"><i aria-hidden="true"></i>' +
-        '<a href="' + t.href + "?aula=" + encodeURIComponent(it.id) + '">' + cqEsc(topics[it.id][0]) +
-        "<small>" + cqEsc(t.name) + " · " + RV.when(it.due) + "</small></a>" +
-        '<button type="button" class="cq-rev-ok" onclick="openReviewMenu(\'' + it.id + '\', this, \'grade\')" title="Registrar a revisão e agendar a próxima">Revisei</button></li>';
-    }).join("") + "</ul>" + (due.length > 5 ? '<p class="cq-rev-none">+ ' + (due.length - 5) + " na página Revisões.</p>" : "");
-}
-window.addEventListener("rv:change", () => { try { cqRenderReview(); } catch (e) {} });
 
 
 function toggleTheme(){
@@ -6589,7 +6849,7 @@ checkHubAuth();
 </script>
 
 <script id="design-v2-js">
-window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0-0-2","ia","Entrada e saída de dados"],["ia-0-0-1","ia","Variáveis e tipos (int, float, str, bool)"],["ia-0-0-g07","ia","Operadores aritméticos"],["ia-0-0-g08","ia","Usar módulos prontos (import)"],["ia-0-0-g09","ia","Manipular textos (strings)"],["ia-0-0-3","ia","Condicionais (if, elif, else)"],["ia-0-0-g12","ia","Condições aninhadas e elif"],["ia-0-0-4","ia","Laços (for, while)"],["ia-0-0-g14","ia","Repetir enquanto (while)"],["ia-0-0-g15","ia","Interromper laços (break) e f-strings"],["ia-0-1-2","ia","Tuplas e conjuntos"],["ia-0-1-0","ia","Listas e fatiamento"],["ia-0-1-g18","ia","Listas compostas (listas dentro de listas)"],["ia-0-1-1","ia","Dicionários"],["ia-0-1-3","ia","List comprehension"],["ia-0-0-5","ia","Funções, parâmetros e retorno"],["ia-0-1-g21","ia","Funções: escopo, opcionais e docstrings"],["ia-0-2-1","ia","Módulos e pacotes"],["ia-0-2-3","ia","Tratamento de erros (try/except)"],["ia-0-2-2","ia","Arquivos (ler e escrever)"],["ia-0-2-0","ia","Orientação a objetos (classes, métodos, herança)"],["ia-0-2-4","ia","Ambientes virtuais e pip"],["ia-0-2-5","ia","Python assíncrono (async/await)"],["ia-0-3-0","ia","Git: commit, branch, merge"],["ia-0-3-1","ia","GitHub: repositórios e README"],["ia-0-3-2","ia","Consumir APIs com requests e JSON"],["ia-0-3-3","ia","Desenvolver com assistentes de IA (Claude Code, Copilot, Cursor)"],["ia-0-4-0","ia","Estilo de código PEP 8"],["ia-0-4-1","ia","Docstrings e comentários"],["ia-0-4-2","ia","Depuração (debug) e leitura de erros"],["ia-0-4-3","ia","Testes simples com pytest"],["ia-0-4-4","ia","Lambda, map e filter"],["ia-0-4-5","ia","Geradores e iteradores"],["ia-0-4-6","ia","Decoradores (noção)"],["ia-0-4-7","ia","Tipagem, dataclasses e Pydantic"],["ia-0-5-0","ia","datetime"],["ia-0-5-1","ia","os e pathlib"],["ia-0-5-2","ia","json e csv"],["ia-0-5-3","ia","Expressões regulares (re)"],["ia-0-5-4","ia","Web scraping com BeautifulSoup"],["ia-0-6-0","ia","30 exercícios (Beecrowd, HackerRank, Exercism)"],["ia-0-6-1","ia","Algoritmos de busca e ordenação"],["ia-0-6-2","ia","Noções de complexidade (Big O)"],["ia-0-6-3","ia","Projeto de linha de comando completo"],["ia-1-0-0","ia","NumPy: arrays e operações vetorizadas"],["ia-1-0-1","ia","Pandas: DataFrames e Series"],["ia-1-0-2","ia","Pandas: filtrar, agrupar e juntar (merge)"],["ia-1-0-3","ia","Limpeza de dados e valores ausentes"],["ia-1-1-0","ia","Matplotlib"],["ia-1-1-1","ia","Seaborn"],["ia-1-1-2","ia","Análise exploratória de dados (EDA)"],["ia-1-2-0","ia","Jupyter Notebook e Google Colab"],["ia-1-2-1","ia","SQL: SELECT, WHERE, JOIN, GROUP BY"],["ia-1-2-2","ia","Ler CSV, Excel e JSON"],["ia-1-3-0","ia","Broadcasting"],["ia-1-3-1","ia","Máscaras booleanas e indexação"],["ia-1-3-2","ia","Séries temporais"],["ia-1-3-3","ia","Pivot tables e melt"],["ia-1-3-4","ia","Apply e funções vetorizadas"],["ia-1-3-5","ia","Outliers e duplicados"],["ia-1-3-6","ia","Encoding de variáveis categóricas"],["ia-1-4-0","ia","Web scraping e APIs (opcional)"],["ia-1-4-1","ia","SQLite e SQLAlchemy"],["ia-1-4-2","ia","SQL avançado: subconsultas e window functions"],["ia-1-4-3","ia","Formato Parquet"],["ia-1-4-4","ia","Plotly e gráficos interativos"],["ia-1-5-0","ia","Notebooks reprodutíveis"],["ia-1-5-1","ia","Storytelling com dados"],["ia-1-5-2","ia","Dashboards com Streamlit (opcional)"],["ia-2-0-0","ia","Aprendizado supervisionado vs. não supervisionado"],["ia-2-0-1","ia","Treino, validação e teste"],["ia-2-0-2","ia","Overfitting e underfitting"],["ia-2-0-3","ia","Validação cruzada"],["ia-2-0-4","ia","Engenharia de atributos (feature engineering)"],["ia-2-1-0","ia","Regressão linear"],["ia-2-1-1","ia","Regressão logística"],["ia-2-1-2","ia","Árvores de decisão"],["ia-2-1-3","ia","Random Forest"],["ia-2-1-4","ia","Gradient Boosting (XGBoost, LightGBM)"],["ia-2-1-5","ia","K-Means e clusterização"],["ia-2-1-6","ia","PCA"],["ia-2-2-0","ia","Métricas: acurácia, precisão, recall, F1"],["ia-2-2-1","ia","Matriz de confusão e curva ROC"],["ia-2-2-2","ia","Scikit-learn e pipelines"],["ia-2-2-3","ia","Ajuste de hiperparâmetros"],["ia-2-3-0","ia","KNN"],["ia-2-3-1","ia","Naive Bayes"],["ia-2-3-2","ia","SVM"],["ia-2-3-3","ia","DBSCAN e clusterização hierárquica"],["ia-2-3-4","ia","Regularização Lasso e Ridge"],["ia-2-3-5","ia","Detecção de anomalias"],["ia-2-4-0","ia","Normalização e padronização"],["ia-2-4-1","ia","Dados desbalanceados (SMOTE)"],["ia-2-4-2","ia","Seleção de atributos"],["ia-2-4-3","ia","Vazamento de dados (data leakage)"],["ia-2-4-4","ia","Séries temporais com ML"],["ia-2-5-0","ia","Importância de atributos"],["ia-2-5-1","ia","SHAP e LIME"],["ia-2-5-2","ia","Viés e ética em ML"],["ia-2-5-3","ia","Sistemas de recomendação"],["ia-3-0-0","ia","Neurônio, camadas e pesos"],["ia-3-0-1","ia","Funções de ativação"],["ia-3-0-2","ia","Função de perda"],["ia-3-0-3","ia","Backpropagation"],["ia-3-0-4","ia","Gradiente descendente e otimizadores (SGD, Adam)"],["ia-3-0-5","ia","Regularização (dropout, weight decay)"],["ia-3-1-0","ia","CNNs para imagens"],["ia-3-1-1","ia","Transfer learning"],["ia-3-1-2","ia","RNNs e LSTMs para sequências"],["ia-3-2-0","ia","Tensores e autograd"],["ia-3-2-1","ia","Datasets e DataLoaders"],["ia-3-2-2","ia","Loop de treino e avaliação"],["ia-3-2-3","ia","Treinar em GPU (Colab)"],["ia-3-3-0","ia","Autoencoders"],["ia-3-3-1","ia","GANs (opcional)"],["ia-3-3-2","ia","Modelos de difusão (noção) (opcional)"],["ia-3-3-3","ia","Redes de grafos (noção) (opcional)"],["ia-3-3-4","ia","Detecção de objetos (YOLO) (opcional)"],["ia-3-3-5","ia","Segmentação de imagens (opcional)"],["ia-3-4-0","ia","Batch normalization"],["ia-3-4-1","ia","Learning rate schedulers"],["ia-3-4-2","ia","Data augmentation"],["ia-3-4-3","ia","Early stopping e checkpoints"],["ia-3-4-4","ia","Depurar rede que não aprende"],["ia-3-4-5","ia","Mixed precision (opcional)"],["ia-3-5-0","ia","TensorFlow e Keras (noção) (opcional)"],["ia-3-5-1","ia","TensorBoard e logs"],["ia-3-5-2","ia","Exportar modelos com ONNX (opcional)"],["ia-3-5-3","ia","PyTorch Lightning (opcional)"],["ia-4-0-0","ia","Tokenização e embeddings"],["ia-4-0-1","ia","Mecanismo de atenção"],["ia-4-0-2","ia","Arquitetura Transformer"],["ia-4-0-3","ia","Pré-treino, fine-tuning e RLHF (visão geral)"],["ia-4-1-0","ia","Hugging Face: modelos, datasets e transformers"],["ia-4-1-1","ia","Fine-tuning com LoRA"],["ia-4-1-2","ia","Engenharia de prompts"],["ia-4-1-3","ia","Usar APIs de LLMs (chamadas, streaming, tool use)"],["ia-4-2-0","ia","RAG: busca em documentos + LLM"],["ia-4-2-1","ia","Bancos vetoriais e busca semântica"],["ia-4-2-2","ia","Agentes e uso de ferramentas"],["ia-4-2-3","ia","Avaliação e segurança de sistemas com LLM"],["ia-4-3-0","ia","Self-attention e multi-head"],["ia-4-3-1","ia","Positional encoding"],["ia-4-3-2","ia","Encoder vs. decoder (BERT vs. GPT)"],["ia-4-3-3","ia","Janela de contexto e KV cache"],["ia-4-3-4","ia","Quantização (4-bit, 8-bit)"],["ia-4-3-5","ia","Scaling laws"],["ia-4-4-0","ia","Chunking e estratégias de recuperação no RAG"],["ia-4-4-1","ia","Reranking"],["ia-4-4-2","ia","Saída estruturada (JSON)"],["ia-4-4-3","ia","Memória e orquestração de agentes"],["ia-4-4-4","ia","Protocolo MCP"],["ia-4-4-5","ia","Multimodalidade: visão e áudio"],["ia-4-5-0","ia","Avaliação de LLMs (evals e benchmarks)"],["ia-4-5-1","ia","Alucinações e mitigação"],["ia-4-5-2","ia","Prompt injection"],["ia-4-5-3","ia","Custo e latência"],["ia-4-5-4","ia","Modelos locais (Ollama, llama.cpp)"],["ia-4-5-5","ia","LGPD e dados pessoais em sistemas de IA"],["ia-5-0-0","ia","Docker"],["ia-5-0-1","ia","FastAPI e criação de APIs"],["ia-5-0-2","ia","Deploy em nuvem (AWS, GCP ou Azure)"],["ia-5-0-3","ia","Testes e boas práticas de código"],["ia-5-0-4","ia","Erros, tentativas e logs em produção"],["ia-5-1-0","ia","Versionamento de dados e modelos"],["ia-5-1-1","ia","MLflow ou Weights & Biases"],["ia-5-1-2","ia","Monitoramento de modelos"],["ia-5-2-0","ia","3 a 5 projetos documentados no GitHub"],["ia-5-2-1","ia","READMEs com problema, solução e resultados"],["ia-5-2-2","ia","Perfil ativo no LinkedIn e Kaggle"],["ia-5-2-3","ia","Inglês técnico"],["ia-5-2-4","ia","Design de sistemas de ML e LLM (entrevistas)"],["ia-5-3-0","ia","Linux e shell avançado"],["ia-5-3-1","ia","CI/CD com GitHub Actions"],["ia-5-3-2","ia","Kubernetes (noção)"],["ia-5-3-3","ia","Filas e processamento assíncrono"],["ia-5-3-4","ia","Redis, Postgres e pgvector"],["ia-5-4-0","ia","Interfaces com Gradio e Streamlit"],["ia-5-4-1","ia","Front-end básico (HTML e JS)"],["ia-5-4-2","ia","Autenticação e limites de uso"],["ia-5-4-3","ia","Observabilidade de LLMs"],["ia-5-5-0","ia","Currículo e entrevistas técnicas"],["ia-5-5-1","ia","Contribuir com open source"],["ia-5-5-2","ia","Escrever artigos e posts"],["ia-5-5-3","ia","Comunidades e eventos"],["ia-5-5-4","ia","Certificações (opcional)"],["mat-3-0-0","mat","Equações, inequações e gráficos de funções aplicadas"],["mat-3-0-1","mat","Exponenciais e logaritmos na modelagem de IA"],["mat-3-0-2","mat","Somatório, produtório e notação matemática em papers"],["mat-3-0-3","mat","Geometria analítica e distância Euclidiana vs Manhattan"],["mat-0-0-0","mat","Vetores e espaços vetoriais: intuição geométrica"],["mat-0-0-1","mat","Combinações lineares, espaço gerado (span) e bases"],["mat-0-0-2","mat","Produto escalar (Dot Product) e projeções"],["mat-0-0-3","mat","Norma de vetores (L1, L2 Euclidiana) e distâncias"],["mat-0-0-4","mat","Ângulo entre vetores e Similaridade de Cosseno"],["mat-0-1-0","mat","Matrizes como transformações lineares no espaço"],["mat-0-1-1","mat","Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)"],["mat-0-1-2","mat","Sistemas de equações lineares e determinantes"],["mat-0-1-3","mat","Inversa de matriz e pseudoinversa de Moore-Penrose (opcional)"],["mat-0-1-4","mat","Autovalores e Autovetores (Eigenvalues & Eigenvectors)"],["mat-0-1-5","mat","Decomposição em Valores Singulares (SVD) e PCA"],["mat-1-0-0","mat","Limites e taxa de variação instantânea (ideia geral)"],["mat-1-0-1","mat","Derivadas fundamentais e regras básicas (potência, produto, soma)"],["mat-1-0-2","mat","Regra da Cadeia (Chain Rule) - o motor do Backpropagation"],["mat-1-0-3","mat","Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)"],["mat-1-1-0","mat","Derivadas parciais e o vetor Gradiente (nabla f)"],["mat-1-1-1","mat","Matriz Jacobiana e Matriz Hessiana (curvatura da loss) (opcional)"],["mat-1-1-2","mat","Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)"],["mat-1-1-3","mat","Otimizadores modernos: Momentum, RMSprop e Adam"],["mat-1-1-4","mat","Taxa de aprendizado (Learning Rate), convergência e pontos de sela"],["mat-2-0-0","mat","Variáveis aleatórias discretas e contínuas"],["mat-2-0-1","mat","Média, mediana, variância e desvio padrão"],["mat-2-0-2","mat","Esperança matemática, covariância e correlação"],["mat-2-0-3","mat","Probabilidade condicional e Teorema de Bayes"],["mat-2-1-0","mat","Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança"],["mat-2-1-1","mat","Teorema do Limite Central e amostragem (opcional)"],["mat-2-1-2","mat","Intervalos de confiança e teste de hipóteses (noção)"],["mat-2-1-3","mat","Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)"],["mat-2-1-4","mat","Trade-off Viés vs. Variância (Bias-Variance Dilemma)"],["mat-2-1-5","mat","Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)"],["mat-3-1-0","mat","Entropia de Shannon (medida de incerteza da informação)"],["mat-3-1-1","mat","Entropia Cruzada (Cross-Entropy Loss) e função Softmax"],["mat-3-1-2","mat","Divergência de Kullback-Leibler (KL Divergence)"],["mat-3-1-3","mat","Funções de perda de regressão (MSE, MAE, Huber) e classificação"],["mat-4-0-0","mat","Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs"],["mat-4-0-1","mat","Normalização de embeddings e geometria do espaço semântico"],["mat-4-0-2","mat","Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)"],["mat-4-1-0","mat","Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V"],["mat-4-1-1","mat","Mecanismo Multi-Head Attention: divisão de dimensões e concatenação"],["mat-4-1-2","mat","Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)"],["ing-0-0-0","ing","Curso de Inglês GRÁTIS - Aula Zero"],["ing-0-0-1","ing","Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas"],["ing-0-0-2","ing","Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação"],["ing-0-0-3","ing","Curso de Inglês - Módulo 01 Aula 03 - Aula Prática"],["ing-0-1-0","ing","Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa"],["ing-0-1-1","ing","Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100"],["ing-0-1-2","ing","Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)"],["ing-0-2-0","ing","Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos"],["ing-0-2-1","ing","Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto"],["ing-0-2-2","ing","Curso de Inglês - Módulo 01 Aula 09 - Small Talk"],["ing-0-3-0","ing","Curso de Inglês - Módulo 01 Aula 10 - Family Tree"],["ing-0-3-1","ing","Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02"],["ing-0-3-2","ing","Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês"],["ing-1-0-0","ing","Curso de Inglês - Módulo 02 Aula 01 - Falando da Família"],["ing-1-0-1","ing","Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An"],["ing-1-0-2","ing","Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária"],["ing-1-1-0","ing","Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos"],["ing-1-1-1","ing","Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT"],["ing-1-1-2","ing","Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês"],["ing-1-2-0","ing","Curso de Inglês - Módulo 02 Aula 07 - Com que frequência"],["ing-1-2-1","ing","Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas"],["ing-1-2-2","ing","Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?"],["ing-1-3-0","ing","Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas"],["ing-1-3-1","ing","Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver"],["ing-1-3-2","ing","Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês"],["ing-2-0-0","ing","Curso de Inglês - Módulo 03 Aula 01 - Eu posso!"],["ing-2-0-1","ing","Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns"],["ing-2-1-0","ing","Curso de Inglês - Módulo 03 Aula 03 - Eu deveria"],["ing-2-1-1","ing","Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos"],["ing-2-1-2","ing","Curso de Inglês - Módulo 03 Aula 05 - Eu devo"],["ing-2-2-0","ing","Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas"],["ing-2-2-1","ing","Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will"],["ing-2-2-2","ing","Curso de Inglês - Módulo 03 Aula 08 - Advérbios"],["ing-2-3-0","ing","Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To"],["ing-2-3-1","ing","Curso de Inglês - Módulo 03 Aula 10 - Do or Make?"],["ing-2-3-2","ing","Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades"],["ing-2-3-3","ing","Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos"],["ing-3-0-0","ing","Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria"],["ing-3-0-1","ing","Curso de Inglês - Módulo 04 Aula 02 - Comparativos"],["ing-3-0-2","ing","Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que"],["ing-3-1-0","ing","Curso de Inglês - Módulo 04 Aula 04 - Superlativos"],["ing-3-1-1","ing","Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be"],["ing-3-1-2","ing","Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade"],["ing-3-2-0","ing","Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)"],["ing-3-2-1","ing","Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados"],["ing-3-2-2","ing","Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia"],["ing-3-3-0","ing","Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns"],["ing-3-3-1","ing","Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados"],["ing-3-3-2","ing","Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria"],["ing-4-0-0","ing","Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva"],["ing-4-0-1","ing","Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares"],["ing-4-1-0","ing","Curso de Inglês - Módulo 05 Aula 03 - E se..."],["ing-4-1-1","ing","Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares"],["ing-4-1-2","ing","Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse"],["ing-4-2-0","ing","Curso de Inglês - Módulo 05 Aula 06 - Prefixes"],["ing-4-2-1","ing","Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando"],["ing-4-2-2","ing","Curso de Inglês - Módulo 05 Aula 08 - Suffixes"],["ing-4-3-0","ing","Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos"],["ing-4-3-1","ing","Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas"],["ing-4-3-2","ing","Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se"],["ing-4-3-3","ing","Curso de Inglês - Módulo 05 Aula 12 - Quantificadores"],["ing-5-0-0","ing","Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês"],["ing-5-0-1","ing","Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio"],["ing-5-1-0","ing","Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca"],["ing-5-1-1","ing","Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo"],["ing-5-1-2","ing","Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando"],["ing-5-2-0","ing","Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio"],["ing-5-2-1","ing","Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado"],["ing-5-2-2","ing","Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva"],["ing-5-3-0","ing","Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes"],["ing-5-3-1","ing","Curso de Inglês - Módulo 06 Aula 10 - Reported Speech"],["ing-5-3-2","ing","Curso de Inglês - Módulo 06 Aula 11 - Três Desejos"],["ing-5-3-3","ing","Curso de Inglês - Módulo 06 Aula 12 - Tag Questions"],["ing-6-0-0","ing","Inglês no trabalho 01 · Ler documentação técnica"],["ing-6-0-1","ing","Inglês no trabalho 02 · Ler artigos de Machine Learning"],["ing-6-0-2","ing","Inglês no trabalho 03 · Escrever o README do seu projeto"],["ing-6-0-3","ing","Inglês no trabalho 04 · Pull requests e code review"],["ing-6-1-0","ing","Inglês no trabalho 05 · E-mails e mensagens de trabalho"],["ing-6-1-1","ing","Inglês no trabalho 06 · Daily stand-up e reuniões"],["ing-6-2-0","ing","Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos"],["ing-6-2-1","ing","Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais"]];
+window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal",1],["ia-0-0-2","ia","Entrada e saída de dados",1],["ia-0-0-1","ia","Variáveis e tipos (int, float, str, bool)",1],["ia-0-0-g07","ia","Operadores aritméticos",1],["ia-0-0-g08","ia","Usar módulos prontos (import)",1],["ia-0-0-g09","ia","Manipular textos (strings)",1],["ia-0-0-3","ia","Condicionais (if, elif, else)",1],["ia-0-0-g12","ia","Condições aninhadas e elif",1],["ia-0-0-4","ia","Laços (for, while)",1],["ia-0-0-g14","ia","Repetir enquanto (while)",1],["ia-0-0-g15","ia","Interromper laços (break) e f-strings",1],["ia-0-1-2","ia","Tuplas e conjuntos",1],["ia-0-1-0","ia","Listas e fatiamento",1],["ia-0-1-g18","ia","Listas compostas (listas dentro de listas)",1],["ia-0-1-1","ia","Dicionários",1],["ia-0-1-3","ia","List comprehension",1],["ia-0-0-5","ia","Funções, parâmetros e retorno",1],["ia-0-1-g21","ia","Funções: escopo, opcionais e docstrings",1],["ia-0-2-1","ia","Módulos e pacotes",1],["ia-0-2-3","ia","Tratamento de erros (try/except)",1],["ia-0-2-2","ia","Arquivos (ler e escrever)",1],["ia-0-2-0","ia","Orientação a objetos (classes, métodos, herança)",1],["ia-0-2-4","ia","Ambientes virtuais e pip",1],["ia-0-2-5","ia","Python assíncrono (async/await)",1],["ia-0-3-0","ia","Git: commit, branch, merge",1],["ia-0-3-1","ia","GitHub: repositórios e README",1],["ia-0-3-2","ia","Consumir APIs com requests e JSON",1],["ia-0-3-3","ia","Desenvolver com assistentes de IA (Claude Code, Copilot, Cursor)",1],["ia-0-4-0","ia","Estilo de código PEP 8",1],["ia-0-4-1","ia","Docstrings e comentários",1],["ia-0-4-2","ia","Depuração (debug) e leitura de erros",1],["ia-0-4-3","ia","Testes simples com pytest",1],["ia-0-4-4","ia","Lambda, map e filter",1],["ia-0-4-5","ia","Geradores e iteradores",1],["ia-0-4-6","ia","Decoradores (noção)",1],["ia-0-4-7","ia","Tipagem, dataclasses e Pydantic",1],["ia-0-5-0","ia","datetime",1],["ia-0-5-1","ia","os e pathlib",1],["ia-0-5-2","ia","json e csv",1],["ia-0-5-3","ia","Expressões regulares (re)",1],["ia-0-5-4","ia","Web scraping com BeautifulSoup",1],["ia-0-6-0","ia","30 exercícios (Beecrowd, HackerRank, Exercism)",1],["ia-0-6-1","ia","Algoritmos de busca e ordenação",1],["ia-0-6-2","ia","Noções de complexidade (Big O)",1],["ia-0-6-3","ia","Projeto de linha de comando completo",1],["ia-1-0-0","ia","NumPy: arrays e operações vetorizadas",1],["ia-1-0-1","ia","Pandas: DataFrames e Series",1],["ia-1-0-2","ia","Pandas: filtrar, agrupar e juntar (merge)",1],["ia-1-0-3","ia","Limpeza de dados e valores ausentes",1],["ia-1-1-0","ia","Matplotlib",1],["ia-1-1-1","ia","Seaborn",1],["ia-1-1-2","ia","Análise exploratória de dados (EDA)",1],["ia-1-2-0","ia","Jupyter Notebook e Google Colab",1],["ia-1-2-1","ia","SQL: SELECT, WHERE, JOIN, GROUP BY",1],["ia-1-2-2","ia","Ler CSV, Excel e JSON",1],["ia-1-3-0","ia","Broadcasting",1],["ia-1-3-1","ia","Máscaras booleanas e indexação",1],["ia-1-3-2","ia","Séries temporais",1],["ia-1-3-3","ia","Pivot tables e melt",1],["ia-1-3-4","ia","Apply e funções vetorizadas",1],["ia-1-3-5","ia","Outliers e duplicados",1],["ia-1-3-6","ia","Encoding de variáveis categóricas",1],["ia-1-4-0","ia","Web scraping e APIs (opcional)",1],["ia-1-4-1","ia","SQLite e SQLAlchemy",1],["ia-1-4-2","ia","SQL avançado: subconsultas e window functions",1],["ia-1-4-3","ia","Formato Parquet",1],["ia-1-4-4","ia","Plotly e gráficos interativos",1],["ia-1-5-0","ia","Notebooks reprodutíveis",1],["ia-1-5-1","ia","Storytelling com dados",1],["ia-1-5-2","ia","Dashboards com Streamlit (opcional)",1],["ia-2-0-0","ia","Aprendizado supervisionado vs. não supervisionado",1],["ia-2-0-1","ia","Treino, validação e teste",1],["ia-2-0-2","ia","Overfitting e underfitting",1],["ia-2-0-3","ia","Validação cruzada",1],["ia-2-0-4","ia","Engenharia de atributos (feature engineering)",1],["ia-2-1-0","ia","Regressão linear",1],["ia-2-1-1","ia","Regressão logística",1],["ia-2-1-2","ia","Árvores de decisão",1],["ia-2-1-3","ia","Random Forest",1],["ia-2-1-4","ia","Gradient Boosting (XGBoost, LightGBM)",1],["ia-2-1-5","ia","K-Means e clusterização",1],["ia-2-1-6","ia","PCA",1],["ia-2-2-0","ia","Métricas: acurácia, precisão, recall, F1",1],["ia-2-2-1","ia","Matriz de confusão e curva ROC",1],["ia-2-2-2","ia","Scikit-learn e pipelines",1],["ia-2-2-3","ia","Ajuste de hiperparâmetros",1],["ia-2-3-0","ia","KNN",1],["ia-2-3-1","ia","Naive Bayes",1],["ia-2-3-2","ia","SVM",1],["ia-2-3-3","ia","DBSCAN e clusterização hierárquica",1],["ia-2-3-4","ia","Regularização Lasso e Ridge",1],["ia-2-3-5","ia","Detecção de anomalias",1],["ia-2-4-0","ia","Normalização e padronização",1],["ia-2-4-1","ia","Dados desbalanceados (SMOTE)",1],["ia-2-4-2","ia","Seleção de atributos",1],["ia-2-4-3","ia","Vazamento de dados (data leakage)",1],["ia-2-4-4","ia","Séries temporais com ML",1],["ia-2-5-0","ia","Importância de atributos",1],["ia-2-5-1","ia","SHAP e LIME",1],["ia-2-5-2","ia","Viés e ética em ML",1],["ia-2-5-3","ia","Sistemas de recomendação",1],["ia-3-0-0","ia","Neurônio, camadas e pesos",1],["ia-3-0-1","ia","Funções de ativação",1],["ia-3-0-2","ia","Função de perda",1],["ia-3-0-3","ia","Backpropagation",1],["ia-3-0-4","ia","Gradiente descendente e otimizadores (SGD, Adam)",1],["ia-3-0-5","ia","Regularização (dropout, weight decay)",1],["ia-3-1-0","ia","CNNs para imagens",1],["ia-3-1-1","ia","Transfer learning",1],["ia-3-1-2","ia","RNNs e LSTMs para sequências",1],["ia-3-2-0","ia","Tensores e autograd",1],["ia-3-2-1","ia","Datasets e DataLoaders",1],["ia-3-2-2","ia","Loop de treino e avaliação",1],["ia-3-2-3","ia","Treinar em GPU (Colab)",1],["ia-3-3-0","ia","Autoencoders",1],["ia-3-3-1","ia","GANs (opcional)",1],["ia-3-3-2","ia","Modelos de difusão (noção) (opcional)",1],["ia-3-3-3","ia","Redes de grafos (noção) (opcional)",1],["ia-3-3-4","ia","Detecção de objetos (YOLO) (opcional)",1],["ia-3-3-5","ia","Segmentação de imagens (opcional)",1],["ia-3-4-0","ia","Batch normalization",1],["ia-3-4-1","ia","Learning rate schedulers",1],["ia-3-4-2","ia","Data augmentation",1],["ia-3-4-3","ia","Early stopping e checkpoints",1],["ia-3-4-4","ia","Depurar rede que não aprende",1],["ia-3-4-5","ia","Mixed precision (opcional)",1],["ia-3-5-0","ia","TensorFlow e Keras (noção) (opcional)",1],["ia-3-5-1","ia","TensorBoard e logs",1],["ia-3-5-2","ia","Exportar modelos com ONNX (opcional)",1],["ia-3-5-3","ia","PyTorch Lightning (opcional)",1],["ia-4-0-0","ia","Tokenização e embeddings",1],["ia-4-0-1","ia","Mecanismo de atenção",1],["ia-4-0-2","ia","Arquitetura Transformer",1],["ia-4-0-3","ia","Pré-treino, fine-tuning e RLHF (visão geral)",1],["ia-4-1-0","ia","Hugging Face: modelos, datasets e transformers",1],["ia-4-1-1","ia","Fine-tuning com LoRA",1],["ia-4-1-2","ia","Engenharia de prompts",1],["ia-4-1-3","ia","Usar APIs de LLMs (chamadas, streaming, tool use)",1],["ia-4-2-0","ia","RAG: busca em documentos + LLM",1],["ia-4-2-1","ia","Bancos vetoriais e busca semântica",1],["ia-4-2-2","ia","Agentes e uso de ferramentas",1],["ia-4-2-3","ia","Avaliação e segurança de sistemas com LLM",1],["ia-4-3-0","ia","Self-attention e multi-head",1],["ia-4-3-1","ia","Positional encoding",1],["ia-4-3-2","ia","Encoder vs. decoder (BERT vs. GPT)",1],["ia-4-3-3","ia","Janela de contexto e KV cache",1],["ia-4-3-4","ia","Quantização (4-bit, 8-bit)",1],["ia-4-3-5","ia","Scaling laws",1],["ia-4-4-0","ia","Chunking e estratégias de recuperação no RAG",1],["ia-4-4-1","ia","Reranking",1],["ia-4-4-2","ia","Saída estruturada (JSON)",1],["ia-4-4-3","ia","Memória e orquestração de agentes",1],["ia-4-4-4","ia","Protocolo MCP",1],["ia-4-4-5","ia","Multimodalidade: visão e áudio",1],["ia-4-5-0","ia","Avaliação de LLMs (evals e benchmarks)",1],["ia-4-5-1","ia","Alucinações e mitigação",1],["ia-4-5-2","ia","Prompt injection",1],["ia-4-5-3","ia","Custo e latência",1],["ia-4-5-4","ia","Modelos locais (Ollama, llama.cpp)",1],["ia-4-5-5","ia","LGPD e dados pessoais em sistemas de IA",1],["ia-5-0-0","ia","Docker",1],["ia-5-0-1","ia","FastAPI e criação de APIs",1],["ia-5-0-2","ia","Deploy em nuvem (AWS, GCP ou Azure)",1],["ia-5-0-3","ia","Testes e boas práticas de código",1],["ia-5-0-4","ia","Erros, tentativas e logs em produção",1],["ia-5-1-0","ia","Versionamento de dados e modelos",1],["ia-5-1-1","ia","MLflow ou Weights & Biases",1],["ia-5-1-2","ia","Monitoramento de modelos",1],["ia-5-2-0","ia","3 a 5 projetos documentados no GitHub",1],["ia-5-2-1","ia","READMEs com problema, solução e resultados",1],["ia-5-2-2","ia","Perfil ativo no LinkedIn e Kaggle",1],["ia-5-2-3","ia","Inglês técnico",1],["ia-5-2-4","ia","Design de sistemas de ML e LLM (entrevistas)",1],["ia-5-3-0","ia","Linux e shell avançado",1],["ia-5-3-1","ia","CI/CD com GitHub Actions",1],["ia-5-3-2","ia","Kubernetes (noção)",1],["ia-5-3-3","ia","Filas e processamento assíncrono",1],["ia-5-3-4","ia","Redis, Postgres e pgvector",1],["ia-5-4-0","ia","Interfaces com Gradio e Streamlit",1],["ia-5-4-1","ia","Front-end básico (HTML e JS)",1],["ia-5-4-2","ia","Autenticação e limites de uso",1],["ia-5-4-3","ia","Observabilidade de LLMs",1],["ia-5-5-0","ia","Currículo e entrevistas técnicas",1],["ia-5-5-1","ia","Contribuir com open source",1],["ia-5-5-2","ia","Escrever artigos e posts",1],["ia-5-5-3","ia","Comunidades e eventos",1],["ia-5-5-4","ia","Certificações (opcional)",1],["mat-3-0-0","mat","Equações, inequações e gráficos de funções aplicadas",0],["mat-3-0-1","mat","Exponenciais e logaritmos na modelagem de IA",0],["mat-3-0-2","mat","Somatório, produtório e notação matemática em papers",0],["mat-3-0-3","mat","Geometria analítica e distância Euclidiana vs Manhattan",0],["mat-0-0-0","mat","Vetores e espaços vetoriais: intuição geométrica",1],["mat-0-0-1","mat","Combinações lineares, espaço gerado (span) e bases",0],["mat-0-0-2","mat","Produto escalar (Dot Product) e projeções",1],["mat-0-0-3","mat","Norma de vetores (L1, L2 Euclidiana) e distâncias",0],["mat-0-0-4","mat","Ângulo entre vetores e Similaridade de Cosseno",0],["mat-0-1-0","mat","Matrizes como transformações lineares no espaço",0],["mat-0-1-1","mat","Multiplicação de matrizes (Dot product vs. Hadamard elemento a elemento)",0],["mat-0-1-2","mat","Sistemas de equações lineares e determinantes",0],["mat-0-1-3","mat","Inversa de matriz e pseudoinversa de Moore-Penrose (opcional)",0],["mat-0-1-4","mat","Autovalores e Autovetores (Eigenvalues & Eigenvectors)",0],["mat-0-1-5","mat","Decomposição em Valores Singulares (SVD) e PCA",0],["mat-1-0-0","mat","Limites e taxa de variação instantânea (ideia geral)",0],["mat-1-0-1","mat","Derivadas fundamentais e regras básicas (potência, produto, soma)",0],["mat-1-0-2","mat","Regra da Cadeia (Chain Rule) - o motor do Backpropagation",0],["mat-1-0-3","mat","Derivadas de funções de ativação (Sigmoide, Tanh, ReLU, GeLU)",0],["mat-1-1-0","mat","Derivadas parciais e o vetor Gradiente (nabla f)",0],["mat-1-1-1","mat","Matriz Jacobiana e Matriz Hessiana (curvatura da loss) (opcional)",0],["mat-1-1-2","mat","Algoritmo de Descida do Gradiente (Vanilla Gradient Descent)",1],["mat-1-1-3","mat","Otimizadores modernos: Momentum, RMSprop e Adam",0],["mat-1-1-4","mat","Taxa de aprendizado (Learning Rate), convergência e pontos de sela",0],["mat-2-0-0","mat","Variáveis aleatórias discretas e contínuas",0],["mat-2-0-1","mat","Média, mediana, variância e desvio padrão",0],["mat-2-0-2","mat","Esperança matemática, covariância e correlação",0],["mat-2-0-3","mat","Probabilidade condicional e Teorema de Bayes",0],["mat-2-1-0","mat","Distribuição Normal (Gaussiana) e probabilidade vs verossimilhança",0],["mat-2-1-1","mat","Teorema do Limite Central e amostragem (opcional)",0],["mat-2-1-2","mat","Intervalos de confiança e teste de hipóteses (noção)",0],["mat-2-1-3","mat","Máxima Verossimilhança (Maximum Likelihood Estimation - MLE)",0],["mat-2-1-4","mat","Trade-off Viés vs. Variância (Bias-Variance Dilemma)",0],["mat-2-1-5","mat","Estatística para comparar modelos (teste A/B, bootstrap e tamanho de amostra)",1],["mat-3-1-0","mat","Entropia de Shannon (medida de incerteza da informação)",0],["mat-3-1-1","mat","Entropia Cruzada (Cross-Entropy Loss) e função Softmax",0],["mat-3-1-2","mat","Divergência de Kullback-Leibler (KL Divergence)",0],["mat-3-1-3","mat","Funções de perda de regressão (MSE, MAE, Huber) e classificação",0],["mat-4-0-0","mat","Espaços vetoriais de alta dimensão e armazenamento de fatos em LLMs",0],["mat-4-0-1","mat","Normalização de embeddings e geometria do espaço semântico",0],["mat-4-0-2","mat","Projeções lineares e matrizes de pesos Query, Key e Value (W_q, W_k, W_v)",0],["mat-4-1-0","mat","Fórmula de Scaled Dot-Product Attention: softmax((Q @ K^T) / sqrt(d_k)) * V",0],["mat-4-1-1","mat","Mecanismo Multi-Head Attention: divisão de dimensões e concatenação",0],["mat-4-1-2","mat","Positional Encodings: funções sinusoidais e rotação vetorial (RoPE)",0],["ing-0-0-0","ing","Curso de Inglês GRÁTIS - Aula Zero",1],["ing-0-0-1","ing","Curso de Inglês - Módulo 01 Aula 01: Cumprimentos, apresentações e despedidas",1],["ing-0-0-2","ing","Curso de Inglês - Módulo 01 Aula 02: Idade, Nacionalidade e Ocupação",1],["ing-0-0-3","ing","Curso de Inglês - Módulo 01 Aula 03 - Aula Prática",1],["ing-0-1-0","ing","Curso de Inglês - Módulo 01 Aula 04: A Estrutura Básica da Língua Inglesa",1],["ing-0-1-1","ing","Curso de Inglês - Módulo 01 Aula 05 -  Números em inglês de 0 à 100",1],["ing-0-1-2","ing","Curso de Inglês - Módulo 01 Aula 06 - Adjetivos (ATIVE A LEGENDA EM INGLÊS)",1],["ing-0-2-0","ing","Curso de Inglês - Módulo 01 Aula 07 -  Hobbies e Favoritos",1],["ing-0-2-1","ing","Curso de Inglês - Módulo 01 Aula 08 - Outras Maneiras de dizer Eu gosto e Eu não gosto",1],["ing-0-2-2","ing","Curso de Inglês - Módulo 01 Aula 09 - Small Talk",1],["ing-0-3-0","ing","Curso de Inglês - Módulo 01 Aula 10 - Family Tree",1],["ing-0-3-1","ing","Curso de Inglês - Módulo 01 Aula 11 - Gramática Básica Parte 02",1],["ing-0-3-2","ing","Curso de Inglês - Módulo 01 Aula 12 - Os 25 verbos mais utilizados em inglês",1],["ing-1-0-0","ing","Curso de Inglês - Módulo 02 Aula 01 - Falando da Família",1],["ing-1-0-1","ing","Curso de Inglês - Módulo 02 Aula 02 - Artigos Indefinidos A e An",1],["ing-1-0-2","ing","Curso de Inglês - Módulo 02 Aula 03 - Rotina Diária",1],["ing-1-1-0","ing","Curso de Inglês - Módulo 02 Aula 04 - Pronomes Demonstrativos",1],["ing-1-1-1","ing","Curso de Inglês - Módulo 02 Aula 05 - Preposições IN ON AT",1],["ing-1-1-2","ing","Curso de Inglês - Módulo 02 Aula 06 -   As 25 Preposições Mais Usadas em Inglês",1],["ing-1-2-0","ing","Curso de Inglês - Módulo 02 Aula 07 - Com que frequência",1],["ing-1-2-1","ing","Curso de Inglês - Módulo 02 Aula 08 - Como Dizer Datas",1],["ing-1-2-2","ing","Curso de Inglês - Módulo 02 Aula 09 - O que você está fazendo?",1],["ing-1-3-0","ing","Curso de Inglês - Módulo 02 Aula 10 - Como Dizer As Horas",1],["ing-1-3-1","ing","Curso de Inglês - Módulo 02 Aula 11 - Verbo Haver",1],["ing-1-3-2","ing","Curso de Inglês - Módulo 02 Aula 12 - Os 25 Adjetivos Mais Usados em Inglês",1],["ing-2-0-0","ing","Curso de Inglês - Módulo 03 Aula 01 - Eu posso!",1],["ing-2-0-1","ing","Curso de Inglês - Módulo 03 Aula 02 - Object Pronouns",1],["ing-2-1-0","ing","Curso de Inglês - Módulo 03 Aula 03 - Eu deveria",1],["ing-2-1-1","ing","Curso de Inglês - Módulo 03 Aula 04 Pronomes Reflexivos",1],["ing-2-1-2","ing","Curso de Inglês - Módulo 03 Aula 05 - Eu devo",1],["ing-2-2-0","ing","Curso de Inglês - Módulo 03 Aula 06 - Perguntas Confusas",1],["ing-2-2-1","ing","Curso de Inglês - Módulo 03 Aula 07 - Falando do Futuro com Will",1],["ing-2-2-2","ing","Curso de Inglês - Módulo 03 Aula 08 - Advérbios",1],["ing-2-3-0","ing","Curso de Inglês - Módulo 03 Aula 09 - Falando do Futuro com Going To",1],["ing-2-3-1","ing","Curso de Inglês - Módulo 03 Aula 10 - Do or Make?",1],["ing-2-3-2","ing","Curso de Inglês - Módulo 03 Aula 11 - Expressando Possibilidades",1],["ing-2-3-3","ing","Curso de Inglês - Módulo 03 Aula 12 - Como utilizar os textos com áudio e vídeos",1],["ing-3-0-0","ing","Curso de Inglês - Módulo 04 Aula 01 - Eu gostaria",1],["ing-3-0-1","ing","Curso de Inglês - Módulo 04 Aula 02 - Comparativos",1],["ing-3-0-2","ing","Curso de Inglês - Módulo 04 Aula 03 - Eu quero que  Eu preciso que",1],["ing-3-1-0","ing","Curso de Inglês - Módulo 04 Aula 04 - Superlativos",1],["ing-3-1-1","ing","Curso de Inglês - Módulo 04 Aula 05 - Passado do Verbo To Be",1],["ing-3-1-2","ing","Curso de Inglês - Módulo 04 Aula 06 - Comparativo de Igualdade",1],["ing-3-2-0","ing","Curso de Inglês - Módulo 04 Aula 07 - Passado Simples (Verbos Regulares e Irregulares)",1],["ing-3-2-1","ing","Curso de Inglês - Módulo 04 Aula 08 - 25 Verbos Irregulares Mais Usados",1],["ing-3-2-2","ing","Curso de Inglês - Módulo 04 Aula 09 - Eu podia_Eu poderia",1],["ing-3-3-0","ing","Curso de Inglês - Módulo 04 Aula 10 - Possessive Pronouns",1],["ing-3-3-1","ing","Curso de Inglês - Módulo 04 Aula 11 - Falando de Hábitos Passados",1],["ing-3-3-2","ing","Curso de Inglês - Módulo 04 Aula 12 - Havia / Haverá / Haveria",1],["ing-4-0-0","ing","Curso de Inglês - Módulo 05 Aula 1 - Quanto tempo leva",1],["ing-4-0-1","ing","Curso de Inglês - Módulo 05 Aula 02 - Perguntas sem Auxiliares",1],["ing-4-1-0","ing","Curso de Inglês - Módulo 05 Aula 03 - E se...",1],["ing-4-1-1","ing","Curso de Inglês - Módulo 05 Aula 04 - Frases Afirmativas com Auxiliares",1],["ing-4-1-2","ing","Curso de Inglês - Módulo 05 Aula 05 -  Eu iria se eu pudesse",1],["ing-4-2-0","ing","Curso de Inglês - Módulo 05 Aula 06 - Prefixes",1],["ing-4-2-1","ing","Curso de Inglês - Módulo 05 Aula 07 -  Eu estava estudando quando",1],["ing-4-2-2","ing","Curso de Inglês - Módulo 05 Aula 08 - Suffixes",1],["ing-4-3-0","ing","Curso de Inglês - Módulo 05 Aula 09 - Ofertas \\u0026 Pedidos",1],["ing-4-3-1","ing","Curso de Inglês - Módulo 05 Aula 10 - Perguntas Indiretas",1],["ing-4-3-2","ing","Curso de Inglês - Módulo 05 Aula 11 - Ser Acostumado e Acostumar-se",1],["ing-4-3-3","ing","Curso de Inglês - Módulo 05 Aula 12 - Quantificadores",1],["ing-5-0-0","ing","Curso de Inglês - Módulo 06 Aula 01 - Eu tenho estudado inglês",1],["ing-5-0-1","ing","Curso de Inglês - Módulo 06 Aula 02 -  Verbos seguidos do Infinitivo ou do Gerúndio",1],["ing-5-1-0","ing","Curso de Inglês - Módulo 06 Aula 03 - Eu já e eu nunca",1],["ing-5-1-1","ing","Curso de Inglês - Módulo 06 Aula 04 - Verbos seguidos SOMENTE pelo Infinitivo",1],["ing-5-1-2","ing","Curso de Inglês - Módulo 06 Aula 05 - Eu tenho estado estudando",1],["ing-5-2-0","ing","Curso de Inglês - Módulo 06 Aula 06 - Verbos seguidos SOMENTE pelo Gerúndio",1],["ing-5-2-1","ing","Curso de Inglês - Módulo 06 Aula 07 - Eu tinha estudado",1],["ing-5-2-2","ing","Curso de Inglês - Módulo 06 Aula 08 - Voz Passiva",1],["ing-5-3-0","ing","Curso de Inglês - Módulo 06 Aula 09 - Se eu tivesse sabido disso antes",1],["ing-5-3-1","ing","Curso de Inglês - Módulo 06 Aula 10 - Reported Speech",1],["ing-5-3-2","ing","Curso de Inglês - Módulo 06 Aula 11 - Três Desejos",1],["ing-5-3-3","ing","Curso de Inglês - Módulo 06 Aula 12 - Tag Questions",1],["ing-6-0-0","ing","Inglês no trabalho 01 · Ler documentação técnica",1],["ing-6-0-1","ing","Inglês no trabalho 02 · Ler artigos de Machine Learning",1],["ing-6-0-2","ing","Inglês no trabalho 03 · Escrever o README do seu projeto",1],["ing-6-0-3","ing","Inglês no trabalho 04 · Pull requests e code review",1],["ing-6-1-0","ing","Inglês no trabalho 05 · E-mails e mensagens de trabalho",1],["ing-6-1-1","ing","Inglês no trabalho 06 · Daily stand-up e reuniões",1],["ing-6-2-0","ing","Inglês no trabalho 07 · Explicar o seu projeto em 2 minutos",1],["ing-6-2-1","ing","Inglês no trabalho 08 · “Tell me about yourself” e perguntas comportamentais",1]];
 (function () {
   "use strict";
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -6833,6 +7093,7 @@ window.DS_TOPICS = [["ia-0-0-0","ia","Instalar Python e usar o terminal"],["ia-0
 })();
 </script>
 
+<script>try { avBoot(); } catch (e) {}</script>
 <div id="ds-end" hidden></div>
 </body>
 </html>

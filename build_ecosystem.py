@@ -1774,6 +1774,9 @@ __HUB_CSS__
       <div class="ds-route" id="ds-route" aria-label="Mapa da sua trilha: clique em uma estação para abrir a trilha"></div>
     </section>
 
+    <!-- HOJE: avisos mais importantes (revisões, prazos, pendências e ritmo), com ação direta. Ver alerts_js.py -->
+    <section class="av-hoje" id="av-hoje" aria-label="Avisos de hoje" hidden></section>
+
   <!-- =======================================================================
        COCKPIT NEURAL DE TELEMETRIA 360°, VELOCÍMETRO SVG & SIMULADOR PREDITIVO
        ======================================================================= -->

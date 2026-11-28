@@ -530,9 +530,15 @@ window.DS_TOPICS = __DS_TOPICS__;
 _TOPIC_INDEX_JSON = "[]"
 
 
+def _has_exit_quiz(raw):
+    g = raw.get("pt_guide") if isinstance(raw, dict) else None
+    return 1 if isinstance(g, dict) and any(b.get("tipo") == "quiz" and b.get("perguntas") for b in (g.get("blocos") or [])) else 0
+
+
 def set_topic_index(tracks):
-    """tracks = {"ia": phases, "mat": phases, "ing": phases}. Gera [[id, trilha, título], ...] com os
-    mesmos ids das páginas (trilha-fase-grupo-tópico), para a busca achar qualquer aula."""
+    """tracks = {"ia": phases, "mat": phases, "ing": phases}. Gera [[id, trilha, título, tem_quiz], ...] com os
+    mesmos ids das páginas (trilha-fase-grupo-tópico), para a busca achar qualquer aula e os avisos saberem
+    quais aulas têm quiz de saída (tem_quiz = 1)."""
     import json
     rows = []
     for tr, phases in tracks.items():
@@ -541,7 +547,7 @@ def set_topic_index(tracks):
                 for t_idx, raw in enumerate(g[1]):
                     import curriculo
                     title = curriculo.title_of(raw) + (" (opcional)" if curriculo.is_optional(raw) else "")
-                    rows.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), tr, title])
+                    rows.append([curriculo.topic_id(raw, tr, p_idx, g_idx, t_idx), tr, title, _has_exit_quiz(raw)])
     global _TOPIC_INDEX_JSON
     _TOPIC_INDEX_JSON = json.dumps(rows, ensure_ascii=False, separators=(",", ":")).replace("</", "<\/")
 
@@ -550,6 +556,7 @@ def set_topic_index(tracks):
 # (antes ele aparecia como "Local" e trocava ~1 s depois, fazendo o menu pular a cada troca de página).
 NAV_EARLY_SCRIPT = """<script>
 try { rvNavBadge(); } catch (e) {}   // contador do item "Revisões" (revisões de hoje + atrasadas)
+try { avBellBadge(); } catch (e) {}  // número vermelho do sino (revisões + prazos vencidos ou de hoje)
 (function () {
   try {
     var raw = localStorage.getItem("roteiro_auth_user") || sessionStorage.getItem("roteiro_auth_user");
@@ -577,8 +584,10 @@ def apply_design(html: str, track: str) -> str:
     """Injeta a camada de design no fim do <head> e do <body> e marca a trilha da página."""
     from modal_ui import MODAL_UI_CSS, MODAL_UI_JS
     from review_js import REVIEW_JS, REVIEW_UI_JS, REVIEW_UI_CSS
-    # Agenda de revisões no <head>: o contador do menu já sai certo na primeira pintura (sem o menu "pular")
-    review_head = "<style>" + REVIEW_UI_CSS + "</style>\n<script>\n" + REVIEW_JS + "\n" + REVIEW_UI_JS + "\n</script>"
+    from alerts_js import AV_JS, AV_UI_JS, AV_CSS, NAV_BELL
+    # Agenda de revisões e avisos no <head>: os contadores do menu já saem certos na primeira pintura (sem o menu "pular")
+    review_head = ("<style>" + REVIEW_UI_CSS + "\n" + AV_CSS + "</style>\n<script>\n" + REVIEW_JS + "\n" + REVIEW_UI_JS + "\n"
+                   + AV_JS + "\n" + AV_UI_JS + "\n</script>")
     html = html.replace("</head>", DESIGN_HEAD + "\n" + MODAL_UI_CSS + "\n" + review_head + "\n</head>", 1)
     html = html.replace("<body>", f'<body data-track="{track}">', 1)
     # Item "Revisões" no menu de todas as páginas (logo depois de Projetos), com o contador de hoje + atrasadas
@@ -591,9 +600,11 @@ def apply_design(html: str, track: str) -> str:
         nav = html[i:j].replace("🇺🇸 Inglês EnglishBay</a>", "🇺🇸 Inglês</a>").replace("🛠️ Projetos & Portfólio</a>", "🛠️ Projetos</a>")
         html = html[:i] + nav + html[j:]
     html = html.replace("</header>", "</header>\n" + NAV_EARLY_SCRIPT, 1)
-    html = html.replace('<div class="nav-right">', '<div class="nav-right">\n' + NAV_SEARCH_BUTTON, 1)
+    html = html.replace('<div class="nav-right">', '<div class="nav-right">\n' + NAV_BELL + NAV_SEARCH_BUTTON, 1)
     idx = html.rfind("</body>")
     if idx != -1:
+        # avBoot: avisos (painel e cartão "Hoje" do hub) montados quando o índice das aulas já existe, antes de #ds-end
         html = (html[:idx] + DESIGN_JS.replace("__DS_TOPICS__", _TOPIC_INDEX_JSON) + "\n" + MODAL_UI_JS
+                + "\n<script>try { avBoot(); } catch (e) {}</script>"
                 + '\n<div id="ds-end" hidden></div>\n' + html[idx:])
     return html
