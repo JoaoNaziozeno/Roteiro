@@ -63,4 +63,25 @@ const cat = RM.progress({ "ia-a": { s: "e" }, "ia-op": { s: "e" }, "ia-9-9-9": {
 assert.strictEqual(cat.structDone, 1);
 assert.strictEqual(RM.evNet({ id: "ia-9-9-9", f: "z", to: "e" }, eff), 0);
 assert.strictEqual(RM.totals({ tracks: eff.tracks, topics: { "ia-9-9-9": 7 } }).points, 4);
+
+// treino: nas aulas com treino, 25% do peso vem dele, e só com pelo menos 70% de acertos (o melhor resultado)
+RM.configure({ treino: ["ia-a", "mat-a"] });
+const w6 = { tracks: { ia: 4, mat: 6, ing: 1 }, topics: {} };
+const melhor = RM.trBest({ "mat-a": { tr: { b: 70 } }, "ia-a": { tr: { b: 60 } }, "ia-b": { tr: { b: 100 } }, "ing-a": { p: {} } });
+assert.deepStrictEqual(melhor, { "mat-a": 70, "ia-a": 60, "ia-b": 100 });
+const so = id => ({ [id]: melhor[id] });                                                // o melhor de uma aula só
+assert.strictEqual(RM.progress({ "ia-a": { s: "e" } }, w6).pts, 3);                    // concluída sem treino: só o estudo
+assert.strictEqual(RM.progress({ "ia-a": { s: "e" } }, w6, so("ia-a")).pts, 3);        // 60% não basta
+assert.strictEqual(RM.progress({ "mat-a": { s: "e" } }, w6, so("mat-a")).pts, 6);      // 70% fecha a aula
+assert.strictEqual(RM.progress({ "mat-a": { s: "r", vp: 100, gp: 0 } }, w6, so("mat-a")).pts, 4.5 * 0.5 + 1.5);
+assert.strictEqual(RM.progress({}, w6, melhor).pts, 1.5);                               // treino antes do estudo também conta
+assert.strictEqual(RM.progress({}, w6, melhor).structDone, 0);
+assert.strictEqual(RM.progress({ "ia-b": { s: "e" } }, w6, so("ia-b")).pts, 4);        // aula sem treino: tudo pelo estudo
+assert.strictEqual(RM.progress({ "ia-a": { s: "e" }, "mat-a": { s: "e" } }, w6, melhor).pts, 3 + 6);
+assert.strictEqual(RM.totals(w6).points, 2 * 4 + 6 + 1);                                // o peso total não muda
+assert.strictEqual(RM.evNet({ id: "mat-a", f: "r", to: "e" }, w6), 4.5);               // concluir soma só o estudo
+assert.strictEqual(RM.evNet({ id: "ia-b", f: "r", to: "e" }, w6), 4);
+// a curva acumulada termina nos pontos de agora sem descer (aula concluída, treino por fazer)
+const cvT = RM.curve([{ t: now - DAY, id: "mat-a", f: "z", to: "e" }], w6, now - 10 * DAY, now, RM.progress({ "mat-a": { s: "e" } }, w6).pts);
+assert.ok(cvT.every((p, i) => i === 0 || p.v >= cvT[i - 1].v), JSON.stringify(cvT));
 console.log("✅ todos os testes passaram");

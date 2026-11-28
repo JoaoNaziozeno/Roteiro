@@ -4,6 +4,10 @@ const RM = (() => {
   const TRACK_TOTAL = { ia: 173, mat: 43, ing: 73 };   // substituído por configure() com os obrigatórios
   const OPTIONAL = new Set();                            // tópicos opcionais: fora da meta e dos percentuais
   const REQUIRED = new Set();                            // ids obrigatórios do roteiro atual (vazio = sem catálogo)
+  const TREINO = new Set();                              // aulas com Treino no fim da Aula Visual (treino.py)
+  // Nas aulas com treino, TR_SHARE do peso vem dele, e só com pelo menos TR_MIN% de acertos (o melhor resultado).
+  // O resto vem do estudo (vídeo e Aula Visual, ou o ✓ de Concluído). O peso total da aula não muda.
+  const TR_SHARE = 0.25, TR_MIN = 70;
   const trackOf = k => k.startsWith("mat-") ? "mat" : k.startsWith("ing-") ? "ing" : "ia";
   // Só conta tópicos do roteiro atual (ia-/mat-/ing-). Chaves antigas (números como "35", do formato
   // anterior) ficam de fora: antes eram somadas como IA e inflavam o total.
@@ -12,9 +16,26 @@ const RM = (() => {
     if (c && c.totals) for (const t in c.totals) TRACK_TOTAL[t] = c.totals[t];
     if (c && Array.isArray(c.optional)) { OPTIONAL.clear(); c.optional.forEach(k => OPTIONAL.add(k)); }
     if (c && Array.isArray(c.required)) { REQUIRED.clear(); c.required.forEach(k => REQUIRED.add(k)); }
+    if (c && Array.isArray(c.treino)) { TREINO.clear(); c.treino.forEach(k => TREINO.add(k)); }
   }
   const trackW = (eff, t) => (eff.tracks && eff.tracks[t] > 0) ? eff.tracks[t] : 1;
   const weightOf = (k, eff) => (eff.topics && eff.topics[k] > 0) ? eff.topics[k] : trackW(eff, trackOf(k));
+  const trShare = k => (TREINO.has(k) ? TR_SHARE : 0);   // parte do peso que vem do treino (0 = aula sem treino)
+  // Melhor % no treino de cada aula, das respostas salvas (roteiro-answers-v1: {aula: {tr: {b: melhor %}}})
+  function trBest(answers) {
+    const o = {};
+    for (const k in (answers || {})) { const a = answers[k]; if (a && a.tr && a.tr.b > 0) o[k] = a.tr.b; }
+    return o;
+  }
+  const trPassed = (k, best) => trShare(k) > 0 && Boolean(best) && (best[k] || 0) >= TR_MIN;
+  // Crédito de uma aula: o estudo (concluída = inteiro; em andamento = média do % de vídeo e de aula) vale
+  // (1 - TR_SHARE) do peso nas aulas com treino, e o treino aprovado vale o resto. Sem treino, o estudo vale tudo.
+  function credit(k, it, w, best) {
+    it = it || {};
+    const sh = trShare(k);
+    const study = it.s === "e" ? 1 : it.s === "r" ? Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
+    return w * ((1 - sh) * study + (trPassed(k, best) ? sh : 0));
+  }
 
   // Esforço total do roteiro, em "pontos" (1 ponto = tópico de peso 1)
   function totals(eff) {
@@ -24,27 +45,29 @@ const RM = (() => {
     return { topics, points };
   }
 
-  // Estrutural = tópicos concluídos. Ponderado = peso dos concluídos + crédito parcial dos "falta terminar"
-  // (crédito parcial = média do % de vídeo (vp) e % de aula visual (gp) já registrados no tópico).
-  function progress(PR, eff) {
+  // Estrutural = tópicos concluídos. Ponderado = crédito de cada aula (credit): peso dos concluídos + crédito
+  // parcial dos "falta terminar" (média do % de vídeo (vp) e % de aula visual (gp)) + o treino aprovado.
+  // best = melhor % no treino de cada aula (trBest); sem ele, nenhum treino conta.
+  function progress(PR, eff, best) {
     const per = {};
     for (const t in TRACK_TOTAL) per[t] = { done: 0, pts: 0, total: TRACK_TOTAL[t], ptsTotal: TRACK_TOTAL[t] * trackW(eff, t) };
     let structDone = 0, pts = 0;
-    for (const k in PR) {
+    // o treino conta mesmo numa aula que ainda não aparece no progresso
+    const keys = new Set(Object.keys(PR || {}).concat(Object.keys(best || {}).filter(k => trPassed(k, best))));
+    for (const k of keys) {
       if (!isTopic(k)) continue;
-      const it = PR[k] || {}, t = trackOf(k), w = weightOf(k, eff);
-      let c = 0;
-      if (it.s === "e") { c = w; structDone++; per[t].done++; }
-      else if (it.s === "r") c = w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200);
+      const it = (PR && PR[k]) || {}, t = trackOf(k), c = credit(k, it, weightOf(k, eff), best);
+      if (it.s === "e") { structDone++; per[t].done++; }
       per[t].pts += c; pts += c;
     }
     return { structDone, pts, per };
   }
 
-  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}
+  // Variação líquida de esforço concluído causada por um evento {t,id,f,to,src}. Concluir uma aula com treino
+  // soma só a parte do estudo: o treino aprovado entra nos pontos sem evento, como o crédito parcial.
   const evNet = (e, eff) => {
     if (!isTopic(e.id)) return 0;
-    const w = weightOf(e.id, eff);
+    const w = weightOf(e.id, eff) * (1 - trShare(e.id));
     return (e.to === "e" && e.f !== "e") ? w : (e.f === "e" && e.to !== "e") ? -w : 0;
   };
 
@@ -131,7 +154,7 @@ const RM = (() => {
   // Peso de cada trilha em pontos de esforço (ver TRACK_WEIGHTS no Python): o hub e as aulas usam este mesmo valor
   const TRACK_WEIGHTS = Object.freeze({"ia": 4, "mat": 6, "ing": 1});
 
-  return { TRACK_TOTAL, TRACK_WEIGHTS, configure, trackOf, isTopic, trackW, weightOf, totals, progress, evNet, weeklySeries, forecast,
-           planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
+  return { TRACK_TOTAL, TRACK_WEIGHTS, TR_SHARE, TR_MIN, configure, trackOf, isTopic, trackW, weightOf, trShare, trBest, trPassed,
+           credit, totals, progress, evNet, weeklySeries, forecast, planned, status, requiredPace, curve, milestones, nextStep, hoursPerPoint };
 })();
 if (typeof module !== "undefined") module.exports = RM;

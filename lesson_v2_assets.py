@@ -418,14 +418,15 @@ function renderPtGuideV2Body(g, topicId) {
   if (blocos.some(b => b.tipo === "widget")) chips.push("interativo");
   if (blocos.some(b => b.tipo === "video")) chips.push("vídeo guiado");
   if (blocos.some(b => b.tipo === "laboratorio")) chips.push("laboratório");
-  // Treino da aula (treino_js.py): o cartão "Treinar esta aula" entra logo depois do quiz de saída (ou no fim)
-  const trHtml = topicId && typeof trEntryHTML === "function" ? trEntryHTML(topicId) : "";
-  if (trHtml) chips.push("🏋️ treino");
+  // Treino da aula (treino_js.py): o bloco com as questões entra logo depois do quiz de saída (ou no fim), e o chip desce até ele
+  const trHtml = topicId && typeof trAulaHTML === "function" ? trAulaHTML(topicId) : "";
+  if (trHtml) chips.push({ go: "🏋️ treino" });
   const rvSt = (topicId && typeof RV !== "undefined") ? RV.stateOf(lv2ReadReview()[topicId]) : null;
   if (rvSt && rvSt.due <= RV.today()) chips.push(rvSt.due < RV.today() ? "revisão atrasada" : "revisão de hoje");
 
   let html = `<div class="lv2" data-topic="${topicId || ""}"><div class="lv2-hero">` +
-    `<div class="lv2-chips">${chips.map(c => `<span class="lv2-chip">${c}</span>`).join("")}</div>` +
+    `<div class="lv2-chips">${chips.map(c => (typeof c === "string" ? `<span class="lv2-chip">${c}</span>`
+      : `<button type="button" class="lv2-chip lv2-chip-go" data-tr-go title="Ir para o treino desta aula">${c.go}</button>`)).join("")}</div>` +
     `<div class="lv2-hook">${g.gancho || ""}</div><div class="lv2-meta">`;
   if (g.objetivos && g.objetivos.length) {
     html += `<div><div class="lv2-meta-title">Ao final desta aula você vai</div><ul>${g.objetivos.map(o => `<li>${o}</li>`).join("")}</ul></div>`;
@@ -755,6 +756,7 @@ function lv2Init(container) {
   }
   lv2RestoreAnswers(root, topicId);
   if (typeof lv2InitExtra === "function") lv2InitExtra(root, topicId);
+  if (typeof trAulaInit === "function") { try { trAulaInit(root); } catch (e) { console.warn("treino", e); } }   // treino do fim da aula
 
   const checks = [...root.querySelectorAll(".lv2-check")];
   const checkKey = box => String(checks.indexOf(box));

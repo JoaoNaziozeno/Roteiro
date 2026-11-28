@@ -463,5 +463,8 @@ TR_GEN_JS = r"""
       ops: [{ v: r2(dot(x, w)), why: "esqueceu de centralizar (subtrair a média)" }, { v: r2(dot(c, [w[1], w[0]])), why: "trocou as coordenadas de w" }, { v: r2(nrm(c)), why: "calculou a distância até a média" }],
       x: "Centralize e projete: " + $("x - \\mu = " + V(c)) + " e " + $("(x - \\mu)\\cdot w = " + prods(c, w) + " = " + n(s)) + "." };
   } };
+  // Ferramentas compartilhadas com os outros arquivos de geradores (treino_contas_*.py)
+  const milhar = x => String(Math.round(x)).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  TR.H = { n, V, M, N1, P, nt, $, dot, sum, add, sub, mul, mv, mm, tr, had, r2, nrm, prods, li, signed, dimOf, lin, par, lamPair, pctF, milhar };
 })();
 """

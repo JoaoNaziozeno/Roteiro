@@ -14,7 +14,9 @@ As questões de código são conferidas rodando o Python (treino.py / test_trein
 Python imprime de verdade. Os geradores de conta são sorteados centenas de vezes nos testes e conferidos com o NumPy.
 
 TR_JS     cálculo, sem tela (sorteio, alternativas, gravação do resultado); roda no Node nos testes
-TR_UI_JS  a sessão na tela (uma aula, ou misto por módulo na página Revisões) e o cartão "Treinar esta aula"
+TR_UI_JS  a sessão na tela: o treino de cada aula fica no fim da Aula Visual (uma questão por vez, sem janela por cima)
+          e o treino misto por módulo, na página Revisões, abre numa janela como a revisão ativa.
+          O treino aprovado (RM.TR_MIN% de acertos) vale parte dos pontos da aula (RM.TR_SHARE, metrics_js.py).
 TR_CSS    estilos
 """
 
@@ -86,8 +88,10 @@ const TR = (() => {
   function near(v, R) {
     if (typeof v === "number") {
       if (Number.isInteger(v)) return v + R.pick([-3, -2, -1, 1, 2, 3]);
-      const d = Math.max(0.01, Math.abs(v) * R.pick([0.1, 0.2, 0.3]));
-      return Math.round((v + R.pick([-1, 1]) * d) * 100) / 100;
+      // números pequenos (0,0006) também ganham vizinhos visíveis: arredonda conforme a ordem de grandeza
+      const casas = Math.max(2, 2 - Math.floor(Math.log10(Math.abs(v)))), p = Math.pow(10, casas);
+      const d = Math.max(1 / p, Math.abs(v) * R.pick([0.1, 0.2, 0.3]));
+      return Math.round((v + R.pick([-1, 1]) * d) * p) / p;
     }
     if (isMat(v)) { const M = v.map(r => r.slice()), i = R.int(0, M.length - 1), j = R.int(0, M[0].length - 1); M[i][j] = near(M[i][j], R); return M; }
     if (Array.isArray(v)) { const w = v.slice(), i = R.int(0, w.length - 1); w[i] = near(w[i], R); return w; }
@@ -110,7 +114,7 @@ const TR = (() => {
       const h = hOf({ v }); if (!seen.has(h)) { seen.add(h); wrong.push({ h, v, why: "" }); }
     }
     const opts = shuffle([right].concat(wrong.slice(0, 3)), rnd);
-    return { k: "conta", g: q.g, t: G.t, q: r.q, opts, c: opts.findIndex(o => o.ok), x: r.x || "", d: r.d, src: q };
+    return { k: "conta", g: q.g, t: G.t, q: r.q, opts, c: opts.findIndex(o => o.ok), x: r.x || "", d: r.d, casas: c, src: q };
   }
 
   // Uma questão pronta para a tela: alternativas embaralhadas (ou números sorteados, nas contas)
@@ -214,12 +218,13 @@ if (typeof module !== "undefined") module.exports = TR;
 
 TR_UI_JS = r"""
 // =================== TREINO: a sessão na tela ===================
+// Uma aula: bloco no fim da Aula Visual (trAulaHTML / trAulaInit). Misto por módulo (página Revisões): janela #tr.
 const TR_INDEX = __TR_INDEX__;   // {id da aula: nº de questões}
 const TR_MODS = __TR_MODS__;     // módulos com treino, para o treino misto: [{k, tr, nome, ids}]
 const TR_BANKS = {};             // trilha -> {id: [questões]} (baixado na primeira vez: treino_<trilha>.json)
 const TR_COLOR = { ia: "--t-ia", mat: "--t-mat", ing: "--t-ing" };
 const TR_OK = ["Isso!", "Certo!", "Mandou bem!", "Exato!"], TR_NO = ["Quase!", "Não foi dessa vez.", "Ainda não."];
-let TR_S = null;
+let TR_S = null;                 // sessão da janela do treino misto (a do bloco da aula fica no próprio bloco: el.__tr)
 
 function trEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function trTrack(id) { return String(id || "").split("-")[0]; }
@@ -289,7 +294,8 @@ function trQHTML(inst, a) {
       const mark = done ? (i === inst.c ? "✓" : i === a ? "✗" : "") : String(i + 1);
       const why = done && o.why && inst.k === "conta" ? '<small class="tr-why">' + o.why + "</small>" : "";
       return '<button type="button" class="tr-opt' + (o.mono ? " mono" : "") + cls + '" data-o="' + i + '"' + (done ? " disabled" : "") + ">" +
-             '<span class="tr-r" aria-hidden="true">' + mark + '</span><span class="tr-ot">' + (o.mono ? trEsc(o.h) : o.h) + "</span>" + why + "</button>";
+             '<span class="tr-r" aria-hidden="true">' + mark + '</span><span class="tr-ot">' +
+             (o.mono ? '<code class="tr-mono">' + trEsc(o.h) + "</code>" : o.h) + "</span>" + why + "</button>";   // em <code>, o KaTeX ignora (ex.: "R$" numa saída)
     }).join("") + "</div>";
   }
   if (done) {
@@ -308,113 +314,107 @@ function trQHTML(inst, a) {
   return h;
 }
 
-// ---- a janela do treino (criada na primeira vez) ----
-function trBox() {
-  let el = document.getElementById("tr");
-  if (el) return el;
-  el = document.createElement("div");
-  el.className = "tr"; el.id = "tr"; el.hidden = true;
-  el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "tr-title");
-  el.innerHTML = '<div class="tr-box"><div class="tr-top"><button type="button" class="tr-x" aria-label="Sair do treino" title="Sair (Esc)">✕</button>' +
-    '<b id="tr-title">🏋️ Treino</b><span id="tr-count"></span></div><div class="tr-prog"><i id="tr-bar"></i></div><div class="tr-body" id="tr-body"></div></div>';
-  el.querySelector(".tr-x").onclick = () => trClose(true);
-  document.body.appendChild(el);
-  return el;
-}
-function trSet(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
-function trShow(track, title) {
-  const el = trBox();
-  el.style.setProperty("--tc", "var(" + (TR_COLOR[track] || "--t-hub") + ")");
-  el.hidden = false; document.body.classList.add("tr-on");
-  trSet("tr-title", title); trSet("tr-count", "");
-  document.getElementById("tr-bar").style.width = "0%";
-  document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Preparando as questões…</div>';
-}
-function trClose(ask) {
-  const S = TR_S;
-  if (ask && S && S.i > 0 && S.i < S.items.length && !confirm("Sair do treino? As questões que você já respondeu não serão contadas.")) return;
-  const el = document.getElementById("tr");
-  if (el) el.hidden = true;
-  document.body.classList.remove("tr-on");
-  TR_S = null;
-  trPaintEntries();
-}
-
-// Treino de uma aula (fim da Aula Visual, menu "⋯ Mais" e página Revisões)
-async function trOpenLesson(id) {
-  trShow(trTrack(id), "🏋️ Treino");
-  let bank;
-  try { bank = await trLoadBank(trTrack(id)); }
-  catch (e) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + "). Confira a conexão e tente de novo.</div>"; return; }
-  const qs = bank[id] || [];
-  if (!qs.length) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Esta aula ainda não tem treino.</div>'; return; }
-  trBegin({ mode: "one", ids: [id], items: TR.pick(qs).map(q => ({ id, q })) });
-}
-// Treino misto de um módulo: questões das aulas que você já começou ou concluiu
-async function trOpenMixed(key) {
-  const m = TR_MODS.find(x => x.k === key);
-  if (!m) return;
-  trShow(m.tr, "🔀 Treino misto");
-  let bank;
-  try { bank = await trLoadBank(m.tr); }
-  catch (e) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + ").</div>"; return; }
-  const st = trStudied();
-  let ids = m.ids.filter(id => st.has(id) && bank[id]), note = "";
-  if (!ids.length) { ids = m.ids.filter(id => bank[id]); note = "Você ainda não estudou aulas deste módulo, então o treino usa todas."; }
-  trBegin({ mode: "mix", key, ids, note, items: TR.pickMixed(ids.map(id => ({ id, qs: bank[id] }))) });
-}
-function trBegin(o) {
+// ---- a sessão: o mesmo código desenha no bloco do fim da Aula Visual e na janela do treino misto ----
+// v = onde a sessão aparece: { root, body, count, bar, inline } (inline = dentro da aula, sem janela por cima)
+function trBegin(o, v) {
   const items = o.items.map(it => ({ id: it.id, q: it.q, inst: TR.inst(it.q) })).filter(it => it.inst);
-  if (!items.length) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Nenhuma questão disponível.</div>'; return; }
-  TR_S = Object.assign({}, o, { items, i: 0, answered: null, res: [] });
-  trRender();
+  if (!items.length) { v.body.innerHTML = '<div class="tr-wait">Nenhuma questão disponível.</div>'; if (v.inline) v.root.__tr = null; return null; }
+  const S = Object.assign({}, o, { v, items, i: 0, answered: null, res: [] });
+  if (v.inline) v.root.__tr = S; else TR_S = S;
+  trRender(S);
+  return S;
 }
+// A sessão ainda é a da tela? (a aula pode ter fechado, ou outro treino começado)
+const trLive = S => Boolean(S) && (S.v.inline ? S.v.root.__tr === S && S.v.root.isConnected : TR_S === S);
+const trPtsTxt = v => { const r = Math.round(v * 10) / 10; return r.toLocaleString("pt-BR") + (r === 1 ? " ponto" : " pontos"); };
+// Pontos da aula (topo do estúdio, listing_generator.py): só nas páginas de trilha; null nas outras
+const trPtsOf = id => (typeof lessonPointsInfo === "function" ? lessonPointsInfo(id) : null);
 
-function trRender() {
-  const S = TR_S;
-  if (!S) return;
-  if (S.i >= S.items.length) return trResult();
-  const it = S.items[S.i], ok = S.res.filter(Boolean).length;
-  trSet("tr-count", (S.i + 1) + " de " + S.items.length + (ok ? " · ✔ " + ok : ""));
-  document.getElementById("tr-bar").style.width = (S.i / S.items.length * 100) + "%";
+function trRender(S) {
+  if (!trLive(S)) return;
+  if (S.i >= S.items.length) return trResult(S);
+  const v = S.v, it = S.items[S.i], ok = S.res.filter(Boolean).length;
+  v.count.textContent = (S.i + 1) + " de " + S.items.length + (ok ? " · ✔ " + ok : "");
+  v.bar.style.width = (S.i / S.items.length * 100) + "%";
   let h = "";
   if (S.note && S.i === 0) h += '<p class="tr-note">' + trEsc(S.note) + "</p>";
-  h += '<div class="tr-chip" style="--c:var(' + (TR_COLOR[trTrack(it.id)] || "--t-hub") + ')"><i></i><span>' + trEsc(trTitle(it.id)) + "</span>" +
+  if (!v.inline) h += '<div class="tr-chip" style="--c:var(' + (TR_COLOR[trTrack(it.id)] || "--t-hub") + ')"><i></i><span>' + trEsc(trTitle(it.id)) + "</span>" +
        (S.mode === "redo" ? "<small>refazendo as que errou</small>" : "") + "</div>";
+  else if (S.mode === "redo") h += '<div class="tr-chip"><small>refazendo as que você errou</small></div>';
   h += '<div class="tr-card">' + trQHTML(it.inst, S.answered) + "</div>";
   h += S.answered == null ? '<p class="tr-tip">' + (it.inst.k === "erro" ? "Toque na linha com o erro (ou tecle o número dela)." : "Toque na resposta (ou tecle o número).") + "</p>"
     : '<div class="tr-actions"><button type="button" class="tr-btn pri" data-next>' + (S.i + 1 < S.items.length ? "Próxima →" : "Ver resultado") + "</button></div>";
-  const body = document.getElementById("tr-body");
-  body.innerHTML = h; body.scrollTop = 0; trMath(body);
-  body.querySelectorAll("[data-o]").forEach(b => { b.onclick = () => trAnswer(+b.dataset.o); });
-  const nx = body.querySelector("[data-next]");
-  if (nx) { nx.onclick = trNext; try { nx.focus({ preventScroll: true }); } catch (e) {} }
+  v.body.innerHTML = h; trMath(v.body);
+  if (!v.inline) v.body.scrollTop = 0;
+  v.body.querySelectorAll("[data-o]").forEach(b => { b.onclick = () => trAnswer(S, +b.dataset.o); });
+  const nx = v.body.querySelector("[data-next]");
+  if (nx) nx.onclick = () => trNext(S);
+  if (v.inline && S.i === 0 && S.answered == null) trAulaPts(v.root);
 }
 // A alternativa i existe? (no "Ache o erro", linha em branco não conta)
 function trCanAnswer(inst, i) { return inst.k === "erro" ? !!String(inst.lines[i] || "").trim() : !!inst.opts[i]; }
-function trAnswer(i) {
-  const S = TR_S;
-  if (!S || S.answered != null) return;
+function trAnswer(S, i) {
+  if (!trLive(S) || S.answered != null || S.i >= S.items.length) return;
   const inst = S.items[S.i].inst;
   if (!trCanAnswer(inst, i)) return;
   S.answered = i; S.res[S.i] = i === inst.c;
-  trRender();
+  trRender(S);
+  const nx = S.v.body.querySelector("[data-next]");
+  if (nx) { try { nx.focus({ preventScroll: true }); } catch (e) {} }   // Enter já vai para a próxima
+  // Na aula, a explicação aparece embaixo das alternativas: a tela acompanha, sem pular. Se a explicação e o
+  // "Próxima" cabem juntos na tela, mostra os dois; se não, a explicação a partir do começo
+  const fb = S.v.inline && S.v.body.querySelector(".tr-fb"), act = fb && S.v.body.querySelector(".tr-actions");
+  if (fb && act) {
+    const sc = typeof getGuideScrollContainer === "function" ? getGuideScrollContainer() : null;
+    const head = S.v.root.closest("#pt-guide-box") && S.v.root.closest("#pt-guide-box").querySelector(".guide-shell-head");
+    const box = sc ? sc.getBoundingClientRect() : { top: 0, bottom: window.innerHeight || 800 };
+    const cabe = act.getBoundingClientRect().bottom - fb.getBoundingClientRect().top <= box.bottom - box.top - (head ? head.offsetHeight : 0) - 16;
+    try { (cabe ? act : fb).scrollIntoView({ block: cabe ? "nearest" : "start", behavior: "smooth" }); } catch (e) {}
+  }
 }
-function trNext() { if (!TR_S) return; TR_S.i++; TR_S.answered = null; trRender(); }
+function trNext(S) {
+  if (!trLive(S)) return;
+  S.i++; S.answered = null; trRender(S);
+  if (S.v.inline) trTopInView(S.v.root);
+}
+// Se o começo do bloco do treino ficou para cima da tela (explicação longa), a próxima questão volta para o topo dele
+function trTopInView(el) {
+  const sc = typeof getGuideScrollContainer === "function" ? getGuideScrollContainer() : null;
+  const head = el.closest("#pt-guide-box") && el.closest("#pt-guide-box").querySelector(".guide-shell-head");   // fica fixo no topo
+  const top = (sc ? Math.max(0, sc.getBoundingClientRect().top) : 0) + (head ? head.getBoundingClientRect().height : 0);
+  if (el.getBoundingClientRect().top < top) { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} }
+}
 
-function trResult() {
-  const S = TR_S, body = document.getElementById("tr-body");
+// O que o treino fez pelos pontos da aula (só no treino completo de uma aula, e só nas páginas com os pontos)
+function trPtsResultHTML(S) {
+  if (S.mode === "redo" && S.from === "one") {
+    const x = trPtsOf(S.ids[0]);
+    return x && x.tr && !x.trOk ? '<p class="tr-sub">Refazer as erradas fixa o conteúdo, mas quem vale pontos é o treino completo.</p>' : "";
+  }
+  const a = S.ptsAntes, d = S.ptsDepois;
+  if (S.mode !== "one" || !a || !d || !a.tr) return "";
+  const pts = trPtsTxt(d.trPts), n = S.items.length;
+  if (!a.trOk && d.trOk) return '<p class="tr-pts ok">🏆 Treino aprovado: <b>+' + pts + "</b> nesta aula, na sua Jornada.</p>";
+  if (a.trOk) return '<p class="tr-pts ok">✓ O treino desta aula já estava aprovado: a parte dele (' + pts + ") continua na Jornada.</p>";
+  return '<p class="tr-pts">Com pelo menos ' + d.min + "% de acertos (" + Math.ceil(d.min / 100 * n) + " de " + n + "), o treino soma <b>+" + pts +
+         "</b> nesta aula. Bora de novo?</p>";
+}
+
+function trResult(S) {
+  const v = S.v, body = v.body;
   const ok = S.res.filter(Boolean).length, n = S.items.length, pct = n ? Math.round(ok / n * 100) : 0;
-  trSet("tr-count", "Resultado");
-  document.getElementById("tr-bar").style.width = "100%";
+  v.count.textContent = "Resultado";
+  v.bar.style.width = "100%";
   // Só o treino completo de uma aula grava o resultado dela: refazer as erradas ou o misto (1 ou 2 questões por aula)
   // não são comparáveis com o treino de 10 questões e mudariam o "seu melhor" à toa
   if (!S.saved && S.mode === "one") {
     S.saved = true; S.prev = {};
+    S.ptsAntes = trPtsOf(S.ids[0]);
     S.ids.forEach(id => {
       const idx = S.items.map((it, i) => (it.id === id ? i : -1)).filter(i => i >= 0);
       if (idx.length) S.prev[id] = TR.record(id, idx.filter(i => S.res[i]).length, idx.length).prev;
     });
+    S.ptsDepois = trPtsOf(S.ids[0]);
     if (typeof scheduleAwsRealtimeSync === "function") { try { scheduleAwsRealtimeSync(); } catch (e) {} }
     try { window.dispatchEvent(new CustomEvent("tr:change")); } catch (e) {}
   }
@@ -422,6 +422,7 @@ function trResult() {
   const msg = pct === 100 ? "Gabaritou! 🏆" : pct >= 80 ? "Mandou bem!" : pct >= 60 ? "Bom treino! Vale rever os erros abaixo." : "Esse custou, e tudo bem: é errando aqui que você acerta depois.";
   let h = '<div class="tr-end"><div class="tr-score">' + ok + "/" + n + '</div><p class="tr-msg">' + msg + "</p>";
   if (S.mode === "one" && S.prev && S.prev[S.ids[0]]) h += '<p class="tr-sub">Antes, seu melhor nesta aula era ' + S.prev[S.ids[0]].b + "%.</p>";
+  h += trPtsResultHTML(S);
   const bk = TR.byKind(S.items, S.res);
   h += '<div class="tr-chips">' + Object.keys(bk).map(k => '<span class="tr-chip2">' + TR.ICON[k] + " " + TR.SHORT[k] + " " + bk[k][0] + "/" + bk[k][1] + "</span>").join("") + "</div>";
   if (S.mode === "mix") {
@@ -435,65 +436,208 @@ function trResult() {
          (S.mode === "mix" ? ' <small>· ' + trEsc(trTitle(it.id)) + "</small>" : "") + "</li>").join("") + "</ul></div>";
   }
   h += '<div class="tr-actions wrap">';
-  if (miss.length) h += '<button type="button" class="tr-btn pri" data-redo>Refazer só as ' + miss.length + (miss.length === 1 ? " que errei" : " que errei") + "</button>";
+  if (miss.length) h += '<button type="button" class="tr-btn pri" data-redo>Refazer só ' + (miss.length === 1 ? "a que errei" : "as " + miss.length + " que errei") + "</button>";
   h += '<button type="button" class="tr-btn' + (miss.length ? "" : " pri") + '" data-again>Treinar de novo</button>';
   const id1 = S.ids.length === 1 ? S.ids[0] : null, ag = id1 && typeof RV !== "undefined" ? RV.byId()[id1] : null;
   if (id1 && typeof RV !== "undefined" && pct < 80 && !ag) h += '<button type="button" class="tr-btn" data-rev>↻ Pôr na revisão</button>';
-  h += '<button type="button" class="tr-btn" data-close>Fechar</button></div>';
+  if (!v.inline) h += '<button type="button" class="tr-btn" data-close>Fechar</button>';
+  h += "</div>";
   if (id1 && ag) h += '<p class="tr-sub">↻ Esta aula já está na sua agenda de revisões: ' + trEsc(RV.when(ag.due)) + ".</p>";
   h += "</div>";
-  body.innerHTML = h; body.scrollTop = 0; trMath(body);
+  body.innerHTML = h; trMath(body);
+  if (!v.inline) body.scrollTop = 0;
   const on = (sel, fn) => { const b = body.querySelector(sel); if (b) b.onclick = fn; };
   const base = S.from || S.mode;   // de onde veio (uma aula ou misto), também ao refazer as erradas
-  on("[data-redo]", () => trBegin({ mode: "redo", from: base, key: S.key, ids: S.ids, items: miss.map(it => ({ id: it.id, q: it.q })) }));
-  on("[data-again]", () => (base === "mix" ? trOpenMixed(S.key) : trOpenLesson(S.ids[0])));
+  on("[data-redo]", () => { trBegin({ mode: "redo", from: base, key: S.key, ids: S.ids, items: miss.map(it => ({ id: it.id, q: it.q })) }, v); if (v.inline) trTopInView(v.root); });
+  on("[data-again]", () => { if (base === "mix") trOpenMixed(S.key); else { trAulaStart(v.root); trTopInView(v.root); } });
   on("[data-rev]", () => {
     RV.schedule(id1, RV.addDays(RV.today(), 1));
     if (typeof rvToast === "function") rvToast("Revisão marcada para amanhã.");
     if (typeof rvNavBadge === "function") rvNavBadge();
+    if (typeof updateModalReviewBtn === "function") { try { updateModalReviewBtn(); } catch (e) {} }
     const b = body.querySelector("[data-rev]"); if (b) { b.disabled = true; b.textContent = "✓ Na revisão de amanhã"; }
   });
   on("[data-close]", () => trClose(false));
+  if (v.inline) { trAulaPts(v.root); trTopInView(v.root); }
 }
 
-// Cartão "Treinar esta aula" (fim da Aula Visual)
-function trEntryHTML(id) {
+// ---- Treino da aula: um bloco no fim da Aula Visual, logo depois do quiz de saída ----
+// O lugar já vem no HTML da aula (trAulaHTML, em renderPtGuideV2Body) e lv2Init chama trAulaInit:
+// na primeira vez a 1ª questão já aparece; depois de treinar, um resumo com o seu melhor e "Treinar de novo".
+function trAulaHTML(id) {
   const n = TR_INDEX[id];
   if (!n) return "";
-  const st = TR.stats(id), k = Math.min(n, TR.PER_SESSION);
-  const sub = st ? "Seu melhor: " + st.b + "% · última vez " + trEsc(st.s) + " · treinou " + st.n + (st.n === 1 ? " vez" : " vezes")
-                 : "Questões de marcar, com a explicação na hora. Não mexe no seu progresso nem nos pontos.";
-  return '<div class="tr-entry" data-tr="' + id + '"><span class="tr-entry-ico" aria-hidden="true">🏋️</span><div class="tr-entry-t"><b>Treinar esta aula · ' + k +
-         " questões</b><span>" + sub + '</span></div><button type="button" class="tr-entry-go" onclick="trOpenLesson(\'' + id + '\')">' +
-         (st ? "Treinar de novo" : "Começar") + "</button></div>";
+  const k = Math.min(n, TR.PER_SESSION);
+  return '<section class="tr-aula" data-tr="' + id + '" style="--tc:var(' + (TR_COLOR[trTrack(id)] || "--t-hub") + ')" aria-label="Treino da aula">' +
+    '<header class="tr-a-head"><div><div class="tr-a-kick">🏋️ Treino da aula</div><div class="tr-a-sub">' + k +
+    ' questões de marcar, uma por vez, com a explicação na hora.</div></div><span class="tr-a-count" aria-live="polite"></span></header>' +
+    '<div class="tr-prog"><i></i></div><div class="tr-a-pts" hidden></div><div class="tr-a-body"><div class="tr-wait">Preparando as questões…</div></div></section>';
 }
-function trPaintEntries() {
-  document.querySelectorAll(".tr-entry[data-tr]").forEach(el => {
-    const html = trEntryHTML(el.dataset.tr);
-    if (html) el.outerHTML = html;
-  });
+const trAulaView = el => ({ root: el, inline: true, body: el.querySelector(".tr-a-body"), count: el.querySelector(".tr-a-count"), bar: el.querySelector(".tr-prog i") });
+
+// Quanto o treino vale nesta aula (a mesma conta dos pontos do topo e da Jornada)
+function trAulaPts(el) {
+  const box = el.querySelector(".tr-a-pts");
+  if (!box) return;
+  const x = trPtsOf(el.dataset.tr);
+  let h = "";
+  if (x && x.group === "opt") h = "🧠 Aula opcional: o treino não entra na meta, mas fixa o conteúdo.";
+  else if (x && x.tr && x.trOk) h = "✓ Treino aprovado: a parte dele nos pontos desta aula (" + trPtsTxt(x.trPts) + ") já está na Jornada.";
+  else if (x && x.tr) h = "⭐ Acerte pelo menos " + x.min + "% e o treino soma <b>+" + trPtsTxt(x.trPts) + "</b> nesta aula.";
+  const S = el.__tr, resultado = Boolean(S && S.items && S.i >= S.items.length);   // o resultado já diz o que o treino fez pelos pontos
+  box.innerHTML = h; box.hidden = !h || resultado;
+  box.classList.toggle("ok", Boolean(x && x.trOk));
 }
 
-// Teclado: na fase de captura, para o Esc do treino não fechar também a aula que está por baixo
-window.addEventListener("keydown", e => {
-  const el = document.getElementById("tr"), S = TR_S;
-  if (!el || el.hidden) return;
-  if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); trClose(true); return; }
-  if (!S || S.i >= S.items.length || (e.target.closest && e.target.closest("input,textarea"))) return;
-  if (S.answered == null && /^[1-9]$/.test(e.key)) { e.preventDefault(); e.stopPropagation(); trAnswer(+e.key - 1); }
-  else if (S.answered != null && (e.key === "Enter" || e.key === " ")) {
-    e.stopPropagation();
-    if (!(e.target.closest && e.target.closest("button"))) { e.preventDefault(); trNext(); }   // num botão, o próprio clique resolve
+async function trAulaStart(el) {
+  const id = el.dataset.tr, v = trAulaView(el);
+  el.__tr = "carregando";
+  v.count.textContent = ""; v.bar.style.width = "0%";
+  v.body.innerHTML = '<div class="tr-wait">Preparando as questões…</div>';
+  let bank;
+  try { bank = await trLoadBank(trTrack(id)); }
+  catch (e) {
+    if (el.__tr !== "carregando") return;
+    el.__tr = null;
+    v.body.innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + ').<br><button type="button" class="tr-btn" data-retry>Tentar de novo</button></div>';
+    const b = v.body.querySelector("[data-retry]"); if (b) b.onclick = () => trAulaStart(el);
+    return;
   }
+  if (el.__tr !== "carregando" || !el.isConnected) return;   // a aula fechou (ou o treino recomeçou) enquanto as questões chegavam
+  const qs = bank[id] || [];
+  if (!qs.length) { el.__tr = null; v.body.innerHTML = '<div class="tr-wait">Esta aula ainda não tem treino.</div>'; return; }
+  trBegin({ mode: "one", ids: [id], items: TR.pick(qs).map(q => ({ id, q })) }, v);
+}
+
+function trAulaSummary(el) {
+  const id = el.dataset.tr, v = trAulaView(el), st = TR.stats(id), x = trPtsOf(id);
+  if (!st) return trAulaStart(el);
+  el.__tr = null;
+  v.count.textContent = ""; v.bar.style.width = "0%";
+  const tentar = Boolean(x && x.tr && !x.trOk);
+  v.body.innerHTML = '<div class="tr-a-sum"><div class="tr-a-best"><b>' + st.b + "%</b><span>seu melhor</span></div>" +
+    '<div class="tr-a-info"><span>Última vez: ' + trEsc(st.s) + " · treinou " + st.n + (st.n === 1 ? " vez" : " vezes") + "</span>" +
+    "<span>Cada treino sorteia as questões de novo, e as contas vêm com números novos.</span></div>" +
+    '<button type="button" class="tr-btn pri" data-start>' + (tentar ? "Tentar de novo" : "Treinar de novo") + "</button></div>";
+  v.body.querySelector("[data-start]").onclick = () => trAulaStart(el);
+}
+
+function trAulaInit(root) {
+  const el = root && root.querySelector(".tr-aula[data-tr]");
+  if (!el || el.__trInit) return;
+  el.__trInit = true;
+  const go = root.querySelector("[data-tr-go]");   // o chip "🏋️ treino" do topo da aula leva até aqui
+  if (go) go.onclick = () => { try { el.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {} };
+  trAulaPts(el);
+  if (TR.stats(el.dataset.tr)) trAulaSummary(el); else trAulaStart(el);
+}
+
+// "🏋️ Treinar" na lista de aulas: abre a aula e desce direto até o treino, quando as questões já estão na tela
+// (rolar antes faz o bloco sair do lugar quando ele cresce; por isso confere de novo logo depois)
+function trGoLesson(id) {
+  if (typeof openStudyModal !== "function") return;
+  openStudyModal(id, false, 1);
+  const ir = () => { const el = document.querySelector('.tr-aula[data-tr="' + id + '"]'); if (el) { try { el.scrollIntoView({ block: "start" }); } catch (e) {} } return el; };
+  let n = 0;
+  const tenta = () => {
+    const el = document.querySelector('.tr-aula[data-tr="' + id + '"]');
+    if (el && (el.__tr !== "carregando" || n >= 30)) { ir(); setTimeout(ir, 300); return; }
+    if (++n <= 30) setTimeout(tenta, 100);
+  };
+  setTimeout(tenta, 50);
+}
+
+// Treino gravado (aqui ou vindo de outro aparelho): a linha dos pontos acompanha, e o resumo se refaz se não há sessão na tela
+window.addEventListener("tr:change", () => {
+  document.querySelectorAll(".tr-aula[data-tr]").forEach(el => {
+    if (!el.__trInit) return;
+    try { trAulaPts(el); if (!el.__tr && TR.stats(el.dataset.tr)) trAulaSummary(el); } catch (e) {}
+  });
+});
+
+// ---- a janela do treino misto (página Revisões; criada na primeira vez) ----
+function trBox() {
+  let el = document.getElementById("tr");
+  if (el) return el;
+  el = document.createElement("div");
+  el.className = "tr"; el.id = "tr"; el.hidden = true;
+  el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); el.setAttribute("aria-labelledby", "tr-title");
+  el.innerHTML = '<div class="tr-box"><div class="tr-top"><button type="button" class="tr-x" aria-label="Sair do treino" title="Sair (Esc)">✕</button>' +
+    '<b id="tr-title">🏋️ Treino</b><span id="tr-count"></span></div><div class="tr-prog"><i id="tr-bar"></i></div><div class="tr-body" id="tr-body"></div></div>';
+  el.querySelector(".tr-x").onclick = () => trClose(true);
+  document.body.appendChild(el);
+  return el;
+}
+const trBoxView = () => ({ root: trBox(), inline: false, body: document.getElementById("tr-body"), count: document.getElementById("tr-count"), bar: document.getElementById("tr-bar") });
+function trShow(track, title) {
+  const el = trBox();
+  el.style.setProperty("--tc", "var(" + (TR_COLOR[track] || "--t-hub") + ")");
+  el.hidden = false; document.body.classList.add("tr-on");
+  document.getElementById("tr-title").textContent = title;
+  document.getElementById("tr-count").textContent = "";
+  document.getElementById("tr-bar").style.width = "0%";
+  document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Preparando as questões…</div>';
+}
+function trClose(ask) {
+  const S = TR_S;
+  if (ask && S && S.i > 0 && S.i < S.items.length && !confirm("Sair do treino? As questões que você já respondeu não serão contadas.")) return;
+  const el = document.getElementById("tr");
+  if (el) el.hidden = true;
+  document.body.classList.remove("tr-on");
+  TR_S = null;
+}
+// Treino misto de um módulo: questões das aulas que você já começou ou concluiu
+async function trOpenMixed(key) {
+  const m = TR_MODS.find(x => x.k === key);
+  if (!m) return;
+  TR_S = null;
+  trShow(m.tr, "🔀 Treino misto");
+  let bank;
+  try { bank = await trLoadBank(m.tr); }
+  catch (e) { document.getElementById("tr-body").innerHTML = '<div class="tr-wait">Não consegui carregar as questões (' + trEsc(e.message) + ").</div>"; return; }
+  if (document.getElementById("tr").hidden) return;   // fechou enquanto as questões chegavam
+  const st = trStudied();
+  let ids = m.ids.filter(id => st.has(id) && bank[id]), note = "";
+  if (!ids.length) { ids = m.ids.filter(id => bank[id]); note = "Você ainda não estudou aulas deste módulo, então o treino usa todas."; }
+  trBegin({ mode: "mix", key, ids, note, items: TR.pickMixed(ids.map(id => ({ id, qs: bank[id] }))) }, trBoxView());
+}
+
+// Teclado: 1 a 9 respondem e Enter vai para a próxima.
+// Janela do treino misto: na fase de captura, para o Esc do treino não fechar também o que está por baixo.
+// Treino da aula: vale para o bloco que está na tela, fora dos campos de texto (as anotações continuam livres).
+window.addEventListener("keydown", e => {
+  const box = document.getElementById("tr");
+  if (box && !box.hidden) {
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); trClose(true); return; }
+    const S = TR_S;
+    if (!S || S.i >= S.items.length || (e.target.closest && e.target.closest("input,textarea"))) return;
+    if (S.answered == null && /^[1-9]$/.test(e.key)) { e.preventDefault(); e.stopPropagation(); trAnswer(S, +e.key - 1); }
+    else if (S.answered != null && (e.key === "Enter" || e.key === " ")) {
+      e.stopPropagation();
+      if (!(e.target.closest && e.target.closest("button"))) { e.preventDefault(); trNext(S); }   // num botão, o próprio clique resolve
+    }
+    return;
+  }
+  const t = e.target;
+  if (e.ctrlKey || e.metaKey || e.altKey || !t || t.isContentEditable || (t.closest && t.closest("input,textarea,select,[contenteditable]"))) return;
+  const el = Array.from(document.querySelectorAll(".tr-aula")).find(x => {
+    if (!x.__tr || !x.__tr.items) return false;
+    const r = x.getBoundingClientRect();
+    return r.height > 0 && r.bottom > 60 && r.top < (window.innerHeight || 800) - 60;
+  });
+  const S = el && el.__tr;
+  if (!S || S.i >= S.items.length) return;
+  if (S.answered == null && /^[1-9]$/.test(e.key)) { e.preventDefault(); trAnswer(S, +e.key - 1); }
+  else if (S.answered != null && e.key === "Enter" && !(t.closest && t.closest("button,a"))) { e.preventDefault(); trNext(S); }
 }, true);
 """
 
 TR_CSS = r"""
 /* ===== Treino (questões de marcar) ===== */
-/* .tr = a janela do treino; .tr-in = uma questão do treino dentro de outra tela (cartão da revisão ativa) */
-.tr,.tr-in{--tc:var(--t-hub);--code-bg:#0b1218;--code-line:rgba(148,178,190,.14);--code-tx:#d6dee1;
+/* .tr = a janela do treino misto; .tr-aula = o treino no fim da Aula Visual; .tr-in = uma questão dentro de outra tela (revisão ativa) */
+.tr,.tr-in,.tr-aula{--tc:var(--t-hub);--code-bg:#0b1218;--code-line:rgba(148,178,190,.14);--code-tx:#d6dee1;
   --code-c:#6f8590;--code-s:#9fdcae;--code-n:#f2b872;--code-k:#c8a8ff;--code-f:#7fc8f8}
-:root[data-theme="light"] .tr,:root[data-theme="light"] .tr-in{--code-bg:#f6f8fa;--code-line:#e1e7eb;--code-tx:#1f2b31;--code-c:#6e7f88;--code-s:#116329;--code-n:#a04f00;--code-k:#7c3aed;--code-f:#0550ae}
+:root[data-theme="light"] :is(.tr,.tr-in,.tr-aula){--code-bg:#f6f8fa;--code-line:#e1e7eb;--code-tx:#1f2b31;--code-c:#6e7f88;--code-s:#116329;--code-n:#a04f00;--code-k:#7c3aed;--code-f:#0550ae}
 .tr{position:fixed;inset:0;z-index:99995;display:flex;align-items:center;justify-content:center;padding:18px;
   background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .tr[hidden]{display:none}
@@ -522,14 +666,15 @@ body.tr-on{overflow:hidden}
 .tr-code{margin:12px 0 0;padding:12px 14px;background:var(--code-bg);color:var(--code-tx);border:1px solid var(--code-line);border-radius:10px;
   font:13.5px/1.6 ui-monospace,"JetBrains Mono","Cascadia Code",SFMono-Regular,Consolas,monospace;overflow-x:auto;tab-size:4}
 .tr-code code{background:none;padding:0;white-space:pre;font:inherit;color:inherit}
-:is(.tr,.tr-in) .tk-c{color:var(--code-c);font-style:italic}:is(.tr,.tr-in) .tk-s{color:var(--code-s)}:is(.tr,.tr-in) .tk-n{color:var(--code-n)}
-:is(.tr,.tr-in) .tk-k{color:var(--code-k);font-weight:500}:is(.tr,.tr-in) .tk-f{color:var(--code-f)}
+:is(.tr,.tr-in,.tr-aula) .tk-c{color:var(--code-c);font-style:italic}:is(.tr,.tr-in,.tr-aula) .tk-s{color:var(--code-s)}:is(.tr,.tr-in,.tr-aula) .tk-n{color:var(--code-n)}
+:is(.tr,.tr-in,.tr-aula) .tk-k{color:var(--code-k);font-weight:500}:is(.tr,.tr-in,.tr-aula) .tk-f{color:var(--code-f)}
 .tr-gap{display:inline-block;min-width:4.5ch;padding:0 4px;border-bottom:2px dashed var(--tc);color:var(--tc);text-align:center}
 .tr-gap.ok{border-bottom-style:solid;border-color:#2fa36b;color:#2fa36b;font-weight:700}
 .tr-opts{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .tr-opt{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);
   color:var(--tx);font:inherit;font-size:.93rem;text-align:left;cursor:pointer;line-height:1.45}
 .tr-opt.mono .tr-ot{font:13.5px/1.5 ui-monospace,"JetBrains Mono",Consolas,monospace;white-space:pre-wrap}
+.tr-opt .tr-mono{background:none!important;border:0!important;padding:0!important;border-radius:0!important;font:inherit!important;color:inherit;white-space:pre-wrap}
 .tr-opt:hover:not([disabled]){border-color:var(--tc)}
 .tr-opt[disabled]{cursor:default}
 .tr-r{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);display:grid;place-items:center;font:700 .7rem/1 Inter,system-ui;color:var(--mu)}
@@ -576,14 +721,41 @@ body.tr-on{overflow:hidden}
 .tr-miss{margin-top:12px;padding-top:10px;border-top:1px solid var(--bd);text-align:left;font-size:.86rem}
 .tr-miss ul{margin:4px 0 0;padding-left:1.2em;color:var(--mu)}
 .tr-miss small{color:var(--mu)}
-/* Cartão "Treinar esta aula" (fim da Aula Visual) e treino misto (página Revisões) */
-.tr-entry{display:flex;align-items:center;gap:12px;margin:2px 0;padding:12px 14px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--t,var(--t-hub)) 55%,transparent);
-  background:color-mix(in srgb,var(--t,var(--t-hub)) 7%,transparent)}
-.tr-entry-ico{font-size:1.5rem;flex:none}
-.tr-entry-t{min-width:0;flex:1}
-.tr-entry-t b{display:block;font-size:.93rem}
-.tr-entry-t span{display:block;font-size:.8rem;color:var(--mu);line-height:1.45}
-.tr-entry-go{flex:none;padding:8px 14px;border-radius:99px;border:1px solid var(--t,var(--t-hub));background:var(--t,var(--t-hub));color:#04121a;font:inherit;font-weight:700;font-size:.84rem;cursor:pointer}
+/* Treino da aula: bloco no fim da Aula Visual, logo depois do quiz de saída (uma questão por vez) */
+.tr-aula{border:1px solid color-mix(in srgb,var(--tc) 38%,var(--bd));border-radius:14px;padding:13px 15px 16px;color:var(--tx);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--tc) 7%,var(--card)),var(--card) 140px);font-size:15px;line-height:1.55;scroll-margin-top:64px}   /* abaixo do cabeçalho fixo da Aula Visual (.guide-shell-head) */
+.tr-a-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.tr-a-kick{font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--tc)}
+.tr-a-sub{margin-top:2px;font-size:.82rem;color:var(--mu)}
+.tr-a-count{flex:none;padding-top:1px;color:var(--mu);font-size:.8rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tr-aula .tr-prog{margin:10px 0;border-radius:99px;overflow:hidden}
+.tr-a-pts{margin:0 0 12px;padding:7px 11px;border-radius:10px;font-size:.84rem;line-height:1.45;background:color-mix(in srgb,var(--tc) 10%,transparent)}
+.tr-a-pts.ok{background:color-mix(in srgb,#2fa36b 13%,transparent)}
+.tr-a-pts[hidden]{display:none}
+.tr-aula .tr-fb{scroll-margin-top:64px}.tr-aula .tr-actions{scroll-margin-bottom:14px}
+.tr-aula .tr-wait{padding:22px 10px}
+.tr-aula .tr-wait .tr-btn{margin-top:10px}
+.tr-aula .tr-chip small{margin-left:0}
+.tr-a-sum{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tr-a-best{display:flex;flex-direction:column;align-items:center;min-width:66px}
+.tr-a-best b{font-size:1.7rem;font-weight:800;line-height:1.1;letter-spacing:-.02em;color:var(--tc)}
+.tr-a-best span{font-size:.72rem;color:var(--mu)}
+.tr-a-info{flex:1;min-width:190px;display:flex;flex-direction:column;gap:3px;font-size:.86rem}
+.tr-a-info span+span{font-size:.78rem;color:var(--mu)}
+.tr-pts{margin:10px auto 0;max-width:470px;padding:8px 12px;border-radius:10px;font-size:.86rem;line-height:1.5;background:color-mix(in srgb,var(--tc) 10%,transparent)}
+.tr-pts.ok{background:color-mix(in srgb,#2fa36b 14%,transparent)}
+/* Dentro da Aula Visual o estúdio (#note-modal .lv2) estiliza todo p, code e pre: aqui o treino volta ao estilo dele */
+#note-modal .tr-aula .tr-tip{margin:12px 0 0}
+#note-modal .tr-aula .tr-note{margin:0 0 10px}
+#note-modal .tr-aula :is(.tr-msg,.tr-sub){margin:6px 0 0}
+#note-modal .tr-aula .tr-pts{margin:10px auto 0}
+#note-modal .tr-aula .tr-ln code{background:none;border:0;padding:0;border-radius:0;font-size:inherit}
+#note-modal .tr-aula .tr-code{margin:12px 0 0;padding:12px 14px;border-radius:10px;font-size:13.5px}
+#note-modal .tr-aula code.tr-fix{border:0;padding:6px 10px;border-radius:8px;font-size:13px;background:color-mix(in srgb,#2fa36b 12%,transparent)}
+#note-modal .tr-aula .tr-out pre{margin:4px 0 0;padding:6px 10px;border:0;border-radius:8px;font-size:12.5px}
+/* o chip "🏋️ treino" do topo da aula desce até o bloco */
+.lv2-chip-go{font-family:inherit;line-height:inherit;cursor:pointer;border-color:color-mix(in srgb,var(--t-hub) 45%,var(--bd))}
+.lv2-chip-go:hover{color:var(--tx)}
 @media (max-width:600px){.tr{padding:0}.tr-box{height:100%;max-height:none;border-radius:0;border:0}.tr-body{padding:12px 12px 20px}
-  .tr-card{padding:13px}.tr-q{font-size:.97rem}.tr-entry{flex-wrap:wrap}.tr-entry-go{width:100%}}
+  .tr-card{padding:13px}.tr-q{font-size:.97rem}.tr-aula{padding:12px 11px 14px}.tr-a-sum .tr-btn{width:100%;justify-content:center}}
 """

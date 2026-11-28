@@ -172,8 +172,8 @@ def generate_listing_page(track_id, page_title, page_sub, track_icon, phases, ou
                     options.append(f'<button class="row-opt" data-act="video2" title="{t2_lbl}" onclick="openStudyModal(\'{t_id}\', false, 2)">2º vídeo</button>')
                 if t.get("pt_guide"):
                     options.append(f'<button class="row-opt" data-act="guide" onclick="openStudyModal(\'{t_id}\', true, 1)">Aula Visual</button>')
-                if treino.contar(t_id):   # questões de marcar da aula (treino_js.py)
-                    options.append(f'<button class="row-opt" data-act="treino" onclick="trOpenLesson(\'{t_id}\')">🏋️ Treinar</button>')
+                if treino.contar(t_id):   # questões de marcar da aula (treino_js.py): ficam no fim da Aula Visual
+                    options.append(f'<button class="row-opt" data-act="treino" title="Abrir o treino no fim da Aula Visual" onclick="trGoLesson(\'{t_id}\')">🏋️ Treinar</button>')
                 if t.get("doc_url"):
                     doc_name = "Documentação" if track_id == "ia" else "Material de apoio"
                     options.append(f'<a class="row-opt" data-act="doc" href="{t["doc_url"]}" target="_blank" rel="noopener" title="{html_lib.escape(doc_lbl)}">{doc_name} ↗</a>')
@@ -1196,12 +1196,15 @@ window.addEventListener("rv:change", () => { try { paint(); updateModalReviewBtn
 
 // =========================================================================
 // PONTOS DA AULA (topo do estúdio)
-// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM):
+// Quanto a aula vale na Jornada do hub e quanto ainda falta somar, com o MESMO cálculo do hub (RM.credit):
 // concluída = peso inteiro; em andamento = crédito parcial (média do % de vídeo e de aula); opcional = fora da meta.
+// Nas aulas com treino, RM.TR_SHARE do peso vem do treino do fim da Aula Visual (com pelo menos RM.TR_MIN% de acertos):
+// concluir sem o treino dá só a parte do estudo, e o resto espera o treino (grupo "treino").
 // A frase é sorteada a cada vez que a aula abre (sem repetir a última do mesmo grupo) e os números
-// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir, com um "pop").
+// acompanham o estudo ao vivo. A frase só troca quando a situação muda (ex.: ao concluir ou passar no treino, com um "pop").
 // Tokens: {mais} "+4 pontos" (o que falta somar) · {resta} "4 pontos" · {vale} peso da aula ·
-// {feito} crédito já garantido · {jAntes}/{jAgora} % da Jornada agora · {jDepois} % ao concluir.
+// {feito} crédito já garantido · {ganhou} o que acabou de entrar · {jAntes}/{jAgora} % da Jornada agora ·
+// {jDepois} % com a aula completa · {treino}/{estudo} parte do treino e do estudo · {min} "70%" (acertos para o treino valer).
 // =========================================================================
 const LESSON_PTS_PHRASES = {
   todo: [   // ainda não começou (ou começou sem crédito)
@@ -1217,7 +1220,11 @@ const LESSON_PTS_PHRASES = {
     "Level up à vista: conclua e ganhe {mais}.",
     "Bora? Tem {mais} no fim desta aula.",
     "Foco nesta aqui: ela leva sua Jornada para {jDepois}.",
-    "Sem pressa e sem pausa: {mais} ao concluir."
+    "Sem pressa e sem pausa: {mais} ao concluir.",
+    // só nas aulas com treino por fazer
+    "Esta aula vale {vale}: {estudo} pelo estudo e {treino} pelo treino do fim.",
+    "Estude, faça o treino do fim da aula e some {mais}!",
+    "No fim desta aula tem treino: com {min} de acertos, ele vale {treino}."
   ],
   doing: [  // em andamento, já com crédito parcial
     "Você já garantiu {feito} aqui. Conclua e leve o resto: {mais}!",
@@ -1229,12 +1236,23 @@ const LESSON_PTS_PHRASES = {
     "Já tem {feito} no bolso. Bora buscar o resto?",
     "Termine o que começou: {mais} e mais um ✓ na lista.",
     "Cada minuto aqui conta: só {resta} para completar.",
-    "Combo em andamento: {feito} no bolso, {resta} para fechar."
+    "Combo em andamento: {feito} no bolso, {resta} para fechar.",
+    // só nas aulas com treino por fazer
+    "Já tem {feito} no bolso. E o treino do fim da aula vale {treino}.",
+    "Bom ritmo! Termine o estudo, faça o treino e leve {mais}."
   ],
   full: [   // em andamento com vídeo e aula completos: os pontos já contam, falta o ✓
     "Tudo visto! Esta aula já conta {vale} na Jornada. Marque como concluída para fechar.",
     "Você já somou {vale} com esta aula. Falta só o ✓ de Concluído.",
     "Pontos no bolso ({vale}). Agora é marcar como concluída!"
+  ],
+  treino: [ // estudo completo (concluída ou não), treino por fazer: o resto dos pontos é dele
+    "Estudo completo! Agora o treino do fim da aula vale {mais}, com {min} de acertos.",
+    "Falta só o treino: acerte {min} e some {mais}.",
+    "Você já garantiu {feito}. O treino do fim da aula fecha a conta: {mais}.",
+    "Teoria feita, agora a prática: o treino vale {resta}.",
+    "Último passo: o treino no fim da aula, que vale {resta}.",
+    "Quase lá! Com {min} de acertos no treino, a aula fica completa: {mais}."
   ],
   won: [    // no instante em que a aula é concluída (com o estúdio aberto)
     "Concluída! Sua Jornada subiu para {jAgora}.",
@@ -1244,6 +1262,19 @@ const LESSON_PTS_PHRASES = {
     "Mais uma pronta! A Jornada agora está em {jAgora}.",
     "Tijolo no lugar! Esta aula agora soma {vale} na obra.",
     "GG! Aula concluída e {vale} no placar."
+  ],
+  wonTr: [  // no instante em que a aula é concluída, com o treino ainda por fazer
+    "Concluída! Entrou {ganhou} na Jornada, e o treino do fim ainda vale {resta}.",
+    "Aula concluída! Agora o treino do fim dela vale {mais}.",
+    "Mandou bem! Para completar a aula, falta o treino: {mais}.",
+    "Concluída! A Jornada está em {jAgora}, e o treino leva a {jDepois}."
+  ],
+  trWon: [  // no instante em que o treino passa do mínimo de acertos (com o estúdio aberto)
+    "Treino aprovado! {ganhou} na sua Jornada.",
+    "Mandou bem no treino: {ganhou} na conta!",
+    "Treino feito! A Jornada agora está em {jAgora}.",
+    "Prática em dia: o treino somou {ganhou}.",
+    "É isso! O treino rendeu {ganhou} na Jornada."
   ],
   done: [   // ao reabrir uma aula já concluída
     "Aula concluída: {vale} na sua conta!",
@@ -1266,23 +1297,26 @@ const LESSON_PTS_PHRASES = {
     "Side quest! Não vale pontos, vale experiência."
   ]
 };
-const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", won: "🎉", done: "✅", opt: "🧠" };
-const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0 };
+const LESSON_PTS_ICON = { todo: "⚡", doing: "🔥", full: "🏁", treino: "🏋️", won: "🎉", wonTr: "🎉", trWon: "🏆", done: "✅", opt: "🧠" };
+const LESSON_PTS = { id: null, group: null, pool: null, tpl: "", html: "", last: {}, rest: 0, ganhou: 0, s: null, trOk: false };
 
 // Números da aula pelo cálculo do hub. null = sem o cálculo na página (aviso escondido).
 function lessonPointsInfo(topicId) {
   if (typeof RM === "undefined" || !topicId) return null;
-  let raw = {};
+  let raw = {}, ans = {};
   try { raw = JSON.parse(localStorage.getItem("roteiro-effort-v1") || "{}") || {}; } catch (e) {}
+  try { ans = JSON.parse(localStorage.getItem("roteiro-answers-v1") || "{}") || {}; } catch (e) {}
   const eff = { tracks: Object.assign({}, RM.TRACK_WEIGHTS), topics: raw.topics || {} };   // igual à Jornada do hub
   if (!RM.isTopic(topicId)) return { group: "opt" };
-  const it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
+  const best = RM.trBest(ans), it = PR[topicId] || {}, w = RM.weightOf(topicId, eff);
   const s = it.s === "e" || it.s === "r" ? it.s : "z";
-  const got = s === "e" ? w : s === "r" ? w * Math.min(1, ((it.vp || 0) + (it.gp || 0)) / 200) : 0;
-  const rest = Math.max(0, w - got);
-  const T = RM.totals(eff), P = RM.progress(PR, eff);
-  const group = s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : s === "r" && got >= 0.05 ? "doing" : "todo";
-  return { group, w, got, rest, jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
+  const sh = RM.trShare(topicId), tr = sh > 0, trOk = RM.trPassed(topicId, best);
+  const got = RM.credit(topicId, it, w, best), rest = Math.max(0, w - got);
+  const estudoOk = s === "e" || (s === "r" && (it.vp || 0) + (it.gp || 0) >= 200);   // vídeo e Aula Visual completos
+  const T = RM.totals(eff), P = RM.progress(PR, eff, best);
+  const group = tr && !trOk && estudoOk ? "treino" : s === "e" ? "done" : s === "r" && rest < 0.05 ? "full" : got >= 0.05 ? "doing" : "todo";
+  return { group, s, w, got, rest, tr, trOk, trPts: w * sh, estudo: w * (1 - sh), min: RM.TR_MIN,
+           jNow: P.pts / T.points * 100, jAfter: (P.pts + rest) / T.points * 100 };
 }
 
 const lessonPtsRound = v => Math.round(v * 10) / 10;
@@ -1292,6 +1326,13 @@ function lessonPointsUsable(tpl, x) {
   if (tpl.includes("{feito}") && !(x.got >= 0.05)) return false;
   if (tpl.includes("{ganhou}") && !(x.ganhou >= 0.05)) return false;
   if (/\{j(Antes|Depois)\}/.test(tpl) && lessonPtsRound(x.jNow) === lessonPtsRound(x.jAfter)) return false;
+  // Antes de completar o estudo: as frases do treino só nas aulas com treino por fazer, e nessas o ✓ de Concluído
+  // não dá todos os pontos (ficam de fora as frases que prometem os pontos ao concluir)
+  if (x.group === "todo" || x.group === "doing") {
+    const pendente = Boolean(x.tr && !x.trOk);
+    if (/treino|\{estudo\}/.test(tpl) && !pendente) return false;
+    if (pendente && /conclu/i.test(tpl)) return false;
+  }
   return true;
 }
 
@@ -1299,6 +1340,7 @@ function lessonPointsFill(tpl, x) {
   const num = v => lessonPtsRound(v).toLocaleString("pt-BR");
   const pts = v => num(v) + (lessonPtsRound(v) === 1 ? " ponto" : " pontos");
   const map = { mais: "+" + pts(x.rest), resta: pts(x.rest), vale: pts(x.w), feito: pts(x.got), ganhou: "+" + pts(x.ganhou || 0),
+                treino: pts(x.trPts || 0), estudo: pts(x.estudo || 0), min: x.min + "%",
                 jAntes: num(x.jNow) + "%", jAgora: num(x.jNow) + "%", jDepois: num(x.jAfter) + "%" };
   return tpl.replace(/\{(\w+)\}/g, (m, k) => (k in map ? "<b>" + map[k] + "</b>" : m));
 }
@@ -1313,12 +1355,15 @@ function renderLessonPoints() {
   if (!x) { el.hidden = true; return; }
   const st = LESSON_PTS, same = st.id === id;
   const fam = g => (g === "todo" || g === "doing" ? "active" : g);   // começar a estudar não troca a frase
-  const celebrate = same && st.group !== "done" && x.group === "done";
+  // Comemora o que acabou de acontecer com a aula aberta: concluir (com ou sem o treino por fazer) ou passar no treino
+  const win = !same || x.group === "opt" ? null
+    : st.s !== "e" && x.s === "e" ? (x.rest < 0.05 ? "won" : "wonTr")
+    : !st.trOk && x.trOk ? "trWon" : null;
   if (!same) st.ganhou = 0;
-  if (celebrate) st.ganhou = st.rest;          // o que faltava somar antes de concluir acabou de entrar
+  if (win) st.ganhou = Math.max(0, st.rest - x.rest);   // o que acabou de entrar na Jornada
   x.ganhou = st.ganhou;
-  if (celebrate || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
-    const key = celebrate ? "won" : x.group;
+  if (win || !same || fam(st.group) !== fam(x.group) || !lessonPointsUsable(st.tpl, x)) {
+    const key = win || x.group;
     const pool = LESSON_PTS_PHRASES[key], ok = pool.filter(t => lessonPointsUsable(t, x));
     let opts = ok.filter(t => t !== st.last[key]);
     if (!opts.length) opts = ok.length ? ok : pool;
@@ -1326,13 +1371,15 @@ function renderLessonPoints() {
     st.last[key] = st.tpl;
     st.pool = key;
   }
-  st.id = id; st.group = x.group; st.rest = x.rest;
+  st.id = id; st.group = x.group; st.rest = x.rest; st.s = x.s; st.trOk = Boolean(x.trOk);
   const html = '<span class="pts-ico" aria-hidden="true">' + LESSON_PTS_ICON[st.pool] + "</span><span>" + lessonPointsFill(st.tpl, x) + "</span>";
   if (html !== st.html) { el.innerHTML = html; st.html = html; }
   el.dataset.state = x.group;
   el.hidden = false;
-  if (celebrate) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
+  if (win) { el.classList.remove("pts-pop"); void el.offsetWidth; el.classList.add("pts-pop"); }
 }
+// O treino da aula terminou (ou o resultado chegou de outro aparelho): os pontos do topo acompanham
+window.addEventListener("tr:change", () => { try { renderLessonPoints(); } catch (e) {} });
 
 function updateModalStatusBtn(status) {
   const btn = document.getElementById("modal-status-btn");
